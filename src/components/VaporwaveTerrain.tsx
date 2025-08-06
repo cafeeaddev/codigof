@@ -103,11 +103,13 @@ export const VaporwaveTerrain = () => {
   // Animation and color updates
   useFrame((state) => {
     if (backgroundMeshRef.current && wireframeMeshRef.current && backgroundMaterialRef.current) {
-      // Movimento contínuo apenas para frente (sem efeito de scroll)
-      const timeMovement = state.clock.elapsedTime * 0.8; // Velocidade constante
+      // Movimento automático contínuo + efeito do scroll
+      const timeMovement = state.clock.elapsedTime * 0.5; // Movimento automático
+      const scrollMovement = scrollProgress * 4; // Acelera com o scroll
       
-      // Move todos os terrenos juntos
-      const zPosition = -8 + timeMovement;
+      // Combina os dois movimentos
+      const totalMovement = timeMovement + scrollMovement;
+      const zPosition = -8 + totalMovement;
       
       // Aplica movimento a todos os terrenos filhos do grupo
       backgroundMeshRef.current.parent?.children.forEach((child, index) => {
