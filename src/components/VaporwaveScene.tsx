@@ -10,7 +10,7 @@ export const VaporwaveScene = () => {
     <div className="w-full h-screen relative overflow-hidden">
       <Canvas
         camera={{
-          position: [0, 5, 1.5], // Altura balanceada para montanhas ocuparem metade da tela
+          position: [0, 3, 2], // Posição balanceada para ver céu e montanhas proporcionalmente
           fov: 75, // Campo de visão adequado
           near: 0.01,
           far: 200,
