@@ -1,46 +1,49 @@
 
 import { Button } from './ui/button';
-import { ArrowRight, Play } from 'lucide-react';
+import { Play } from 'lucide-react';
 
 export const HeroSection = () => {
   return (
     <section className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 pt-16">
       <div className="max-w-4xl mx-auto text-center">
-        {/* Companies text moved up */}
-        <p className="text-sm text-white/60 mb-4">
-          Trusted by creative teams at innovative companies
-        </p>
+        {/* Main content positioned above the terrain */}
+        <div className="mb-12">
+          {/* Top text */}
+          <p className="text-sm sm:text-base text-white/80 mb-6 uppercase tracking-wider">
+            SUA JORNADA DIGITAL COMEÇA AQUI!
+          </p>
 
-        {/* Main Title */}
-        <div className="mb-6 -mt-8 flex items-center justify-center gap-8">
-          <img 
-            src="/lovable-uploads/89624b0a-ec75-460d-9b68-0a73c6c945eb.png" 
-            alt="Código F"
-            className="w-auto h-20 sm:h-24 lg:h-32"
-          />
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white">
-            SUA JORNADA DIGITAL<br />COMEÇA AQUI!
-          </h1>
-        </div>
+          {/* Logo */}
+          <div className="mb-12">
+            <img 
+              src="/lovable-uploads/89624b0a-ec75-460d-9b68-0a73c6c945eb.png" 
+              alt="Código F"
+              className="mx-auto w-auto h-24 sm:h-32 lg:h-40"
+            />
+          </div>
 
-        {/* CTA Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-          <Button 
-            size="lg" 
-            className="bg-white text-black hover:bg-white/90 px-8 py-3 text-lg font-medium"
-          >
-            Get started
-            <ArrowRight className="ml-2 h-5 w-5" />
-          </Button>
-          
-          <Button 
-            variant="ghost" 
-            size="lg"
-            className="text-white hover:bg-white/10 px-8 py-3 text-lg font-medium border border-white/20 backdrop-blur-sm"
-          >
-            <Play className="mr-2 h-5 w-5" />
-            Watch demo
-          </Button>
+          {/* CTA Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <Button 
+              size="lg" 
+              className="bg-white/20 text-white hover:bg-white/30 px-8 py-4 text-lg font-medium border border-white/30 backdrop-blur-sm rounded-lg"
+            >
+              Sistema de Diagnóstico Ativado
+            </Button>
+            
+            <Button 
+              size="lg"
+              className="bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 px-8 py-4 text-lg font-medium rounded-lg"
+            >
+              <Play className="mr-2 h-5 w-5 fill-current" />
+              INICIAR
+            </Button>
+          </div>
+
+          {/* Trusted by text */}
+          <p className="text-sm text-white/60 mt-8">
+            Trusted by creative teams at innovative companies
+          </p>
         </div>
 
         {/* Scroll indicator */}
