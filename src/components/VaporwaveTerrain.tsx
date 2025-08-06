@@ -65,8 +65,13 @@ export const VaporwaveTerrain = ({ theme }: VaporwaveTerrainProps) => {
   // Animation loop
   useFrame((state) => {
     if (meshRef.current) {
-      // Move terrain towards viewer for that classic vaporwave effect
-      meshRef.current.position.z = (state.clock.elapsedTime * 0.5) % 2 - 1;
+      // Continuous movement towards viewer without jumps
+      meshRef.current.position.z = state.clock.elapsedTime * 0.5;
+      
+      // Animate texture offset for seamless flow
+      if (texture) {
+        texture.offset.y = state.clock.elapsedTime * 0.3;
+      }
     }
   });
   
