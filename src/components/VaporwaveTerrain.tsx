@@ -87,23 +87,17 @@ export const VaporwaveTerrain = () => {
   }, []);
   
   
-  // Enhanced color system similar to reference image
-  const getEnhancedColor = (progress: number) => {
-    // Colors inspired by the reference: blue to orange/gold gradient
-    if (progress < 0.5) {
-      // Blue to cyan range
-      const hue = 200 - (progress * 40); // 200 to 180 (blue to cyan)
-      const saturation = 90 + (progress * 10); // 90-100%
-      const lightness = 60 + (progress * 20); // 60-80%
-      return new THREE.Color().setHSL(hue / 360, saturation / 100, lightness / 100);
-    } else {
-      // Cyan to orange/gold range
-      const localProgress = (progress - 0.5) * 2;
-      const hue = 180 - (localProgress * 150); // 180 to 30 (cyan to orange)
-      const saturation = 95 + (localProgress * 5); // 95-100%
-      const lightness = 70 + (localProgress * 10); // 70-80%
-      return new THREE.Color().setHSL(hue / 360, saturation / 100, lightness / 100);
-    }
+  // Enhanced color calculation with reference-matched palette
+  const getEnhancedColor = (progress: number): string => {
+    // Reference colors: deep blue to vibrant purple
+    const deepBlue = [15, 15, 35];    // #0F0F23
+    const vibrantPurple = [102, 0, 255]; // #6600ff
+    
+    const r = Math.round(deepBlue[0] + (vibrantPurple[0] - deepBlue[0]) * progress);
+    const g = Math.round(deepBlue[1] + (vibrantPurple[1] - deepBlue[1]) * progress);
+    const b = Math.round(deepBlue[2] + (vibrantPurple[2] - deepBlue[2]) * progress);
+    
+    return `rgb(${r}, ${g}, ${b})`;
   };
   
   // Animation and color updates
@@ -132,9 +126,9 @@ export const VaporwaveTerrain = () => {
           ref={backgroundMaterialRef}
           map={wireframeTexture}
           normalMap={normalTexture}
-          color="#1a1a2e"
-          emissive="#2a2a2a"
-          emissiveIntensity={0.3}
+          color="#0F0F23"
+          emissive={getEnhancedColor(scrollProgress)}
+          emissiveIntensity={0.5}
           roughness={0.3}
           metalness={0.7}
           transparent={true}
@@ -152,9 +146,9 @@ export const VaporwaveTerrain = () => {
         position={[0, 0, -2]}
       >
         <meshBasicMaterial
-          color="#ff00ff"
+          color="#6600ff"
           transparent={true}
-          opacity={0.4}
+          opacity={0.9}
           wireframe={true}
         />
       </mesh>

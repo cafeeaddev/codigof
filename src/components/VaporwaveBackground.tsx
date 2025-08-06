@@ -26,6 +26,13 @@ export const VaporwaveBackground = () => {
       uniform vec2 resolution;
       varying vec2 vUv;
       
+      // P3 color space conversion matrix
+      const mat3 LINEAR_SRGB_TO_LINEAR_DISPLAY_P3 = mat3(
+        vec3(0.8224621, 0.177538, 0.0),
+        vec3(0.0331941, 0.9668058, 0.0),
+        vec3(0.0170827, 0.0723974, 0.9105199)
+      );
+      
       void main() {
         vec2 uv = vUv;
         
@@ -35,15 +42,18 @@ export const VaporwaveBackground = () => {
         // Add some movement
         gradient += sin(time * 0.5 + uv.x * 3.0) * 0.1;
         
-        // Vaporwave color palette
-        vec3 topColor = vec3(1.0, 0.0, 1.0);    // Magenta
-        vec3 bottomColor = vec3(0.0, 0.0, 0.2); // Dark blue
+        // Reference-matched vaporwave colors
+        vec3 topColor = vec3(0.176, 0.106, 0.412);    // #2D1B69 - Dark purple
+        vec3 bottomColor = vec3(0.059, 0.059, 0.137); // #0F0F23 - Dark blue
         
         // Mix colors based on gradient
         vec3 color = mix(bottomColor, topColor, gradient);
         
-        // Add some purple tint
-        color += vec3(0.2, 0.0, 0.4) * (1.0 - gradient);
+        // Enhance depth and richness
+        color += vec3(0.1, 0.05, 0.3) * (1.0 - gradient);
+        
+        // Apply P3 conversion for enhanced vibrancy
+        color = LINEAR_SRGB_TO_LINEAR_DISPLAY_P3 * color;
         
         gl_FragColor = vec4(color, 1.0);
       }
