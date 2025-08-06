@@ -65,9 +65,9 @@ export const VaporwaveTerrain = () => {
   // Animation and color updates
   useFrame((state) => {
     if (meshRef.current && materialRef.current) {
-      // Movimento contínuo do terreno + influência do scroll
+      // Movimento contínuo do terreno + influência inversa do scroll
       const timeMovement = state.clock.elapsedTime * 0.3;
-      const scrollMovement = scrollProgress * 2;
+      const scrollMovement = -scrollProgress * 4; // Negativo para inverter direção
       meshRef.current.position.z = (timeMovement + scrollMovement) % 12 - 6;
       
       // Get average height for color calculation (simplified)
