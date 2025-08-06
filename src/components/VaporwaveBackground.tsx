@@ -34,28 +34,10 @@ export const VaporwaveBackground = () => {
       );
       
       void main() {
-        vec2 uv = vUv;
+        // Solid sky color #372065
+        vec3 skyColor = vec3(0.216, 0.125, 0.396);
         
-        // Create animated gradient
-        float gradient = uv.y;
-        
-        // Add some movement
-        gradient += sin(time * 0.5 + uv.x * 3.0) * 0.1;
-        
-        // Custom background color #372065
-        vec3 topColor = vec3(0.216, 0.125, 0.396);    // #372065 - Custom purple
-        vec3 bottomColor = vec3(0.216, 0.125, 0.396); // Same color for solid background
-        
-        // Mix colors based on gradient
-        vec3 color = mix(bottomColor, topColor, gradient);
-        
-        // Enhance depth and richness
-        color += vec3(0.1, 0.05, 0.3) * (1.0 - gradient);
-        
-        // Apply P3 conversion for enhanced vibrancy
-        color = LINEAR_SRGB_TO_LINEAR_DISPLAY_P3 * color;
-        
-        gl_FragColor = vec4(color, 1.0);
+        gl_FragColor = vec4(skyColor, 1.0);
       }
     `,
     side: THREE.BackSide
