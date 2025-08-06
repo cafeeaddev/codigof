@@ -26,7 +26,8 @@ export const HeroSection = () => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Button 
               size="lg" 
-              className="bg-white/20 text-white hover:bg-white/30 px-8 py-6 text-lg font-medium border-2 border-white/40 backdrop-blur-md rounded-xl shadow-lg"
+              className="bg-white/10 text-white hover:bg-white/20 px-8 py-6 text-lg font-medium backdrop-blur-md rounded-xl shadow-lg"
+              style={{ outline: '1.96px white solid', outlineOffset: '0px' }}
             >
               Sistema de Diagnóstico Ativado
             </Button>
