@@ -53,17 +53,9 @@ export const VaporwaveScene = ({ cameraPosition, cameraFov }: VaporwaveSceneProp
         {/* Main terrain */}
         <VaporwaveTerrain cameraPosition={cameraPosition} />
         
-        {/* Development controls */}
+        {/* Camera controller that respects manual controls */}
         <OrbitControls 
-          enableDamping={true}
-          dampingFactor={0.05}
-          enableZoom={false}
-          enablePan={false}
-          maxPolarAngle={Math.PI / 2.2} // Permite olhar um pouco para baixo
-          minPolarAngle={Math.PI / 6}   // Não permite olhar muito para cima
-          minDistance={2}
-          maxDistance={4}
-          target={[0, 0, -2]} // Foco no terreno à frente
+          enabled={false} // Disable orbit controls to allow manual camera control
         />
       </Canvas>
     </div>
