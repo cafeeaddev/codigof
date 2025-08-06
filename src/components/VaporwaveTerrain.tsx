@@ -23,72 +23,78 @@ export const VaporwaveTerrain = () => {
     texture.repeat.set(8, 16); // Increased repetition for denser grid
   }, [texture]);
   
-  // Create lower mountains with pronounced central path and higher side mountains
+  // Create terrain with craters like the reference
   const { geometry, maxHeight } = useMemo(() => {
-    const geo = new THREE.PlaneGeometry(24, 35, 220, 280);
+    const geo = new THREE.PlaneGeometry(28, 40, 240, 320);
     const positionAttribute = geo.getAttribute('position');
     const positions = positionAttribute.array as Float32Array;
     let maxHeight = 0;
+    
+    // Define crater locations
+    const craters = [
+      { x: -8, z: -5, radius: 3.5, depth: 2.8 },
+      { x: 10, z: 2, radius: 4.2, depth: 3.2 },
+      { x: -12, z: 8, radius: 2.8, depth: 2.2 },
+      { x: 7, z: -10, radius: 3.8, depth: 2.9 },
+      { x: -6, z: 15, radius: 2.5, depth: 1.8 },
+      { x: 14, z: -3, radius: 3.0, depth: 2.4 },
+      { x: -10, z: -12, radius: 2.2, depth: 1.6 },
+      { x: 9, z: 12, radius: 3.6, depth: 2.7 },
+      { x: -15, z: 5, radius: 2.0, depth: 1.4 },
+      { x: 12, z: 8, radius: 2.8, depth: 2.1 }
+    ];
     
     for (let i = 0; i < positions.length; i += 3) {
       const x = positions[i];
       const z = positions[i + 1];
       
-      // Create wide, clear central path
+      // Central path - keep it clear
       const distanceFromCenter = Math.abs(x);
-      const pathWidth = 3.8; // Wide path
-      const pathDepth = 1.0; // Moderate depth for clear passage
-      const transitionZone = 5.8; // Where transition to mountains begins
-      const mountainStart = 7.0; // Where main mountains begin
+      const pathWidth = 3.5;
       
       let height = 0;
       
       if (distanceFromCenter < pathWidth) {
-        // Central path - completely flat with slight depression
+        // Central path - slightly depressed
         const pathFactor = 1 - (distanceFromCenter / pathWidth);
-        height = -pathDepth * Math.pow(pathFactor, 1.5);
-      } else if (distanceFromCenter < transitionZone) {
-        // Transition zone - gentle hills
-        const transitionFactor = (distanceFromCenter - pathWidth) / (transitionZone - pathWidth);
-        height = Math.sin(transitionFactor * Math.PI * 0.5) * 0.4;
-        
-        // Add some small hills in transition
-        const smallHills = Math.sin(x * 1.2) * Math.cos(z * 0.8) * 0.2;
-        height += smallHills * transitionFactor;
-      } else if (distanceFromCenter < mountainStart) {
-        // Pre-mountain area with medium elevations
-        const preMountainFactor = (distanceFromCenter - transitionZone) / (mountainStart - transitionZone);
-        const mediumElevations = Math.sin(x * 0.6) * Math.cos(z * 0.4) * 0.8;
-        const detailWaves = Math.sin(x * 2.0) * Math.cos(z * 1.5) * 0.3;
-        height = (mediumElevations + detailWaves) * preMountainFactor;
+        height = -0.8 * Math.pow(pathFactor, 1.5);
       } else {
-        // Main mountain ranges - much higher and more varied
-        const mountainDistance = distanceFromCenter - mountainStart;
+        // Base terrain with gentle elevation
+        const baseElevation = Math.sin(x * 0.2) * Math.cos(z * 0.15) * 0.6;
+        const mediumWaves = Math.sin(x * 0.5) * Math.cos(z * 0.4) * 0.3;
+        const fineDetails = Math.sin(x * 1.2) * Math.cos(z * 1.0) * 0.15;
         
-        // Multiple mountain layers for complexity
-        const primaryMountains = Math.sin(x * 0.3) * Math.cos(z * 0.25) * 2.2; // Tall primary peaks
-        const secondaryMountains = Math.sin(x * 0.7) * Math.cos(z * 0.5) * 1.4; // Medium peaks
-        const tertiaryMountains = Math.sin(x * 1.4) * Math.cos(z * 1.0) * 0.8; // Smaller peaks
-        const detailRidges = Math.sin(x * 2.8) * Math.cos(z * 2.0) * 0.4; // Fine details
-        const microVariations = Math.sin(x * 5.6) * Math.cos(z * 4.0) * 0.15; // Micro details
+        height = baseElevation + mediumWaves + fineDetails;
         
-        // Distance-based scaling - mountains get higher further from center
-        const distanceScale = Math.min(mountainDistance / 4.0, 1.2);
+        // Apply crater effects
+        craters.forEach(crater => {
+          const distanceToCrater = Math.sqrt(
+            Math.pow(x - crater.x, 2) + Math.pow(z - crater.z, 2)
+          );
+          
+          if (distanceToCrater < crater.radius * 1.5) {
+            if (distanceToCrater < crater.radius) {
+              // Inside crater - create depression
+              const craterFactor = 1 - (distanceToCrater / crater.radius);
+              const craterDepth = -crater.depth * Math.pow(craterFactor, 1.8);
+              height += craterDepth;
+            } else {
+              // Crater rim - slight elevation
+              const rimFactor = (distanceToCrater - crater.radius) / (crater.radius * 0.5);
+              const rimHeight = Math.sin((1 - rimFactor) * Math.PI) * 0.4;
+              height += rimHeight;
+            }
+          }
+        });
         
-        // Create ridges parallel to the path
-        const ridgeEffect = Math.sin(z * 0.8) * 0.6;
+        // Add some background variation to avoid flatness
+        const backgroundVariation = Math.sin(x * 0.8 + z * 0.6) * 0.2;
+        height += backgroundVariation;
         
-        // Combine all mountain effects
-        height = (primaryMountains + secondaryMountains + tertiaryMountains + detailRidges + microVariations + ridgeEffect) * distanceScale;
-        
-        // Add some dramatic peaks at the edges
-        if (distanceFromCenter > 10) {
-          const edgePeaks = Math.sin(x * 0.4 + z * 0.3) * 1.8;
-          height += edgePeaks * Math.min((distanceFromCenter - 10) / 2.0, 1.0);
+        // Ensure minimum elevation outside path
+        if (distanceFromCenter > pathWidth + 1) {
+          height = Math.max(height, -1.5);
         }
-        
-        // Ensure mountains don't go too low
-        height = Math.max(height, 0.2 * distanceScale);
       }
       
       positions[i + 2] = height;
@@ -110,37 +116,43 @@ export const VaporwaveTerrain = () => {
     return new THREE.Color().setHSL(hue / 360, saturation / 100, lightness / 100);
   };
 
-  // Internal lights for mountain depth - more lights for bigger mountains
+  // Internal lights for crater depth and rim illumination
   const internalLights = useMemo(() => {
     const lights = [];
-    // Main mountain lights
-    for (let i = 0; i < 12; i++) {
-      const angle = (i / 12) * Math.PI * 2;
-      const radius = 8 + Math.random() * 6;
-      const x = Math.cos(angle) * radius;
-      const z = Math.sin(angle) * radius;
-      const y = -0.3 - Math.random() * 0.8;
-      
-      lights.push({
-        position: [x, y, z],
-        color: new THREE.Color().setHSL((i * 30) / 360, 0.8, 0.6),
-        intensity: 0.4 + Math.random() * 0.4
-      });
-    }
     
-    // Additional peak lights for dramatic effect
-    for (let i = 0; i < 6; i++) {
-      const side = i % 2 === 0 ? 1 : -1;
-      const x = side * (10 + Math.random() * 4);
-      const z = -10 + (i * 4) + Math.random() * 2;
-      const y = 0.5 + Math.random() * 1.0;
-      
+    // Crater interior lights
+    const craterPositions = [
+      [-8, -5], [10, 2], [-12, 8], [7, -10], [-6, 15],
+      [14, -3], [-10, -12], [9, 12], [-15, 5], [12, 8]
+    ];
+    
+    craterPositions.forEach((pos, index) => {
+      // Light at the bottom of each crater
       lights.push({
-        position: [x, y, z],
-        color: new THREE.Color().setHSL((240 + i * 20) / 360, 0.9, 0.7),
-        intensity: 0.6 + Math.random() * 0.3
+        position: [pos[0], -1.5, pos[1]],
+        color: new THREE.Color().setHSL((index * 36) / 360, 0.8, 0.7),
+        intensity: 0.6 + Math.random() * 0.4
       });
-    }
+      
+      // Rim lights for some craters
+      if (index % 2 === 0) {
+        const angle1 = (index * 60) * Math.PI / 180;
+        const angle2 = angle1 + Math.PI;
+        const radius = 2.5;
+        
+        lights.push({
+          position: [pos[0] + Math.cos(angle1) * radius, 0.2, pos[1] + Math.sin(angle1) * radius],
+          color: new THREE.Color().setHSL((index * 36 + 180) / 360, 0.9, 0.6),
+          intensity: 0.3 + Math.random() * 0.2
+        });
+        
+        lights.push({
+          position: [pos[0] + Math.cos(angle2) * radius, 0.2, pos[1] + Math.sin(angle2) * radius],
+          color: new THREE.Color().setHSL((index * 36 + 90) / 360, 0.85, 0.65),
+          intensity: 0.3 + Math.random() * 0.2
+        });
+      }
+    });
     
     return lights;
   }, []);
