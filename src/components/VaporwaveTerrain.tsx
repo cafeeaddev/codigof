@@ -140,7 +140,7 @@ export const VaporwaveTerrain = () => {
           <mesh
             geometry={backgroundGeometry}
             rotation={[-Math.PI * 0.5, 0, 0]}
-            position={[0, -0.5, 0]}
+            position={[0, -1.2, 0]}
           >
             <meshStandardMaterial
               ref={index === 0 ? backgroundMaterialRef : undefined}
@@ -162,7 +162,7 @@ export const VaporwaveTerrain = () => {
           <mesh
             geometry={backgroundGeometry}
             rotation={[-Math.PI * 0.5, 0, 0]}
-            position={[0, -0.48, 0]}
+            position={[0, -1.18, 0]}
           >
             <meshBasicMaterial
               color="#06C4ef"
