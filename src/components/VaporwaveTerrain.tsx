@@ -112,7 +112,7 @@ export const VaporwaveTerrain = () => {
     groupRefs.current.forEach((group, index) => {
       if (group) {
         // Calcula posição com loop infinito
-        const basePosition = -8 + (index * 60);
+        const basePosition = 15 + (index * 60);
         group.position.z = basePosition + (totalMovement % 180);
         
         // Reset position quando passa muito longe para criar loop infinito
@@ -134,7 +134,7 @@ export const VaporwaveTerrain = () => {
               groupRefs.current[index] = el;
             }
           }}
-          position={[0, 0, -8 + (index * 60)]}
+          position={[0, 0, 15 + (index * 60)]}
         >
           {/* Neon terrain with grid pattern and depth */}
           <mesh
