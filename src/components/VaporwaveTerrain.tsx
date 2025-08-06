@@ -43,6 +43,16 @@ export const VaporwaveTerrain = () => {
     return tex;
   }, [texture]);
   
+  // Helper function to calculate height at any point (matches terrain generation)
+  const calculateHeightAtPoint = (x: number, z: number) => {
+    const wave1 = Math.sin(x * 0.3) * Math.cos(z * 0.3) * 0.8;
+    const wave2 = Math.sin(x * 0.6) * Math.cos(z * 0.6) * 0.4;
+    const wave3 = Math.sin(x * 1.2) * Math.cos(z * 1.2) * 0.2;
+    const wave4 = Math.sin(x * 2.4) * Math.cos(z * 2.4) * 0.1;
+    const distanceEffect = Math.sin(Math.sqrt(x * x + z * z) * 0.2) * 0.3;
+    return wave1 + wave2 + wave3 + wave4 + distanceEffect;
+  };
+
   // Create square terrain geometry for background
   const { backgroundGeometry, gridGeometry, maxHeight } = useMemo(() => {
     // Background terrain geometry (same as before)
@@ -117,15 +127,6 @@ export const VaporwaveTerrain = () => {
     return { backgroundGeometry: bgGeo, gridGeometry: gridGeo, maxHeight };
   }, []);
   
-  // Helper function to calculate height at any point (matches terrain generation)
-  const calculateHeightAtPoint = (x: number, z: number) => {
-    const wave1 = Math.sin(x * 0.3) * Math.cos(z * 0.3) * 0.8;
-    const wave2 = Math.sin(x * 0.6) * Math.cos(z * 0.6) * 0.4;
-    const wave3 = Math.sin(x * 1.2) * Math.cos(z * 1.2) * 0.2;
-    const wave4 = Math.sin(x * 2.4) * Math.cos(z * 2.4) * 0.1;
-    const distanceEffect = Math.sin(Math.sqrt(x * x + z * z) * 0.2) * 0.3;
-    return wave1 + wave2 + wave3 + wave4 + distanceEffect;
-  };
   
   // Enhanced color system similar to reference image
   const getEnhancedColor = (progress: number) => {
