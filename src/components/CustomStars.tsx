@@ -13,28 +13,36 @@ export const CustomStars = () => {
     return wave1 + wave2 + wave3;
   };
 
-  // Generate star positions - simplified approach
+  // Generate star positions only in the sky area
   const { positions, colors } = useMemo(() => {
-    const starCount = 1000;
+    const starCount = 2000; // More stars for better coverage
     const positions = new Float32Array(starCount * 3);
     const colors = new Float32Array(starCount * 3);
     
     let index = 0;
     
     for (let i = 0; i < starCount; i++) {
-      // Simple random distribution in sky area
-      const x = (Math.random() - 0.5) * 60; 
-      const y = Math.random() * 15 + 2; // Always above ground, simple range
-      const z = Math.random() * -30 - 5;     
+      // Volta para distribuição aleatória simples que funcionava
+      const x = (Math.random() - 0.5) * 80; 
+      const z = Math.random() * -40 - 5;     
+      
+      // Calculate terrain height at this x,z position
+      const terrainHeight = calculateHeightAtPoint(x, z);
+      
+      // Only place stars well above the terrain (in the sky)
+      const minSkyHeight = Math.max(terrainHeight + 1.5, 1); 
+      const maxSkyHeight = 25; 
+      const y = minSkyHeight + Math.random() * (maxSkyHeight - minSkyHeight);
       
       positions[index] = x;
       positions[index + 1] = y;
       positions[index + 2] = z;
       
-      // White color
-      colors[index] = 1;     // R
-      colors[index + 1] = 1; // G  
-      colors[index + 2] = 1; // B
+      // White color with slight variation
+      const brightness = 0.7 + Math.random() * 0.3;
+      colors[index] = brightness;     // R
+      colors[index + 1] = brightness; // G  
+      colors[index + 2] = brightness; // B
       
       index += 3;
     }
