@@ -19,12 +19,13 @@ export const VaporwaveScene = () => {
         {/* Background gradient and stars */}
         <VaporwaveBackground />
         <Stars 
-          radius={120} 
-          depth={60} 
-          count={4000} 
-          factor={5} 
+          radius={200} 
+          depth={80} 
+          count={8000} 
+          factor={3} 
           saturation={0} 
           fade={true}
+          speed={0.5}
         />
         
         {/* Neutral lighting to avoid color contamination */}
