@@ -103,10 +103,10 @@ export const VaporwaveTerrain = () => {
   // Animation and color updates
   useFrame((state) => {
     if (backgroundMeshRef.current && wireframeMeshRef.current && backgroundMaterialRef.current) {
-      // Continuous terrain movement + inverted scroll influence - keeping terrain visible
+      // Continuous terrain movement forward - terrain moves toward camera
       const timeMovement = state.clock.elapsedTime * 0.15;
-      const scrollMovement = scrollProgress * 8;
-      const zPosition = ((timeMovement + scrollMovement) % 16) - 4; // Smaller range to keep terrain always visible
+      const scrollMovement = scrollProgress * 2;
+      const zPosition = ((timeMovement - scrollMovement) % 16) - 8; // Move toward camera (negative Z)
       
       backgroundMeshRef.current.position.z = zPosition;
       wireframeMeshRef.current.position.z = zPosition;
