@@ -8,6 +8,7 @@ import { useScrollProgress } from '../hooks/useScrollProgress';
 
 export const VaporwaveTerrain = () => {
   const backgroundMeshRef = useRef<THREE.Mesh>(null);
+  const wireframeMeshRef = useRef<THREE.Mesh>(null);
   const backgroundMaterialRef = useRef<THREE.MeshStandardMaterial>(null);
   const scrollProgress = useScrollProgress();
   
@@ -107,13 +108,14 @@ export const VaporwaveTerrain = () => {
   
   // Animation and color updates
   useFrame((state) => {
-    if (backgroundMeshRef.current && backgroundMaterialRef.current) {
+    if (backgroundMeshRef.current && wireframeMeshRef.current && backgroundMaterialRef.current) {
       // Continuous terrain movement + inverted scroll influence - longer cycle
       const timeMovement = state.clock.elapsedTime * 0.2;
       const scrollMovement = -scrollProgress * 12;
       const zPosition = ((timeMovement + scrollMovement) % 24) - 12; // Square cycle
       
       backgroundMeshRef.current.position.z = zPosition;
+      wireframeMeshRef.current.position.z = zPosition;
     }
   });
   
@@ -144,6 +146,7 @@ export const VaporwaveTerrain = () => {
       
       {/* Wireframe overlay for neon grid effect */}
       <mesh
+        ref={wireframeMeshRef}
         geometry={backgroundGeometry}
         rotation={[-Math.PI * 0.5, 0, 0]}
         position={[0, 0, -2]}
