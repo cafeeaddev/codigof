@@ -31,16 +31,19 @@ const features = [
 
 export const LinearLayout = () => {
   return (
-    <div className="relative min-h-screen overflow-x-hidden">
+    <div className="relative">
       {/* Fixed vaporwave background */}
       <div className="fixed inset-0 z-0">
         <VaporwaveScene />
       </div>
 
-      {/* Content layer */}
+      {/* Content layer with proper scroll height */}
       <div className="relative z-10">
         <main className="relative">
-          <HeroSection />
+          {/* Add extra height to enable more scroll for terrain movement */}
+          <div className="min-h-[200vh]">
+            <HeroSection />
+          </div>
           
           <CompaniesSection />
           
