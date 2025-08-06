@@ -19,12 +19,12 @@ export const VaporwaveTerrain = () => {
   // Configure texture properties
   useMemo(() => {
     texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-    texture.repeat.set(8, 16); // Increased repetition for denser grid
+    texture.repeat.set(8, 8); // Square grid repetition
   }, [texture]);
   
-  // Create expanded terrain geometry with central path - much more detailed
+  // Create square terrain geometry - detailed grid
   const { geometry, maxHeight } = useMemo(() => {
-    const geo = new THREE.PlaneGeometry(16, 48, 256, 512); // Much longer terrain
+    const geo = new THREE.PlaneGeometry(24, 24, 256, 256); // Square terrain
     const positionAttribute = geo.getAttribute('position');
     const positions = positionAttribute.array as Float32Array;
     let maxHeight = 0;
@@ -104,7 +104,7 @@ export const VaporwaveTerrain = () => {
       // Continuous terrain movement + inverted scroll influence - longer cycle
       const timeMovement = state.clock.elapsedTime * 0.2;
       const scrollMovement = -scrollProgress * 12;
-      const zPosition = ((timeMovement + scrollMovement) % 48) - 24; // Much longer cycle
+      const zPosition = ((timeMovement + scrollMovement) % 24) - 12; // Square cycle
       
       meshRef.current.position.z = zPosition;
       backgroundMeshRef.current.position.z = zPosition;
