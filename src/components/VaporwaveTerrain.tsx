@@ -93,9 +93,12 @@ export const VaporwaveTerrain = () => {
       materialRef.current.metalness = 0.2;
       materialRef.current.roughness = 0.8;
       
-      // Update background material - darker grey (chumbo)
-      backgroundMaterialRef.current.color = new THREE.Color(0x3a3a3a); // Chumbo color
-      backgroundMaterialRef.current.opacity = 0.8;
+      // Update background material with stone-like texture
+      const stoneColor1 = new THREE.Color(0x2a2a2a); // Dark stone
+      const stoneColor2 = new THREE.Color(0x404040); // Lighter stone
+      const stoneNoise = Math.sin(state.clock.elapsedTime * 0.1) * 0.5 + 0.5;
+      backgroundMaterialRef.current.color = stoneColor1.lerp(stoneColor2, stoneNoise);
+      backgroundMaterialRef.current.opacity = 0.9;
     }
   });
   
@@ -110,9 +113,11 @@ export const VaporwaveTerrain = () => {
       >
         <meshStandardMaterial
           ref={backgroundMaterialRef}
-          color="#3a3a3a"
+          color="#2a2a2a"
+          roughness={0.9}
+          metalness={0.1}
           transparent={true}
-          opacity={0.8}
+          opacity={0.9}
           side={THREE.DoubleSide}
         />
       </mesh>
