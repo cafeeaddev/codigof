@@ -44,9 +44,9 @@ export const VaporwaveTerrain = () => {
     return tex;
   }, [texture]);
   
-  // Create square terrain geometry - detailed grid
+  // Create square terrain geometry - visible grid squares
   const { geometry, maxHeight } = useMemo(() => {
-    const geo = new THREE.PlaneGeometry(24, 24, 256, 256); // Square terrain
+    const geo = new THREE.PlaneGeometry(24, 24, 48, 48); // Square terrain with visible grid
     const positionAttribute = geo.getAttribute('position');
     const positions = positionAttribute.array as Float32Array;
     let maxHeight = 0;
