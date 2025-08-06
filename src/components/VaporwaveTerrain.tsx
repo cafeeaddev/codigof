@@ -121,9 +121,9 @@ export const VaporwaveTerrain = () => {
       materialRef.current.metalness = 0.2;
       materialRef.current.roughness = 0.8;
       
-      // Update background material - darker, subtle
-      backgroundMaterialRef.current.color = new THREE.Color(0x0a0a1a);
-      backgroundMaterialRef.current.opacity = 0.6;
+      // Update background material - darker grey (chumbo)
+      backgroundMaterialRef.current.color = new THREE.Color(0x3a3a3a); // Chumbo color
+      backgroundMaterialRef.current.opacity = 0.8;
     }
   });
   
@@ -138,9 +138,9 @@ export const VaporwaveTerrain = () => {
       >
         <meshStandardMaterial
           ref={backgroundMaterialRef}
-          color="#0a0a1a"
+          color="#3a3a3a"
           transparent={true}
-          opacity={0.6}
+          opacity={0.8}
           side={THREE.DoubleSide}
         />
       </mesh>
