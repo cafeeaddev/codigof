@@ -15,23 +15,23 @@ export const CustomStars = () => {
 
   // Generate star positions only in the sky area
   const { positions, colors } = useMemo(() => {
-    const starCount = 1500;
+    const starCount = 2000; // More stars for better coverage
     const positions = new Float32Array(starCount * 3);
     const colors = new Float32Array(starCount * 3);
     
     let index = 0;
     
     for (let i = 0; i < starCount; i++) {
-      // Generate random position covering the entire visible area with more density
-      const x = (Math.random() - 0.5) * 100; // Even wider range
-      const z = Math.random() * -50 - 2;     // Much deeper and closer range
+      // Volta para distribuição aleatória simples que funcionava
+      const x = (Math.random() - 0.5) * 80; 
+      const z = Math.random() * -40 - 5;     
       
       // Calculate terrain height at this x,z position
       const terrainHeight = calculateHeightAtPoint(x, z);
       
-      // Only place stars well above the terrain (in the sky) - more spread
-      const minSkyHeight = Math.max(terrainHeight + 1.5, 0.5); 
-      const maxSkyHeight = 25; // Higher to cover more vertical space
+      // Only place stars well above the terrain (in the sky)
+      const minSkyHeight = Math.max(terrainHeight + 1.5, 1); 
+      const maxSkyHeight = 25; 
       const y = minSkyHeight + Math.random() * (maxSkyHeight - minSkyHeight);
       
       positions[index] = x;
@@ -39,7 +39,7 @@ export const CustomStars = () => {
       positions[index + 2] = z;
       
       // White color with slight variation
-      const brightness = 0.8 + Math.random() * 0.2;
+      const brightness = 0.7 + Math.random() * 0.3;
       colors[index] = brightness;     // R
       colors[index + 1] = brightness; // G  
       colors[index + 2] = brightness; // B
