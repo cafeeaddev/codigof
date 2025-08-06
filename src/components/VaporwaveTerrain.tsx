@@ -48,12 +48,12 @@ export const VaporwaveTerrain = () => {
       } else if (distanceFromCenter < edgeWidth) {
         // Elevated edges around the path
         const edgeFactor = (distanceFromCenter - pathWidth) / (edgeWidth - pathWidth);
-        const elevation = Math.sin((1 - edgeFactor) * Math.PI) * 0.8; // Even lower mountains
+        const elevation = Math.sin((1 - edgeFactor) * Math.PI) * 0.5; // Very low mountains
         pathEffect = elevation;
       } else {
         // Higher distant mountains but very limited height
         const distantFactor = Math.min((distanceFromCenter - edgeWidth) / 2.0, 1.0);
-        const distantElevation = Math.sin(distantFactor * Math.PI * 0.5) * 1.2; // Very low peaks
+        const distantElevation = Math.sin(distantFactor * Math.PI * 0.5) * 0.8; // Minimal peaks
         pathEffect = distantElevation;
       }
       
