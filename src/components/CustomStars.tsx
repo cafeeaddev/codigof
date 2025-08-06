@@ -22,20 +22,16 @@ export const CustomStars = () => {
     let index = 0;
     
     for (let i = 0; i < starCount; i++) {
-      // Create a grid-like distribution with randomness for better coverage
-      const gridX = Math.floor(i / 50) - 20; // Create grid columns
-      const gridZ = (i % 50) - 25; // Create grid rows
-      
-      // Add randomness to avoid perfect grid
-      const x = gridX * 2 + (Math.random() - 0.5) * 3;
-      const z = gridZ * 1.5 + (Math.random() - 0.5) * 2;
+      // Volta para distribuição aleatória simples que funcionava
+      const x = (Math.random() - 0.5) * 80; 
+      const z = Math.random() * -40 - 5;     
       
       // Calculate terrain height at this x,z position
       const terrainHeight = calculateHeightAtPoint(x, z);
       
-      // Place stars well above the terrain (in the sky) with more variation
-      const minSkyHeight = Math.max(terrainHeight + 1, 0.8); 
-      const maxSkyHeight = 30; // Higher to cover more vertical space
+      // Only place stars well above the terrain (in the sky)
+      const minSkyHeight = Math.max(terrainHeight + 1.5, 1); 
+      const maxSkyHeight = 25; 
       const y = minSkyHeight + Math.random() * (maxSkyHeight - minSkyHeight);
       
       positions[index] = x;
