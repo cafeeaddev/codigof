@@ -89,40 +89,48 @@ export const VaporwaveTerrain = () => {
     const gridSegments = 48;
     const stepSize = gridSize / gridSegments;
     
-    // Create horizontal lines
+    // Create horizontal lines (along X axis)
     for (let i = 0; i <= gridSegments; i++) {
       const z = -gridSize / 2 + i * stepSize;
       for (let j = 0; j < gridSegments; j++) {
         const x1 = -gridSize / 2 + j * stepSize;
         const x2 = -gridSize / 2 + (j + 1) * stepSize;
         
-        // Calculate height at both points using the same formula as the background terrain
+        // Calculate height at both points - but put Y in the correct position for rotated geometry
         const height1 = calculateHeightAtPoint(x1, z);
         const height2 = calculateHeightAtPoint(x2, z);
         
-        gridPoints.push(x1, height1, z);
-        gridPoints.push(x2, height2, z);
+        // Points are arranged for XZ plane (already rotated coordinates)
+        gridPoints.push(x1, 0, z, height1);  // First point: x, y, z, then x, y, z for second point
+        gridPoints.push(x2, 0, z, height2);
       }
     }
     
-    // Create vertical lines
+    // Create vertical lines (along Z axis)
     for (let i = 0; i <= gridSegments; i++) {
       const x = -gridSize / 2 + i * stepSize;
       for (let j = 0; j < gridSegments; j++) {
         const z1 = -gridSize / 2 + j * stepSize;
         const z2 = -gridSize / 2 + (j + 1) * stepSize;
         
-        // Calculate height at both points using the same formula as the background terrain
+        // Calculate height at both points
         const height1 = calculateHeightAtPoint(x, z1);
         const height2 = calculateHeightAtPoint(x, z2);
         
-        gridPoints.push(x, height1, z1);
-        gridPoints.push(x, height2, z2);
+        // Points are arranged for XZ plane (already rotated coordinates)
+        gridPoints.push(x, 0, z1, height1);
+        gridPoints.push(x, 0, z2, height2);
       }
     }
     
+    // Fix the points array - remove the extra values
+    const fixedGridPoints = [];
+    for (let i = 0; i < gridPoints.length; i += 4) {
+      fixedGridPoints.push(gridPoints[i], gridPoints[i + 3], gridPoints[i + 2]); // x, height, z
+    }
+    
     const gridGeo = new THREE.BufferGeometry();
-    gridGeo.setAttribute('position', new THREE.Float32BufferAttribute(gridPoints, 3));
+    gridGeo.setAttribute('position', new THREE.Float32BufferAttribute(fixedGridPoints, 3));
     
     return { backgroundGeometry: bgGeo, gridGeometry: gridGeo, maxHeight };
   }, []);
