@@ -1,4 +1,5 @@
 
+
 import { useRef, useMemo } from 'react';
 import { useFrame, useLoader } from '@react-three/fiber';
 import { TextureLoader } from 'three';
@@ -51,8 +52,8 @@ export const VaporwaveTerrain = () => {
   // Animation loop - slower movement for longer path sensation
   useFrame((state) => {
     if (meshRef.current) {
-      // Slower movement through the longer terrain
-      meshRef.current.position.z = (state.clock.elapsedTime * 0.3) % 6 - 3;
+      // Start from inside the terrain and move forward continuously
+      meshRef.current.position.z = (state.clock.elapsedTime * 0.3) % 6 - 1;
     }
   });
   
@@ -61,7 +62,7 @@ export const VaporwaveTerrain = () => {
       ref={meshRef}
       geometry={geometry}
       rotation={[-Math.PI * 0.5, 0, 0]}
-      position={[0, 0, 0.15]}
+      position={[0, 0, -1.5]} // Moved the terrain closer to start inside it
     >
       <meshStandardMaterial
         map={texture}
@@ -77,3 +78,4 @@ export const VaporwaveTerrain = () => {
     </mesh>
   );
 };
+
