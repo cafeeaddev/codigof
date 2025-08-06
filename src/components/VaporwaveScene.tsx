@@ -10,8 +10,8 @@ export const VaporwaveScene = () => {
     <div className="w-full h-screen relative overflow-hidden">
       <Canvas
         camera={{
-          position: [0, 0.2, -1], // Start inside the terrain/mountains
-          fov: 85, // Wider field of view
+          position: [0, -0.5, -3], // Start lower and deeper in the terrain
+          fov: 75, // Normal field of view
           near: 0.01,
           far: 25,
         }}
