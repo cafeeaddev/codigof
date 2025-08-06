@@ -165,7 +165,7 @@ export const VaporwaveTerrain = () => {
             position={[0, -0.48, 0]}
           >
             <meshBasicMaterial
-              color="#8a2be2"
+              color="#00FFD9"
               transparent={true}
               opacity={0.8}
               wireframe={true}
