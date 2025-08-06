@@ -19,7 +19,7 @@ export const CameraControls = ({ position, fov, onPositionChange, onFovChange }:
   };
 
   return (
-    <Card className="fixed top-4 left-4 z-50 p-4 w-80 bg-background/90 backdrop-blur-sm">
+    <Card className="fixed top-4 left-4 z-[9999] p-4 w-80 bg-background/95 backdrop-blur-sm border shadow-lg pointer-events-auto">
       <h3 className="text-lg font-semibold mb-4">Camera Controls</h3>
       
       <div className="space-y-4">
