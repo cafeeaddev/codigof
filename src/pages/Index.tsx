@@ -1,11 +1,7 @@
-import { VaporwaveScene } from '@/components/VaporwaveScene';
+import { LinearLayout } from '@/components/LinearLayout';
 
 const Index = () => {
-  return (
-    <div className="min-h-screen bg-background">
-      <VaporwaveScene />
-    </div>
-  );
+  return <LinearLayout />;
 };
 
 export default Index;

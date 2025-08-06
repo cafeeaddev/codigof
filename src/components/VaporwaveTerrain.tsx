@@ -1,5 +1,3 @@
-
-
 import { useRef, useMemo } from 'react';
 import { useFrame, useLoader } from '@react-three/fiber';
 import { TextureLoader } from 'three';
@@ -12,15 +10,15 @@ export const VaporwaveTerrain = () => {
   // Load the grid texture
   const texture = useLoader(TextureLoader, gridTexture);
   
-  // Configure texture properties for longer path
+  // Configure texture properties
   useMemo(() => {
     texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-    texture.repeat.set(1, 8); // Increased repetition for longer path feel
+    texture.repeat.set(1, 2);
   }, [texture]);
   
-  // Create terrain geometry with displacement - making it much longer
+  // Create terrain geometry with displacement
   const geometry = useMemo(() => {
-    const geo = new THREE.PlaneGeometry(1, 6, 24, 72); // Made depth 6x longer with more segments
+    const geo = new THREE.PlaneGeometry(1, 2, 24, 24);
     const positionAttribute = geo.getAttribute('position');
     const positions = positionAttribute.array as Float32Array;
     
@@ -38,8 +36,8 @@ export const VaporwaveTerrain = () => {
         positions[i + 2] = height;
       }
       
-      // Add some noise for more interesting terrain variation along the longer path
-      const noise = (Math.sin(x * 10) * Math.cos(z * 4)) * 0.02;
+      // Add some noise for more interesting terrain
+      const noise = (Math.sin(x * 10) * Math.cos(z * 8)) * 0.02;
       positions[i + 2] += noise;
     }
     
@@ -49,11 +47,11 @@ export const VaporwaveTerrain = () => {
     return geo;
   }, []);
   
-  // Animation loop - much slower movement for contemplative journey
+  // Animation loop
   useFrame((state) => {
     if (meshRef.current) {
-      // Slower movement for a more relaxed, contemplative experience
-      meshRef.current.position.z = (state.clock.elapsedTime * 0.1) % 6 - 1;
+      // Move terrain towards viewer for that classic vaporwave effect
+      meshRef.current.position.z = (state.clock.elapsedTime * 0.5) % 2 - 1;
     }
   });
   
@@ -62,7 +60,7 @@ export const VaporwaveTerrain = () => {
       ref={meshRef}
       geometry={geometry}
       rotation={[-Math.PI * 0.5, 0, 0]}
-      position={[0, 0, -1.5]} // Moved the terrain closer to start inside it
+      position={[0, 0, 0.15]}
     >
       <meshStandardMaterial
         map={texture}
@@ -78,4 +76,3 @@ export const VaporwaveTerrain = () => {
     </mesh>
   );
 };
-
