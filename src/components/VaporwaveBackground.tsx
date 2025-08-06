@@ -5,8 +5,8 @@ import * as THREE from 'three';
 export const VaporwaveBackground = () => {
   const backgroundRef = useRef<THREE.Mesh>(null);
   
-  // Create gradient background geometry
-  const geometry = new THREE.PlaneGeometry(50, 50);
+  // Create gradient background geometry - much larger to cover the entire view
+  const geometry = new THREE.PlaneGeometry(100, 100);
   
   // Create shader material for animated gradient background
   const material = new THREE.ShaderMaterial({
@@ -68,7 +68,7 @@ export const VaporwaveBackground = () => {
   });
   
   return (
-    <mesh ref={backgroundRef} material={material} geometry={geometry} position={[0, 0, -10]}>
+    <mesh ref={backgroundRef} material={material} geometry={geometry} position={[0, 0, -15]}>
     </mesh>
   );
 };
