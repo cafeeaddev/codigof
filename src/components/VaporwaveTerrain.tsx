@@ -16,10 +16,20 @@ export const VaporwaveTerrain = () => {
   // Load the grid texture but we'll use it minimally
   const texture = useLoader(TextureLoader, gridTexture);
   
-  // Configure texture properties
-  useMemo(() => {
-    texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-    texture.repeat.set(8, 8); // Square grid repetition
+  // Configure texture properties for wireframe
+  const wireframeTexture = useMemo(() => {
+    const tex = texture.clone();
+    tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+    tex.repeat.set(8, 8); // Square grid repetition
+    return tex;
+  }, [texture]);
+  
+  // Configure texture for background (stone-like appearance)
+  const backgroundTexture = useMemo(() => {
+    const tex = texture.clone();
+    tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+    tex.repeat.set(16, 16); // More detailed repetition for stone texture
+    return tex;
   }, [texture]);
   
   // Create square terrain geometry - detailed grid
@@ -124,9 +134,10 @@ export const VaporwaveTerrain = () => {
       >
         <meshStandardMaterial
           ref={backgroundMaterialRef}
-          color="#1a1a1a"
-          roughness={1.0}
-          metalness={0.0}
+          map={backgroundTexture}
+          color="#4a4a4a"
+          roughness={0.9}
+          metalness={0.1}
           transparent={false}
           side={THREE.DoubleSide}
         />
