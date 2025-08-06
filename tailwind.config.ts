@@ -26,7 +26,8 @@ export default {
 				foreground: 'hsl(var(--foreground))',
 				primary: {
 					DEFAULT: 'hsl(var(--primary))',
-					foreground: 'hsl(var(--primary-foreground))'
+					foreground: 'hsl(var(--primary-foreground))',
+					glow: 'hsl(var(--primary-glow))'
 				},
 				secondary: {
 					DEFAULT: 'hsl(var(--secondary))',
@@ -61,7 +62,25 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				neon: {
+					pink: 'hsl(var(--neon-pink))',
+					cyan: 'hsl(var(--neon-cyan))',
+					purple: 'hsl(var(--neon-purple))',
+					yellow: 'hsl(var(--neon-yellow))'
 				}
+			},
+			backgroundImage: {
+				'gradient-neon': 'var(--gradient-neon)',
+				'gradient-sunset': 'var(--gradient-sunset)',
+				'gradient-grid': 'var(--gradient-grid)'
+			},
+			boxShadow: {
+				'neon': 'var(--shadow-neon)',
+				'glow': 'var(--shadow-glow)'
+			},
+			transitionTimingFunction: {
+				'neon': 'var(--transition-neon)'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
