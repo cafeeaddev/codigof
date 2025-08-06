@@ -9,7 +9,6 @@ import { useScrollProgress } from '../hooks/useScrollProgress';
 export const VaporwaveTerrain = () => {
   const backgroundMeshRef = useRef<THREE.Mesh>(null);
   const wireframeMeshRef = useRef<THREE.Mesh>(null);
-  const lightPointsRef = useRef<THREE.Points>(null);
   const backgroundMaterialRef = useRef<THREE.MeshStandardMaterial>(null);
   const scrollProgress = useScrollProgress();
   
@@ -55,7 +54,7 @@ export const VaporwaveTerrain = () => {
   };
 
   // Create square terrain geometry for background
-  const { backgroundGeometry, lightPointsGeometry, maxHeight } = useMemo(() => {
+  const { backgroundGeometry, maxHeight } = useMemo(() => {
     // Background terrain geometry
     const bgGeo = new THREE.PlaneGeometry(24, 24, 48, 48);
     const positionAttribute = bgGeo.getAttribute('position');
@@ -84,30 +83,7 @@ export const VaporwaveTerrain = () => {
     positionAttribute.needsUpdate = true;
     bgGeo.computeVertexNormals();
     
-    // Create multiple layers of light points embedded in terrain
-    const lightPoints = [];
-    const lightCount = 300;
-    
-    for (let i = 0; i < lightCount; i++) {
-      const x = (Math.random() - 0.5) * 18; // Slightly smaller spread
-      const z = (Math.random() - 0.5) * 18;
-      const terrainHeight = calculateHeightAtPoint(x, z);
-      
-      // Create multiple depth layers - some embedded, some at surface
-      const depthVariation = Math.random() * 0.4; // 0 to 0.4 units deep
-      const finalHeight = terrainHeight - depthVariation;
-      
-      // Concentrate more points in elevated areas (like reference)
-      const elevationFactor = Math.abs(terrainHeight) / maxHeight;
-      if (Math.random() < 0.3 + elevationFactor * 0.7) { // Higher chance in elevated areas
-        lightPoints.push(x, finalHeight, z);
-      }
-    }
-    
-    const lightGeo = new THREE.BufferGeometry();
-    lightGeo.setAttribute('position', new THREE.Float32BufferAttribute(lightPoints, 3));
-    
-    return { backgroundGeometry: bgGeo, lightPointsGeometry: lightGeo, maxHeight };
+    return { backgroundGeometry: bgGeo, maxHeight };
   }, []);
   
   
@@ -132,7 +108,7 @@ export const VaporwaveTerrain = () => {
   
   // Animation and color updates
   useFrame((state) => {
-    if (backgroundMeshRef.current && wireframeMeshRef.current && lightPointsRef.current && backgroundMaterialRef.current) {
+    if (backgroundMeshRef.current && wireframeMeshRef.current && backgroundMaterialRef.current) {
       // Continuous terrain movement + inverted scroll influence - longer cycle
       const timeMovement = state.clock.elapsedTime * 0.2;
       const scrollMovement = -scrollProgress * 12;
@@ -140,7 +116,6 @@ export const VaporwaveTerrain = () => {
       
       backgroundMeshRef.current.position.z = zPosition;
       wireframeMeshRef.current.position.z = zPosition;
-      lightPointsRef.current.position.z = zPosition;
     }
   });
   
@@ -184,21 +159,6 @@ export const VaporwaveTerrain = () => {
         />
       </mesh>
       
-      {/* Neon light points scattered across terrain */}
-      <points
-        ref={lightPointsRef}
-        geometry={lightPointsGeometry}
-        rotation={[-Math.PI * 0.5, 0, 0]}
-        position={[0, 0.05, -2]}
-      >
-        <pointsMaterial
-          color="#4dd0e1"
-          size={0.08}
-          transparent={true}
-          opacity={0.6}
-          sizeAttenuation={true}
-        />
-      </points>
     </group>
   );
 };
