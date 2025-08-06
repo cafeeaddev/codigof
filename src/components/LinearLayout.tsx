@@ -34,30 +34,40 @@ export const LinearLayout = () => {
   const scrollProgress = useScrollProgress();
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden">
+    <div className="relative">
       {/* Fixed vaporwave background */}
       <div className="fixed inset-0 z-0">
         <VaporwaveScene scrollProgress={scrollProgress} />
       </div>
 
-      {/* Content layer */}
+      {/* Content layer with proper scrolling */}
       <div className="relative z-10">
         <Navigation />
         
+        {/* Main content with sections that create scroll height */}
         <main className="relative">
           <HeroSection />
           
-          <CompaniesSection />
+          {/* Create height for scroll progression */}
+          <div className="min-h-screen bg-black/20 backdrop-blur-sm">
+            <CompaniesSection />
+          </div>
           
           {features.map((feature, index) => (
-            <FeatureSection
-              key={feature.id}
-              {...feature}
-              index={index}
-            />
+            <div key={feature.id} className="min-h-screen bg-black/20 backdrop-blur-sm">
+              <FeatureSection
+                {...feature}
+                index={index}
+              />
+            </div>
           ))}
           
-          <Footer />
+          <div className="min-h-screen bg-black/20 backdrop-blur-sm">
+            <Footer />
+          </div>
+          
+          {/* Extra height to ensure full scroll range */}
+          <div className="h-screen"></div>
         </main>
       </div>
     </div>
