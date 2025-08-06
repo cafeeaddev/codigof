@@ -17,12 +17,12 @@ export const VaporwaveTerrain = () => {
   // Configure texture properties
   useMemo(() => {
     texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-    texture.repeat.set(4, 8);
+    texture.repeat.set(8, 16); // Increased repetition for denser grid
   }, [texture]);
   
-  // Create expanded terrain geometry with central path
+  // Create expanded terrain geometry with central path - much more detailed
   const { geometry, maxHeight } = useMemo(() => {
-    const geo = new THREE.PlaneGeometry(12, 16, 128, 128);
+    const geo = new THREE.PlaneGeometry(16, 24, 256, 256); // Much higher resolution
     const positionAttribute = geo.getAttribute('position');
     const positions = positionAttribute.array as Float32Array;
     let maxHeight = 0;
@@ -31,30 +31,34 @@ export const VaporwaveTerrain = () => {
       const x = positions[i];
       const z = positions[i + 1];
       
-      // Create central path effect - wider and deeper
+      // Create central path effect - much wider and more pronounced
       const distanceFromCenter = Math.abs(x);
-      const pathWidth = 3.5; // Increased width for more visible path
-      const pathDepth = 0.8; // Increased depth for more pronounced depression
+      const pathWidth = 4.5; // Wider path like in reference
+      const pathDepth = 1.2; // Deeper depression
       
-      // Path effect - creates a depression in the center
+      // Path effect - creates a smooth valley in the center
       let pathEffect = 0;
       if (distanceFromCenter < pathWidth) {
         const pathFactor = 1 - (distanceFromCenter / pathWidth);
-        pathEffect = -pathDepth * Math.pow(pathFactor, 3); // More pronounced curve
+        pathEffect = -pathDepth * Math.pow(pathFactor, 2); // Smooth valley curve
       }
       
-      // Multiple wave layers for terrain variation
-      const wave1 = Math.sin(x * 0.8) * Math.cos(z * 0.6) * 0.8;
-      const wave2 = Math.sin(x * 1.5) * Math.cos(z * 1.2) * 0.4;
-      const wave3 = Math.sin(x * 3) * Math.cos(z * 2.5) * 0.2;
-      const wave4 = Math.sin(x * 6) * Math.cos(z * 4) * 0.1;
+      // Multiple wave layers for more complex terrain like in reference
+      const wave1 = Math.sin(x * 0.5) * Math.cos(z * 0.4) * 1.2; // Larger primary waves
+      const wave2 = Math.sin(x * 1.2) * Math.cos(z * 0.8) * 0.6; // Medium waves
+      const wave3 = Math.sin(x * 2.4) * Math.cos(z * 1.6) * 0.3; // Small waves
+      const wave4 = Math.sin(x * 4.8) * Math.cos(z * 3.2) * 0.15; // Fine detail
+      const wave5 = Math.sin(x * 9.6) * Math.cos(z * 6.4) * 0.08; // Very fine detail
       
-      // Distance-based elevation
-      const distanceFromCenterTotal = Math.sqrt(x * x * 0.1 + z * z * 0.05);
-      const distanceEffect = Math.sin(distanceFromCenterTotal) * 0.3;
+      // Distance-based elevation with more variation
+      const distanceFromCenterTotal = Math.sqrt(x * x * 0.08 + z * z * 0.03);
+      const distanceEffect = Math.sin(distanceFromCenterTotal) * 0.4;
       
-      // Combine all effects - path effect reduces the overall height in the center
-      const height = (wave1 + wave2 + wave3 + wave4 + distanceEffect) + pathEffect;
+      // Add some randomness for more organic look
+      const noise = (Math.sin(x * 15) * Math.cos(z * 15)) * 0.05;
+      
+      // Combine all effects
+      const height = (wave1 + wave2 + wave3 + wave4 + wave5 + distanceEffect + noise) + pathEffect;
       positions[i + 2] = height;
       maxHeight = Math.max(maxHeight, Math.abs(height));
     }
@@ -65,34 +69,44 @@ export const VaporwaveTerrain = () => {
     return { geometry: geo, maxHeight };
   }, []);
   
-  // Get dynamic cyan color based on scroll
-  const getCyanColor = (progress: number) => {
-    const hue = 180 + (progress * 20); // 180-200 range (cyan to blue-cyan)
-    const saturation = 95 + (progress * 5); // 95-100%
-    const lightness = 50 + (progress * 30); // 50-80%
-    
-    return new THREE.Color().setHSL(hue / 360, saturation / 100, lightness / 100);
+  // Enhanced color system similar to reference image
+  const getEnhancedColor = (progress: number) => {
+    // Colors inspired by the reference: blue to orange/gold gradient
+    if (progress < 0.5) {
+      // Blue to cyan range
+      const hue = 200 - (progress * 40); // 200 to 180 (blue to cyan)
+      const saturation = 90 + (progress * 10); // 90-100%
+      const lightness = 60 + (progress * 20); // 60-80%
+      return new THREE.Color().setHSL(hue / 360, saturation / 100, lightness / 100);
+    } else {
+      // Cyan to orange/gold range
+      const localProgress = (progress - 0.5) * 2;
+      const hue = 180 - (localProgress * 150); // 180 to 30 (cyan to orange)
+      const saturation = 95 + (localProgress * 5); // 95-100%
+      const lightness = 70 + (localProgress * 10); // 70-80%
+      return new THREE.Color().setHSL(hue / 360, saturation / 100, lightness / 100);
+    }
   };
   
   // Animation and color updates
   useFrame((state) => {
     if (meshRef.current && materialRef.current) {
       // Continuous terrain movement + inverted scroll influence
-      const timeMovement = state.clock.elapsedTime * 0.3;
-      const scrollMovement = -scrollProgress * 4;
-      meshRef.current.position.z = ((timeMovement + scrollMovement) % 16) - 8;
+      const timeMovement = state.clock.elapsedTime * 0.2; // Slightly slower for more dramatic effect
+      const scrollMovement = -scrollProgress * 6;
+      meshRef.current.position.z = ((timeMovement + scrollMovement) % 24) - 12;
       
-      // Update material colors with bright cyan
-      const baseColor = getCyanColor(scrollProgress);
-      const emissiveColor = getCyanColor(scrollProgress * 0.7);
+      // Update material colors with enhanced gradient
+      const baseColor = getEnhancedColor(scrollProgress);
+      const emissiveColor = getEnhancedColor(scrollProgress * 0.8);
       
       materialRef.current.color = baseColor;
       materialRef.current.emissive = emissiveColor;
-      materialRef.current.emissiveIntensity = 1.5 + (scrollProgress * 0.8);
+      materialRef.current.emissiveIntensity = 2.0 + (scrollProgress * 1.0); // Stronger emission
       
-      // Wireframe properties
-      materialRef.current.metalness = 0.1;
-      materialRef.current.roughness = 0.9;
+      // Enhanced wireframe properties
+      materialRef.current.metalness = 0.2;
+      materialRef.current.roughness = 0.8;
     }
   });
   
@@ -101,18 +115,18 @@ export const VaporwaveTerrain = () => {
       ref={meshRef}
       geometry={geometry}
       rotation={[-Math.PI * 0.5, 0, 0]}
-      position={[0, 0, -1]}
+      position={[0, 0, -2]}
     >
       <meshStandardMaterial
         ref={materialRef}
-        color="#00ffff"
-        emissive="#0088ff"
-        emissiveIntensity={2.0}
-        metalness={0.1}
-        roughness={0.9}
+        color="#0088ff"
+        emissive="#0066cc"
+        emissiveIntensity={2.5}
+        metalness={0.2}
+        roughness={0.8}
         wireframe={true}
         transparent={true}
-        opacity={0.95}
+        opacity={0.9}
       />
     </mesh>
   );
