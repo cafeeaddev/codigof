@@ -119,7 +119,7 @@ export const VaporwaveTerrain = () => {
   
   return (
     <group>
-      {/* Neon terrain with grid pattern */}
+      {/* Neon terrain with grid pattern and depth */}
       <mesh
         ref={backgroundMeshRef}
         geometry={backgroundGeometry}
@@ -129,14 +129,30 @@ export const VaporwaveTerrain = () => {
         <meshStandardMaterial
           ref={backgroundMaterialRef}
           map={wireframeTexture}
-          color="#00ffff"
-          emissive="#ff00ff"
-          emissiveIntensity={0.5}
-          roughness={0.1}
-          metalness={0.8}
+          normalMap={normalTexture}
+          color="#1a1a2e"
+          emissive="#00ffff"
+          emissiveIntensity={0.3}
+          roughness={0.3}
+          metalness={0.7}
           transparent={true}
-          opacity={0.9}
+          opacity={0.8}
           side={THREE.DoubleSide}
+          wireframe={false}
+        />
+      </mesh>
+      
+      {/* Wireframe overlay for neon grid effect */}
+      <mesh
+        geometry={backgroundGeometry}
+        rotation={[-Math.PI * 0.5, 0, 0]}
+        position={[0, 0, -2]}
+      >
+        <meshBasicMaterial
+          color="#ff00ff"
+          transparent={true}
+          opacity={0.4}
+          wireframe={true}
         />
       </mesh>
     </group>
