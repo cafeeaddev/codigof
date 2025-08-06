@@ -10,8 +10,8 @@ export const VaporwaveScene = () => {
     <div className="w-full h-screen relative overflow-hidden">
       <Canvas
         camera={{
-          position: [0, 0.8, -4], // Position to see more sky than terrain
-          fov: 75, // Normal field of view
+          position: [0, 4, -8], // Elevated aerial view for flying over terrain
+          fov: 65, // Slightly tighter for more cinematic feel
           near: 0.01,
           far: 25,
         }}
@@ -54,10 +54,10 @@ export const VaporwaveScene = () => {
           dampingFactor={0.05}
           enableZoom={true}
           enablePan={false}
-          maxPolarAngle={Math.PI / 2.1}
-          minDistance={1.5}
-          maxDistance={10}
-          target={[0, 0, -2]}
+          maxPolarAngle={Math.PI / 2.2}
+          minDistance={3}
+          maxDistance={15}
+          target={[0, 0, 0]}
         />
       </Canvas>
     </div>
