@@ -15,23 +15,27 @@ export const CustomStars = () => {
 
   // Generate star positions only in the sky area
   const { positions, colors } = useMemo(() => {
-    const starCount = 1500;
+    const starCount = 2000; // More stars for better coverage
     const positions = new Float32Array(starCount * 3);
     const colors = new Float32Array(starCount * 3);
     
     let index = 0;
     
     for (let i = 0; i < starCount; i++) {
-      // Generate random position covering the entire visible area with more density
-      const x = (Math.random() - 0.5) * 100; // Even wider range
-      const z = Math.random() * -50 - 2;     // Much deeper and closer range
+      // Create a grid-like distribution with randomness for better coverage
+      const gridX = Math.floor(i / 50) - 20; // Create grid columns
+      const gridZ = (i % 50) - 25; // Create grid rows
+      
+      // Add randomness to avoid perfect grid
+      const x = gridX * 2 + (Math.random() - 0.5) * 3;
+      const z = gridZ * 1.5 + (Math.random() - 0.5) * 2;
       
       // Calculate terrain height at this x,z position
       const terrainHeight = calculateHeightAtPoint(x, z);
       
-      // Only place stars well above the terrain (in the sky) - more spread
-      const minSkyHeight = Math.max(terrainHeight + 1.5, 0.5); 
-      const maxSkyHeight = 25; // Higher to cover more vertical space
+      // Place stars well above the terrain (in the sky) with more variation
+      const minSkyHeight = Math.max(terrainHeight + 1, 0.8); 
+      const maxSkyHeight = 30; // Higher to cover more vertical space
       const y = minSkyHeight + Math.random() * (maxSkyHeight - minSkyHeight);
       
       positions[index] = x;
@@ -39,7 +43,7 @@ export const CustomStars = () => {
       positions[index + 2] = z;
       
       // White color with slight variation
-      const brightness = 0.8 + Math.random() * 0.2;
+      const brightness = 0.7 + Math.random() * 0.3;
       colors[index] = brightness;     // R
       colors[index + 1] = brightness; // G  
       colors[index + 2] = brightness; // B
