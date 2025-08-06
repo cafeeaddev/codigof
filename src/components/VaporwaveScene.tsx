@@ -1,38 +1,17 @@
 
-import { Canvas, useFrame } from '@react-three/fiber';
+import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import { VaporwaveTerrain } from './VaporwaveTerrain';
 import { VaporwaveBackground } from './VaporwaveBackground';
 import { CustomStars } from './CustomStars';
-import { useRef } from 'react';
-
-const CameraController = () => {
-  useFrame((state) => {
-    // Move camera forward continuously (north direction)
-    const speed = 0.8;
-    state.camera.position.z += speed * 0.016; // Continuous forward movement
-  });
-
-  return (
-    <OrbitControls 
-      enableDamping={true}
-      dampingFactor={0.05}
-      enableZoom={false}
-      enablePan={false}
-      enableRotate={false}
-      maxPolarAngle={Math.PI / 2.2}
-      target={[0, 0, 0]}
-    />
-  );
-};
 
 export const VaporwaveScene = () => {
   return (
     <div className="w-full h-screen relative overflow-hidden">
       <Canvas
         camera={{
-          position: [0, 4, -8], // Elevated aerial view for flying over terrain
-          fov: 65, // Slightly tighter for more cinematic feel
+          position: [0, 0.8, -4], // Position to see more sky than terrain
+          fov: 75, // Normal field of view
           near: 0.01,
           far: 25,
         }}
@@ -69,8 +48,17 @@ export const VaporwaveScene = () => {
         {/* Main terrain */}
         <VaporwaveTerrain />
         
-        {/* Camera controller for forward movement */}
-        <CameraController />
+        {/* Development controls */}
+        <OrbitControls 
+          enableDamping={true}
+          dampingFactor={0.05}
+          enableZoom={true}
+          enablePan={false}
+          maxPolarAngle={Math.PI / 2.1}
+          minDistance={1.5}
+          maxDistance={10}
+          target={[0, 0, -2]}
+        />
       </Canvas>
     </div>
   );
