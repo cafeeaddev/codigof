@@ -24,7 +24,7 @@ export const VaporwaveTerrain = () => {
   
   // Create expanded terrain geometry with central path - much more detailed
   const { geometry, maxHeight } = useMemo(() => {
-    const geo = new THREE.PlaneGeometry(16, 48, 256, 512); // Much longer terrain
+    const geo = new THREE.PlaneGeometry(16, 48, 512, 1024); // Much higher resolution for dense grid
     const positionAttribute = geo.getAttribute('position');
     const positions = positionAttribute.array as Float32Array;
     let maxHeight = 0;
@@ -113,17 +113,17 @@ export const VaporwaveTerrain = () => {
       const baseColor = getEnhancedColor(scrollProgress);
       const emissiveColor = getEnhancedColor(scrollProgress * 0.8);
       
-      materialRef.current.color = baseColor;
-      materialRef.current.emissive = emissiveColor;
-      materialRef.current.emissiveIntensity = 2.0 + (scrollProgress * 1.0);
+      materialRef.current.color = new THREE.Color(0x00ccff); // Bright cyan like reference
+      materialRef.current.emissive = new THREE.Color(0x0099cc); // Intense cyan glow
+      materialRef.current.emissiveIntensity = 3.5 + (scrollProgress * 1.5); // Much brighter glow
       
       // Enhanced wireframe properties
       materialRef.current.metalness = 0.2;
       materialRef.current.roughness = 0.8;
       
-      // Update background material - darker grey (chumbo)
-      backgroundMaterialRef.current.color = new THREE.Color(0x3a3a3a); // Chumbo color
-      backgroundMaterialRef.current.opacity = 0.8;
+      // Update background material - dark like reference
+      backgroundMaterialRef.current.color = new THREE.Color(0x0a0a0a); // Very dark background
+      backgroundMaterialRef.current.opacity = 0.9;
     }
   });
   
@@ -138,9 +138,9 @@ export const VaporwaveTerrain = () => {
       >
         <meshStandardMaterial
           ref={backgroundMaterialRef}
-          color="#3a3a3a"
+          color="#0a0a0a"
           transparent={true}
-          opacity={0.8}
+          opacity={0.9}
           side={THREE.DoubleSide}
         />
       </mesh>
@@ -154,11 +154,11 @@ export const VaporwaveTerrain = () => {
       >
         <meshStandardMaterial
           ref={materialRef}
-          color="#0088ff"
-          emissive="#0066cc"
-          emissiveIntensity={2.5}
-          metalness={0.2}
-          roughness={0.8}
+          color="#00ccff"
+          emissive="#0099cc"
+          emissiveIntensity={4.0}
+          metalness={0.1}
+          roughness={0.2}
           wireframe={true}
           transparent={true}
           opacity={0.9}
