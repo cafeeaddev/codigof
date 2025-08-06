@@ -136,6 +136,7 @@ export const VaporwaveScene = () => {
         
         {/* Development controls */}
         <OrbitControls 
+          makeDefault
           enableDamping={true}
           dampingFactor={0.05}
           enableZoom={true}
