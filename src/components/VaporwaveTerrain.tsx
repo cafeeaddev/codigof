@@ -106,14 +106,14 @@ export const VaporwaveTerrain = () => {
       meshRef.current.position.z = zPosition;
       backgroundMeshRef.current.position.z = zPosition;
       
-      // Golden grid color - consistent and bright
-      materialRef.current.color = new THREE.Color("#ffdd00");
-      materialRef.current.emissive = new THREE.Color("#ffaa00");
-      materialRef.current.emissiveIntensity = 2.0;
+      // Force golden wireframe color consistently
+      materialRef.current.color.setHex(0xffdd00);
+      materialRef.current.emissive.setHex(0xffaa00);
+      materialRef.current.emissiveIntensity = 2.2;
       
       // Enhanced wireframe properties
-      materialRef.current.metalness = 0.1;
-      materialRef.current.roughness = 0.9;
+      materialRef.current.metalness = 0.0;
+      materialRef.current.roughness = 1.0;
       
       // Let the texture be visible instead of overriding with procedural colors
       // Just keep the background material stable for texture visibility
@@ -122,22 +122,22 @@ export const VaporwaveTerrain = () => {
   
   return (
     <group>
-      {/* Background terrain - solid dark surface */}
+      {/* Background terrain - textured surface */}
       <mesh
         ref={backgroundMeshRef}
         geometry={geometry}
         rotation={[-Math.PI * 0.5, 0, 0]}
-        position={[0, -0.01, -2]}
+        position={[0, -0.02, -2]}
       >
         <meshStandardMaterial
           ref={backgroundMaterialRef}
           map={backgroundTexture}
           normalMap={normalTexture}
-          color="#ffffff"
-          emissive="#222222"
-          emissiveIntensity={0.3}
-          roughness={0.8}
-          metalness={0.2}
+          color="#444444"
+          emissive="#111111"
+          emissiveIntensity={0.2}
+          roughness={0.9}
+          metalness={0.1}
           transparent={false}
           side={THREE.DoubleSide}
         />

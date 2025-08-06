@@ -27,24 +27,24 @@ export const VaporwaveScene = () => {
           fade={true}
         />
         
-        {/* Enhanced lighting for wireframe visibility */}
-        <ambientLight intensity={0.3} color="#004466" />
+        {/* Neutral lighting to avoid color contamination */}
+        <ambientLight intensity={0.4} color="#ffffff" />
         <directionalLight
           position={[0, 3, 2]}
-          intensity={1.2}
-          color="#00ffff"
+          intensity={0.8}
+          color="#ffffff"
         />
         <pointLight
           position={[-5, 2, 0]}
-          intensity={0.8}
-          color="#00aaff"
+          intensity={0.6}
+          color="#ffaa00"
           distance={20}
           decay={2}
         />
         <pointLight
           position={[5, 2, 0]}
-          intensity={0.8}
-          color="#0088ff"
+          intensity={0.6}
+          color="#ffdd00"
           distance={20}
           decay={2}
         />
