@@ -9,6 +9,7 @@ import { useScrollProgress } from '../hooks/useScrollProgress';
 export const VaporwaveTerrain = () => {
   const backgroundMeshRef = useRef<THREE.Mesh>(null);
   const wireframeMeshRef = useRef<THREE.Mesh>(null);
+  const lightPointsRef = useRef<THREE.Points>(null);
   const backgroundMaterialRef = useRef<THREE.MeshStandardMaterial>(null);
   const scrollProgress = useScrollProgress();
   
@@ -54,7 +55,7 @@ export const VaporwaveTerrain = () => {
   };
 
   // Create square terrain geometry for background
-  const { backgroundGeometry, maxHeight } = useMemo(() => {
+  const { backgroundGeometry, lightPointsGeometry, maxHeight } = useMemo(() => {
     // Background terrain geometry
     const bgGeo = new THREE.PlaneGeometry(24, 24, 48, 48);
     const positionAttribute = bgGeo.getAttribute('position');
@@ -83,7 +84,22 @@ export const VaporwaveTerrain = () => {
     positionAttribute.needsUpdate = true;
     bgGeo.computeVertexNormals();
     
-    return { backgroundGeometry: bgGeo, maxHeight };
+    // Create light points scattered across the terrain
+    const lightPoints = [];
+    const lightCount = 200;
+    
+    for (let i = 0; i < lightCount; i++) {
+      const x = (Math.random() - 0.5) * 20; // Spread across terrain
+      const z = (Math.random() - 0.5) * 20;
+      const height = calculateHeightAtPoint(x, z) + 0.1; // Slightly above terrain
+      
+      lightPoints.push(x, height, z);
+    }
+    
+    const lightGeo = new THREE.BufferGeometry();
+    lightGeo.setAttribute('position', new THREE.Float32BufferAttribute(lightPoints, 3));
+    
+    return { backgroundGeometry: bgGeo, lightPointsGeometry: lightGeo, maxHeight };
   }, []);
   
   
@@ -108,7 +124,7 @@ export const VaporwaveTerrain = () => {
   
   // Animation and color updates
   useFrame((state) => {
-    if (backgroundMeshRef.current && wireframeMeshRef.current && backgroundMaterialRef.current) {
+    if (backgroundMeshRef.current && wireframeMeshRef.current && lightPointsRef.current && backgroundMaterialRef.current) {
       // Continuous terrain movement + inverted scroll influence - longer cycle
       const timeMovement = state.clock.elapsedTime * 0.2;
       const scrollMovement = -scrollProgress * 12;
@@ -116,6 +132,7 @@ export const VaporwaveTerrain = () => {
       
       backgroundMeshRef.current.position.z = zPosition;
       wireframeMeshRef.current.position.z = zPosition;
+      lightPointsRef.current.position.z = zPosition;
     }
   });
   
@@ -158,6 +175,22 @@ export const VaporwaveTerrain = () => {
           wireframe={true}
         />
       </mesh>
+      
+      {/* Neon light points scattered across terrain */}
+      <points
+        ref={lightPointsRef}
+        geometry={lightPointsGeometry}
+        rotation={[-Math.PI * 0.5, 0, 0]}
+        position={[0, 0.05, -2]}
+      >
+        <pointsMaterial
+          color="#00ffff"
+          size={0.15}
+          transparent={true}
+          opacity={0.8}
+          sizeAttenuation={true}
+        />
+      </points>
     </group>
   );
 };
