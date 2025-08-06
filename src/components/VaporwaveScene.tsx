@@ -139,10 +139,9 @@ export const VaporwaveScene = () => {
           enableDamping={true}
           dampingFactor={0.05}
           enableZoom={true}
-          enablePan={false}
-          maxPolarAngle={Math.PI / 2}
-          minDistance={0.5}
-          maxDistance={5}
+          enablePan={true}
+          minDistance={0.1}
+          maxDistance={20}
         />
       </Canvas>
       
