@@ -33,28 +33,25 @@ export const VaporwaveTerrain = () => {
       const x = positions[i];
       const z = positions[i + 1];
       
-      // Create central path effect - much more pronounced
+      // Create natural terrain without central path
       const distanceFromCenter = Math.abs(x);
-      const pathWidth = 3.5; // Narrower for more defined path
-      const pathDepth = 2.5; // Much deeper depression
-      const edgeWidth = 6.0; // Width of elevated edges
       
-      // Path effect - creates a deep valley with elevated edges
-      let pathEffect = 0;
-      if (distanceFromCenter < pathWidth) {
-        // Central valley elevated a bit higher
-        const pathFactor = 1 - (distanceFromCenter / pathWidth);
-        pathEffect = -pathDepth * Math.pow(pathFactor, 3) + 0.8; // Raised the central path
-      } else if (distanceFromCenter < edgeWidth) {
-        // Elevated edges around the path
-        const edgeFactor = (distanceFromCenter - pathWidth) / (edgeWidth - pathWidth);
-        const elevation = Math.sin((1 - edgeFactor) * Math.PI) * 0.5; // Very low mountains
-        pathEffect = elevation;
+      // Generate natural mountain terrain
+      let terrainHeight = 0;
+      
+      // Create varied elevation based on distance from center
+      if (distanceFromCenter < 3.0) {
+        // Lower central area
+        const centralFactor = distanceFromCenter / 3.0;
+        terrainHeight = Math.sin(centralFactor * Math.PI) * 0.3;
+      } else if (distanceFromCenter < 6.0) {
+        // Mountain ranges
+        const mountainFactor = (distanceFromCenter - 3.0) / 3.0;
+        terrainHeight = Math.sin(mountainFactor * Math.PI) * 0.5;
       } else {
-        // Higher distant mountains but very limited height
-        const distantFactor = Math.min((distanceFromCenter - edgeWidth) / 2.0, 1.0);
-        const distantElevation = Math.sin(distantFactor * Math.PI * 0.5) * 0.8; // Minimal peaks
-        pathEffect = distantElevation;
+        // Distant peaks
+        const distantFactor = Math.min((distanceFromCenter - 6.0) / 2.0, 1.0);
+        terrainHeight = Math.sin(distantFactor * Math.PI * 0.5) * 0.8;
       }
       
       // Multiple wave layers for more complex terrain like in reference
@@ -72,7 +69,7 @@ export const VaporwaveTerrain = () => {
       const noise = (Math.sin(x * 15) * Math.cos(z * 15)) * 0.05;
       
       // Combine all effects
-      const height = (wave1 + wave2 + wave3 + wave4 + wave5 + distanceEffect + noise) + pathEffect;
+      const height = (wave1 + wave2 + wave3 + wave4 + wave5 + distanceEffect + noise) + terrainHeight;
       positions[i + 2] = height;
       maxHeight = Math.max(maxHeight, Math.abs(height));
     }
