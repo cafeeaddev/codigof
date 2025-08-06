@@ -1,9 +1,9 @@
-
 import { VaporwaveScene } from './VaporwaveScene';
 import { HeroSection } from './HeroSection';
 import { FeatureSection } from './FeatureSection';
 import { CompaniesSection } from './CompaniesSection';
 import { Footer } from './Footer';
+import { useScrollTerrain } from '../hooks/useScrollTerrain';
 
 const features = [
   {
@@ -30,25 +30,32 @@ const features = [
 ];
 
 export const LinearLayout = () => {
-  console.log('LinearLayout: Component rendering...');
+  const scrollProgress = useScrollTerrain();
+  console.log('LinearLayout: Rendering with scroll progress:', scrollProgress.toFixed(3));
   
   return (
     <div className="relative">
-      {/* Fixed vaporwave background - ensure it's behind content */}
-      <div className="fixed inset-0 z-0 bg-black">
+      {/* Fixed vaporwave mountain scene background */}
+      <div className="fixed inset-0 z-0 bg-gradient-to-b from-purple-900 via-black to-black">
         <VaporwaveScene />
       </div>
 
-      {/* Content layer with proper z-index and background for readability */}
+      {/* Content layer with enhanced backdrop */}
       <div className="relative z-10">
         <main className="relative">
-          {/* Increased height for scroll testing - add semi-transparent background */}
-          <div className="min-h-[400vh] bg-black/20 backdrop-blur-sm">
+          {/* Extended scroll area for mountain exploration */}
+          <div className="min-h-[500vh] bg-gradient-to-b from-black/10 via-black/30 to-black/50 backdrop-blur-[1px]">
             <HeroSection />
             
-            {/* Debug scroll indicator */}
-            <div className="fixed top-4 left-4 z-50 bg-black/70 text-white p-2 rounded text-sm font-mono">
-              Scroll to see terrain movement
+            {/* Enhanced scroll indicator with mountain theme */}
+            <div className="fixed top-4 left-4 z-50 bg-purple-900/80 text-neon-pink p-3 rounded-lg text-sm font-mono border border-neon-pink/30 backdrop-blur-sm">
+              <div>🏔️ Mountain Progress: {Math.round(scrollProgress * 100)}%</div>
+              <div className="text-xs text-neon-cyan mt-1">Scroll to explore the peaks</div>
+            </div>
+            
+            {/* Mountain height indicator */}
+            <div className="fixed top-4 right-4 z-50 bg-purple-900/80 text-neon-cyan p-2 rounded text-xs font-mono border border-neon-cyan/30 backdrop-blur-sm">
+              Altitude: {Math.round(scrollProgress * 3000)}m
             </div>
           </div>
           

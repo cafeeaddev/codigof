@@ -1,90 +1,116 @@
 
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Stars } from '@react-three/drei';
-import { VaporwaveTerrain } from './VaporwaveTerrain';
+import { VaporwaveMountains } from './VaporwaveMountains';
 import { VaporwaveBackground } from './VaporwaveBackground';
 import { useScrollTerrain } from '../hooks/useScrollTerrain';
 import { useRef } from 'react';
 import * as THREE from 'three';
 
-// Simplified camera controller
-const ScrollCamera = () => {
+// Enhanced camera controller for mountain perspective
+const MountainCamera = () => {
   const scrollProgress = useScrollTerrain();
   const { camera } = useThree();
   
   useFrame(() => {
-    // Much simpler camera positioning
-    const height = 3 + scrollProgress * 2;
-    const forward = scrollProgress * 3;
+    // Optimized camera positioning for mountain view
+    const baseHeight = 4;
+    const scrollHeight = scrollProgress * 3;
+    const height = baseHeight + scrollHeight;
     
-    camera.position.set(0, height, forward + 5);
-    camera.lookAt(0, 0, forward);
+    const baseDistance = 8;
+    const scrollDistance = scrollProgress * 6;
+    const distance = baseDistance + scrollDistance;
     
-    console.log('Camera - Scroll:', scrollProgress.toFixed(2), 
-               'Position:', `[${camera.position.x.toFixed(1)}, ${camera.position.y.toFixed(1)}, ${camera.position.z.toFixed(1)}]`);
+    // Slight angle for better mountain perspective
+    const angle = Math.sin(scrollProgress * Math.PI) * 0.3;
+    
+    camera.position.set(
+      Math.sin(angle) * 2,
+      height,
+      distance
+    );
+    
+    // Look at point that moves with scroll
+    const lookAtZ = scrollProgress * 4 - 2;
+    camera.lookAt(0, 0, lookAtZ);
+    
+    // Debug every 2 seconds
+    if (Math.floor(Date.now() / 2000) % 2 === 0) {
+      console.log('Mountain Camera - Scroll:', scrollProgress.toFixed(2), 
+                 'Height:', height.toFixed(1), 'Distance:', distance.toFixed(1));
+    }
   });
   
   return null;
 };
 
 export const VaporwaveScene = () => {
-  console.log('VaporwaveScene: Component rendering...');
+  console.log('VaporwaveScene: Rendering with mountain terrain...');
   
   return (
     <div className="w-full h-screen relative overflow-hidden">
       <Canvas
         camera={{
-          position: [0, 3, 5],
-          fov: 75,
+          position: [0, 4, 8],
+          fov: 60,
           near: 0.1,
-          far: 100,
+          far: 200,
         }}
         className="w-full h-full"
         onCreated={({ gl, scene, camera }) => {
-          console.log('Canvas created successfully!');
-          console.log('WebGL Renderer:', gl.getContext().getParameter(gl.getContext().VERSION));
-          console.log('Camera position:', camera.position);
-          console.log('Scene children count:', scene.children.length);
+          console.log('Mountain Canvas created successfully!');
+          console.log('Camera FOV:', camera.fov, 'Position:', camera.position);
+          
+          // Enhanced renderer settings for better visual quality
+          gl.setClearColor('#000011');
+          gl.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         }}
         onError={(error) => {
-          console.error('Canvas error:', error);
+          console.error('Mountain Canvas error:', error);
         }}
       >
-        {/* Debug info */}
+        {/* Coordinate system for debugging */}
         <primitive 
-          object={new THREE.AxesHelper(2)} 
+          object={new THREE.AxesHelper(3)} 
           position={[0, 0, 0]} 
         />
         
-        {/* Scroll-based camera controller */}
-        <ScrollCamera />
+        {/* Mountain-optimized camera controller */}
+        <MountainCamera />
         
-        {/* Simplified background */}
+        {/* Enhanced background for mountain scene */}
         <VaporwaveBackground />
         
-        {/* Reduced stars for performance */}
+        {/* Atmospheric stars */}
         <Stars 
-          radius={50} 
-          depth={20} 
-          count={500} 
-          factor={2} 
-          saturation={0} 
+          radius={100} 
+          depth={50} 
+          count={1000} 
+          factor={3} 
+          saturation={0.5} 
           fade={true}
         />
         
-        {/* Simplified lighting */}
-        <ambientLight intensity={0.3} color="#ffffff" />
+        {/* Enhanced lighting for mountains */}
+        <ambientLight intensity={0.2} color="#4a0e4e" />
         <directionalLight
-          position={[2, 5, 2]}
-          intensity={0.8}
+          position={[5, 8, 5]}
+          intensity={1.2}
           color="#ff00ff"
+          castShadow={false}
+        />
+        <directionalLight
+          position={[-5, 6, 3]}
+          intensity={0.8}
+          color="#00ffff"
         />
         
-        {/* Reduced fog for debugging */}
-        <fog attach="fog" args={['#000033', 10, 50]} />
+        {/* Atmospheric fog for depth */}
+        <fog attach="fog" args={['#000033', 15, 80]} />
         
-        {/* Main terrain component */}
-        <VaporwaveTerrain />
+        {/* Main mountain terrain */}
+        <VaporwaveMountains />
       </Canvas>
     </div>
   );
