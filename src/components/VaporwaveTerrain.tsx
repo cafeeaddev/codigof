@@ -1,93 +1,78 @@
-
 import { useRef, useMemo } from 'react';
-import { useFrame } from '@react-three/fiber';
+import { useFrame, useLoader } from '@react-three/fiber';
+import { TextureLoader } from 'three';
 import * as THREE from 'three';
-import { useScrollTerrain } from '../hooks/useScrollTerrain';
+import gridTexture from '../assets/vaporwave-grid.jpg';
 
 export const VaporwaveTerrain = () => {
   const meshRef = useRef<THREE.Mesh>(null);
-  const scrollProgress = useScrollTerrain();
   
-  console.log('VaporwaveTerrain: Component rendering, scroll progress:', scrollProgress);
+  // Load the grid texture
+  const texture = useLoader(TextureLoader, gridTexture);
   
-  // Create simple plane geometry with basic wireframe
+  // Configure texture properties
+  useMemo(() => {
+    texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.set(1, 2);
+  }, [texture]);
+  
+  // Create terrain geometry with displacement
   const geometry = useMemo(() => {
-    console.log('Creating simple terrain geometry...');
-    
-    // Much simpler geometry - just 8x20 segments
-    const geo = new THREE.PlaneGeometry(10, 30, 8, 20);
+    const geo = new THREE.PlaneGeometry(1, 2, 24, 24);
     const positionAttribute = geo.getAttribute('position');
     const positions = positionAttribute.array as Float32Array;
     
-    // Add very simple wave displacement
+    // Add terrain displacement (mountains on the sides)
     for (let i = 0; i < positions.length; i += 3) {
       const x = positions[i];
-      const z = positions[i + 1]; // Z is Y in plane geometry before rotation
+      const z = positions[i + 1];
       
-      // Simple sine wave pattern
-      const wave = Math.sin(z * 0.3) * 0.2 + Math.sin(x * 0.5) * 0.1;
-      positions[i + 2] = wave; // Set Y (height)
+      // Calculate distance from center line
+      const distanceFromCenter = Math.abs(x);
+      
+      // Create steep mountains on the sides
+      if (distanceFromCenter > 0.2) {
+        const height = Math.pow(distanceFromCenter * 2, 2) * 0.3;
+        positions[i + 2] = height;
+      }
+      
+      // Add some noise for more interesting terrain
+      const noise = (Math.sin(x * 10) * Math.cos(z * 8)) * 0.02;
+      positions[i + 2] += noise;
     }
     
     positionAttribute.needsUpdate = true;
     geo.computeVertexNormals();
     
-    console.log('Simple terrain geometry created with', positions.length / 3, 'vertices');
     return geo;
   }, []);
   
-  // Create basic wireframe material as fallback
-  const material = useMemo(() => {
-    console.log('Creating basic wireframe material...');
-    
-    // Start with basic wireframe material to ensure visibility
-    const basicMaterial = new THREE.MeshBasicMaterial({
-      color: '#ff00ff',
-      wireframe: true,
-      transparent: true,
-      opacity: 0.8
-    });
-    
-    console.log('Basic wireframe material created');
-    return basicMaterial;
-  }, []);
-  
-  // Simple animation
+  // Animation loop
   useFrame((state) => {
     if (meshRef.current) {
-      // Simple rotation animation
-      meshRef.current.rotation.z = Math.sin(state.clock.elapsedTime * 0.5) * 0.1;
-      
-      // Move terrain based on scroll
-      const scrollOffset = scrollProgress * 5;
-      meshRef.current.position.z = scrollOffset - 2;
-      
-      // Debug log every 2 seconds
-      if (Math.floor(state.clock.elapsedTime) % 2 === 0 && state.clock.elapsedTime % 1 < 0.016) {
-        console.log('Terrain animation - Time:', state.clock.elapsedTime.toFixed(1), 
-                   'Scroll:', scrollProgress.toFixed(2), 'Position Z:', meshRef.current.position.z.toFixed(2));
-      }
+      // Move terrain towards viewer for that classic vaporwave effect
+      meshRef.current.position.z = (state.clock.elapsedTime * 0.5) % 2 - 1;
     }
   });
   
-  console.log('VaporwaveTerrain: Rendering mesh with position [0, 0, 0], rotation [-90°, 0, 0]');
-  
   return (
-    <group>
-      {/* Debug sphere to ensure 3D context is working */}
-      <mesh position={[0, 2, 0]}>
-        <sphereGeometry args={[0.2, 8, 8]} />
-        <meshBasicMaterial color="#00ffff" />
-      </mesh>
-      
-      {/* Main terrain */}
-      <mesh
-        ref={meshRef}
-        geometry={geometry}
-        material={material}
-        rotation={[-Math.PI * 0.5, 0, 0]}
-        position={[0, 0, 0]}
+    <mesh
+      ref={meshRef}
+      geometry={geometry}
+      rotation={[-Math.PI * 0.5, 0, 0]}
+      position={[0, 0, 0.15]}
+    >
+      <meshStandardMaterial
+        map={texture}
+        color="#ff00ff"
+        emissive="#440044"
+        emissiveIntensity={0.2}
+        metalness={0.8}
+        roughness={0.2}
+        wireframe={false}
+        transparent={true}
+        opacity={0.9}
       />
-    </group>
+    </mesh>
   );
 };

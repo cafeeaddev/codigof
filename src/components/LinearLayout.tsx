@@ -4,7 +4,6 @@ import { HeroSection } from './HeroSection';
 import { FeatureSection } from './FeatureSection';
 import { CompaniesSection } from './CompaniesSection';
 import { Footer } from './Footer';
-import { useScrollTerrain } from '../hooks/useScrollTerrain';
 
 const features = [
   {
@@ -31,45 +30,17 @@ const features = [
 ];
 
 export const LinearLayout = () => {
-  const scrollProgress = useScrollTerrain();
-  
-  console.log('LinearLayout: Progresso do scroll nas montanhas:', (scrollProgress * 100).toFixed(1) + '%');
-  
   return (
-    <div className="relative">
-      {/* Background vaporwave fixo com montanhas */}
-      <div className="fixed inset-0 z-0 bg-gradient-to-b from-purple-900 via-black to-black">
+    <div className="relative min-h-screen overflow-x-hidden">
+      {/* Fixed vaporwave background */}
+      <div className="fixed inset-0 z-0">
         <VaporwaveScene />
       </div>
 
-      {/* Camada de conteúdo */}
+      {/* Content layer */}
       <div className="relative z-10">
         <main className="relative">
-          {/* Área de scroll estendida para jornada nas montanhas */}
-          <div className="min-h-[500vh] bg-gradient-to-b from-black/5 via-black/15 to-black/30 backdrop-blur-[0.5px]">
-            <HeroSection />
-            
-            {/* Indicadores da jornada nas montanhas */}
-            <div className="fixed top-4 left-4 z-50 bg-purple-900/95 text-cyan-300 p-3 rounded-lg text-sm font-mono border border-cyan-300/40 backdrop-blur-sm">
-              <div>🏔️ Montanhas: {Math.round(scrollProgress * 100)}%</div>
-              <div className="text-xs text-pink-300 mt-1">Caminhando sobre o terreno</div>
-              <div className="text-xs text-gray-300">Altitude: {Math.round(scrollProgress * 3000)}m</div>
-            </div>
-            
-            {/* Indicador de elevação */}
-            <div className="fixed top-4 right-4 z-50 bg-pink-900/95 text-pink-300 p-2 rounded text-xs font-mono border border-pink-300/40 backdrop-blur-sm">
-              <div>⛰️ Terreno Vaporwave</div>
-              <div>Grid Status: ATIVO</div>
-              <div className="text-cyan-300">Neon: LIGADO</div>
-            </div>
-            
-            {/* Status da caminhada */}
-            <div className="fixed bottom-4 left-4 z-50 bg-black/90 text-cyan-300 p-2 rounded text-xs font-mono border border-cyan-300/30">
-              🚶 {scrollProgress < 0.3 ? 'Subindo Montanhas' : 
-                    scrollProgress < 0.7 ? 'Explorando Picos' : 
-                    'Descendo Vale'}
-            </div>
-          </div>
+          <HeroSection />
           
           <CompaniesSection />
           
