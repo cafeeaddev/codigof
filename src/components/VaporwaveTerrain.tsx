@@ -90,15 +90,14 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
   }, []);
   
   
-  // Enhanced color calculation with reference-matched palette
+  // Enhanced color calculation with custom color #372065
   const getEnhancedColor = (progress: number): string => {
-    // Reference colors: deep blue to vibrant purple
-    const deepBlue = [15, 15, 35];    // #0F0F23
-    const vibrantPurple = [102, 0, 255]; // #6600ff
+    // Use #372065 color
+    const customPurple = [55, 32, 101]; // #372065
     
-    const r = Math.round(deepBlue[0] + (vibrantPurple[0] - deepBlue[0]) * progress);
-    const g = Math.round(deepBlue[1] + (vibrantPurple[1] - deepBlue[1]) * progress);
-    const b = Math.round(deepBlue[2] + (vibrantPurple[2] - deepBlue[2]) * progress);
+    const r = customPurple[0];
+    const g = customPurple[1];
+    const b = customPurple[2];
     
     return `rgb(${r}, ${g}, ${b})`;
   };
@@ -170,7 +169,7 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
             position={[0, -1.18, 0]}
           >
             <meshBasicMaterial
-              color="#06C4ef"
+              color="#372065"
               transparent={true}
               opacity={0.8}
               wireframe={true}
