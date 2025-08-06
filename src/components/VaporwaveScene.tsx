@@ -8,14 +8,9 @@ import { useRef } from 'react';
 
 const CameraController = () => {
   useFrame((state) => {
-    // Move camera forward automatically
+    // Move camera forward continuously (north direction)
     const speed = 0.8;
-    state.camera.position.z += speed * 0.016; // Forward movement
-    
-    // Reset position when too far to create infinite loop
-    if (state.camera.position.z > 15) {
-      state.camera.position.z = -8;
-    }
+    state.camera.position.z += speed * 0.016; // Continuous forward movement
   });
 
   return (
