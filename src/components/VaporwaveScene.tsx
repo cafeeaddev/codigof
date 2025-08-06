@@ -10,10 +10,10 @@ export const VaporwaveScene = () => {
     <div className="w-full h-screen relative overflow-hidden">
       <Canvas
         camera={{
-          position: [0, 0.8, -4], // Position to see more sky than terrain
-          fov: 75, // Normal field of view
+          position: [0, 0.2, -1], // Câmera baixa, próxima ao terreno
+          fov: 85, // Campo de visão mais amplo para efeito imersivo
           near: 0.01,
-          far: 200, // Increased to render stars at full distance
+          far: 200,
         }}
         className="w-full h-full"
       >
@@ -52,12 +52,13 @@ export const VaporwaveScene = () => {
         <OrbitControls 
           enableDamping={true}
           dampingFactor={0.05}
-          enableZoom={true}
+          enableZoom={false}
           enablePan={false}
-          maxPolarAngle={Math.PI / 2.1}
-          minDistance={1.5}
-          maxDistance={10}
-          target={[0, 0, -2]}
+          maxPolarAngle={Math.PI / 2.5} // Limita a rotação para baixo
+          minPolarAngle={Math.PI / 4}   // Limita a rotação para cima
+          minDistance={0.5}
+          maxDistance={2}
+          target={[0, 0, 0]} // Foco no centro do terreno
         />
       </Canvas>
     </div>
