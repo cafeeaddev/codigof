@@ -28,7 +28,19 @@ export const VaporwaveTerrain = () => {
   const backgroundTexture = useMemo(() => {
     const tex = texture.clone();
     tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
-    tex.repeat.set(16, 16); // More detailed repetition for stone texture
+    tex.repeat.set(4, 4); // Less repetition for better visibility
+    tex.offset.set(0, 0);
+    // Increase contrast and brightness
+    tex.minFilter = THREE.LinearFilter;
+    tex.magFilter = THREE.LinearFilter;
+    return tex;
+  }, [texture]);
+  
+  // Create normal map from the same texture for depth
+  const normalTexture = useMemo(() => {
+    const tex = texture.clone();
+    tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+    tex.repeat.set(4, 4);
     return tex;
   }, [texture]);
   
@@ -103,23 +115,8 @@ export const VaporwaveTerrain = () => {
       materialRef.current.metalness = 0.2;
       materialRef.current.roughness = 0.8;
       
-      // Create stone-like texture with procedural patterns
-      const time = state.clock.elapsedTime;
-      const stonePattern1 = Math.sin(time * 0.1) * 0.3 + 0.7;
-      const stonePattern2 = Math.cos(time * 0.15) * 0.2 + 0.8;
-      
-      // Mix between different stone colors
-      const darkStone = new THREE.Color(0x1a1a1a); // Very dark stone
-      const mediumStone = new THREE.Color(0x3a3a3a); // Medium stone
-      const lightStone = new THREE.Color(0x4a4a4a); // Lighter stone
-      
-      // Create complex stone color mixing
-      const finalStoneColor = darkStone.clone()
-        .lerp(mediumStone, stonePattern1)
-        .lerp(lightStone, stonePattern2 * 0.5);
-      
-      backgroundMaterialRef.current.color = finalStoneColor;
-      backgroundMaterialRef.current.opacity = 1.0;
+      // Let the texture be visible instead of overriding with procedural colors
+      // Just keep the background material stable for texture visibility
     }
   });
   
@@ -135,9 +132,12 @@ export const VaporwaveTerrain = () => {
         <meshStandardMaterial
           ref={backgroundMaterialRef}
           map={backgroundTexture}
-          color="#4a4a4a"
-          roughness={0.9}
-          metalness={0.1}
+          normalMap={normalTexture}
+          color="#ffffff"
+          emissive="#222222"
+          emissiveIntensity={0.3}
+          roughness={0.8}
+          metalness={0.2}
           transparent={false}
           side={THREE.DoubleSide}
         />
