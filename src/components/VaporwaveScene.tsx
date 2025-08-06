@@ -1,9 +1,35 @@
 
-import { Canvas } from '@react-three/fiber';
+import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import { VaporwaveTerrain } from './VaporwaveTerrain';
 import { VaporwaveBackground } from './VaporwaveBackground';
 import { CustomStars } from './CustomStars';
+import { useRef } from 'react';
+
+const CameraController = () => {
+  useFrame((state) => {
+    // Move camera forward automatically
+    const speed = 0.8;
+    state.camera.position.z += speed * 0.016; // Forward movement
+    
+    // Reset position when too far to create infinite loop
+    if (state.camera.position.z > 15) {
+      state.camera.position.z = -8;
+    }
+  });
+
+  return (
+    <OrbitControls 
+      enableDamping={true}
+      dampingFactor={0.05}
+      enableZoom={false}
+      enablePan={false}
+      enableRotate={false}
+      maxPolarAngle={Math.PI / 2.2}
+      target={[0, 0, 0]}
+    />
+  );
+};
 
 export const VaporwaveScene = () => {
   return (
@@ -48,17 +74,8 @@ export const VaporwaveScene = () => {
         {/* Main terrain */}
         <VaporwaveTerrain />
         
-        {/* Development controls */}
-        <OrbitControls 
-          enableDamping={true}
-          dampingFactor={0.05}
-          enableZoom={true}
-          enablePan={false}
-          maxPolarAngle={Math.PI / 2.2}
-          minDistance={3}
-          maxDistance={15}
-          target={[0, 0, 0]}
-        />
+        {/* Camera controller for forward movement */}
+        <CameraController />
       </Canvas>
     </div>
   );
