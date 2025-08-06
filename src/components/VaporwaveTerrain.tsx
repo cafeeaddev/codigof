@@ -7,7 +7,6 @@ import gridTexture from '../assets/vaporwave-grid.jpg';
 import { useScrollProgress } from '../hooks/useScrollProgress';
 
 export const VaporwaveTerrain = () => {
-  const gridRef = useRef<THREE.LineSegments>(null);
   const backgroundMeshRef = useRef<THREE.Mesh>(null);
   const backgroundMaterialRef = useRef<THREE.MeshStandardMaterial>(null);
   const scrollProgress = useScrollProgress();
@@ -54,8 +53,8 @@ export const VaporwaveTerrain = () => {
   };
 
   // Create square terrain geometry for background
-  const { backgroundGeometry, gridGeometry, maxHeight } = useMemo(() => {
-    // Background terrain geometry (same as before)
+  const { backgroundGeometry, maxHeight } = useMemo(() => {
+    // Background terrain geometry
     const bgGeo = new THREE.PlaneGeometry(24, 24, 48, 48);
     const positionAttribute = bgGeo.getAttribute('position');
     const positions = positionAttribute.array as Float32Array;
@@ -83,50 +82,7 @@ export const VaporwaveTerrain = () => {
     positionAttribute.needsUpdate = true;
     bgGeo.computeVertexNormals();
     
-    // Create custom grid geometry with only horizontal and vertical lines
-    const gridPoints = [];
-    const gridSize = 24;
-    const gridSegments = 48;
-    const stepSize = gridSize / gridSegments;
-    
-    // Create horizontal lines (along X axis)
-    for (let i = 0; i <= gridSegments; i++) {
-      const z = -gridSize / 2 + i * stepSize;
-      for (let j = 0; j < gridSegments; j++) {
-        const x1 = -gridSize / 2 + j * stepSize;
-        const x2 = -gridSize / 2 + (j + 1) * stepSize;
-        
-        // Calculate height at both points using same formula as terrain
-        const height1 = calculateHeightAtPoint(x1, z);
-        const height2 = calculateHeightAtPoint(x2, z);
-        
-        // Add line segment points in correct order: x, y, z (y = height)
-        gridPoints.push(x1, height1, z);
-        gridPoints.push(x2, height2, z);
-      }
-    }
-    
-    // Create vertical lines (along Z axis)
-    for (let i = 0; i <= gridSegments; i++) {
-      const x = -gridSize / 2 + i * stepSize;
-      for (let j = 0; j < gridSegments; j++) {
-        const z1 = -gridSize / 2 + j * stepSize;
-        const z2 = -gridSize / 2 + (j + 1) * stepSize;
-        
-        // Calculate height at both points using same formula as terrain
-        const height1 = calculateHeightAtPoint(x, z1);
-        const height2 = calculateHeightAtPoint(x, z2);
-        
-        // Add line segment points in correct order: x, y, z (y = height)
-        gridPoints.push(x, height1, z1);
-        gridPoints.push(x, height2, z2);
-      }
-    }
-    
-    const gridGeo = new THREE.BufferGeometry();
-    gridGeo.setAttribute('position', new THREE.Float32BufferAttribute(gridPoints, 3));
-    
-    return { backgroundGeometry: bgGeo, gridGeometry: gridGeo, maxHeight };
+    return { backgroundGeometry: bgGeo, maxHeight };
   }, []);
   
   
@@ -151,20 +107,19 @@ export const VaporwaveTerrain = () => {
   
   // Animation and color updates
   useFrame((state) => {
-    if (gridRef.current && backgroundMeshRef.current && backgroundMaterialRef.current) {
+    if (backgroundMeshRef.current && backgroundMaterialRef.current) {
       // Continuous terrain movement + inverted scroll influence - longer cycle
       const timeMovement = state.clock.elapsedTime * 0.2;
       const scrollMovement = -scrollProgress * 12;
       const zPosition = ((timeMovement + scrollMovement) % 24) - 12; // Square cycle
       
-      gridRef.current.position.z = zPosition;
       backgroundMeshRef.current.position.z = zPosition;
     }
   });
   
   return (
     <group>
-      {/* Background terrain - textured surface */}
+      {/* Neon terrain with grid pattern */}
       <mesh
         ref={backgroundMeshRef}
         geometry={backgroundGeometry}
@@ -173,31 +128,17 @@ export const VaporwaveTerrain = () => {
       >
         <meshStandardMaterial
           ref={backgroundMaterialRef}
-          map={backgroundTexture}
-          normalMap={normalTexture}
-          color="#444444"
-          emissive="#111111"
-          emissiveIntensity={0.2}
-          roughness={0.9}
-          metalness={0.1}
-          transparent={false}
+          map={wireframeTexture}
+          color="#00ffff"
+          emissive="#ff00ff"
+          emissiveIntensity={0.5}
+          roughness={0.1}
+          metalness={0.8}
+          transparent={true}
+          opacity={0.9}
           side={THREE.DoubleSide}
         />
       </mesh>
-      
-      {/* Clean grid lines - following the terrain mountains */}
-      <lineSegments
-        ref={gridRef}
-        geometry={gridGeometry}
-        rotation={[-Math.PI * 0.5, 0, 0]}
-        position={[0, 0, -2]}
-      >
-        <lineBasicMaterial
-          color="#ffdd00"
-          transparent={true}
-          opacity={0.9}
-        />
-      </lineSegments>
     </group>
   );
 };
