@@ -1,3 +1,4 @@
+
 import { Button } from './ui/button';
 import { ArrowRight, Play } from 'lucide-react';
 
@@ -5,18 +6,6 @@ export const HeroSection = () => {
   return (
     <section className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 pt-16">
       <div className="max-w-4xl mx-auto text-center">
-        {/* Icon */}
-        <div className="flex justify-center mb-8">
-          <div className="w-20 h-20 bg-gradient-to-r from-neon-pink to-neon-cyan rounded-2xl flex items-center justify-center backdrop-blur-sm border border-white/20 shadow-neon">
-            <div className="w-12 h-12 bg-gradient-neon rounded-lg"></div>
-          </div>
-        </div>
-
-        {/* Badge */}
-        <div className="inline-flex items-center px-4 py-2 rounded-full bg-white/5 backdrop-blur-xl border border-white/10 text-neon-cyan text-sm font-medium mb-6">
-          Vaporwave Release 2024.01
-        </div>
-
         {/* Main Title */}
         <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-6 leading-tight">
           <span className="bg-gradient-neon bg-clip-text text-transparent">

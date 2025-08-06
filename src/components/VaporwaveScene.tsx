@@ -1,3 +1,4 @@
+
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Stars } from '@react-three/drei';
 import { VaporwaveTerrain } from './VaporwaveTerrain';
@@ -55,27 +56,6 @@ export const VaporwaveScene = () => {
           maxDistance={5}
         />
       </Canvas>
-      
-      {/* UI Overlay */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-8 left-8">
-          <h1 className="text-4xl font-bold bg-gradient-neon bg-clip-text text-transparent">
-            VAPORWAVE
-          </h1>
-          <p className="text-neon-cyan mt-2 font-mono">
-            Three.js • React Three Fiber
-          </p>
-        </div>
-        
-        <div className="absolute bottom-8 right-8 text-right">
-          <p className="text-neon-pink font-mono text-sm">
-            Drag to explore
-          </p>
-          <p className="text-neon-cyan font-mono text-sm">
-            Scroll to zoom
-          </p>
-        </div>
-      </div>
     </div>
   );
 };

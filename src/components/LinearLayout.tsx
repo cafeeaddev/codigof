@@ -1,5 +1,5 @@
+
 import { VaporwaveScene } from './VaporwaveScene';
-import { Navigation } from './Navigation';
 import { HeroSection } from './HeroSection';
 import { FeatureSection } from './FeatureSection';
 import { CompaniesSection } from './CompaniesSection';
@@ -39,8 +39,6 @@ export const LinearLayout = () => {
 
       {/* Content layer */}
       <div className="relative z-10">
-        <Navigation />
-        
         <main className="relative">
           <HeroSection />
           
