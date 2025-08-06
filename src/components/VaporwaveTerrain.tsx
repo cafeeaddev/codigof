@@ -7,8 +7,7 @@ import gridTexture from '../assets/vaporwave-grid.jpg';
 import { useScrollProgress } from '../hooks/useScrollProgress';
 
 export const VaporwaveTerrain = () => {
-  const backgroundMeshRef = useRef<THREE.Mesh>(null);
-  const wireframeMeshRef = useRef<THREE.Mesh>(null);
+  const groupRefs = useRef<THREE.Group[]>([]);
   const backgroundMaterialRef = useRef<THREE.MeshStandardMaterial>(null);
   const scrollProgress = useScrollProgress();
   
@@ -102,35 +101,46 @@ export const VaporwaveTerrain = () => {
   
   // Animation and color updates
   useFrame((state) => {
-    if (backgroundMeshRef.current && wireframeMeshRef.current && backgroundMaterialRef.current) {
-      // Movimento automático contínuo + efeito do scroll
-      const timeMovement = state.clock.elapsedTime * 0.5; // Movimento automático
-      const scrollMovement = scrollProgress * 4; // Acelera com o scroll
-      
-      // Combina os dois movimentos
-      const totalMovement = timeMovement + scrollMovement;
-      const zPosition = -8 + totalMovement;
-      
-      // Aplica movimento a todos os terrenos filhos do grupo
-      backgroundMeshRef.current.parent?.children.forEach((child, index) => {
-        if (child.type === 'Group') {
-          child.position.z = (index * 60) + (zPosition % 60) - 60;
+    // Movimento automático contínuo + efeito do scroll
+    const timeMovement = state.clock.elapsedTime * 0.5; // Movimento automático
+    const scrollMovement = scrollProgress * 4; // Acelera com o scroll
+    
+    // Combina os dois movimentos
+    const totalMovement = timeMovement + scrollMovement;
+    
+    // Move cada grupo de terreno individualmente
+    groupRefs.current.forEach((group, index) => {
+      if (group) {
+        // Calcula posição com loop infinito
+        const basePosition = -8 + (index * 60);
+        group.position.z = basePosition + (totalMovement % 180);
+        
+        // Reset position quando passa muito longe para criar loop infinito
+        if (group.position.z > 100) {
+          group.position.z -= 180;
         }
-      });
-    }
+      }
+    });
   });
   
   return (
     <group>
       {/* Múltiplos terrenos para loop infinito perfeito */}
       {[0, 1, 2].map((index) => (
-        <group key={index}>
+        <group 
+          key={index}
+          ref={(el) => {
+            if (el) {
+              groupRefs.current[index] = el;
+            }
+          }}
+          position={[0, 0, -8 + (index * 60)]}
+        >
           {/* Neon terrain with grid pattern and depth */}
           <mesh
-            ref={index === 0 ? backgroundMeshRef : undefined}
             geometry={backgroundGeometry}
             rotation={[-Math.PI * 0.5, 0, 0]}
-            position={[0, -0.5, -8 + (index * 60)]}
+            position={[0, -0.5, 0]}
           >
             <meshStandardMaterial
               ref={index === 0 ? backgroundMaterialRef : undefined}
@@ -150,10 +160,9 @@ export const VaporwaveTerrain = () => {
           
           {/* Wireframe overlay for neon grid effect */}
           <mesh
-            ref={index === 0 ? wireframeMeshRef : undefined}
             geometry={backgroundGeometry}
             rotation={[-Math.PI * 0.5, 0, 0]}
-            position={[0, -0.48, -8 + (index * 60)]}
+            position={[0, -0.48, 0]}
           >
             <meshBasicMaterial
               color="#8a2be2"
