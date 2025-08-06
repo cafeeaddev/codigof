@@ -1,5 +1,7 @@
 
+import { useState } from 'react';
 import { VaporwaveScene } from './VaporwaveScene';
+import { CameraControls } from './CameraControls';
 import { HeroSection } from './HeroSection';
 import { FeatureSection } from './FeatureSection';
 import { CompaniesSection } from './CompaniesSection';
@@ -30,11 +32,25 @@ const features = [
 ];
 
 export const LinearLayout = () => {
+  const [cameraPosition, setCameraPosition] = useState<[number, number, number]>([0, 3, 5]);
+  const [cameraFov, setCameraFov] = useState(75);
+
   return (
     <div className="relative min-h-screen overflow-x-hidden">
+      {/* Camera Controls - positioned above all other content */}
+      <CameraControls
+        position={cameraPosition}
+        fov={cameraFov}
+        onPositionChange={setCameraPosition}
+        onFovChange={setCameraFov}
+      />
+      
       {/* Fixed vaporwave background */}
       <div className="fixed inset-0 z-0">
-        <VaporwaveScene />
+        <VaporwaveScene 
+          cameraPosition={cameraPosition}
+          cameraFov={cameraFov}
+        />
       </div>
 
       {/* Content layer */}

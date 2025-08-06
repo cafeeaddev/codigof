@@ -1,25 +1,18 @@
 
-import { useState } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import { VaporwaveTerrain } from './VaporwaveTerrain';
 import { VaporwaveBackground } from './VaporwaveBackground';
 import { CustomStars } from './CustomStars';
-import { CameraControls } from './CameraControls';
 
-export const VaporwaveScene = () => {
-  const [cameraPosition, setCameraPosition] = useState<[number, number, number]>([0, 3, 5]);
-  const [cameraFov, setCameraFov] = useState(75);
+interface VaporwaveSceneProps {
+  cameraPosition: [number, number, number];
+  cameraFov: number;
+}
 
+export const VaporwaveScene = ({ cameraPosition, cameraFov }: VaporwaveSceneProps) => {
   return (
     <div className="w-full h-screen relative overflow-hidden">
-      <CameraControls
-        position={cameraPosition}
-        fov={cameraFov}
-        onPositionChange={setCameraPosition}
-        onFovChange={setCameraFov}
-      />
-      
       <Canvas
         camera={{
           position: cameraPosition,
