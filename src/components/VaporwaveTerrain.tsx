@@ -49,11 +49,11 @@ export const VaporwaveTerrain = () => {
     return geo;
   }, []);
   
-  // Animation loop - slower movement for longer path sensation
+  // Animation loop - much slower movement for contemplative journey
   useFrame((state) => {
     if (meshRef.current) {
-      // Start from inside the terrain and move forward continuously
-      meshRef.current.position.z = (state.clock.elapsedTime * 0.3) % 6 - 1;
+      // Slower movement for a more relaxed, contemplative experience
+      meshRef.current.position.z = (state.clock.elapsedTime * 0.1) % 6 - 1;
     }
   });
   
