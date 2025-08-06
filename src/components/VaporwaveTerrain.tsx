@@ -20,7 +20,9 @@ interface VaporwaveTerrainProps {
 }
 
 export const VaporwaveTerrain = ({ theme }: VaporwaveTerrainProps) => {
-  const meshRef = useRef<THREE.Mesh>(null);
+  const mesh1Ref = useRef<THREE.Mesh>(null);
+  const mesh2Ref = useRef<THREE.Mesh>(null);
+  const mesh3Ref = useRef<THREE.Mesh>(null);
   
   // Load the grid texture
   const texture = useLoader(TextureLoader, gridTexture);
@@ -31,7 +33,7 @@ export const VaporwaveTerrain = ({ theme }: VaporwaveTerrainProps) => {
     texture.repeat.set(3, 8);
   }, [texture]);
   
-  // Create larger terrain geometry for infinite effect
+  // Create terrain geometry
   const geometry = useMemo(() => {
     const geo = new THREE.PlaneGeometry(4, 8, 64, 64);
     const positionAttribute = geo.getAttribute('position');
@@ -61,38 +63,76 @@ export const VaporwaveTerrain = ({ theme }: VaporwaveTerrainProps) => {
     return geo;
   }, []);
   
-  // Infinite animation loop
+  // Infinite terrain system
   useFrame((state) => {
-    if (meshRef.current) {
-      // Infinite smooth movement
-      const speed = 0.4;
-      meshRef.current.position.z = ((state.clock.elapsedTime * speed) % 12) - 2;
-      
-      // Infinite texture animation
-      if (texture) {
-        texture.offset.y = (state.clock.elapsedTime * 0.15) % 1;
-      }
+    const speed = 0.4;
+    const terrainLength = 8; // Length of each terrain segment
+    const totalLength = terrainLength * 3; // Total cycle length
+    
+    // Calculate base movement
+    const baseOffset = (state.clock.elapsedTime * speed) % totalLength;
+    
+    // Position each terrain segment
+    if (mesh1Ref.current) {
+      mesh1Ref.current.position.z = baseOffset - terrainLength;
+    }
+    if (mesh2Ref.current) {
+      mesh2Ref.current.position.z = baseOffset;
+    }
+    if (mesh3Ref.current) {
+      mesh3Ref.current.position.z = baseOffset + terrainLength;
+    }
+    
+    // Animate texture offset for seamless flow
+    if (texture) {
+      texture.offset.y = (state.clock.elapsedTime * 0.15) % 1;
     }
   });
   
+  // Material configuration
+  const materialProps = {
+    map: texture,
+    color: theme.colors.primary,
+    emissive: theme.colors.emissive,
+    emissiveIntensity: 0.2,
+    metalness: 0.8,
+    roughness: 0.2,
+    wireframe: false,
+    transparent: true,
+    opacity: 0.9,
+  };
+  
   return (
-    <mesh
-      ref={meshRef}
-      geometry={geometry}
-      rotation={[-Math.PI * 0.5, 0, 0]}
-      position={[0, 0, 0.15]}
-    >
-      <meshStandardMaterial
-        map={texture}
-        color={theme.colors.primary}
-        emissive={theme.colors.emissive}
-        emissiveIntensity={0.2}
-        metalness={0.8}
-        roughness={0.2}
-        wireframe={false}
-        transparent={true}
-        opacity={0.9}
-      />
-    </mesh>
+    <group>
+      {/* First terrain segment */}
+      <mesh
+        ref={mesh1Ref}
+        geometry={geometry}
+        rotation={[-Math.PI * 0.5, 0, 0]}
+        position={[0, 0, 0.15]}
+      >
+        <meshStandardMaterial {...materialProps} />
+      </mesh>
+      
+      {/* Second terrain segment */}
+      <mesh
+        ref={mesh2Ref}
+        geometry={geometry}
+        rotation={[-Math.PI * 0.5, 0, 0]}
+        position={[0, 0, 0.15]}
+      >
+        <meshStandardMaterial {...materialProps} />
+      </mesh>
+      
+      {/* Third terrain segment */}
+      <mesh
+        ref={mesh3Ref}
+        geometry={geometry}
+        rotation={[-Math.PI * 0.5, 0, 0]}
+        position={[0, 0, 0.15]}
+      >
+        <meshStandardMaterial {...materialProps} />
+      </mesh>
+    </group>
   );
 };
