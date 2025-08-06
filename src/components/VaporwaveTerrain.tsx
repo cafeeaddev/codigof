@@ -183,12 +183,12 @@ export const VaporwaveTerrain = () => {
         />
       </mesh>
       
-      {/* Clean grid lines - only horizontal and vertical */}
+      {/* Clean grid lines - following the terrain mountains */}
       <lineSegments
         ref={gridRef}
         geometry={gridGeometry}
         rotation={[-Math.PI * 0.5, 0, 0]}
-        position={[0, 0.01, -2]}
+        position={[0, 0, -2]}
       >
         <lineBasicMaterial
           color="#ffdd00"
