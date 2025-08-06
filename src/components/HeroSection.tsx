@@ -6,26 +6,22 @@ export const HeroSection = () => {
   return (
     <section className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 pt-16">
       <div className="max-w-4xl mx-auto text-center">
+        {/* Companies text moved up */}
+        <p className="text-sm text-white/60 mb-4">
+          Trusted by creative teams at innovative companies
+        </p>
+
         {/* Main Title */}
-        <div className="mb-6 -mt-8">
+        <div className="mb-6 -mt-8 flex items-center justify-center gap-8">
           <img 
             src="/lovable-uploads/89624b0a-ec75-460d-9b68-0a73c6c945eb.png" 
             alt="Código F"
-            className="mx-auto w-auto h-20 sm:h-24 lg:h-32"
+            className="w-auto h-20 sm:h-24 lg:h-32"
           />
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white">
+            SUA JORNADA DIGITAL<br />COMEÇA AQUI!
+          </h1>
         </div>
-
-        {/* Subtitle */}
-        <p className="text-lg sm:text-xl text-white/80 mb-8 max-w-3xl mx-auto leading-relaxed">
-          A visual experience that levels up as you explore. Vaporwave streamlines 
-          aesthetic processes including retro visualization and ambient soundscapes. 
-          Customize your experience with animated workflows and nostalgic integrations.
-        </p>
-
-        {/* Companies */}
-        <p className="text-sm text-white/60 mb-8">
-          Trusted by creative teams at innovative companies
-        </p>
 
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
