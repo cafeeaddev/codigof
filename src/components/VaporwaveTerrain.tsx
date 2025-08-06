@@ -55,8 +55,8 @@ export const VaporwaveTerrain = () => {
 
   // Create square terrain geometry for background
   const { backgroundGeometry, maxHeight } = useMemo(() => {
-    // Background terrain geometry
-    const bgGeo = new THREE.PlaneGeometry(24, 24, 48, 48);
+    // Background terrain geometry - aumentando o tamanho para cobrir mais área
+    const bgGeo = new THREE.PlaneGeometry(80, 80, 120, 120);
     const positionAttribute = bgGeo.getAttribute('position');
     const positions = positionAttribute.array as Float32Array;
     let maxHeight = 0;
@@ -109,7 +109,7 @@ export const VaporwaveTerrain = () => {
       
       // Loop infinito: quando o terreno sai da vista, ele volta ao início
       const totalMovement = timeMovement + scrollMovement;
-      const loopDistance = 24; // Distância do loop (baseada no tamanho do terreno)
+      const loopDistance = 60; // Aumentando a distância do loop para o terreno maior
       const zPosition = -8 + (totalMovement % loopDistance);
       
       backgroundMeshRef.current.position.z = zPosition;
