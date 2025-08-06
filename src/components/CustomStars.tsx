@@ -22,16 +22,16 @@ export const CustomStars = () => {
     let index = 0;
     
     for (let i = 0; i < starCount; i++) {
-      // Expanded distribution to cover the entire visible sky
-      const x = (Math.random() - 0.5) * 120; // Wider X coverage (-60 to +60)
-      const z = Math.random() * -60 - 5;     // Deeper Z coverage (-65 to -5)
+      // Spherical distribution to cover the entire visible sky
+      const x = (Math.random() - 0.5) * 200; // Much wider X coverage (-100 to +100)
+      const z = (Math.random() - 0.3) * 150; // Z coverage from -105 to +45, more behind camera
       
       // Calculate terrain height at this x,z position
       const terrainHeight = calculateHeightAtPoint(x, z);
       
       // Only place stars well above the terrain (in the sky)
-      const minSkyHeight = Math.max(terrainHeight + 1.5, 1); 
-      const maxSkyHeight = 25; 
+      const minSkyHeight = Math.max(terrainHeight + 2, 2); 
+      const maxSkyHeight = 40; // Much higher sky coverage
       const y = minSkyHeight + Math.random() * (maxSkyHeight - minSkyHeight);
       
       positions[index] = x;
