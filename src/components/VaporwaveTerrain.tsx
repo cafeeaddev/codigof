@@ -33,16 +33,23 @@ export const VaporwaveTerrain = () => {
       const x = positions[i];
       const z = positions[i + 1];
       
-      // Create central path effect - much wider and more pronounced
+      // Create central path effect - much more pronounced
       const distanceFromCenter = Math.abs(x);
-      const pathWidth = 4.5; // Wider path like in reference
-      const pathDepth = 1.2; // Deeper depression
+      const pathWidth = 3.5; // Narrower for more defined path
+      const pathDepth = 2.5; // Much deeper depression
+      const edgeWidth = 6.0; // Width of elevated edges
       
-      // Path effect - creates a smooth valley in the center
+      // Path effect - creates a deep valley with elevated edges
       let pathEffect = 0;
       if (distanceFromCenter < pathWidth) {
+        // Deep central valley
         const pathFactor = 1 - (distanceFromCenter / pathWidth);
-        pathEffect = -pathDepth * Math.pow(pathFactor, 2); // Smooth valley curve
+        pathEffect = -pathDepth * Math.pow(pathFactor, 3); // Steeper curve
+      } else if (distanceFromCenter < edgeWidth) {
+        // Elevated edges around the path
+        const edgeFactor = (distanceFromCenter - pathWidth) / (edgeWidth - pathWidth);
+        const elevation = Math.sin((1 - edgeFactor) * Math.PI) * 1.8; // Hill effect
+        pathEffect = elevation;
       }
       
       // Multiple wave layers for more complex terrain like in reference
