@@ -18,15 +18,19 @@ export const VaporwaveScene = () => {
       >
         {/* Background gradient and stars */}
         <VaporwaveBackground />
-        <Stars 
-          radius={20} 
-          depth={15} 
-          count={1500} 
-          factor={0.5} 
-          saturation={0.9} 
-          fade={true}
-          speed={0.2}
-        />
+        
+        {/* Stars positioned in the sky above terrain */}
+        <group position={[0, 8, -10]}>
+          <Stars 
+            radius={12} 
+            depth={8} 
+            count={800} 
+            factor={4} 
+            saturation={1} 
+            fade={false}
+            speed={0.1}
+          />
+        </group>
         
         {/* Neutral lighting to avoid color contamination */}
         <ambientLight intensity={0.4} color="#ffffff" />
