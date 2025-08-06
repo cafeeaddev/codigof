@@ -9,7 +9,7 @@ export const HeroSection = () => {
         {/* Main content positioned above the terrain */}
         <div className="mb-12">
           {/* Top text */}
-          <p className="text-sm sm:text-base text-white/80 mb-6 uppercase tracking-wider">
+          <p className="text-white mb-6 uppercase tracking-wider font-montserrat font-bold break-words" style={{ fontSize: '23.77px' }}>
             SUA JORNADA DIGITAL COMEÇA AQUI!
           </p>
 
