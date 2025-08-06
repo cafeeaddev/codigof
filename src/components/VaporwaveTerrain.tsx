@@ -96,13 +96,13 @@ export const VaporwaveTerrain = () => {
         const x1 = -gridSize / 2 + j * stepSize;
         const x2 = -gridSize / 2 + (j + 1) * stepSize;
         
-        // Calculate height at both points - but put Y in the correct position for rotated geometry
+        // Calculate height at both points using same formula as terrain
         const height1 = calculateHeightAtPoint(x1, z);
         const height2 = calculateHeightAtPoint(x2, z);
         
-        // Points are arranged for XZ plane (already rotated coordinates)
-        gridPoints.push(x1, 0, z, height1);  // First point: x, y, z, then x, y, z for second point
-        gridPoints.push(x2, 0, z, height2);
+        // Add line segment points in correct order: x, y, z (y = height)
+        gridPoints.push(x1, height1, z);
+        gridPoints.push(x2, height2, z);
       }
     }
     
@@ -113,24 +113,18 @@ export const VaporwaveTerrain = () => {
         const z1 = -gridSize / 2 + j * stepSize;
         const z2 = -gridSize / 2 + (j + 1) * stepSize;
         
-        // Calculate height at both points
+        // Calculate height at both points using same formula as terrain
         const height1 = calculateHeightAtPoint(x, z1);
         const height2 = calculateHeightAtPoint(x, z2);
         
-        // Points are arranged for XZ plane (already rotated coordinates)
-        gridPoints.push(x, 0, z1, height1);
-        gridPoints.push(x, 0, z2, height2);
+        // Add line segment points in correct order: x, y, z (y = height)
+        gridPoints.push(x, height1, z1);
+        gridPoints.push(x, height2, z2);
       }
     }
     
-    // Fix the points array - remove the extra values
-    const fixedGridPoints = [];
-    for (let i = 0; i < gridPoints.length; i += 4) {
-      fixedGridPoints.push(gridPoints[i], gridPoints[i + 3], gridPoints[i + 2]); // x, height, z
-    }
-    
     const gridGeo = new THREE.BufferGeometry();
-    gridGeo.setAttribute('position', new THREE.Float32BufferAttribute(fixedGridPoints, 3));
+    gridGeo.setAttribute('position', new THREE.Float32BufferAttribute(gridPoints, 3));
     
     return { backgroundGeometry: bgGeo, gridGeometry: gridGeo, maxHeight };
   }, []);
