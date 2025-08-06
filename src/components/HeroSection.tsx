@@ -7,15 +7,18 @@ export const HeroSection = () => {
     <section className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 pt-16">
       <div className="max-w-4xl mx-auto text-center">
         {/* Main Title */}
-        <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-6 leading-tight">
-          <span className="bg-gradient-neon bg-clip-text text-transparent">
-            Código F
-          </span>
-          <br />
-          <span className="text-white">
-            Vaporwave
-          </span>
-        </h1>
+        <div className="mb-4 -mt-8">
+          <img 
+            src="/lovable-uploads/89624b0a-ec75-460d-9b68-0a73c6c945eb.png" 
+            alt="Código F"
+            className="mx-auto w-auto h-20 sm:h-24 lg:h-32 mb-2"
+          />
+          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold leading-tight">
+            <span className="text-white">
+              Vaporwave
+            </span>
+          </h1>
+        </div>
 
         {/* Subtitle */}
         <p className="text-lg sm:text-xl text-white/80 mb-8 max-w-3xl mx-auto leading-relaxed">
