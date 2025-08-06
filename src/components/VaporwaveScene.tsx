@@ -13,7 +13,7 @@ export const VaporwaveScene = () => {
           position: [0, 0.8, -4], // Position to see more sky than terrain
           fov: 75, // Normal field of view
           near: 0.01,
-          far: 25,
+          far: 200, // Increased to render stars at full distance
         }}
         className="w-full h-full"
       >
