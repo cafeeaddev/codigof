@@ -22,16 +22,16 @@ export const CustomStars = () => {
     let index = 0;
     
     for (let i = 0; i < starCount; i++) {
-      // Generate random position in a wide area
-      const x = (Math.random() - 0.5) * 50; // Wide x range
-      const z = Math.random() * -20 - 5;    // Behind camera, going deep
+      // Generate random position in visible area
+      const x = (Math.random() - 0.5) * 30; // Smaller, more focused range
+      const z = Math.random() * -15 - 2;    // Closer to camera
       
       // Calculate terrain height at this x,z position
       const terrainHeight = calculateHeightAtPoint(x, z);
       
       // Only place stars well above the terrain (in the sky)
-      const minSkyHeight = Math.max(terrainHeight + 3, 2); // At least 3 units above terrain
-      const maxSkyHeight = 15;
+      const minSkyHeight = Math.max(terrainHeight + 2, 1.5); // Lower minimum
+      const maxSkyHeight = 8; // Lower maximum to keep them visible
       const y = minSkyHeight + Math.random() * (maxSkyHeight - minSkyHeight);
       
       positions[index] = x;
@@ -74,11 +74,11 @@ export const CustomStars = () => {
         />
       </bufferGeometry>
       <pointsMaterial
-        size={0.05}
+        size={0.15}
         sizeAttenuation={true}
         vertexColors={true}
         transparent={true}
-        opacity={0.9}
+        opacity={1.0}
         alphaTest={0.001}
       />
     </points>
