@@ -33,25 +33,24 @@ export const VaporwaveTerrain = () => {
       const x = positions[i];
       const z = positions[i + 1];
       
-      // Create natural terrain without central path
+      // Create natural terrain without any central depression
       const distanceFromCenter = Math.abs(x);
       
-      // Generate natural mountain terrain
+      // Generate completely flat or slightly elevated center
       let terrainHeight = 0;
       
-      // Create varied elevation based on distance from center
-      if (distanceFromCenter < 3.0) {
-        // Lower central area
-        const centralFactor = distanceFromCenter / 3.0;
-        terrainHeight = Math.sin(centralFactor * Math.PI) * 0.3;
-      } else if (distanceFromCenter < 6.0) {
-        // Mountain ranges
-        const mountainFactor = (distanceFromCenter - 3.0) / 3.0;
-        terrainHeight = Math.sin(mountainFactor * Math.PI) * 0.5;
+      // Create varied elevation - higher towards edges, flat center
+      if (distanceFromCenter < 2.0) {
+        // Flat central area - no depression
+        terrainHeight = 0.2; // Slightly elevated center
+      } else if (distanceFromCenter < 5.0) {
+        // Gradual rise towards mountains
+        const riseFactor = (distanceFromCenter - 2.0) / 3.0;
+        terrainHeight = 0.2 + (Math.sin(riseFactor * Math.PI * 0.5) * 0.3);
       } else {
-        // Distant peaks
-        const distantFactor = Math.min((distanceFromCenter - 6.0) / 2.0, 1.0);
-        terrainHeight = Math.sin(distantFactor * Math.PI * 0.5) * 0.8;
+        // Mountain ranges
+        const mountainFactor = Math.min((distanceFromCenter - 5.0) / 3.0, 1.0);
+        terrainHeight = 0.5 + (Math.sin(mountainFactor * Math.PI * 0.5) * 0.3);
       }
       
       // Multiple wave layers for more complex terrain like in reference
