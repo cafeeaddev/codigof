@@ -42,9 +42,9 @@ export const VaporwaveTerrain = () => {
       // Path effect - creates a deep valley with elevated edges
       let pathEffect = 0;
       if (distanceFromCenter < pathWidth) {
-        // Deep central valley
+        // Central valley elevated a bit higher
         const pathFactor = 1 - (distanceFromCenter / pathWidth);
-        pathEffect = -pathDepth * Math.pow(pathFactor, 3); // Steeper curve
+        pathEffect = -pathDepth * Math.pow(pathFactor, 3) + 0.8; // Raised the central path
       } else if (distanceFromCenter < edgeWidth) {
         // Elevated edges around the path
         const edgeFactor = (distanceFromCenter - pathWidth) / (edgeWidth - pathWidth);
