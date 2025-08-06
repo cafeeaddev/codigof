@@ -126,13 +126,13 @@ export const VaporwaveTerrain = () => {
           ref={backgroundMaterialRef}
           map={wireframeTexture}
           normalMap={normalTexture}
-          color="#0F0F23"
+          color="#1a1a2e"
           emissive={getEnhancedColor(scrollProgress)}
-          emissiveIntensity={0.5}
-          roughness={0.3}
-          metalness={0.7}
+          emissiveIntensity={0.7}
+          roughness={0.2}
+          metalness={0.8}
           transparent={true}
-          opacity={0.8}
+          opacity={0.95}
           side={THREE.DoubleSide}
           wireframe={false}
         />
@@ -146,9 +146,9 @@ export const VaporwaveTerrain = () => {
         position={[0, 0, -2]}
       >
         <meshBasicMaterial
-          color="#6600ff"
+          color="#8a2be2"
           transparent={true}
-          opacity={0.9}
+          opacity={0.8}
           wireframe={true}
         />
       </mesh>
