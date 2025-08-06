@@ -6,7 +6,11 @@ import * as THREE from 'three';
 import gridTexture from '../assets/vaporwave-grid.jpg';
 import { useScrollProgress } from '../hooks/useScrollProgress';
 
-export const VaporwaveTerrain = () => {
+interface VaporwaveTerrainProps {
+  cameraPosition?: [number, number, number];
+}
+
+export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrainProps) => {
   const groupRefs = useRef<THREE.Group[]>([]);
   const backgroundMaterialRef = useRef<THREE.MeshStandardMaterial>(null);
   const scrollProgress = useScrollProgress();
@@ -101,17 +105,18 @@ export const VaporwaveTerrain = () => {
   
   // Animation and color updates
   useFrame((state) => {
-    // Movimento automático contínuo + efeito do scroll
+    // Movimento automático contínuo + efeito do scroll + posição da câmera
     const timeMovement = state.clock.elapsedTime * 0.5; // Movimento automático
     const scrollMovement = scrollProgress * 4; // Acelera com o scroll
+    const cameraZOffset = cameraPosition[2] * 0.3; // Ajusta baseado na posição Z da câmera
     
-    // Combina os dois movimentos
-    const totalMovement = timeMovement + scrollMovement;
+    // Combina os três movimentos
+    const totalMovement = timeMovement + scrollMovement + cameraZOffset;
     
     // Move cada grupo de terreno individualmente
     groupRefs.current.forEach((group, index) => {
       if (group) {
-        // Calcula posição com loop infinito
+        // Calcula posição com loop infinito, ajustando pela câmera
         const basePosition = 15 + (index * 60);
         group.position.z = basePosition + (totalMovement % 180);
         

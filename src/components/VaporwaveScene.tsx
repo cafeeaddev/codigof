@@ -51,7 +51,7 @@ export const VaporwaveScene = ({ cameraPosition, cameraFov }: VaporwaveSceneProp
         />
         
         {/* Main terrain */}
-        <VaporwaveTerrain />
+        <VaporwaveTerrain cameraPosition={cameraPosition} />
         
         {/* Development controls */}
         <OrbitControls 
