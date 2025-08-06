@@ -103,10 +103,14 @@ export const VaporwaveTerrain = () => {
   // Animation and color updates
   useFrame((state) => {
     if (backgroundMeshRef.current && wireframeMeshRef.current && backgroundMaterialRef.current) {
-      // Movimento contínuo do terreno passando por baixo da câmera
-      const timeMovement = state.clock.elapsedTime * 0.3; // Velocidade do movimento
-      const scrollMovement = scrollProgress * 1; // Efeito do scroll
-      const zPosition = -8 + (timeMovement + scrollMovement); // Terreno vem de longe
+      // Movimento contínuo do terreno com loop infinito
+      const timeMovement = state.clock.elapsedTime * 0.5; // Velocidade do movimento
+      const scrollMovement = scrollProgress * 2; // Efeito do scroll
+      
+      // Loop infinito: quando o terreno sai da vista, ele volta ao início
+      const totalMovement = timeMovement + scrollMovement;
+      const loopDistance = 24; // Distância do loop (baseada no tamanho do terreno)
+      const zPosition = -8 + (totalMovement % loopDistance);
       
       backgroundMeshRef.current.position.z = zPosition;
       wireframeMeshRef.current.position.z = zPosition;
