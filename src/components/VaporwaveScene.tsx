@@ -14,30 +14,35 @@ const ScrollCamera = () => {
   
   useFrame(() => {
     // Calculate target position based on scroll
-    const forwardMovement = scrollProgress * 15; // Move 15 units forward
-    targetPosition.current.set(0, 0.5, forwardMovement + 2);
+    const forwardMovement = scrollProgress * 8; // Reduced movement for better visibility
+    targetPosition.current.set(0, 1.2, forwardMovement + 3); // Higher camera position
     
     // Smooth camera movement
-    camera.position.lerp(targetPosition.current, 0.05);
+    camera.position.lerp(targetPosition.current, 0.08);
     
-    // Keep camera looking forward and slightly down
-    camera.lookAt(0, -0.2, forwardMovement + 10);
+    // Keep camera looking forward and down at the terrain
+    camera.lookAt(0, 0, forwardMovement + 8);
   });
   
   return null;
 };
 
 export const VaporwaveScene = () => {
+  console.log('VaporwaveScene rendering...');
+  
   return (
     <div className="w-full h-screen relative overflow-hidden">
       <Canvas
         camera={{
-          position: [0, 0.5, 2],
-          fov: 85,
-          near: 0.01,
-          far: 100,
+          position: [0, 1.2, 3],
+          fov: 75,
+          near: 0.1,
+          far: 50,
         }}
         className="w-full h-full"
+        onCreated={({ gl }) => {
+          console.log('Canvas created, WebGL context:', gl.getContext());
+        }}
       >
         {/* Scroll-based camera controller */}
         <ScrollCamera />
@@ -45,45 +50,31 @@ export const VaporwaveScene = () => {
         {/* Background gradient and stars */}
         <VaporwaveBackground />
         <Stars 
-          radius={200} 
-          depth={100} 
-          count={3000} 
-          factor={6} 
+          radius={100} 
+          depth={50} 
+          count={2000} 
+          factor={4} 
           saturation={0} 
           fade={true}
         />
         
-        {/* Enhanced lighting setup for neon effect */}
-        <ambientLight intensity={0.05} color="#ff00ff" />
+        {/* Simplified lighting setup */}
+        <ambientLight intensity={0.1} color="#ff00ff" />
         <directionalLight
           position={[0, 5, 0]}
-          intensity={0.3}
+          intensity={0.5}
           color="#ff0080"
         />
         <pointLight
-          position={[0, 2, -5]}
-          intensity={1.2}
-          color="#00ffff"
-          distance={20}
-          decay={2}
-        />
-        <pointLight
-          position={[-5, 1, 0]}
-          intensity={0.8}
-          color="#ff00ff"
-          distance={15}
-          decay={2}
-        />
-        <pointLight
-          position={[5, 1, 0]}
-          intensity={0.8}
+          position={[0, 3, -3]}
+          intensity={1.0}
           color="#00ffff"
           distance={15}
-          decay={2}
+          decay={1}
         />
         
         {/* Fog for depth */}
-        <fog attach="fog" args={['#000011', 10, 50]} />
+        <fog attach="fog" args={['#000011', 5, 25]} />
         
         {/* Main terrain */}
         <VaporwaveTerrain />

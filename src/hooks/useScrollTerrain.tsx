@@ -8,8 +8,18 @@ export const useScrollTerrain = () => {
     const handleScroll = () => {
       const scrollTop = window.scrollY;
       const documentHeight = document.documentElement.scrollHeight - window.innerHeight;
-      const progress = Math.min(scrollTop / Math.max(documentHeight, 1), 1);
+      
+      // Add validation to prevent division by zero
+      if (documentHeight <= 0) {
+        setScrollProgress(0);
+        return;
+      }
+      
+      const progress = Math.min(Math.max(scrollTop / documentHeight, 0), 1);
       setScrollProgress(progress);
+      
+      // Debug log
+      console.log('Scroll Progress:', progress, 'ScrollTop:', scrollTop, 'DocHeight:', documentHeight);
     };
     
     window.addEventListener('scroll', handleScroll);
