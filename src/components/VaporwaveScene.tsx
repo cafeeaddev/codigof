@@ -64,8 +64,9 @@ export const VaporwaveScene = () => {
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
         {/* Top text */}
         <div className="mb-8">
-          <p className="text-white/80 text-sm font-mono mb-2 tracking-widest">
-            SUA JORNADA DIGITAL COMEÇA AQUI!
+          <p className="text-white font-montserrat font-bold text-2xl tracking-widest break-words">
+            SUA JORNADA DIGITAL<br />
+            COMEÇA AQUI!
           </p>
         </div>
         
