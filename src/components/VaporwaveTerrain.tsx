@@ -24,7 +24,7 @@ export const VaporwaveTerrain = () => {
   
   // Create expanded terrain geometry with central path - much more detailed
   const { geometry, maxHeight } = useMemo(() => {
-    const geo = new THREE.PlaneGeometry(16, 24, 256, 256); // Much higher resolution
+    const geo = new THREE.PlaneGeometry(16, 48, 256, 512); // Much longer terrain
     const positionAttribute = geo.getAttribute('position');
     const positions = positionAttribute.array as Float32Array;
     let maxHeight = 0;
@@ -102,10 +102,10 @@ export const VaporwaveTerrain = () => {
   // Animation and color updates
   useFrame((state) => {
     if (meshRef.current && materialRef.current && backgroundMeshRef.current && backgroundMaterialRef.current) {
-      // Continuous terrain movement + inverted scroll influence - starting inside mountains
+      // Continuous terrain movement + inverted scroll influence - longer cycle
       const timeMovement = state.clock.elapsedTime * 0.2;
-      const scrollMovement = -scrollProgress * 6;
-      const zPosition = ((timeMovement + scrollMovement) % 24) - 6; // Start closer inside mountains
+      const scrollMovement = -scrollProgress * 12;
+      const zPosition = ((timeMovement + scrollMovement) % 48) - 24; // Much longer cycle
       
       meshRef.current.position.z = zPosition;
       backgroundMeshRef.current.position.z = zPosition;
