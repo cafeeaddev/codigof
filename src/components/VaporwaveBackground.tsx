@@ -34,8 +34,8 @@ export const VaporwaveBackground = () => {
       );
       
       void main() {
-        // Sky color #311758
-        vec3 skyColor = vec3(0.192, 0.090, 0.345);
+        // Sky color #2E1051
+        vec3 skyColor = vec3(0.180, 0.063, 0.318);
         
         gl_FragColor = vec4(skyColor, 1.0);
       }
