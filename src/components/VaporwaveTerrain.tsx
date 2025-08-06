@@ -48,21 +48,21 @@ export const VaporwaveTerrain = () => {
       } else if (distanceFromCenter < edgeWidth) {
         // Elevated edges around the path
         const edgeFactor = (distanceFromCenter - pathWidth) / (edgeWidth - pathWidth);
-        const elevation = Math.sin((1 - edgeFactor) * Math.PI) * 8.0; // Much higher mountains reaching center
+        const elevation = Math.sin((1 - edgeFactor) * Math.PI) * 2.0; // Moderate mountains
         pathEffect = elevation;
       } else {
-        // Even higher distant mountains reaching center of screen
+        // Higher distant mountains but limited height
         const distantFactor = Math.min((distanceFromCenter - edgeWidth) / 2.0, 1.0);
-        const distantElevation = Math.sin(distantFactor * Math.PI * 0.5) * 12.0; // Very tall peaks to center
+        const distantElevation = Math.sin(distantFactor * Math.PI * 0.5) * 3.0; // Limited to center of screen
         pathEffect = distantElevation;
       }
       
       // Multiple wave layers for more complex terrain like in reference
-      const wave1 = Math.sin(x * 0.5) * Math.cos(z * 0.4) * 4.0; // Massive primary waves reaching center
-      const wave2 = Math.sin(x * 1.2) * Math.cos(z * 0.8) * 2.5; // Large medium waves
-      const wave3 = Math.sin(x * 2.4) * Math.cos(z * 1.6) * 1.5; // Significant small waves
-      const wave4 = Math.sin(x * 4.8) * Math.cos(z * 3.2) * 0.8; // Enhanced detail
-      const wave5 = Math.sin(x * 9.6) * Math.cos(z * 6.4) * 0.4; // Fine detail
+      const wave1 = Math.sin(x * 0.5) * Math.cos(z * 0.4) * 1.0; // Controlled primary waves
+      const wave2 = Math.sin(x * 1.2) * Math.cos(z * 0.8) * 0.6; // Medium waves
+      const wave3 = Math.sin(x * 2.4) * Math.cos(z * 1.6) * 0.3; // Small waves
+      const wave4 = Math.sin(x * 4.8) * Math.cos(z * 3.2) * 0.15; // Fine detail
+      const wave5 = Math.sin(x * 9.6) * Math.cos(z * 6.4) * 0.08; // Very fine detail
       
       // Distance-based elevation with more variation
       const distanceFromCenterTotal = Math.sqrt(x * x * 0.08 + z * z * 0.03);
