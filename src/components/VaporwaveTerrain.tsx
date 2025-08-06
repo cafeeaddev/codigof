@@ -8,7 +8,9 @@ import { useScrollProgress } from '../hooks/useScrollProgress';
 
 export const VaporwaveTerrain = () => {
   const meshRef = useRef<THREE.Mesh>(null);
+  const backgroundMeshRef = useRef<THREE.Mesh>(null);
   const materialRef = useRef<THREE.MeshStandardMaterial>(null);
+  const backgroundMaterialRef = useRef<THREE.MeshStandardMaterial>(null);
   const scrollProgress = useScrollProgress();
   
   // Load the grid texture but we'll use it minimally
@@ -90,11 +92,14 @@ export const VaporwaveTerrain = () => {
   
   // Animation and color updates
   useFrame((state) => {
-    if (meshRef.current && materialRef.current) {
+    if (meshRef.current && materialRef.current && backgroundMeshRef.current && backgroundMaterialRef.current) {
       // Continuous terrain movement + inverted scroll influence
-      const timeMovement = state.clock.elapsedTime * 0.2; // Slightly slower for more dramatic effect
+      const timeMovement = state.clock.elapsedTime * 0.2;
       const scrollMovement = -scrollProgress * 6;
-      meshRef.current.position.z = ((timeMovement + scrollMovement) % 24) - 12;
+      const zPosition = ((timeMovement + scrollMovement) % 24) - 12;
+      
+      meshRef.current.position.z = zPosition;
+      backgroundMeshRef.current.position.z = zPosition;
       
       // Update material colors with enhanced gradient
       const baseColor = getEnhancedColor(scrollProgress);
@@ -102,32 +107,55 @@ export const VaporwaveTerrain = () => {
       
       materialRef.current.color = baseColor;
       materialRef.current.emissive = emissiveColor;
-      materialRef.current.emissiveIntensity = 2.0 + (scrollProgress * 1.0); // Stronger emission
+      materialRef.current.emissiveIntensity = 2.0 + (scrollProgress * 1.0);
       
       // Enhanced wireframe properties
       materialRef.current.metalness = 0.2;
       materialRef.current.roughness = 0.8;
+      
+      // Update background material - darker, subtle
+      backgroundMaterialRef.current.color = new THREE.Color(0x0a0a1a);
+      backgroundMaterialRef.current.opacity = 0.6;
     }
   });
   
   return (
-    <mesh
-      ref={meshRef}
-      geometry={geometry}
-      rotation={[-Math.PI * 0.5, 0, 0]}
-      position={[0, 0, -2]}
-    >
-      <meshStandardMaterial
-        ref={materialRef}
-        color="#0088ff"
-        emissive="#0066cc"
-        emissiveIntensity={2.5}
-        metalness={0.2}
-        roughness={0.8}
-        wireframe={true}
-        transparent={true}
-        opacity={0.9}
-      />
-    </mesh>
+    <group>
+      {/* Background terrain - solid dark surface */}
+      <mesh
+        ref={backgroundMeshRef}
+        geometry={geometry}
+        rotation={[-Math.PI * 0.5, 0, 0]}
+        position={[0, -0.01, -2]}
+      >
+        <meshStandardMaterial
+          ref={backgroundMaterialRef}
+          color="#0a0a1a"
+          transparent={true}
+          opacity={0.6}
+          side={THREE.DoubleSide}
+        />
+      </mesh>
+      
+      {/* Wireframe terrain - on top */}
+      <mesh
+        ref={meshRef}
+        geometry={geometry}
+        rotation={[-Math.PI * 0.5, 0, 0]}
+        position={[0, 0, -2]}
+      >
+        <meshStandardMaterial
+          ref={materialRef}
+          color="#0088ff"
+          emissive="#0066cc"
+          emissiveIntensity={2.5}
+          metalness={0.2}
+          roughness={0.8}
+          wireframe={true}
+          transparent={true}
+          opacity={0.9}
+        />
+      </mesh>
+    </group>
   );
 };
