@@ -131,7 +131,7 @@ export const VaporwaveTerrain = () => {
           map={wireframeTexture}
           normalMap={normalTexture}
           color="#1a1a2e"
-          emissive="#00ffff"
+          emissive="#2a2a2a"
           emissiveIntensity={0.3}
           roughness={0.3}
           metalness={0.7}
