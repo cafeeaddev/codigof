@@ -70,23 +70,15 @@ export const VaporwaveScene = () => {
           </p>
         </div>
         
-        {/* Main title */}
+        {/* Main title - Sistema de Diagnóstico Ativado */}
         <div className="mb-12">
-          <h1 className="text-6xl md:text-8xl font-bold text-transparent bg-gradient-to-r from-neon-pink via-neon-purple to-neon-cyan bg-clip-text mb-4">
-            CÓDIGO F
+          <h1 className="text-white font-montserrat font-bold tracking-wider text-4xl md:text-5xl lg:text-6xl mb-8">
+            SISTEMA DE DIAGNÓSTICO ATIVADO
           </h1>
         </div>
         
         {/* Action buttons */}
         <div className="flex flex-col sm:flex-row gap-4 pointer-events-auto">
-          <Button 
-            variant="outline" 
-            size="lg"
-            className="bg-white/10 border-white/30 text-white hover:bg-white/20 backdrop-blur-sm px-8 py-3"
-          >
-            Sistema de Diagnóstico Ativado
-          </Button>
-          
           <Button 
             size="lg"
             className="bg-gradient-to-r from-neon-pink to-neon-purple hover:from-neon-pink/80 hover:to-neon-purple/80 text-white px-8 py-3 flex items-center gap-2"
