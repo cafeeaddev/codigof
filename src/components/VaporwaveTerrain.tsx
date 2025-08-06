@@ -28,12 +28,12 @@ export const VaporwaveTerrain = ({ theme }: VaporwaveTerrainProps) => {
   // Configure texture properties
   useMemo(() => {
     texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-    texture.repeat.set(1, 2);
+    texture.repeat.set(2, 4);
   }, [texture]);
   
   // Create terrain geometry with displacement
   const geometry = useMemo(() => {
-    const geo = new THREE.PlaneGeometry(1, 2, 24, 24);
+    const geo = new THREE.PlaneGeometry(2.5, 4, 32, 32);
     const positionAttribute = geo.getAttribute('position');
     const positions = positionAttribute.array as Float32Array;
     
@@ -64,9 +64,9 @@ export const VaporwaveTerrain = ({ theme }: VaporwaveTerrainProps) => {
   // Animation loop
   useFrame((state) => {
     if (meshRef.current) {
-      // Continuous smooth movement - keeps terrain in view with seamless flow
+      // Continuous smooth movement - keeps terrain filled and close
       const speed = 0.3;
-      meshRef.current.position.z = ((state.clock.elapsedTime * speed) % 4) - 2;
+      meshRef.current.position.z = ((state.clock.elapsedTime * speed) % 6) - 1;
       
       // Animate texture offset for seamless flow
       if (texture) {
