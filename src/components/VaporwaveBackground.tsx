@@ -42,9 +42,9 @@ export const VaporwaveBackground = () => {
         // Add some movement
         gradient += sin(time * 0.5 + uv.x * 3.0) * 0.1;
         
-        // Reference-matched vaporwave colors
-        vec3 topColor = vec3(0.176, 0.106, 0.412);    // #2D1B69 - Dark purple
-        vec3 bottomColor = vec3(0.059, 0.059, 0.137); // #0F0F23 - Dark blue
+        // Custom background color #372065
+        vec3 topColor = vec3(0.216, 0.125, 0.396);    // #372065 - Custom purple
+        vec3 bottomColor = vec3(0.216, 0.125, 0.396); // Same color for solid background
         
         // Mix colors based on gradient
         vec3 color = mix(bottomColor, topColor, gradient);
