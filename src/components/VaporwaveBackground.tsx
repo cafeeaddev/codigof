@@ -34,24 +34,15 @@ export const VaporwaveBackground = () => {
       );
       
       void main() {
-        // Gradient colors from top to bottom
-        vec3 topColor = vec3(0.722, 0.639, 0.851);    // Light purple #B8A3D9
-        vec3 midColor = vec3(0.545, 0.435, 0.722);    // Medium purple #8B6FB8
-        vec3 bottomColor = vec3(0.353, 0.290, 0.420); // Dark purple #5A4A6B
+        // Gradient colors matching the reference image
+        vec3 topColor = vec3(0.678, 0.565, 0.792);    // Light purple
+        vec3 bottomColor = vec3(0.506, 0.424, 0.616); // Darker purple
         
-        // Create vertical gradient based on Y coordinate
+        // Create smooth vertical gradient
         float gradientPos = vUv.y;
         
-        vec3 finalColor;
-        if (gradientPos > 0.5) {
-          // Top half: interpolate between top and mid colors
-          float t = (gradientPos - 0.5) * 2.0;
-          finalColor = mix(midColor, topColor, t);
-        } else {
-          // Bottom half: interpolate between bottom and mid colors
-          float t = gradientPos * 2.0;
-          finalColor = mix(bottomColor, midColor, t);
-        }
+        // Smooth interpolation between top and bottom colors
+        vec3 finalColor = mix(bottomColor, topColor, gradientPos);
         
         gl_FragColor = vec4(finalColor, 1.0);
       }
