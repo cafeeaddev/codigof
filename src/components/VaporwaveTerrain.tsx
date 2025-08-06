@@ -93,12 +93,23 @@ export const VaporwaveTerrain = () => {
       materialRef.current.metalness = 0.2;
       materialRef.current.roughness = 0.8;
       
-      // Update background material with stone-like texture
-      const stoneColor1 = new THREE.Color(0x2a2a2a); // Dark stone
-      const stoneColor2 = new THREE.Color(0x404040); // Lighter stone
-      const stoneNoise = Math.sin(state.clock.elapsedTime * 0.1) * 0.5 + 0.5;
-      backgroundMaterialRef.current.color = stoneColor1.lerp(stoneColor2, stoneNoise);
-      backgroundMaterialRef.current.opacity = 0.9;
+      // Create stone-like texture with procedural patterns
+      const time = state.clock.elapsedTime;
+      const stonePattern1 = Math.sin(time * 0.1) * 0.3 + 0.7;
+      const stonePattern2 = Math.cos(time * 0.15) * 0.2 + 0.8;
+      
+      // Mix between different stone colors
+      const darkStone = new THREE.Color(0x1a1a1a); // Very dark stone
+      const mediumStone = new THREE.Color(0x3a3a3a); // Medium stone
+      const lightStone = new THREE.Color(0x4a4a4a); // Lighter stone
+      
+      // Create complex stone color mixing
+      const finalStoneColor = darkStone.clone()
+        .lerp(mediumStone, stonePattern1)
+        .lerp(lightStone, stonePattern2 * 0.5);
+      
+      backgroundMaterialRef.current.color = finalStoneColor;
+      backgroundMaterialRef.current.opacity = 1.0;
     }
   });
   
@@ -113,11 +124,10 @@ export const VaporwaveTerrain = () => {
       >
         <meshStandardMaterial
           ref={backgroundMaterialRef}
-          color="#2a2a2a"
-          roughness={0.9}
-          metalness={0.1}
-          transparent={true}
-          opacity={0.9}
+          color="#1a1a1a"
+          roughness={1.0}
+          metalness={0.0}
+          transparent={false}
           side={THREE.DoubleSide}
         />
       </mesh>
