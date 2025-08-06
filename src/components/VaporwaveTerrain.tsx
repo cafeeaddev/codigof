@@ -150,8 +150,8 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
               ref={index === 0 ? backgroundMaterialRef : undefined}
               map={wireframeTexture}
               normalMap={normalTexture}
-              color="#1a1a2e"
-              emissive={getEnhancedColor(scrollProgress)}
+              color="#100530"
+              emissive="#100530"
               emissiveIntensity={0.7}
               roughness={0.2}
               metalness={0.8}
