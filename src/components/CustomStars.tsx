@@ -15,31 +15,31 @@ export const CustomStars = () => {
 
   // Generate star positions only in the sky area
   const { positions, colors } = useMemo(() => {
-    const starCount = 3000; // More stars for better coverage
+    const starCount = 5000; // Muito mais estrelas para melhor cobertura
     const positions = new Float32Array(starCount * 3);
     const colors = new Float32Array(starCount * 3);
     
     let index = 0;
     
     for (let i = 0; i < starCount; i++) {
-      // Spherical distribution to cover the entire visible sky
-      const x = (Math.random() - 0.5) * 200; // Much wider X coverage (-100 to +100)
-      const z = (Math.random() - 0.3) * 150; // Z coverage from -105 to +45, more behind camera
+      // Distribuição esférica para cobrir todo o céu visível
+      const x = (Math.random() - 0.5) * 300; // Cobertura X muito mais ampla (-150 to +150)
+      const z = (Math.random() - 0.2) * 200; // Cobertura Z expandida, mais estrelas atrás da câmera
       
       // Calculate terrain height at this x,z position
       const terrainHeight = calculateHeightAtPoint(x, z);
       
-      // Only place stars well above the terrain (in the sky)
-      const minSkyHeight = Math.max(terrainHeight + 2, 2); 
-      const maxSkyHeight = 40; // Much higher sky coverage
+      // Colocar estrelas bem acima do terreno (no céu)
+      const minSkyHeight = Math.max(terrainHeight + 1, 1); 
+      const maxSkyHeight = 60; // Cobertura do céu muito mais alta
       const y = minSkyHeight + Math.random() * (maxSkyHeight - minSkyHeight);
       
       positions[index] = x;
       positions[index + 1] = y;
       positions[index + 2] = z;
       
-      // White color with slight variation
-      const brightness = 0.7 + Math.random() * 0.3;
+      // Cor branca com variação maior para mais brilho
+      const brightness = 0.8 + Math.random() * 0.4; // Mais brilhantes
       colors[index] = brightness;     // R
       colors[index + 1] = brightness; // G  
       colors[index + 2] = brightness; // B
@@ -74,11 +74,11 @@ export const CustomStars = () => {
         />
       </bufferGeometry>
       <pointsMaterial
-        size={0.04}
+        size={0.06}
         sizeAttenuation={true}
         vertexColors={true}
         transparent={true}
-        opacity={0.9}
+        opacity={1.0}
         alphaTest={0.001}
       />
     </points>
