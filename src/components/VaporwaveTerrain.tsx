@@ -25,15 +25,15 @@ export const VaporwaveTerrain = ({ theme }: VaporwaveTerrainProps) => {
   // Load the grid texture
   const texture = useLoader(TextureLoader, gridTexture);
   
-  // Configure texture properties
+  // Configure texture properties for infinite effect
   useMemo(() => {
     texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-    texture.repeat.set(2, 4);
+    texture.repeat.set(3, 8);
   }, [texture]);
   
-  // Create terrain geometry with displacement
+  // Create larger terrain geometry for infinite effect
   const geometry = useMemo(() => {
-    const geo = new THREE.PlaneGeometry(2.5, 4, 32, 32);
+    const geo = new THREE.PlaneGeometry(4, 8, 64, 64);
     const positionAttribute = geo.getAttribute('position');
     const positions = positionAttribute.array as Float32Array;
     
@@ -61,16 +61,16 @@ export const VaporwaveTerrain = ({ theme }: VaporwaveTerrainProps) => {
     return geo;
   }, []);
   
-  // Animation loop
+  // Infinite animation loop
   useFrame((state) => {
     if (meshRef.current) {
-      // Continuous smooth movement - keeps terrain filled and close
-      const speed = 0.3;
-      meshRef.current.position.z = ((state.clock.elapsedTime * speed) % 6) - 1;
+      // Infinite smooth movement
+      const speed = 0.4;
+      meshRef.current.position.z = ((state.clock.elapsedTime * speed) % 12) - 2;
       
-      // Animate texture offset for seamless flow
+      // Infinite texture animation
       if (texture) {
-        texture.offset.y = (state.clock.elapsedTime * 0.2) % 1;
+        texture.offset.y = (state.clock.elapsedTime * 0.15) % 1;
       }
     }
   });
