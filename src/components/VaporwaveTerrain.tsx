@@ -105,7 +105,7 @@ export const VaporwaveTerrain = () => {
     if (backgroundMeshRef.current && wireframeMeshRef.current && backgroundMaterialRef.current) {
       // Continuous terrain movement + inverted scroll influence - longer cycle
       const timeMovement = state.clock.elapsedTime * 0.2;
-      const scrollMovement = -scrollProgress * 12;
+      const scrollMovement = scrollProgress * 12;
       const zPosition = ((timeMovement + scrollMovement) % 24) - 12; // Square cycle
       
       backgroundMeshRef.current.position.z = zPosition;
