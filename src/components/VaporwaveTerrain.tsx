@@ -31,16 +31,16 @@ export const VaporwaveTerrain = () => {
       const x = positions[i];
       const z = positions[i + 1];
       
-      // Create central path effect
+      // Create central path effect - wider and deeper
       const distanceFromCenter = Math.abs(x);
-      const pathWidth = 2.0; // Width of the central path
-      const pathDepth = 0.3; // How deep the path is
+      const pathWidth = 3.5; // Increased width for more visible path
+      const pathDepth = 0.8; // Increased depth for more pronounced depression
       
       // Path effect - creates a depression in the center
       let pathEffect = 0;
       if (distanceFromCenter < pathWidth) {
         const pathFactor = 1 - (distanceFromCenter / pathWidth);
-        pathEffect = -pathDepth * Math.pow(pathFactor, 2); // Smooth depression
+        pathEffect = -pathDepth * Math.pow(pathFactor, 3); // More pronounced curve
       }
       
       // Multiple wave layers for terrain variation
