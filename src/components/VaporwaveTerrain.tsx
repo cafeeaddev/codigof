@@ -68,8 +68,8 @@ export const VaporwaveTerrain = () => {
       // Movimento contínuo do terreno + influência inversa do scroll
       const timeMovement = state.clock.elapsedTime * 0.3;
       const scrollMovement = -scrollProgress * 4; // Negativo para inverter direção
-      // Começar já dentro da montanha (posição inicial -3)
-      meshRef.current.position.z = ((timeMovement + scrollMovement) % 12) - 9;
+      // Começar bem dentro da montanha (posição inicial mais avançada)
+      meshRef.current.position.z = ((timeMovement + scrollMovement) % 12) - 6;
       
       // Get average height for color calculation (simplified)
       const avgHeight = maxHeight * 0.3;
@@ -94,7 +94,7 @@ export const VaporwaveTerrain = () => {
       ref={meshRef}
       geometry={geometry}
       rotation={[-Math.PI * 0.5, 0, 0]}
-      position={[0, 0, -3]} // Posição inicial já dentro da montanha
+      position={[0, 0, -1]} // Posição inicial mais próxima, já dentro das montanhas
     >
       <meshStandardMaterial
         ref={materialRef}
