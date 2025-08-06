@@ -1,6 +1,5 @@
 
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls } from '@react-three/drei';
 import { VaporwaveTerrain } from './VaporwaveTerrain';
 import { VaporwaveBackground } from './VaporwaveBackground';
 import { CustomStars } from './CustomStars';
@@ -53,10 +52,6 @@ export const VaporwaveScene = ({ cameraPosition, cameraFov }: VaporwaveSceneProp
         {/* Main terrain */}
         <VaporwaveTerrain cameraPosition={cameraPosition} />
         
-        {/* Camera controller that respects manual controls */}
-        <OrbitControls 
-          enabled={false} // Disable orbit controls to allow manual camera control
-        />
       </Canvas>
     </div>
   );
