@@ -34,10 +34,26 @@ export const VaporwaveBackground = () => {
       );
       
       void main() {
-        // Sky color #2E1051
-        vec3 skyColor = vec3(0.180, 0.063, 0.318);
+        // Gradient colors from top to bottom
+        vec3 topColor = vec3(0.722, 0.639, 0.851);    // Light purple #B8A3D9
+        vec3 midColor = vec3(0.545, 0.435, 0.722);    // Medium purple #8B6FB8
+        vec3 bottomColor = vec3(0.353, 0.290, 0.420); // Dark purple #5A4A6B
         
-        gl_FragColor = vec4(skyColor, 1.0);
+        // Create vertical gradient based on Y coordinate
+        float gradientPos = vUv.y;
+        
+        vec3 finalColor;
+        if (gradientPos > 0.5) {
+          // Top half: interpolate between top and mid colors
+          float t = (gradientPos - 0.5) * 2.0;
+          finalColor = mix(midColor, topColor, t);
+        } else {
+          // Bottom half: interpolate between bottom and mid colors
+          float t = gradientPos * 2.0;
+          finalColor = mix(bottomColor, midColor, t);
+        }
+        
+        gl_FragColor = vec4(finalColor, 1.0);
       }
     `,
     side: THREE.BackSide
