@@ -12,7 +12,7 @@ export const VaporwaveScene = ({ scrollProgress }: VaporwaveSceneProps) => {
     <div className="w-full h-screen relative overflow-hidden">
       <Canvas
         camera={{
-          position: [0, 0.06, 1.1],
+          position: [0, 0.3, 0.6],
           fov: 75,
           near: 0.01,
           far: 20,
