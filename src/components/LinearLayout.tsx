@@ -30,21 +30,26 @@ const features = [
 ];
 
 export const LinearLayout = () => {
-  console.log('LinearLayout rendering...');
+  console.log('LinearLayout: Component rendering...');
   
   return (
     <div className="relative">
-      {/* Fixed vaporwave background */}
-      <div className="fixed inset-0 z-0">
+      {/* Fixed vaporwave background - ensure it's behind content */}
+      <div className="fixed inset-0 z-0 bg-black">
         <VaporwaveScene />
       </div>
 
-      {/* Content layer with proper scroll height */}
+      {/* Content layer with proper z-index and background for readability */}
       <div className="relative z-10">
         <main className="relative">
-          {/* Increased height to enable terrain movement */}
-          <div className="min-h-[300vh]">
+          {/* Increased height for scroll testing - add semi-transparent background */}
+          <div className="min-h-[400vh] bg-black/20 backdrop-blur-sm">
             <HeroSection />
+            
+            {/* Debug scroll indicator */}
+            <div className="fixed top-4 left-4 z-50 bg-black/70 text-white p-2 rounded text-sm font-mono">
+              Scroll to see terrain movement
+            </div>
           </div>
           
           <CompaniesSection />

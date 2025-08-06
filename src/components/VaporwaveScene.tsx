@@ -1,3 +1,4 @@
+
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Stars } from '@react-three/drei';
 import { VaporwaveTerrain } from './VaporwaveTerrain';
@@ -6,77 +7,83 @@ import { useScrollTerrain } from '../hooks/useScrollTerrain';
 import { useRef } from 'react';
 import * as THREE from 'three';
 
-// Camera controller component
+// Simplified camera controller
 const ScrollCamera = () => {
   const scrollProgress = useScrollTerrain();
   const { camera } = useThree();
-  const targetPosition = useRef(new THREE.Vector3());
   
   useFrame(() => {
-    // Calculate target position based on scroll
-    const forwardMovement = scrollProgress * 8; // Reduced movement for better visibility
-    targetPosition.current.set(0, 1.2, forwardMovement + 3); // Higher camera position
+    // Much simpler camera positioning
+    const height = 3 + scrollProgress * 2;
+    const forward = scrollProgress * 3;
     
-    // Smooth camera movement
-    camera.position.lerp(targetPosition.current, 0.08);
+    camera.position.set(0, height, forward + 5);
+    camera.lookAt(0, 0, forward);
     
-    // Keep camera looking forward and down at the terrain
-    camera.lookAt(0, 0, forwardMovement + 8);
+    console.log('Camera - Scroll:', scrollProgress.toFixed(2), 
+               'Position:', `[${camera.position.x.toFixed(1)}, ${camera.position.y.toFixed(1)}, ${camera.position.z.toFixed(1)}]`);
   });
   
   return null;
 };
 
 export const VaporwaveScene = () => {
-  console.log('VaporwaveScene rendering...');
+  console.log('VaporwaveScene: Component rendering...');
   
   return (
     <div className="w-full h-screen relative overflow-hidden">
       <Canvas
         camera={{
-          position: [0, 1.2, 3],
+          position: [0, 3, 5],
           fov: 75,
           near: 0.1,
-          far: 50,
+          far: 100,
         }}
         className="w-full h-full"
-        onCreated={({ gl }) => {
-          console.log('Canvas created, WebGL context:', gl.getContext());
+        onCreated={({ gl, scene, camera }) => {
+          console.log('Canvas created successfully!');
+          console.log('WebGL Renderer:', gl.getContext().getParameter(gl.getContext().VERSION));
+          console.log('Camera position:', camera.position);
+          console.log('Scene children count:', scene.children.length);
+        }}
+        onError={(error) => {
+          console.error('Canvas error:', error);
         }}
       >
+        {/* Debug info */}
+        <primitive 
+          object={new THREE.AxesHelper(2)} 
+          position={[0, 0, 0]} 
+        />
+        
         {/* Scroll-based camera controller */}
         <ScrollCamera />
         
-        {/* Background gradient and stars */}
+        {/* Simplified background */}
         <VaporwaveBackground />
+        
+        {/* Reduced stars for performance */}
         <Stars 
-          radius={100} 
-          depth={50} 
-          count={2000} 
-          factor={4} 
+          radius={50} 
+          depth={20} 
+          count={500} 
+          factor={2} 
           saturation={0} 
           fade={true}
         />
         
-        {/* Simplified lighting setup */}
-        <ambientLight intensity={0.1} color="#ff00ff" />
+        {/* Simplified lighting */}
+        <ambientLight intensity={0.3} color="#ffffff" />
         <directionalLight
-          position={[0, 5, 0]}
-          intensity={0.5}
-          color="#ff0080"
-        />
-        <pointLight
-          position={[0, 3, -3]}
-          intensity={1.0}
-          color="#00ffff"
-          distance={15}
-          decay={1}
+          position={[2, 5, 2]}
+          intensity={0.8}
+          color="#ff00ff"
         />
         
-        {/* Fog for depth */}
-        <fog attach="fog" args={['#000011', 5, 25]} />
+        {/* Reduced fog for debugging */}
+        <fog attach="fog" args={['#000033', 10, 50]} />
         
-        {/* Main terrain */}
+        {/* Main terrain component */}
         <VaporwaveTerrain />
       </Canvas>
     </div>
