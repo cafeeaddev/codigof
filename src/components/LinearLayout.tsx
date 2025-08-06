@@ -5,6 +5,7 @@ import { FeatureSection } from './FeatureSection';
 import { CompaniesSection } from './CompaniesSection';
 import { Footer } from './Footer';
 import { useScrollTerrain } from '../hooks/useScrollTerrain';
+import { useEffect, useState } from 'react';
 
 const features = [
   {
@@ -32,7 +33,18 @@ const features = [
 
 export const LinearLayout = () => {
   const scrollProgress = useScrollTerrain();
-  console.log('LinearLayout: Rendering with path scroll progress:', scrollProgress.toFixed(3));
+  const [continuousDistance, setContinuousDistance] = useState(0);
+  
+  // Track continuous movement
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setContinuousDistance(prev => prev + 0.1);
+    }, 50);
+    
+    return () => clearInterval(interval);
+  }, []);
+  
+  console.log('LinearLayout: Rendering with continuous path movement:', continuousDistance.toFixed(1));
   
   return (
     <div className="relative">
@@ -48,23 +60,31 @@ export const LinearLayout = () => {
           <div className="min-h-[600vh] bg-gradient-to-b from-black/5 via-black/20 to-black/40 backdrop-blur-[0.5px]">
             <HeroSection />
             
-            {/* Enhanced path journey indicator */}
+            {/* Enhanced path journey indicator with continuous movement */}
             <div className="fixed top-4 left-4 z-50 bg-purple-900/90 text-neon-cyan p-3 rounded-lg text-sm font-mono border border-neon-cyan/40 backdrop-blur-sm">
-              <div>🛣️ Path Journey: {Math.round(scrollProgress * 100)}%</div>
-              <div className="text-xs text-neon-pink mt-1">Travel through the vaporwave valley</div>
-              <div className="text-xs text-gray-300">Distance: {Math.round(scrollProgress * 25)}km</div>
+              <div>🛣️ Jornada Contínua: {Math.round(scrollProgress * 100)}%</div>
+              <div className="text-xs text-neon-pink mt-1">Andando pelo vale vaporwave</div>
+              <div className="text-xs text-gray-300">Distância: {Math.round(continuousDistance + scrollProgress * 15)}km</div>
+              <div className="text-xs text-green-400">● Sempre em movimento</div>
             </div>
             
-            {/* Path elevation indicator */}
+            {/* Path elevation indicator for taller mountains */}
             <div className="fixed top-4 right-4 z-50 bg-purple-900/90 text-neon-pink p-2 rounded text-xs font-mono border border-neon-pink/40 backdrop-blur-sm">
-              <div>Valley Floor</div>
-              <div>Elevation: {Math.round(scrollProgress * 50)}m</div>
+              <div>🏔️ Montanhas Altas</div>
+              <div>Elevação: {Math.round(scrollProgress * 80 + continuousDistance * 2)}m</div>
+              <div className="text-neon-cyan">Picos: {Math.round(scrollProgress * 200 + 500)}m</div>
             </div>
             
-            {/* Path status indicator */}
+            {/* Continuous movement status */}
             <div className="fixed bottom-4 left-4 z-50 bg-black/80 text-neon-cyan p-2 rounded text-xs font-mono border border-neon-cyan/30">
-              Status: {scrollProgress < 0.3 ? 'Entering Valley' : 
-                      scrollProgress < 0.7 ? 'Traveling Path' : 'Mountain Pass'}
+              Status: {continuousDistance < 5 ? 'Começando Caminhada' : 
+                      continuousDistance < 15 ? 'Atravessando Vale' : 
+                      'Subindo Montanhas'} - Movimento Contínuo
+            </div>
+            
+            {/* Speed indicator */}
+            <div className="fixed bottom-4 right-4 z-50 bg-purple-800/80 text-yellow-300 p-2 rounded text-xs font-mono border border-yellow-300/30">
+              🚶‍♂️ Velocidade: 2km/s
             </div>
           </div>
           
