@@ -4,6 +4,7 @@ import { HeroSection } from './HeroSection';
 import { FeatureSection } from './FeatureSection';
 import { CompaniesSection } from './CompaniesSection';
 import { Footer } from './Footer';
+import { useScrollProgress } from '../hooks/useScrollProgress';
 
 const features = [
   {
@@ -30,11 +31,13 @@ const features = [
 ];
 
 export const LinearLayout = () => {
+  const scrollProgress = useScrollProgress();
+
   return (
     <div className="relative min-h-screen overflow-x-hidden">
       {/* Fixed vaporwave background */}
       <div className="fixed inset-0 z-0">
-        <VaporwaveScene />
+        <VaporwaveScene scrollProgress={scrollProgress} />
       </div>
 
       {/* Content layer */}

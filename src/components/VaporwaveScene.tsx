@@ -3,7 +3,11 @@ import { OrbitControls, Stars } from '@react-three/drei';
 import { VaporwaveTerrain } from './VaporwaveTerrain';
 import { VaporwaveBackground } from './VaporwaveBackground';
 
-export const VaporwaveScene = () => {
+interface VaporwaveSceneProps {
+  scrollProgress: number;
+}
+
+export const VaporwaveScene = ({ scrollProgress }: VaporwaveSceneProps) => {
   return (
     <div className="w-full h-screen relative overflow-hidden">
       <Canvas
@@ -16,33 +20,33 @@ export const VaporwaveScene = () => {
         className="w-full h-full"
       >
         {/* Background gradient and stars */}
-        <VaporwaveBackground />
+        <VaporwaveBackground scrollProgress={scrollProgress} />
         <Stars 
           radius={100} 
           depth={50} 
           count={2000} 
           factor={4} 
-          saturation={0} 
+          saturation={scrollProgress} 
           fade={true}
         />
         
-        {/* Lighting setup */}
-        <ambientLight intensity={0.1} color="#ff00ff" />
+        {/* Dynamic lighting setup */}
+        <ambientLight intensity={0.1 + scrollProgress * 0.2} color={`hsl(${scrollProgress * 360}, 100%, 50%)`} />
         <directionalLight
           position={[0, 0, 1]}
-          intensity={0.5}
-          color="#ff0080"
+          intensity={0.5 + scrollProgress * 0.3}
+          color={`hsl(${scrollProgress * 360 + 60}, 80%, 60%)`}
         />
         <pointLight
           position={[0, 1, -2]}
-          intensity={0.8}
-          color="#00ffff"
+          intensity={0.8 + scrollProgress * 0.4}
+          color={`hsl(${scrollProgress * 360 + 180}, 100%, 70%)`}
           distance={10}
           decay={2}
         />
         
         {/* Main terrain */}
-        <VaporwaveTerrain />
+        <VaporwaveTerrain scrollProgress={scrollProgress} />
         
         {/* Development controls */}
         <OrbitControls 
