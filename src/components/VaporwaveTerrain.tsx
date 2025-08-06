@@ -37,7 +37,7 @@ export const VaporwaveTerrain = ({ theme }: VaporwaveTerrainProps) => {
     const positionAttribute = geo.getAttribute('position');
     const positions = positionAttribute.array as Float32Array;
     
-    // Add terrain displacement (mountains on the sides)
+    // Add terrain displacement (mountains on the sides, smooth center)
     for (let i = 0; i < positions.length; i += 3) {
       const x = positions[i];
       const z = positions[i + 1];
@@ -45,15 +45,22 @@ export const VaporwaveTerrain = ({ theme }: VaporwaveTerrainProps) => {
       // Calculate distance from center line
       const distanceFromCenter = Math.abs(x);
       
-      // Create steep mountains on the sides
-      if (distanceFromCenter > 0.2) {
-        const height = Math.pow(distanceFromCenter * 2, 2) * 0.3;
-        positions[i + 2] = height;
+      // Create terrain with smooth transition - no hole in center
+      let height = 0;
+      
+      // Base terrain level
+      height = 0.05;
+      
+      // Add gradual elevation towards sides
+      if (distanceFromCenter > 0.1) {
+        height += Math.pow((distanceFromCenter - 0.1) * 2, 1.5) * 0.2;
       }
       
       // Add some noise for more interesting terrain
       const noise = (Math.sin(x * 10) * Math.cos(z * 8)) * 0.02;
-      positions[i + 2] += noise;
+      height += noise;
+      
+      positions[i + 2] = height;
     }
     
     positionAttribute.needsUpdate = true;
