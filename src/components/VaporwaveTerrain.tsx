@@ -103,10 +103,10 @@ export const VaporwaveTerrain = () => {
   // Animation and color updates
   useFrame((state) => {
     if (backgroundMeshRef.current && wireframeMeshRef.current && backgroundMaterialRef.current) {
-      // Continuous terrain movement forward - terrain moves away from camera creating forward motion illusion
+      // Linear continuous terrain movement forward
       const timeMovement = state.clock.elapsedTime * 0.15;
       const scrollMovement = scrollProgress * 2;
-      const zPosition = ((timeMovement + scrollMovement) % 16) - 8; // Move away from camera (positive Z)
+      const zPosition = -2 + (timeMovement + scrollMovement); // Continuous linear movement
       
       backgroundMeshRef.current.position.z = zPosition;
       wireframeMeshRef.current.position.z = zPosition;
