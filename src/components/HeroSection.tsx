@@ -34,8 +34,8 @@ export const HeroSection = () => {
             
             <Button 
               size="lg"
-              style={{ backgroundColor: '#442C77' }}
-              className="text-white hover:opacity-90 px-8 py-4 text-lg font-medium rounded-lg transition-opacity"
+              style={{ backgroundColor: '#442C77', borderColor: '#E04AD8' }}
+              className="text-white hover:opacity-90 px-8 py-4 text-lg font-medium rounded-lg transition-opacity border-2"
             >
               <Play className="mr-2 h-5 w-5 fill-current" />
               INICIAR
