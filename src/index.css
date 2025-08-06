@@ -104,11 +104,5 @@
 
   body {
     @apply bg-background text-foreground;
-    scroll-behavior: smooth;
-    overflow-x: hidden;
-  }
-  
-  html {
-    scroll-behavior: smooth;
   }
 }

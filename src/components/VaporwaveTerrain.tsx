@@ -4,13 +4,8 @@ import { TextureLoader } from 'three';
 import * as THREE from 'three';
 import gridTexture from '../assets/vaporwave-grid.jpg';
 
-interface VaporwaveTerrainProps {
-  scrollProgress: number;
-}
-
-export const VaporwaveTerrain = ({ scrollProgress }: VaporwaveTerrainProps) => {
+export const VaporwaveTerrain = () => {
   const meshRef = useRef<THREE.Mesh>(null);
-  const materialRef = useRef<THREE.MeshStandardMaterial>(null);
   
   // Load the grid texture
   const texture = useLoader(TextureLoader, gridTexture);
@@ -58,18 +53,6 @@ export const VaporwaveTerrain = ({ scrollProgress }: VaporwaveTerrainProps) => {
       // Move terrain towards viewer for that classic vaporwave effect
       meshRef.current.position.z = (state.clock.elapsedTime * 0.5) % 2 - 1;
     }
-    
-    // Update material colors based on scroll
-    if (materialRef.current) {
-      // Cycle through different neon colors based on scroll
-      const hue = scrollProgress * 360; // 0 to 360 degrees
-      const mainColor = new THREE.Color().setHSL(hue / 360, 1, 0.5);
-      const emissiveColor = new THREE.Color().setHSL(hue / 360, 0.8, 0.2);
-      
-      materialRef.current.color = mainColor;
-      materialRef.current.emissive = emissiveColor;
-      materialRef.current.emissiveIntensity = 0.3 + scrollProgress * 0.5;
-    }
   });
   
   return (
@@ -80,7 +63,6 @@ export const VaporwaveTerrain = ({ scrollProgress }: VaporwaveTerrainProps) => {
       position={[0, 0, 0.15]}
     >
       <meshStandardMaterial
-        ref={materialRef}
         map={texture}
         color="#ff00ff"
         emissive="#440044"

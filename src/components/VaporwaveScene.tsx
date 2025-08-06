@@ -3,16 +3,12 @@ import { OrbitControls, Stars } from '@react-three/drei';
 import { VaporwaveTerrain } from './VaporwaveTerrain';
 import { VaporwaveBackground } from './VaporwaveBackground';
 
-interface VaporwaveSceneProps {
-  scrollProgress: number;
-}
-
-export const VaporwaveScene = ({ scrollProgress }: VaporwaveSceneProps) => {
+export const VaporwaveScene = () => {
   return (
     <div className="w-full h-screen relative overflow-hidden">
       <Canvas
         camera={{
-          position: [0, 0.3, 0.6],
+          position: [0, 0.06, 1.1],
           fov: 75,
           near: 0.01,
           far: 20,
@@ -20,33 +16,33 @@ export const VaporwaveScene = ({ scrollProgress }: VaporwaveSceneProps) => {
         className="w-full h-full"
       >
         {/* Background gradient and stars */}
-        <VaporwaveBackground scrollProgress={scrollProgress} />
+        <VaporwaveBackground />
         <Stars 
           radius={100} 
           depth={50} 
           count={2000} 
           factor={4} 
-          saturation={scrollProgress} 
+          saturation={0} 
           fade={true}
         />
         
-        {/* Dynamic lighting setup */}
-        <ambientLight intensity={0.1 + scrollProgress * 0.2} color={`hsl(${scrollProgress * 360}, 100%, 50%)`} />
+        {/* Lighting setup */}
+        <ambientLight intensity={0.1} color="#ff00ff" />
         <directionalLight
           position={[0, 0, 1]}
-          intensity={0.5 + scrollProgress * 0.3}
-          color={`hsl(${scrollProgress * 360 + 60}, 80%, 60%)`}
+          intensity={0.5}
+          color="#ff0080"
         />
         <pointLight
           position={[0, 1, -2]}
-          intensity={0.8 + scrollProgress * 0.4}
-          color={`hsl(${scrollProgress * 360 + 180}, 100%, 70%)`}
+          intensity={0.8}
+          color="#00ffff"
           distance={10}
           decay={2}
         />
         
         {/* Main terrain */}
-        <VaporwaveTerrain scrollProgress={scrollProgress} />
+        <VaporwaveTerrain />
         
         {/* Development controls */}
         <OrbitControls 
