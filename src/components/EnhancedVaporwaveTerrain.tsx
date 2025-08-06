@@ -87,7 +87,7 @@ const fragmentShader = `
       vec3 finalColor = textureColor.rgb * uColor;
       finalColor += uEmissive * (vElevation * 2.0 + 0.3);
       
-      gl_FragColor = vec4(finalColor, 0.9);
+      gl_FragColor = vec4(finalColor, 1.0);
     }
   }
 `;
@@ -152,8 +152,11 @@ export const EnhancedVaporwaveTerrain = ({ theme, wireframe = false }: EnhancedV
         uDisplacementStrength: { value: 1.0 },
         uWireframeThickness: { value: 0.02 }
       },
-      transparent: true,
-      side: THREE.DoubleSide,
+      transparent: false,
+      opacity: 1.0,
+      side: THREE.FrontSide,
+      depthWrite: true,
+      depthTest: true,
     });
   }, [theme, texture, wireframe]);
   
@@ -198,6 +201,8 @@ export const EnhancedVaporwaveTerrain = ({ theme, wireframe = false }: EnhancedV
         material={shaderMaterial}
         rotation={[-Math.PI * 0.5, 0, 0]}
         position={[0, 0, 0.15]}
+        castShadow
+        receiveShadow
       />
       <mesh
         ref={mesh2Ref}
@@ -205,6 +210,8 @@ export const EnhancedVaporwaveTerrain = ({ theme, wireframe = false }: EnhancedV
         material={shaderMaterial}
         rotation={[-Math.PI * 0.5, 0, 0]}
         position={[0, 0, 0.15]}
+        castShadow
+        receiveShadow
       />
       <mesh
         ref={mesh3Ref}
@@ -212,8 +219,9 @@ export const EnhancedVaporwaveTerrain = ({ theme, wireframe = false }: EnhancedV
         material={shaderMaterial}
         rotation={[-Math.PI * 0.5, 0, 0]}
         position={[0, 0, 0.15]}
+        castShadow
+        receiveShadow
       />
-      <primitive object={shaderMaterial} ref={materialRef} />
     </group>
   );
 };
