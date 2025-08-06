@@ -1,9 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Stars } from '@react-three/drei';
-import { EnhancedVaporwaveTerrain } from './EnhancedVaporwaveTerrain';
+import { VaporwaveTerrain } from './VaporwaveTerrain';
 import { VaporwaveBackground } from './VaporwaveBackground';
-import { VaporwaveParticles } from './VaporwaveParticles';
 
 // Theme configurations
 const themes = [
@@ -62,8 +61,6 @@ const themes = [
 export const VaporwaveScene = () => {
   const [currentTheme, setCurrentTheme] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const [wireframeMode, setWireframeMode] = useState(false);
-  const [showParticles, setShowParticles] = useState(true);
 
   const handleScroll = useCallback((e: WheelEvent) => {
     if (isTransitioning) return;
@@ -134,24 +131,18 @@ export const VaporwaveScene = () => {
           decay={2}
         />
         
-        {/* Enhanced terrain with wireframe support */}
-        <EnhancedVaporwaveTerrain theme={themes[currentTheme]} wireframe={wireframeMode} />
-        
-        {/* Floating particles */}
-        {showParticles && <VaporwaveParticles theme={themes[currentTheme]} />}
-        
-        {/* Atmospheric fog */}
-        <fog attach="fog" args={[themes[currentTheme].colors.background[1], 1, 15]} />
+        {/* Main terrain */}
+        <VaporwaveTerrain theme={themes[currentTheme]} />
         
         {/* Development controls */}
         <OrbitControls 
-          makeDefault
           enableDamping={true}
           dampingFactor={0.05}
           enableZoom={true}
-          enablePan={true}
-          minDistance={0.1}
-          maxDistance={20}
+          enablePan={false}
+          maxPolarAngle={Math.PI / 2}
+          minDistance={0.5}
+          maxDistance={5}
         />
       </Canvas>
       
@@ -190,38 +181,12 @@ export const VaporwaveScene = () => {
           </div>
         </div>
         
-        {/* Enhanced controls */}
-        <div className="absolute bottom-8 left-8 pointer-events-auto">
-          <div className="backdrop-blur-sm bg-black/20 rounded-lg p-4 border border-white/10 space-y-2">
-            <button
-              onClick={() => setWireframeMode(!wireframeMode)}
-              className={`w-full px-3 py-1 rounded text-sm font-mono transition-colors ${
-                wireframeMode 
-                  ? 'bg-white/20 text-white' 
-                  : 'bg-white/10 text-white/70 hover:bg-white/15'
-              }`}
-            >
-              {wireframeMode ? '■ SOLID' : '▢ WIREFRAME'}
-            </button>
-            <button
-              onClick={() => setShowParticles(!showParticles)}
-              className={`w-full px-3 py-1 rounded text-sm font-mono transition-colors ${
-                showParticles 
-                  ? 'bg-white/20 text-white' 
-                  : 'bg-white/10 text-white/70 hover:bg-white/15'
-              }`}
-            >
-              {showParticles ? '✦ PARTICLES' : '○ PARTICLES'}
-            </button>
-          </div>
-        </div>
-        
         <div className="absolute bottom-8 right-8 text-right">
           <p className="text-white font-mono text-sm opacity-80">
             Scroll to change themes
           </p>
           <p className="text-white font-mono text-sm opacity-60">
-            Drag to explore • Left panel for effects
+            Drag to explore
           </p>
         </div>
       </div>
