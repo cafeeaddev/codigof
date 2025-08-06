@@ -96,7 +96,7 @@ export const VaporwaveTerrain = () => {
         const x1 = -gridSize / 2 + j * stepSize;
         const x2 = -gridSize / 2 + (j + 1) * stepSize;
         
-        // Calculate height at both points
+        // Calculate height at both points using the same formula as the background terrain
         const height1 = calculateHeightAtPoint(x1, z);
         const height2 = calculateHeightAtPoint(x2, z);
         
@@ -112,7 +112,7 @@ export const VaporwaveTerrain = () => {
         const z1 = -gridSize / 2 + j * stepSize;
         const z2 = -gridSize / 2 + (j + 1) * stepSize;
         
-        // Calculate height at both points
+        // Calculate height at both points using the same formula as the background terrain
         const height1 = calculateHeightAtPoint(x, z1);
         const height2 = calculateHeightAtPoint(x, z2);
         
