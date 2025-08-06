@@ -34,7 +34,8 @@ export const HeroSection = () => {
             
             <Button 
               size="lg"
-              className="bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 px-8 py-4 text-lg font-medium rounded-lg"
+              style={{ backgroundColor: '#442C77' }}
+              className="text-white hover:opacity-90 px-8 py-4 text-lg font-medium rounded-lg transition-opacity"
             >
               <Play className="mr-2 h-5 w-5 fill-current" />
               INICIAR
