@@ -1,52 +1,53 @@
 
-import { useRef, useMemo, useEffect } from 'react';
+import { useRef, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useScrollTerrain } from '../hooks/useScrollTerrain';
 import { NoiseGenerator } from '../utils/noiseUtils';
 
 export const VaporwaveMountains = () => {
-  const meshRef = useRef<THREE.Mesh>(null);
+  const leftMountainRef = useRef<THREE.Mesh>(null);
+  const rightMountainRef = useRef<THREE.Mesh>(null);
   const scrollProgress = useScrollTerrain();
   const noise = useMemo(() => new NoiseGenerator(42), []);
   
-  console.log('VaporwaveMountains: Component rendering, scroll progress:', scrollProgress);
+  console.log('VaporwaveMountains: Criando montanhas, scroll progress:', scrollProgress);
   
-  // Create mountain geometry with noise-based heights
+  // Criar geometria de montanha com elevações maiores
   const { geometry, material } = useMemo(() => {
-    console.log('Creating vaporwave mountain geometry...');
+    console.log('Criando geometria das montanhas vaporwave...');
     
     const segments = { width: 64, height: 128 };
-    const size = { width: 20, height: 40 };
+    const size = { width: 25, height: 60 };
     
     const geo = new THREE.PlaneGeometry(size.width, size.height, segments.width, segments.height);
     const positionAttribute = geo.getAttribute('position');
     const positions = positionAttribute.array as Float32Array;
     
-    // Generate mountain heights using noise
+    // Gerar alturas das montanhas com noise
     for (let i = 0; i < positions.length; i += 3) {
       const x = positions[i];
-      const z = positions[i + 1]; // Z is Y in plane geometry before rotation
+      const z = positions[i + 1]; // Z é Y na geometria do plano antes da rotação
       
-      // Distance-based falloff for perspective
+      // Falloff baseado na distância para perspectiva
       const distance = Math.sqrt(x * x + z * z);
-      const falloff = Math.max(0, 1 - distance / (size.width * 0.7));
+      const falloff = Math.max(0.2, 1 - distance / (size.width * 0.8));
       
-      // Combine multiple noise layers for realistic mountains
+      // Combinar múltiplas camadas de noise para montanhas realistas
       const baseHeight = noise.fractalNoise(x, z, 4, 0.08, 2) * falloff;
-      const ridges = noise.ridgeNoise(x, z, 2) * 0.8 * falloff;
-      const details = noise.noise(x * 0.2, z * 0.2) * 0.3 * falloff;
+      const ridges = noise.ridgeNoise(x, z, 3) * 1.2 * falloff;
+      const details = noise.noise(x * 0.15, z * 0.15) * 0.4 * falloff;
       
-      const finalHeight = (baseHeight + ridges + details) * 3;
-      positions[i + 2] = Math.max(0, finalHeight); // Set Y (height), never below 0
+      const finalHeight = (baseHeight + ridges + details) * 5; // Montanhas mais altas
+      positions[i + 2] = Math.max(0, finalHeight);
     }
     
     positionAttribute.needsUpdate = true;
     geo.computeVertexNormals();
     
-    console.log('Mountain geometry created with', positions.length / 3, 'vertices');
+    console.log('Geometria da montanha criada com', positions.length / 3, 'vértices');
     
-    // Create vaporwave shader material
+    // Material shader vaporwave
     const shaderMaterial = new THREE.ShaderMaterial({
       uniforms: {
         time: { value: 0 },
@@ -70,8 +71,11 @@ export const VaporwaveMountains = () => {
           
           vec3 pos = position;
           
-          // Subtle animation
-          pos.z += sin(time * 0.3 + position.x * 0.1) * 0.05;
+          // Movimento baseado no scroll com paralaxe
+          pos.z += scrollOffset * 25.0;
+          
+          // Animação sutil
+          pos.z += sin(time * 0.3 + position.x * 0.1) * 0.08;
           
           gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
         }
@@ -89,12 +93,12 @@ export const VaporwaveMountains = () => {
         varying vec2 vUv;
         
         void main() {
-          // Height-based color gradient
+          // Gradiente de cor baseado na altura
           float height = vPosition.z;
-          float normalizedHeight = clamp(height / 3.0, 0.0, 1.0);
+          float normalizedHeight = clamp(height / 5.0, 0.0, 1.0);
           
-          // Vaporwave color gradient
-          vec3 lowColor = neonPurple * 0.3;
+          // Gradiente de cores vaporwave
+          vec3 lowColor = neonPurple * 0.4;
           vec3 midColor = neonPink * 0.8;
           vec3 highColor = neonCyan;
           
@@ -105,82 +109,98 @@ export const VaporwaveMountains = () => {
             color = mix(midColor, highColor, (normalizedHeight - 0.5) * 2.0);
           }
           
-          // Grid effect
-          vec2 grid = abs(fract(vUv * gridScale * 10.0) - 0.5);
-          float gridLine = 1.0 - smoothstep(0.0, 0.05, min(grid.x, grid.y));
+          // Efeito de grid
+          vec2 grid = abs(fract(vUv * gridScale * 8.0) - 0.5);
+          float gridLine = 1.0 - smoothstep(0.0, 0.06, min(grid.x, grid.y));
           
-          // Enhanced grid on edges
-          float edgeGrid = max(gridLine, 0.0) * 0.8;
-          color += edgeGrid * neonCyan * 0.5;
+          // Grid nas bordas
+          float edgeGrid = max(gridLine, 0.0) * 0.7;
+          color += edgeGrid * neonCyan * 0.6;
           
-          // Glow effect based on height
-          float glow = pow(normalizedHeight, 2.0) * 0.3;
+          // Brilho baseado na altura
+          float glow = pow(normalizedHeight, 2.0) * 0.4;
           color += glow * neonPink;
           
-          // Fade with distance for depth
-          float distanceFade = 1.0 - clamp(distance(vPosition.xy, vec2(0.0)) / 10.0, 0.0, 0.8);
+          // Fade com distância para profundidade
+          float distanceFade = 1.0 - clamp(distance(vPosition.xy, vec2(0.0)) / 12.0, 0.0, 0.8);
           color *= distanceFade;
           
-          gl_FragColor = vec4(color, 0.9);
+          // Brilho extra nos picos
+          if (normalizedHeight > 0.8) {
+            color += (normalizedHeight - 0.8) * 5.0 * vec3(1.0, 1.0, 0.8) * 0.3;
+          }
+          
+          gl_FragColor = vec4(color, 0.92);
         }
       `,
       transparent: true,
       side: THREE.DoubleSide
     });
     
-    console.log('Vaporwave shader material created');
+    console.log('Material shader vaporwave criado');
     
     return { geometry: geo, material: shaderMaterial };
   }, [noise]);
   
-  // Animation and scroll-based movement
+  // Animação e movimento baseado no scroll
   useFrame((state) => {
-    if (meshRef.current && material instanceof THREE.ShaderMaterial) {
-      // Update shader uniforms
+    if (leftMountainRef.current && rightMountainRef.current && material instanceof THREE.ShaderMaterial) {
+      // Atualizar uniforms do shader
       material.uniforms.time.value = state.clock.elapsedTime;
       material.uniforms.scrollOffset.value = scrollProgress;
       
-      // Subtle rotation animation
-      meshRef.current.rotation.z = Math.sin(state.clock.elapsedTime * 0.2) * 0.02;
+      // Mover montanhas baseado no scroll com efeito parallax
+      const scrollMovement = scrollProgress * 25;
+      leftMountainRef.current.position.z = scrollMovement - 8;
+      rightMountainRef.current.position.z = scrollMovement - 8;
       
-      // Move mountains based on scroll with parallax effect
-      const scrollMovement = scrollProgress * 8;
-      meshRef.current.position.z = scrollMovement - 5;
-      
-      // Debug log every 3 seconds
+      // Debug a cada 3 segundos
       if (Math.floor(state.clock.elapsedTime) % 3 === 0 && state.clock.elapsedTime % 1 < 0.016) {
-        console.log('Mountains animation - Time:', state.clock.elapsedTime.toFixed(1), 
-                   'Scroll:', scrollProgress.toFixed(2), 'Position Z:', meshRef.current.position.z.toFixed(2));
+        console.log('Montanhas - Tempo:', state.clock.elapsedTime.toFixed(1), 
+                   'Scroll:', scrollProgress.toFixed(2), 'Posição Z:', scrollMovement.toFixed(2));
       }
     }
   });
   
-  console.log('VaporwaveMountains: Rendering mesh at position [0, -1, -5]');
+  console.log('VaporwaveMountains: Renderizando montanhas nas laterais');
   
   return (
     <group>
-      {/* Debug elements for reference */}
-      <mesh position={[0, 3, 0]}>
-        <sphereGeometry args={[0.1, 8, 8]} />
-        <meshBasicMaterial color="#00ffff" />
-      </mesh>
-      
-      {/* Mountain terrain */}
+      {/* Montanha esquerda */}
       <mesh
-        ref={meshRef}
+        ref={leftMountainRef}
         geometry={geometry}
         material={material}
         rotation={[-Math.PI * 0.5, 0, 0]}
-        position={[0, -1, -5]}
+        position={[-15, -1, -8]}
+        scale={[0.8, 1, 1]}
       />
       
-      {/* Additional mountain layers for depth */}
+      {/* Montanha direita */}
+      <mesh
+        ref={rightMountainRef}
+        geometry={geometry}
+        material={material}
+        rotation={[-Math.PI * 0.5, 0, 0]}
+        position={[15, -1, -8]}
+        scale={[0.8, 1, 1]}
+      />
+      
+      {/* Camada adicional de montanhas mais distantes */}
       <mesh
         geometry={geometry}
         material={material}
         rotation={[-Math.PI * 0.5, 0, 0]}
-        position={[0, -1.5, -8]}
-        scale={[1.2, 1, 0.8]}
+        position={[-25, -2, -15]}
+        scale={[1.2, 1, 0.6]}
+      />
+      
+      <mesh
+        geometry={geometry}
+        material={material}
+        rotation={[-Math.PI * 0.5, 0, 0]}
+        position={[25, -2, -15]}
+        scale={[1.2, 1, 0.6]}
       />
     </group>
   );

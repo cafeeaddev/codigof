@@ -2,60 +2,69 @@
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Stars } from '@react-three/drei';
 import { VaporwaveRoad } from './VaporwaveRoad';
-import { VaporwaveDistantMountains } from './VaporwaveDistantMountains';
+import { VaporwaveMountains } from './VaporwaveMountains';
 import { VaporwaveBackground } from './VaporwaveBackground';
 import { useScrollTerrain } from '../hooks/useScrollTerrain';
 
-// First person camera on the road - movement based ONLY on scroll
-const RoadCamera = () => {
+// Câmera que caminha SOBRE o terreno seguindo as elevações
+const TerrainWalkingCamera = () => {
   const scrollProgress = useScrollTerrain();
   const { camera } = useThree();
   
   useFrame(() => {
-    // First person view on the road - low height like walking
-    const roadHeight = 1.5;
-    const forwardDistance = scrollProgress * 50; // Move forward only with scroll
+    const walkingHeight = 1.8; // Altura de caminhada
+    const forwardDistance = scrollProgress * 50; // Movimento baseado no scroll
     
-    // Camera position - always on the road, moving forward with scroll
+    // Simular caminhada sobre o terreno com pequenas variações de altura
+    const terrainHeight = Math.sin(forwardDistance * 0.1) * 0.1 + 
+                         Math.cos(forwardDistance * 0.15) * 0.05;
+    
+    // Posição da câmera - seguindo o terreno
     camera.position.set(
-      0, // Center of road
-      roadHeight, // Walking height
-      forwardDistance + 5 // Forward position based on scroll
+      Math.sin(forwardDistance * 0.05) * 0.3, // Pequeno balanço lateral
+      walkingHeight + terrainHeight, // Altura seguindo terreno
+      forwardDistance + 3 // Posição Z baseada no scroll
     );
     
-    // Always look ahead down the road
-    camera.lookAt(0, roadHeight * 0.7, forwardDistance - 10);
+    // Olhar para frente com pequeno movimento natural
+    const lookAheadDistance = 15;
+    const lookHeight = walkingHeight + terrainHeight * 0.7;
+    camera.lookAt(
+      Math.sin(forwardDistance * 0.03) * 0.2,
+      lookHeight,
+      forwardDistance + lookAheadDistance
+    );
   });
   
   return null;
 };
 
 export const VaporwaveScene = () => {
-  console.log('VaporwaveScene: Rendering scroll-controlled vaporwave highway...');
+  console.log('VaporwaveScene: Renderizando cena vaporwave com montanhas...');
   
   return (
     <div className="w-full h-screen relative overflow-hidden">
       <Canvas
         camera={{
-          position: [0, 1.5, 5],
+          position: [0, 1.8, 3],
           fov: 85,
           near: 0.1,
           far: 200,
         }}
         className="w-full h-full"
         onCreated={({ gl }) => {
-          console.log('Vaporwave Highway Canvas created!');
+          console.log('Vaporwave Scene com montanhas criado!');
           gl.setClearColor('#0a0015');
           gl.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         }}
       >
-        {/* Scroll-controlled first person camera */}
-        <RoadCamera />
+        {/* Câmera que caminha sobre o terreno */}
+        <TerrainWalkingCamera />
         
-        {/* Classic vaporwave background */}
+        {/* Background vaporwave clássico */}
         <VaporwaveBackground />
         
-        {/* Distant stars */}
+        {/* Estrelas distantes */}
         <Stars 
           radius={150} 
           depth={50} 
@@ -65,7 +74,7 @@ export const VaporwaveScene = () => {
           fade={true}
         />
         
-        {/* Highway lighting */}
+        {/* Iluminação da estrada */}
         <ambientLight intensity={0.15} color="#1a0033" />
         <directionalLight
           position={[0, 10, 5]}
@@ -78,14 +87,14 @@ export const VaporwaveScene = () => {
           color="#00ffff"
         />
         
-        {/* Atmospheric fog */}
+        {/* Neblina atmosférica */}
         <fog attach="fog" args={['#0a0015', 30, 80]} />
         
-        {/* Main highway road */}
+        {/* Estrada principal */}
         <VaporwaveRoad />
         
-        {/* Distant mountain silhouettes with parallax */}
-        <VaporwaveDistantMountains />
+        {/* Montanhas vaporwave ao lado */}
+        <VaporwaveMountains />
       </Canvas>
     </div>
   );
