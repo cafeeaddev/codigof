@@ -1,3 +1,4 @@
+
 import { useRef, useMemo } from 'react';
 import { useFrame, useLoader } from '@react-three/fiber';
 import { TextureLoader } from 'three';
@@ -10,15 +11,15 @@ export const VaporwaveTerrain = () => {
   // Load the grid texture
   const texture = useLoader(TextureLoader, gridTexture);
   
-  // Configure texture properties
+  // Configure texture properties for longer path
   useMemo(() => {
     texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-    texture.repeat.set(1, 2);
+    texture.repeat.set(1, 8); // Increased repetition for longer path feel
   }, [texture]);
   
-  // Create terrain geometry with displacement
+  // Create terrain geometry with displacement - making it much longer
   const geometry = useMemo(() => {
-    const geo = new THREE.PlaneGeometry(1, 2, 24, 24);
+    const geo = new THREE.PlaneGeometry(1, 6, 24, 72); // Made depth 6x longer with more segments
     const positionAttribute = geo.getAttribute('position');
     const positions = positionAttribute.array as Float32Array;
     
@@ -36,8 +37,8 @@ export const VaporwaveTerrain = () => {
         positions[i + 2] = height;
       }
       
-      // Add some noise for more interesting terrain
-      const noise = (Math.sin(x * 10) * Math.cos(z * 8)) * 0.02;
+      // Add some noise for more interesting terrain variation along the longer path
+      const noise = (Math.sin(x * 10) * Math.cos(z * 4)) * 0.02;
       positions[i + 2] += noise;
     }
     
@@ -47,11 +48,11 @@ export const VaporwaveTerrain = () => {
     return geo;
   }, []);
   
-  // Animation loop
+  // Animation loop - slower movement for longer path sensation
   useFrame((state) => {
     if (meshRef.current) {
-      // Move terrain towards viewer for that classic vaporwave effect
-      meshRef.current.position.z = (state.clock.elapsedTime * 0.5) % 2 - 1;
+      // Slower movement through the longer terrain
+      meshRef.current.position.z = (state.clock.elapsedTime * 0.3) % 6 - 3;
     }
   });
   
