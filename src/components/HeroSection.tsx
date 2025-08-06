@@ -40,11 +40,6 @@ export const HeroSection = () => {
               INICIAR
             </Button>
           </div>
-
-          {/* Trusted by text */}
-          <p className="text-sm text-white/60 mt-8">
-            Trusted by creative teams at innovative companies
-          </p>
         </div>
 
         {/* Scroll indicator */}
