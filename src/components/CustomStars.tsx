@@ -74,7 +74,7 @@ export const CustomStars = () => {
         />
       </bufferGeometry>
       <pointsMaterial
-        size={0.08}
+        size={0.04}
         sizeAttenuation={true}
         vertexColors={true}
         transparent={true}
