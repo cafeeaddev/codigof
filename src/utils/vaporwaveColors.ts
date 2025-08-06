@@ -2,42 +2,40 @@
 import * as THREE from 'three';
 
 export const getVaporwaveColor = (progress: number, height: number = 0): THREE.Color => {
-  // Normalizar altura para influenciar a cor (-0.3 a 0.3 -> 0 a 1)
-  const heightFactor = Math.max(0, Math.min(1, (height + 0.3) / 0.6));
+  // Bright cyan-based colors for wireframe terrain
+  const heightFactor = Math.max(0, Math.min(1, (height + 0.5) / 1.0));
   
-  // Cores mais sutis e elegantes baseadas no progresso do scroll
   let baseColor: THREE.Color;
-  let accentColor: THREE.Color;
   
   if (progress < 0.33) {
-    // Início: Rosa suave → Azul acinzentado
+    // Bright cyan to electric blue
     const localProgress = progress / 0.33;
-    baseColor = new THREE.Color().setHSL(0.9, 0.4, 0.4); // Rosa suave
-    accentColor = new THREE.Color().setHSL(0.6, 0.5, 0.45); // Azul acinzentado
+    baseColor = new THREE.Color().setHSL(0.5, 1.0, 0.6); // Bright cyan
+    const accentColor = new THREE.Color().setHSL(0.55, 1.0, 0.65); // Electric blue
     baseColor.lerp(accentColor, localProgress);
   } else if (progress < 0.66) {
-    // Meio: Roxo acinzentado → Rosa pálido
+    // Electric blue to teal
     const localProgress = (progress - 0.33) / 0.33;
-    baseColor = new THREE.Color().setHSL(0.75, 0.3, 0.35); // Roxo acinzentado
-    accentColor = new THREE.Color().setHSL(0.95, 0.4, 0.5); // Rosa pálido
+    baseColor = new THREE.Color().setHSL(0.55, 1.0, 0.65); // Electric blue
+    const accentColor = new THREE.Color().setHSL(0.48, 0.9, 0.6); // Bright teal
     baseColor.lerp(accentColor, localProgress);
   } else {
-    // Final: Coral suave → Lavanda
+    // Teal to cyan-white
     const localProgress = (progress - 0.66) / 0.34;
-    baseColor = new THREE.Color().setHSL(0.05, 0.4, 0.5); // Coral suave
-    accentColor = new THREE.Color().setHSL(0.78, 0.3, 0.6); // Lavanda
+    baseColor = new THREE.Color().setHSL(0.48, 0.9, 0.6); // Bright teal
+    const accentColor = new THREE.Color().setHSL(0.52, 0.8, 0.7); // Cyan-white
     baseColor.lerp(accentColor, localProgress);
   }
   
-  // Aplicar fator de altura de forma mais sutil
-  const heightIntensity = 0.7 + (heightFactor * 0.3);
+  // Apply height factor for brightness variation
+  const heightIntensity = 0.8 + (heightFactor * 0.4);
   baseColor.multiplyScalar(heightIntensity);
   
   return baseColor;
 };
 
 export const getEmissiveIntensity = (progress: number, height: number = 0): number => {
-  const baseIntensity = 0.05 + (progress * 0.1); // Muito mais sutil
-  const heightFactor = Math.max(0, Math.min(1, (height + 0.3) / 0.6));
-  return baseIntensity + (heightFactor * 0.05); // Emissão bem reduzida
+  const baseIntensity = 0.8 + (progress * 0.6); // Much brighter base intensity
+  const heightFactor = Math.max(0, Math.min(1, (height + 0.5) / 1.0));
+  return baseIntensity + (heightFactor * 0.4); // Strong emission for wireframe glow
 };

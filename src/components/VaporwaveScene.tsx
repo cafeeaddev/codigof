@@ -9,59 +9,59 @@ export const VaporwaveScene = () => {
     <div className="w-full h-screen relative overflow-hidden">
       <Canvas
         camera={{
-          position: [0, 0.4, 2], // Câmera mais baixa e mais próxima
-          fov: 80, // Campo de visão mais amplo
+          position: [0, 0.6, 2], // Slightly higher for better wireframe view
+          fov: 85, // Wider field of view
           near: 0.01,
-          far: 20,
+          far: 25,
         }}
         className="w-full h-full"
       >
         {/* Background gradient and stars */}
         <VaporwaveBackground />
         <Stars 
-          radius={100} 
-          depth={50} 
-          count={3000} 
-          factor={4} 
+          radius={120} 
+          depth={60} 
+          count={4000} 
+          factor={5} 
           saturation={0} 
           fade={true}
         />
         
-        {/* Enhanced lighting setup */}
-        <ambientLight intensity={0.15} color="#ff00ff" />
+        {/* Enhanced lighting for wireframe visibility */}
+        <ambientLight intensity={0.3} color="#004466" />
         <directionalLight
-          position={[0, 2, 1]}
-          intensity={0.6}
-          color="#ff0080"
+          position={[0, 3, 2]}
+          intensity={1.2}
+          color="#00ffff"
         />
         <pointLight
-          position={[-3, 1, -1]}
-          intensity={0.4}
-          color="#00ffff"
-          distance={15}
+          position={[-5, 2, 0]}
+          intensity={0.8}
+          color="#00aaff"
+          distance={20}
           decay={2}
         />
         <pointLight
-          position={[3, 1, -1]}
-          intensity={0.4}
-          color="#ff00ff"
-          distance={15}
+          position={[5, 2, 0]}
+          intensity={0.8}
+          color="#0088ff"
+          distance={20}
           decay={2}
         />
         
         {/* Main terrain */}
         <VaporwaveTerrain />
         
-        {/* Adjusted development controls */}
+        {/* Development controls */}
         <OrbitControls 
           enableDamping={true}
           dampingFactor={0.05}
           enableZoom={true}
           enablePan={false}
-          maxPolarAngle={Math.PI / 2.2} // Limita o ângulo para manter perspectiva de caminhada
-          minDistance={1}
-          maxDistance={8}
-          target={[0, 0, -2]} // Olhar um pouco à frente no terreno
+          maxPolarAngle={Math.PI / 2.1}
+          minDistance={1.5}
+          maxDistance={10}
+          target={[0, 0, -2]}
         />
       </Canvas>
     </div>
