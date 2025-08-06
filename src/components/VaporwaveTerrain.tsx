@@ -90,14 +90,14 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
   }, []);
   
   
-  // Enhanced color calculation with custom color #372065
+  // Enhanced color calculation with custom blue color #2A689D
   const getEnhancedColor = (progress: number): string => {
-    // Use #372065 color
-    const customPurple = [55, 32, 101]; // #372065
+    // Use #2A689D color for neon lines
+    const customBlue = [42, 104, 157]; // #2A689D
     
-    const r = customPurple[0];
-    const g = customPurple[1];
-    const b = customPurple[2];
+    const r = customBlue[0];
+    const g = customBlue[1];
+    const b = customBlue[2];
     
     return `rgb(${r}, ${g}, ${b})`;
   };
@@ -169,7 +169,7 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
             position={[0, -1.18, 0]}
           >
             <meshBasicMaterial
-              color="#372065"
+              color="#2A689D"
               transparent={true}
               opacity={0.8}
               wireframe={true}
