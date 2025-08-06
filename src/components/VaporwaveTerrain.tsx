@@ -103,60 +103,67 @@ export const VaporwaveTerrain = () => {
   // Animation and color updates
   useFrame((state) => {
     if (backgroundMeshRef.current && wireframeMeshRef.current && backgroundMaterialRef.current) {
-      // Movimento contínuo do terreno com loop infinito
-      const timeMovement = state.clock.elapsedTime * 0.5; // Velocidade do movimento
-      const scrollMovement = scrollProgress * 2; // Efeito do scroll
+      // Movimento contínuo com múltiplos terrenos
+      const timeMovement = state.clock.elapsedTime * 0.8; // Velocidade mais rápida
+      const scrollMovement = scrollProgress * 3; // Efeito do scroll
       
-      // Loop infinito: quando o terreno sai da vista, ele volta ao início
+      // Move todos os terrenos juntos
       const totalMovement = timeMovement + scrollMovement;
-      const loopDistance = 60; // Aumentando a distância do loop para o terreno maior
-      const zPosition = -8 + (totalMovement % loopDistance);
+      const zPosition = -8 + totalMovement;
       
-      backgroundMeshRef.current.position.z = zPosition;
-      wireframeMeshRef.current.position.z = zPosition;
+      // Aplica movimento a todos os terrenos filhos do grupo
+      backgroundMeshRef.current.parent?.children.forEach((child, index) => {
+        if (child.type === 'Group') {
+          child.position.z = (index * 60) + (zPosition % 60) - 60;
+        }
+      });
     }
   });
   
   return (
     <group>
-      {/* Neon terrain with grid pattern and depth */}
-      <mesh
-        ref={backgroundMeshRef}
-        geometry={backgroundGeometry}
-        rotation={[-Math.PI * 0.5, 0, 0]}
-        position={[0, -0.5, -8]}
-      >
-        <meshStandardMaterial
-          ref={backgroundMaterialRef}
-          map={wireframeTexture}
-          normalMap={normalTexture}
-          color="#1a1a2e"
-          emissive={getEnhancedColor(scrollProgress)}
-          emissiveIntensity={0.7}
-          roughness={0.2}
-          metalness={0.8}
-          transparent={true}
-          opacity={0.95}
-          side={THREE.DoubleSide}
-          wireframe={false}
-        />
-      </mesh>
-      
-      {/* Wireframe overlay for neon grid effect */}
-      <mesh
-        ref={wireframeMeshRef}
-        geometry={backgroundGeometry}
-        rotation={[-Math.PI * 0.5, 0, 0]}
-        position={[0, -0.48, -8]}
-      >
-        <meshBasicMaterial
-          color="#8a2be2"
-          transparent={true}
-          opacity={0.8}
-          wireframe={true}
-        />
-      </mesh>
-      
+      {/* Múltiplos terrenos para loop infinito perfeito */}
+      {[0, 1, 2].map((index) => (
+        <group key={index}>
+          {/* Neon terrain with grid pattern and depth */}
+          <mesh
+            ref={index === 0 ? backgroundMeshRef : undefined}
+            geometry={backgroundGeometry}
+            rotation={[-Math.PI * 0.5, 0, 0]}
+            position={[0, -0.5, -8 + (index * 60)]}
+          >
+            <meshStandardMaterial
+              ref={index === 0 ? backgroundMaterialRef : undefined}
+              map={wireframeTexture}
+              normalMap={normalTexture}
+              color="#1a1a2e"
+              emissive={getEnhancedColor(scrollProgress)}
+              emissiveIntensity={0.7}
+              roughness={0.2}
+              metalness={0.8}
+              transparent={true}
+              opacity={0.95}
+              side={THREE.DoubleSide}
+              wireframe={false}
+            />
+          </mesh>
+          
+          {/* Wireframe overlay for neon grid effect */}
+          <mesh
+            ref={index === 0 ? wireframeMeshRef : undefined}
+            geometry={backgroundGeometry}
+            rotation={[-Math.PI * 0.5, 0, 0]}
+            position={[0, -0.48, -8 + (index * 60)]}
+          >
+            <meshBasicMaterial
+              color="#8a2be2"
+              transparent={true}
+              opacity={0.8}
+              wireframe={true}
+            />
+          </mesh>
+        </group>
+      ))}
     </group>
   );
 };
