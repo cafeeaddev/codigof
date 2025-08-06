@@ -33,13 +33,17 @@ export const VaporwaveTerrain = () => {
       const x = positions[i];
       const z = positions[i + 1];
       
-      // Create mostly flat terrain with very subtle variations
-      // Only very small waves to maintain grid structure
-      const subtleWave1 = Math.sin(x * 0.1) * Math.cos(z * 0.1) * 0.05;
-      const subtleWave2 = Math.sin(x * 0.2) * Math.cos(z * 0.2) * 0.03;
+      // Create smooth wave terrain like in reference image
+      const wave1 = Math.sin(x * 0.3) * Math.cos(z * 0.3) * 0.8;
+      const wave2 = Math.sin(x * 0.6) * Math.cos(z * 0.6) * 0.4;
+      const wave3 = Math.sin(x * 1.2) * Math.cos(z * 1.2) * 0.2;
+      const wave4 = Math.sin(x * 2.4) * Math.cos(z * 2.4) * 0.1;
       
-      // Very minimal height variation to keep the grid pattern clean
-      const height = subtleWave1 + subtleWave2;
+      // Distance-based variation for more dynamic terrain
+      const distanceEffect = Math.sin(Math.sqrt(x * x + z * z) * 0.2) * 0.3;
+      
+      // Combine waves for natural undulating terrain
+      const height = wave1 + wave2 + wave3 + wave4 + distanceEffect;
       positions[i + 2] = height;
       maxHeight = Math.max(maxHeight, Math.abs(height));
     }
