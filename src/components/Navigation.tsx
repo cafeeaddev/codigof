@@ -33,20 +33,35 @@ export const Navigation = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <div className="w-8 h-8 bg-gradient-neon rounded-lg"></div>
+            <h1 className="text-xl font-bold bg-gradient-neon bg-clip-text text-transparent">
+              Vaporwave
+            </h1>
           </div>
 
           {/* Desktop Navigation */}
           <div className="hidden md:block">
             <div className="ml-10 flex items-baseline space-x-8">
-              {/* Navigation items removed */}
+              {navLinks.map((link) => (
+                <a
+                  key={link.name}
+                  href={link.href}
+                  className="text-white/80 hover:text-white transition-colors duration-200 text-sm font-medium"
+                >
+                  {link.name}
+                </a>
+              ))}
             </div>
           </div>
 
           {/* Desktop CTA */}
           <div className="hidden md:block">
             <div className="ml-4 flex items-center md:ml-6 space-x-4">
-              {/* CTA buttons removed */}
+              <Button variant="ghost" className="text-white hover:bg-white/10">
+                Log in
+              </Button>
+              <Button className="bg-white/10 text-white border border-white/20 hover:bg-white/20 backdrop-blur-sm">
+                Sign up
+              </Button>
             </div>
           </div>
 
@@ -67,7 +82,24 @@ export const Navigation = () => {
         {isMobileMenuOpen && (
           <div className="md:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1 bg-black/40 backdrop-blur-xl rounded-lg mt-2 border border-white/10">
-              {/* Mobile navigation items removed */}
+              {navLinks.map((link) => (
+                <a
+                  key={link.name}
+                  href={link.href}
+                  className="text-white/80 hover:text-white block px-3 py-2 text-base font-medium transition-colors duration-200"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  {link.name}
+                </a>
+              ))}
+              <div className="pt-4 pb-2 space-y-2">
+                <Button variant="ghost" className="w-full text-white hover:bg-white/10">
+                  Log in
+                </Button>
+                <Button className="w-full bg-white/10 text-white border border-white/20 hover:bg-white/20 backdrop-blur-sm">
+                  Sign up
+                </Button>
+              </div>
             </div>
           </div>
         )}
