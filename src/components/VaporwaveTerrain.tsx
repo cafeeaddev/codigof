@@ -23,9 +23,9 @@ export const VaporwaveTerrain = () => {
     texture.repeat.set(8, 16); // Increased repetition for denser grid
   }, [texture]);
   
-  // Create lower mountains with pronounced central path
+  // Create lower mountains with pronounced central path and higher side mountains
   const { geometry, maxHeight } = useMemo(() => {
-    const geo = new THREE.PlaneGeometry(20, 30, 200, 250);
+    const geo = new THREE.PlaneGeometry(24, 35, 220, 280);
     const positionAttribute = geo.getAttribute('position');
     const positions = positionAttribute.array as Float32Array;
     let maxHeight = 0;
@@ -36,37 +36,59 @@ export const VaporwaveTerrain = () => {
       
       // Create wide, clear central path
       const distanceFromCenter = Math.abs(x);
-      const pathWidth = 4.0; // Wide path
-      const pathDepth = 1.2; // Moderate depth for clear passage
-      const mountainStart = 5.5; // Where mountains begin
+      const pathWidth = 3.8; // Wide path
+      const pathDepth = 1.0; // Moderate depth for clear passage
+      const transitionZone = 5.8; // Where transition to mountains begins
+      const mountainStart = 7.0; // Where main mountains begin
       
       let height = 0;
       
       if (distanceFromCenter < pathWidth) {
         // Central path - completely flat with slight depression
         const pathFactor = 1 - (distanceFromCenter / pathWidth);
-        height = -pathDepth * Math.pow(pathFactor, 2);
-      } else if (distanceFromCenter > mountainStart) {
-        // Mountain ranges on sides - lower than before
+        height = -pathDepth * Math.pow(pathFactor, 1.5);
+      } else if (distanceFromCenter < transitionZone) {
+        // Transition zone - gentle hills
+        const transitionFactor = (distanceFromCenter - pathWidth) / (transitionZone - pathWidth);
+        height = Math.sin(transitionFactor * Math.PI * 0.5) * 0.4;
+        
+        // Add some small hills in transition
+        const smallHills = Math.sin(x * 1.2) * Math.cos(z * 0.8) * 0.2;
+        height += smallHills * transitionFactor;
+      } else if (distanceFromCenter < mountainStart) {
+        // Pre-mountain area with medium elevations
+        const preMountainFactor = (distanceFromCenter - transitionZone) / (mountainStart - transitionZone);
+        const mediumElevations = Math.sin(x * 0.6) * Math.cos(z * 0.4) * 0.8;
+        const detailWaves = Math.sin(x * 2.0) * Math.cos(z * 1.5) * 0.3;
+        height = (mediumElevations + detailWaves) * preMountainFactor;
+      } else {
+        // Main mountain ranges - much higher and more varied
         const mountainDistance = distanceFromCenter - mountainStart;
         
-        // Primary mountain waves - much lower
-        const mountain1 = Math.sin(x * 0.4) * Math.cos(z * 0.3) * 0.8;
-        const mountain2 = Math.sin(x * 0.8) * Math.cos(z * 0.6) * 0.4;
-        const mountain3 = Math.sin(x * 1.6) * Math.cos(z * 1.2) * 0.2;
+        // Multiple mountain layers for complexity
+        const primaryMountains = Math.sin(x * 0.3) * Math.cos(z * 0.25) * 2.2; // Tall primary peaks
+        const secondaryMountains = Math.sin(x * 0.7) * Math.cos(z * 0.5) * 1.4; // Medium peaks
+        const tertiaryMountains = Math.sin(x * 1.4) * Math.cos(z * 1.0) * 0.8; // Smaller peaks
+        const detailRidges = Math.sin(x * 2.8) * Math.cos(z * 2.0) * 0.4; // Fine details
+        const microVariations = Math.sin(x * 5.6) * Math.cos(z * 4.0) * 0.15; // Micro details
         
-        // Distance-based height reduction
-        const distanceFactor = Math.min(mountainDistance / 3.0, 1.0);
-        height = (mountain1 + mountain2 + mountain3) * distanceFactor;
+        // Distance-based scaling - mountains get higher further from center
+        const distanceScale = Math.min(mountainDistance / 4.0, 1.2);
         
-        // Add some variation
-        const variation = Math.sin(x * 4) * Math.cos(z * 4) * 0.1;
-        height += variation;
-      } else {
-        // Transition zone between path and mountains
-        const transitionFactor = (distanceFromCenter - pathWidth) / (mountainStart - pathWidth);
-        const gentleRise = Math.sin(transitionFactor * Math.PI * 0.5) * 0.3;
-        height = gentleRise;
+        // Create ridges parallel to the path
+        const ridgeEffect = Math.sin(z * 0.8) * 0.6;
+        
+        // Combine all mountain effects
+        height = (primaryMountains + secondaryMountains + tertiaryMountains + detailRidges + microVariations + ridgeEffect) * distanceScale;
+        
+        // Add some dramatic peaks at the edges
+        if (distanceFromCenter > 10) {
+          const edgePeaks = Math.sin(x * 0.4 + z * 0.3) * 1.8;
+          height += edgePeaks * Math.min((distanceFromCenter - 10) / 2.0, 1.0);
+        }
+        
+        // Ensure mountains don't go too low
+        height = Math.max(height, 0.2 * distanceScale);
       }
       
       positions[i + 2] = height;
@@ -88,22 +110,38 @@ export const VaporwaveTerrain = () => {
     return new THREE.Color().setHSL(hue / 360, saturation / 100, lightness / 100);
   };
 
-  // Internal lights for mountain depth
+  // Internal lights for mountain depth - more lights for bigger mountains
   const internalLights = useMemo(() => {
     const lights = [];
-    for (let i = 0; i < 8; i++) {
-      const angle = (i / 8) * Math.PI * 2;
-      const radius = 6 + Math.random() * 4;
+    // Main mountain lights
+    for (let i = 0; i < 12; i++) {
+      const angle = (i / 12) * Math.PI * 2;
+      const radius = 8 + Math.random() * 6;
       const x = Math.cos(angle) * radius;
       const z = Math.sin(angle) * radius;
-      const y = -0.5 - Math.random() * 0.5;
+      const y = -0.3 - Math.random() * 0.8;
       
       lights.push({
         position: [x, y, z],
-        color: new THREE.Color().setHSL((i * 45) / 360, 0.8, 0.6),
-        intensity: 0.5 + Math.random() * 0.3
+        color: new THREE.Color().setHSL((i * 30) / 360, 0.8, 0.6),
+        intensity: 0.4 + Math.random() * 0.4
       });
     }
+    
+    // Additional peak lights for dramatic effect
+    for (let i = 0; i < 6; i++) {
+      const side = i % 2 === 0 ? 1 : -1;
+      const x = side * (10 + Math.random() * 4);
+      const z = -10 + (i * 4) + Math.random() * 2;
+      const y = 0.5 + Math.random() * 1.0;
+      
+      lights.push({
+        position: [x, y, z],
+        color: new THREE.Color().setHSL((240 + i * 20) / 360, 0.9, 0.7),
+        intensity: 0.6 + Math.random() * 0.3
+      });
+    }
+    
     return lights;
   }, []);
   
