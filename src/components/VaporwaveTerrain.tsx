@@ -4,7 +4,22 @@ import { TextureLoader } from 'three';
 import * as THREE from 'three';
 import gridTexture from '../assets/vaporwave-grid.jpg';
 
-export const VaporwaveTerrain = () => {
+interface Theme {
+  name: string;
+  colors: {
+    primary: string;
+    secondary: string;
+    emissive: string;
+    background: string[];
+    light: string;
+  };
+}
+
+interface VaporwaveTerrainProps {
+  theme: Theme;
+}
+
+export const VaporwaveTerrain = ({ theme }: VaporwaveTerrainProps) => {
   const meshRef = useRef<THREE.Mesh>(null);
   
   // Load the grid texture
@@ -64,8 +79,8 @@ export const VaporwaveTerrain = () => {
     >
       <meshStandardMaterial
         map={texture}
-        color="#ff00ff"
-        emissive="#440044"
+        color={theme.colors.primary}
+        emissive={theme.colors.emissive}
         emissiveIntensity={0.2}
         metalness={0.8}
         roughness={0.2}
