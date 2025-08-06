@@ -1,117 +1,91 @@
 
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Stars } from '@react-three/drei';
-import { VaporwavePath } from './VaporwavePath';
+import { VaporwaveRoad } from './VaporwaveRoad';
+import { VaporwaveDistantMountains } from './VaporwaveDistantMountains';
 import { VaporwaveBackground } from './VaporwaveBackground';
 import { useScrollTerrain } from '../hooks/useScrollTerrain';
-import * as THREE from 'three';
 
-// Enhanced camera controller for continuous path movement
-const PathCamera = () => {
+// First person camera on the road - movement based ONLY on scroll
+const RoadCamera = () => {
   const scrollProgress = useScrollTerrain();
   const { camera } = useThree();
   
-  useFrame((state) => {
-    // Continuous camera movement independent of scroll
-    const continuousMovement = state.clock.elapsedTime * 2;
-    const scrollDistance = scrollProgress * 15;
+  useFrame(() => {
+    // First person view on the road - low height like walking
+    const roadHeight = 1.5;
+    const forwardDistance = scrollProgress * 50; // Move forward only with scroll
     
-    // Camera follows the path like walking/driving continuously
-    const pathHeight = 2.2; // Slightly higher to see over path elevations
-    const totalDistance = continuousMovement + scrollDistance;
-    
-    // Smooth camera movement along the path with gentle swaying
+    // Camera position - always on the road, moving forward with scroll
     camera.position.set(
-      Math.sin(state.clock.elapsedTime * 0.3) * 0.8, // Side-to-side movement
-      pathHeight + Math.sin(state.clock.elapsedTime * 0.5) * 0.3, // Gentle vertical bob
-      8 + totalDistance
+      0, // Center of road
+      roadHeight, // Walking height
+      forwardDistance + 5 // Forward position based on scroll
     );
     
-    // Look ahead down the path
-    const lookAtZ = totalDistance - 3;
-    const lookAtX = Math.sin(state.clock.elapsedTime * 0.2) * 0.5;
-    camera.lookAt(lookAtX, pathHeight * 0.5, lookAtZ);
-    
-    // Debug path movement every 2 seconds
-    if (Math.floor(state.clock.elapsedTime) % 2 === 0 && state.clock.elapsedTime % 1 < 0.016) {
-      console.log('Continuous Path Camera - Time:', state.clock.elapsedTime.toFixed(1), 
-                 'Total Distance:', totalDistance.toFixed(1), 'Height:', pathHeight);
-    }
+    // Always look ahead down the road
+    camera.lookAt(0, roadHeight * 0.7, forwardDistance - 10);
   });
   
   return null;
 };
 
 export const VaporwaveScene = () => {
-  console.log('VaporwaveScene: Rendering continuous vaporwave path...');
+  console.log('VaporwaveScene: Rendering scroll-controlled vaporwave highway...');
   
   return (
     <div className="w-full h-screen relative overflow-hidden">
       <Canvas
         camera={{
-          position: [0, 2.2, 8],
-          fov: 75,
+          position: [0, 1.5, 5],
+          fov: 85,
           near: 0.1,
-          far: 300,
+          far: 200,
         }}
         className="w-full h-full"
-        onCreated={({ gl, scene, camera }) => {
-          console.log('Continuous Path Canvas created successfully!');
-          
-          // Enhanced renderer settings for taller mountains
-          gl.setClearColor('#000015');
+        onCreated={({ gl }) => {
+          console.log('Vaporwave Highway Canvas created!');
+          gl.setClearColor('#0a0015');
           gl.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         }}
-        onError={(error) => {
-          console.error('Path Canvas error:', error);
-        }}
       >
-        {/* Coordinate system for debugging */}
-        <primitive 
-          object={new THREE.AxesHelper(3)} 
-          position={[0, 0, 0]} 
-        />
+        {/* Scroll-controlled first person camera */}
+        <RoadCamera />
         
-        {/* Continuous path-optimized camera controller */}
-        <PathCamera />
-        
-        {/* Enhanced background for path scene */}
+        {/* Classic vaporwave background */}
         <VaporwaveBackground />
         
-        {/* More atmospheric stars for taller mountains */}
+        {/* Distant stars */}
         <Stars 
-          radius={200} 
-          depth={100} 
-          count={1200} 
-          factor={2.5} 
-          saturation={0.4} 
+          radius={150} 
+          depth={50} 
+          count={800} 
+          factor={2} 
+          saturation={0.3} 
           fade={true}
         />
         
-        {/* Enhanced lighting for taller path and mountains */}
-        <ambientLight intensity={0.18} color="#2a0845" />
+        {/* Highway lighting */}
+        <ambientLight intensity={0.15} color="#1a0033" />
         <directionalLight
-          position={[0, 15, 8]}
-          intensity={2.0}
-          color="#ff00ff"
-          castShadow={false}
+          position={[0, 10, 5]}
+          intensity={1.5}
+          color="#ff007f"
         />
         <directionalLight
-          position={[8, 12, 5]}
-          intensity={0.8}
-          color="#00ffff"
-        />
-        <directionalLight
-          position={[-8, 12, 5]}
+          position={[0, 8, -5]}
           intensity={0.8}
           color="#00ffff"
         />
         
-        {/* Enhanced fog for taller mountain depth */}
-        <fog attach="fog" args={['#000025', 25, 150]} />
+        {/* Atmospheric fog */}
+        <fog attach="fog" args={['#0a0015', 30, 80]} />
         
-        {/* Main vaporwave path with taller side mountains */}
-        <VaporwavePath />
+        {/* Main highway road */}
+        <VaporwaveRoad />
+        
+        {/* Distant mountain silhouettes with parallax */}
+        <VaporwaveDistantMountains />
       </Canvas>
     </div>
   );
