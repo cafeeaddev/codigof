@@ -84,16 +84,24 @@ export const VaporwaveTerrain = () => {
     positionAttribute.needsUpdate = true;
     bgGeo.computeVertexNormals();
     
-    // Create light points scattered across the terrain
+    // Create multiple layers of light points embedded in terrain
     const lightPoints = [];
-    const lightCount = 200;
+    const lightCount = 300;
     
     for (let i = 0; i < lightCount; i++) {
-      const x = (Math.random() - 0.5) * 20; // Spread across terrain
-      const z = (Math.random() - 0.5) * 20;
-      const height = calculateHeightAtPoint(x, z) + 0.1; // Slightly above terrain
+      const x = (Math.random() - 0.5) * 18; // Slightly smaller spread
+      const z = (Math.random() - 0.5) * 18;
+      const terrainHeight = calculateHeightAtPoint(x, z);
       
-      lightPoints.push(x, height, z);
+      // Create multiple depth layers - some embedded, some at surface
+      const depthVariation = Math.random() * 0.4; // 0 to 0.4 units deep
+      const finalHeight = terrainHeight - depthVariation;
+      
+      // Concentrate more points in elevated areas (like reference)
+      const elevationFactor = Math.abs(terrainHeight) / maxHeight;
+      if (Math.random() < 0.3 + elevationFactor * 0.7) { // Higher chance in elevated areas
+        lightPoints.push(x, finalHeight, z);
+      }
     }
     
     const lightGeo = new THREE.BufferGeometry();
@@ -184,10 +192,10 @@ export const VaporwaveTerrain = () => {
         position={[0, 0.05, -2]}
       >
         <pointsMaterial
-          color="#00ffff"
-          size={0.15}
+          color="#4dd0e1"
+          size={0.08}
           transparent={true}
-          opacity={0.8}
+          opacity={0.6}
           sizeAttenuation={true}
         />
       </points>
