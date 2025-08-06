@@ -103,10 +103,10 @@ export const VaporwaveTerrain = () => {
   // Animation and color updates
   useFrame((state) => {
     if (backgroundMeshRef.current && wireframeMeshRef.current && backgroundMaterialRef.current) {
-      // Linear continuous terrain movement forward
-      const timeMovement = state.clock.elapsedTime * 0.15;
-      const scrollMovement = scrollProgress * 2;
-      const zPosition = -2 + (timeMovement + scrollMovement); // Continuous linear movement
+      // Movimento contínuo do terreno passando por baixo da câmera
+      const timeMovement = state.clock.elapsedTime * 0.3; // Velocidade do movimento
+      const scrollMovement = scrollProgress * 1; // Efeito do scroll
+      const zPosition = -8 + (timeMovement + scrollMovement); // Terreno vem de longe
       
       backgroundMeshRef.current.position.z = zPosition;
       wireframeMeshRef.current.position.z = zPosition;
@@ -120,7 +120,7 @@ export const VaporwaveTerrain = () => {
         ref={backgroundMeshRef}
         geometry={backgroundGeometry}
         rotation={[-Math.PI * 0.5, 0, 0]}
-        position={[0, -0.02, -2]}
+        position={[0, -0.5, -8]}
       >
         <meshStandardMaterial
           ref={backgroundMaterialRef}
@@ -143,7 +143,7 @@ export const VaporwaveTerrain = () => {
         ref={wireframeMeshRef}
         geometry={backgroundGeometry}
         rotation={[-Math.PI * 0.5, 0, 0]}
-        position={[0, 0, -2]}
+        position={[0, -0.48, -8]}
       >
         <meshBasicMaterial
           color="#8a2be2"

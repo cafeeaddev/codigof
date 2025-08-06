@@ -10,8 +10,8 @@ export const VaporwaveScene = () => {
     <div className="w-full h-screen relative overflow-hidden">
       <Canvas
         camera={{
-          position: [0, 0.2, -1], // Câmera baixa, próxima ao terreno
-          fov: 85, // Campo de visão mais amplo para efeito imersivo
+          position: [0, 1.5, 2], // Câmera acima do terreno, olhando para frente
+          fov: 75, // Campo de visão adequado
           near: 0.01,
           far: 200,
         }}
@@ -54,11 +54,11 @@ export const VaporwaveScene = () => {
           dampingFactor={0.05}
           enableZoom={false}
           enablePan={false}
-          maxPolarAngle={Math.PI / 2.5} // Limita a rotação para baixo
-          minPolarAngle={Math.PI / 4}   // Limita a rotação para cima
-          minDistance={0.5}
-          maxDistance={2}
-          target={[0, 0, 0]} // Foco no centro do terreno
+          maxPolarAngle={Math.PI / 2.2} // Permite olhar um pouco para baixo
+          minPolarAngle={Math.PI / 6}   // Não permite olhar muito para cima
+          minDistance={2}
+          maxDistance={4}
+          target={[0, 0, -2]} // Foco no terreno à frente
         />
       </Canvas>
     </div>
