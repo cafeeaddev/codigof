@@ -20,29 +20,41 @@ export const VaporwaveTerrain = () => {
     texture.repeat.set(4, 8);
   }, [texture]);
   
-  // Create expanded terrain geometry with more pronounced undulations
+  // Create expanded terrain geometry with central path
   const { geometry, maxHeight } = useMemo(() => {
-    const geo = new THREE.PlaneGeometry(12, 16, 128, 128); // Increased resolution for better wireframe
+    const geo = new THREE.PlaneGeometry(12, 16, 128, 128);
     const positionAttribute = geo.getAttribute('position');
     const positions = positionAttribute.array as Float32Array;
     let maxHeight = 0;
     
-    // Create more dramatic terrain with multiple wave patterns
     for (let i = 0; i < positions.length; i += 3) {
       const x = positions[i];
       const z = positions[i + 1];
       
-      // Multiple wave layers for more complex terrain
+      // Create central path effect
+      const distanceFromCenter = Math.abs(x);
+      const pathWidth = 2.0; // Width of the central path
+      const pathDepth = 0.3; // How deep the path is
+      
+      // Path effect - creates a depression in the center
+      let pathEffect = 0;
+      if (distanceFromCenter < pathWidth) {
+        const pathFactor = 1 - (distanceFromCenter / pathWidth);
+        pathEffect = -pathDepth * Math.pow(pathFactor, 2); // Smooth depression
+      }
+      
+      // Multiple wave layers for terrain variation
       const wave1 = Math.sin(x * 0.8) * Math.cos(z * 0.6) * 0.8;
       const wave2 = Math.sin(x * 1.5) * Math.cos(z * 1.2) * 0.4;
       const wave3 = Math.sin(x * 3) * Math.cos(z * 2.5) * 0.2;
       const wave4 = Math.sin(x * 6) * Math.cos(z * 4) * 0.1;
       
-      // Create distance-based elevation
-      const distanceFromCenter = Math.sqrt(x * x * 0.1 + z * z * 0.05);
-      const distanceEffect = Math.sin(distanceFromCenter) * 0.3;
+      // Distance-based elevation
+      const distanceFromCenterTotal = Math.sqrt(x * x * 0.1 + z * z * 0.05);
+      const distanceEffect = Math.sin(distanceFromCenterTotal) * 0.3;
       
-      const height = wave1 + wave2 + wave3 + wave4 + distanceEffect;
+      // Combine all effects - path effect reduces the overall height in the center
+      const height = (wave1 + wave2 + wave3 + wave4 + distanceEffect) + pathEffect;
       positions[i + 2] = height;
       maxHeight = Math.max(maxHeight, Math.abs(height));
     }
@@ -55,10 +67,9 @@ export const VaporwaveTerrain = () => {
   
   // Get dynamic cyan color based on scroll
   const getCyanColor = (progress: number) => {
-    // Bright cyan with slight variations
     const hue = 180 + (progress * 20); // 180-200 range (cyan to blue-cyan)
     const saturation = 95 + (progress * 5); // 95-100%
-    const lightness = 50 + (progress * 20); // 50-70%
+    const lightness = 50 + (progress * 30); // 50-80%
     
     return new THREE.Color().setHSL(hue / 360, saturation / 100, lightness / 100);
   };
@@ -77,9 +88,9 @@ export const VaporwaveTerrain = () => {
       
       materialRef.current.color = baseColor;
       materialRef.current.emissive = emissiveColor;
-      materialRef.current.emissiveIntensity = 0.8 + (scrollProgress * 0.4); // Much brighter emission
+      materialRef.current.emissiveIntensity = 1.5 + (scrollProgress * 0.8);
       
-      // Adjust material properties for wireframe glow
+      // Wireframe properties
       materialRef.current.metalness = 0.1;
       materialRef.current.roughness = 0.9;
     }
@@ -95,8 +106,8 @@ export const VaporwaveTerrain = () => {
       <meshStandardMaterial
         ref={materialRef}
         color="#00ffff"
-        emissive="#0088aa"
-        emissiveIntensity={1.2}
+        emissive="#0088ff"
+        emissiveIntensity={2.0}
         metalness={0.1}
         roughness={0.9}
         wireframe={true}
