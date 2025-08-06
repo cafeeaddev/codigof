@@ -9,7 +9,7 @@ export const HeroSection = () => {
         {/* Main Title */}
         <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-6 leading-tight">
           <span className="bg-gradient-neon bg-clip-text text-transparent">
-            Grow with
+            Código F
           </span>
           <br />
           <span className="text-white">
