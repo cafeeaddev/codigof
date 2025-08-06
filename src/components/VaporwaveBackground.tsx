@@ -6,7 +6,7 @@ export const VaporwaveBackground = () => {
   const backgroundRef = useRef<THREE.Mesh>(null);
   
   // Create gradient background geometry - much larger to cover the entire view
-  const geometry = new THREE.PlaneGeometry(100, 100);
+  const geometry = new THREE.PlaneGeometry(300, 300);
   
   // Create shader material for animated gradient background
   const material = new THREE.ShaderMaterial({
@@ -47,7 +47,8 @@ export const VaporwaveBackground = () => {
         gl_FragColor = vec4(finalColor, 1.0);
       }
     `,
-    side: THREE.BackSide
+    depthTest: false,
+    transparent: true
   });
   
   useFrame((state) => {
@@ -57,7 +58,7 @@ export const VaporwaveBackground = () => {
   });
   
   return (
-    <mesh ref={backgroundRef} material={material} geometry={geometry} position={[0, 0, -20]} scale={[1, 1, 1]}>
+    <mesh ref={backgroundRef} material={material} geometry={geometry} position={[0, 0, -80]} scale={[1, 1, 1]}>
     </mesh>
   );
 };
