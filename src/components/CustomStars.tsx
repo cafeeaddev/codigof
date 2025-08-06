@@ -15,16 +15,16 @@ export const CustomStars = () => {
 
   // Generate star positions only in the sky area
   const { positions, colors } = useMemo(() => {
-    const starCount = 2000; // More stars for better coverage
+    const starCount = 3000; // More stars for better coverage
     const positions = new Float32Array(starCount * 3);
     const colors = new Float32Array(starCount * 3);
     
     let index = 0;
     
     for (let i = 0; i < starCount; i++) {
-      // Volta para distribuição aleatória simples que funcionava
-      const x = (Math.random() - 0.5) * 80; 
-      const z = Math.random() * -40 - 5;     
+      // Expanded distribution to cover the entire visible sky
+      const x = (Math.random() - 0.5) * 120; // Wider X coverage (-60 to +60)
+      const z = Math.random() * -60 - 5;     // Deeper Z coverage (-65 to -5)
       
       // Calculate terrain height at this x,z position
       const terrainHeight = calculateHeightAtPoint(x, z);
