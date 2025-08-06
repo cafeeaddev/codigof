@@ -10,8 +10,8 @@ export const VaporwaveScene = () => {
     <div className="w-full h-screen relative overflow-hidden">
       <Canvas
         camera={{
-          position: [0, 1.5, 2], // Câmera acima do terreno, olhando para frente
-          fov: 75, // Campo de visão adequado
+          position: [0, 2, 3], // Aumentei a altura para subir o horizonte
+          fov: 75,
           near: 0.01,
           far: 200,
         }}
