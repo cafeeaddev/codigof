@@ -7,9 +7,8 @@ import gridTexture from '../assets/vaporwave-grid.jpg';
 import { useScrollProgress } from '../hooks/useScrollProgress';
 
 export const VaporwaveTerrain = () => {
-  const meshRef = useRef<THREE.Mesh>(null);
+  const gridRef = useRef<THREE.LineSegments>(null);
   const backgroundMeshRef = useRef<THREE.Mesh>(null);
-  const materialRef = useRef<THREE.MeshStandardMaterial>(null);
   const backgroundMaterialRef = useRef<THREE.MeshStandardMaterial>(null);
   const scrollProgress = useScrollProgress();
   
@@ -44,10 +43,11 @@ export const VaporwaveTerrain = () => {
     return tex;
   }, [texture]);
   
-  // Create square terrain geometry - visible grid squares
-  const { geometry, maxHeight } = useMemo(() => {
-    const geo = new THREE.PlaneGeometry(24, 24, 48, 48); // Square terrain with visible grid
-    const positionAttribute = geo.getAttribute('position');
+  // Create square terrain geometry for background
+  const { backgroundGeometry, gridGeometry, maxHeight } = useMemo(() => {
+    // Background terrain geometry (same as before)
+    const bgGeo = new THREE.PlaneGeometry(24, 24, 48, 48);
+    const positionAttribute = bgGeo.getAttribute('position');
     const positions = positionAttribute.array as Float32Array;
     let maxHeight = 0;
     
@@ -71,10 +71,61 @@ export const VaporwaveTerrain = () => {
     }
     
     positionAttribute.needsUpdate = true;
-    geo.computeVertexNormals();
+    bgGeo.computeVertexNormals();
     
-    return { geometry: geo, maxHeight };
+    // Create custom grid geometry with only horizontal and vertical lines
+    const gridPoints = [];
+    const gridSize = 24;
+    const gridSegments = 48;
+    const stepSize = gridSize / gridSegments;
+    
+    // Create horizontal lines
+    for (let i = 0; i <= gridSegments; i++) {
+      const z = -gridSize / 2 + i * stepSize;
+      for (let j = 0; j < gridSegments; j++) {
+        const x1 = -gridSize / 2 + j * stepSize;
+        const x2 = -gridSize / 2 + (j + 1) * stepSize;
+        
+        // Calculate height at both points
+        const height1 = calculateHeightAtPoint(x1, z);
+        const height2 = calculateHeightAtPoint(x2, z);
+        
+        gridPoints.push(x1, height1, z);
+        gridPoints.push(x2, height2, z);
+      }
+    }
+    
+    // Create vertical lines
+    for (let i = 0; i <= gridSegments; i++) {
+      const x = -gridSize / 2 + i * stepSize;
+      for (let j = 0; j < gridSegments; j++) {
+        const z1 = -gridSize / 2 + j * stepSize;
+        const z2 = -gridSize / 2 + (j + 1) * stepSize;
+        
+        // Calculate height at both points
+        const height1 = calculateHeightAtPoint(x, z1);
+        const height2 = calculateHeightAtPoint(x, z2);
+        
+        gridPoints.push(x, height1, z1);
+        gridPoints.push(x, height2, z2);
+      }
+    }
+    
+    const gridGeo = new THREE.BufferGeometry();
+    gridGeo.setAttribute('position', new THREE.Float32BufferAttribute(gridPoints, 3));
+    
+    return { backgroundGeometry: bgGeo, gridGeometry: gridGeo, maxHeight };
   }, []);
+  
+  // Helper function to calculate height at any point (matches terrain generation)
+  const calculateHeightAtPoint = (x: number, z: number) => {
+    const wave1 = Math.sin(x * 0.3) * Math.cos(z * 0.3) * 0.8;
+    const wave2 = Math.sin(x * 0.6) * Math.cos(z * 0.6) * 0.4;
+    const wave3 = Math.sin(x * 1.2) * Math.cos(z * 1.2) * 0.2;
+    const wave4 = Math.sin(x * 2.4) * Math.cos(z * 2.4) * 0.1;
+    const distanceEffect = Math.sin(Math.sqrt(x * x + z * z) * 0.2) * 0.3;
+    return wave1 + wave2 + wave3 + wave4 + distanceEffect;
+  };
   
   // Enhanced color system similar to reference image
   const getEnhancedColor = (progress: number) => {
@@ -97,26 +148,14 @@ export const VaporwaveTerrain = () => {
   
   // Animation and color updates
   useFrame((state) => {
-    if (meshRef.current && materialRef.current && backgroundMeshRef.current && backgroundMaterialRef.current) {
+    if (gridRef.current && backgroundMeshRef.current && backgroundMaterialRef.current) {
       // Continuous terrain movement + inverted scroll influence - longer cycle
       const timeMovement = state.clock.elapsedTime * 0.2;
       const scrollMovement = -scrollProgress * 12;
       const zPosition = ((timeMovement + scrollMovement) % 24) - 12; // Square cycle
       
-      meshRef.current.position.z = zPosition;
+      gridRef.current.position.z = zPosition;
       backgroundMeshRef.current.position.z = zPosition;
-      
-      // Force golden wireframe color consistently
-      materialRef.current.color.setHex(0xffdd00);
-      materialRef.current.emissive.setHex(0xffaa00);
-      materialRef.current.emissiveIntensity = 2.2;
-      
-      // Enhanced wireframe properties
-      materialRef.current.metalness = 0.0;
-      materialRef.current.roughness = 1.0;
-      
-      // Let the texture be visible instead of overriding with procedural colors
-      // Just keep the background material stable for texture visibility
     }
   });
   
@@ -125,7 +164,7 @@ export const VaporwaveTerrain = () => {
       {/* Background terrain - textured surface */}
       <mesh
         ref={backgroundMeshRef}
-        geometry={geometry}
+        geometry={backgroundGeometry}
         rotation={[-Math.PI * 0.5, 0, 0]}
         position={[0, -0.02, -2]}
       >
@@ -143,25 +182,19 @@ export const VaporwaveTerrain = () => {
         />
       </mesh>
       
-      {/* Wireframe terrain - on top */}
-      <mesh
-        ref={meshRef}
-        geometry={geometry}
+      {/* Clean grid lines - only horizontal and vertical */}
+      <lineSegments
+        ref={gridRef}
+        geometry={gridGeometry}
         rotation={[-Math.PI * 0.5, 0, 0]}
-        position={[0, 0, -2]}
+        position={[0, 0.01, -2]}
       >
-        <meshStandardMaterial
-          ref={materialRef}
+        <lineBasicMaterial
           color="#ffdd00"
-          emissive="#ffaa00"
-          emissiveIntensity={2.0}
-          metalness={0.1}
-          roughness={0.9}
-          wireframe={true}
           transparent={true}
-          opacity={0.95}
+          opacity={0.9}
         />
-      </mesh>
+      </lineSegments>
     </group>
   );
 };
