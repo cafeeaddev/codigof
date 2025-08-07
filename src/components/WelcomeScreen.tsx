@@ -120,17 +120,17 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
       </div>
 
       <div className="h-[calc(100vh-5rem)] overflow-hidden p-6 relative z-10">
-        <div className="max-w-7xl mx-auto h-full flex flex-col">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full overflow-hidden">
+        <div className="max-w-7xl mx-auto h-full">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full">
             {/* Missões Diárias */}
-            <div className="lg:col-span-2 flex flex-col overflow-hidden">
-              <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-6 shadow-neon flex-1 overflow-y-auto">
+            <div className="lg:col-span-2 h-full overflow-hidden">
+              <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-6 shadow-neon h-full overflow-hidden flex flex-col">
                 <div className="flex items-center gap-2 mb-6 p-3 bg-muted/50 rounded-lg">
                   <div className="w-3 h-3 bg-primary rounded-full"></div>
                   <span className="text-primary text-sm font-mono font-bold">MISSÕES DIÁRIAS</span>
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-y-4 overflow-y-auto flex-1">
                   {[
                     { title: "Completar 3 treinamentos", progress: 2, total: 3, xp: 150 },
                     { title: "Participar de 1 reunião de equipe", progress: 0, total: 1, xp: 200 },
@@ -158,7 +158,7 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
               </div>
 
               {/* Desafios Semanais */}
-              <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-6 shadow-neon mt-6">
+              <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-6 shadow-neon mt-6 flex-shrink-0">
                 <div className="flex items-center gap-2 mb-6 p-3 bg-muted/50 rounded-lg">
                   <div className="w-3 h-3 bg-accent rounded-full"></div>
                   <span className="text-accent text-sm font-mono font-bold">DESAFIOS SEMANAIS</span>
@@ -190,9 +190,9 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
             </div>
 
             {/* Painel Lateral */}
-            <div className="space-y-6 overflow-y-auto">
+            <div className="space-y-6 h-full overflow-hidden flex flex-col">
               {/* Estatísticas */}
-              <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-6 shadow-neon">
+              <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-6 shadow-neon flex-shrink-0">
                 <div className="flex items-center gap-2 mb-4 p-3 bg-muted/50 rounded-lg">
                   <div className="w-3 h-3 bg-secondary rounded-full"></div>
                   <span className="text-secondary text-sm font-mono font-bold">ESTATÍSTICAS</span>
@@ -217,13 +217,13 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
               </div>
 
               {/* Ranking */}
-              <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-6 shadow-neon">
+              <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-6 shadow-neon flex-1 overflow-hidden flex flex-col">
                 <div className="flex items-center gap-2 mb-4 p-3 bg-muted/50 rounded-lg">
                   <div className="w-3 h-3 bg-accent rounded-full"></div>
                   <span className="text-accent text-sm font-mono font-bold">RANKING</span>
                 </div>
                 
-                <div className="space-y-3">
+                <div className="space-y-3 overflow-y-auto flex-1">
                   {[
                     { name: "João Silva", xp: 2100, position: 1 },
                     { name: "Maria Santos", xp: 1850, position: 2 },
