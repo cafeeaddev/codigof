@@ -34,15 +34,20 @@ export const VaporwaveBackground = () => {
       );
       
       void main() {
-        // Gradient colors matching the reference image
-        vec3 topColor = vec3(0.678, 0.565, 0.792);    // Light purple
-        vec3 bottomColor = vec3(0.506, 0.424, 0.616); // Darker purple
+        // Much darker gradient for dramatic atmosphere
+        vec3 topColor = vec3(0.15, 0.1, 0.2);    // Very dark purple
+        vec3 bottomColor = vec3(0.05, 0.02, 0.08); // Almost black
         
         // Create smooth vertical gradient
         float gradientPos = vUv.y;
         
-        // Smooth interpolation between top and bottom colors
+        // Add subtle orange glow near bottom for lava effect
+        vec3 lavaGlow = vec3(0.1, 0.03, 0.0);
+        float lavaIntensity = smoothstep(0.0, 0.3, 1.0 - gradientPos);
+        
+        // Smooth interpolation between colors with lava glow
         vec3 finalColor = mix(bottomColor, topColor, gradientPos);
+        finalColor += lavaGlow * lavaIntensity * 0.5;
         
         gl_FragColor = vec4(finalColor, 1.0);
       }

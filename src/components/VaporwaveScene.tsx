@@ -2,6 +2,7 @@ import { Canvas } from '@react-three/fiber';
 import { VaporwaveTerrain } from './VaporwaveTerrain';
 import { VaporwaveBackground } from './VaporwaveBackground';
 import { CustomStars } from './CustomStars';
+import * as THREE from 'three';
 
 interface VaporwaveSceneProps {
   cameraPosition: [number, number, number];
@@ -16,10 +17,14 @@ export const VaporwaveScene = ({ cameraPosition, cameraFov }: VaporwaveSceneProp
           position: cameraPosition,
           fov: cameraFov,
           near: 0.01,
-          far: 200,
+          far: 300,
         }}
         gl={{ alpha: true }}
         className="w-full h-full"
+        onCreated={({ scene }) => {
+          // Add dark fog for atmosphere
+          scene.fog = new THREE.Fog(0x0a0a0a, 15, 80);
+        }}
       >
         {/* Background gradient and stars */}
         <VaporwaveBackground />
@@ -27,25 +32,50 @@ export const VaporwaveScene = ({ cameraPosition, cameraFov }: VaporwaveSceneProp
         {/* Custom stars positioned only in the sky */}
         <CustomStars />
         
-        {/* Neutral lighting to avoid color contamination */}
-        <ambientLight intensity={0.4} color="#ffffff" />
+        {/* Darker ambient lighting for dramatic effect */}
+        <ambientLight intensity={0.2} color="#ffffff" />
+        
+        {/* Main directional light */}
         <directionalLight
-          position={[0, 3, 2]}
-          intensity={0.8}
+          position={[0, 5, 3]}
+          intensity={0.4}
           color="#ffffff"
         />
+        
+        {/* Lava lighting from center/below */}
         <pointLight
-          position={[-5, 2, 0]}
-          intensity={0.6}
-          color="#ffaa00"
-          distance={20}
+          position={[0, -2, 0]}
+          intensity={8}
+          color="#ff6b00"
+          distance={50}
+          decay={2}
+        />
+        
+        {/* Additional lava spot light for more dramatic effect */}
+        <spotLight
+          position={[0, -5, 5]}
+          target-position={[0, 0, 0]}
+          intensity={4}
+          color="#ff4500"
+          distance={40}
+          angle={Math.PI / 3}
+          penumbra={0.5}
+          decay={2}
+        />
+        
+        {/* Side accent lights with orange tint */}
+        <pointLight
+          position={[-8, 1, 0]}
+          intensity={0.8}
+          color="#ff8c00"
+          distance={25}
           decay={2}
         />
         <pointLight
-          position={[5, 2, 0]}
-          intensity={0.6}
-          color="#ffdd00"
-          distance={20}
+          position={[8, 1, 0]}
+          intensity={0.8}
+          color="#ffa500"
+          distance={25}
           decay={2}
         />
         

@@ -56,10 +56,10 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
     return wave1 + wave2 + wave3 + wave4 + distanceEffect;
   };
 
-  // Create square terrain geometry for background
+  // Create dramatic terrain geometry for realistic mountains
   const { backgroundGeometry, maxHeight } = useMemo(() => {
-    // Background terrain geometry - aumentando o tamanho para cobrir mais área
-    const bgGeo = new THREE.PlaneGeometry(80, 80, 120, 120);
+    // High-resolution terrain geometry for dramatic mountains
+    const bgGeo = new THREE.PlaneGeometry(100, 100, 200, 200);
     const positionAttribute = bgGeo.getAttribute('position');
     const positions = positionAttribute.array as Float32Array;
     let maxHeight = 0;
@@ -68,17 +68,22 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
       const x = positions[i];
       const z = positions[i + 1];
       
-      // Create smooth wave terrain like in reference image
-      const wave1 = Math.sin(x * 0.3) * Math.cos(z * 0.3) * 0.8;
-      const wave2 = Math.sin(x * 0.6) * Math.cos(z * 0.6) * 0.4;
-      const wave3 = Math.sin(x * 1.2) * Math.cos(z * 1.2) * 0.2;
-      const wave4 = Math.sin(x * 2.4) * Math.cos(z * 2.4) * 0.1;
+      // Create dramatic mountain terrain with peaks and valleys
+      const wave1 = Math.sin(x * 0.2) * Math.cos(z * 0.2) * 2.5;
+      const wave2 = Math.sin(x * 0.4) * Math.cos(z * 0.4) * 1.8;
+      const wave3 = Math.sin(x * 0.8) * Math.cos(z * 0.8) * 1.2;
+      const wave4 = Math.sin(x * 1.6) * Math.cos(z * 1.6) * 0.8;
+      const wave5 = Math.sin(x * 3.2) * Math.cos(z * 3.2) * 0.4;
       
-      // Distance-based variation for more dynamic terrain
-      const distanceEffect = Math.sin(Math.sqrt(x * x + z * z) * 0.2) * 0.3;
+      // Ridge-like formations for more realistic mountains
+      const ridgeEffect = Math.abs(Math.sin(x * 0.1)) * Math.abs(Math.cos(z * 0.1)) * 1.5;
       
-      // Combine waves for natural undulating terrain
-      const height = wave1 + wave2 + wave3 + wave4 + distanceEffect;
+      // Distance-based variation for depth
+      const distance = Math.sqrt(x * x + z * z);
+      const distanceEffect = Math.sin(distance * 0.15) * Math.cos(distance * 0.1) * 0.8;
+      
+      // Combine all effects for dramatic terrain
+      const height = wave1 + wave2 + wave3 + wave4 + wave5 + ridgeEffect + distanceEffect;
       positions[i + 2] = height;
       maxHeight = Math.max(maxHeight, Math.abs(height));
     }
@@ -90,38 +95,48 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
   }, []);
   
   
-  // Enhanced color calculation with custom blue color #2A689D
+  // Enhanced color calculation with orange/gold neon
   const getEnhancedColor = (progress: number): string => {
-    // Use #2A689D color for neon lines
-    const customBlue = [42, 104, 157]; // #2A689D
+    // Use orange/gold color for neon lines like in reference image
+    const neonOrange = [255, 140, 0]; // #ff8c00
     
-    const r = customBlue[0];
-    const g = customBlue[1];
-    const b = customBlue[2];
+    const r = neonOrange[0];
+    const g = neonOrange[1];
+    const b = neonOrange[2];
     
     return `rgb(${r}, ${g}, ${b})`;
   };
   
-  // Animation and color updates
+  // Animation and color updates with pulsating effect
   useFrame((state) => {
     // Movimento automático contínuo + efeito do scroll + posição da câmera
-    const timeMovement = state.clock.elapsedTime * 0.5; // Movimento automático
-    const scrollMovement = scrollProgress * 4; // Acelera com o scroll
-    const cameraZOffset = cameraPosition[2] * 0.3; // Ajusta baseado na posição Z da câmera
+    const timeMovement = state.clock.elapsedTime * 0.7; // Movimento mais lento e dramático
+    const scrollMovement = scrollProgress * 6; // Acelera mais com o scroll
+    const cameraZOffset = cameraPosition[2] * 0.2; // Ajusta baseado na posição Z da câmera
     
     // Combina os três movimentos
     const totalMovement = timeMovement + scrollMovement + cameraZOffset;
+    
+    // Pulsating effect for wireframe material
+    const pulseIntensity = 2.0 + Math.sin(state.clock.elapsedTime * 2) * 0.5;
     
     // Move cada grupo de terreno individualmente
     groupRefs.current.forEach((group, index) => {
       if (group) {
         // Calcula posição com loop infinito, ajustando pela câmera
-        const basePosition = 15 + (index * 60);
-        group.position.z = basePosition + (totalMovement % 180);
+        const basePosition = 20 + (index * 80);
+        group.position.z = basePosition + (totalMovement % 240);
         
         // Reset position quando passa muito longe para criar loop infinito
-        if (group.position.z > 100) {
-          group.position.z -= 180;
+        if (group.position.z > 120) {
+          group.position.z -= 240;
+        }
+        
+        // Apply pulsating effect to wireframe materials
+        const wireframeMesh = group.children[1] as THREE.Mesh;
+        if (wireframeMesh && wireframeMesh.material) {
+          const material = wireframeMesh.material as THREE.MeshBasicMaterial;
+          material.opacity = 0.7 + Math.sin(state.clock.elapsedTime * 1.5) * 0.2;
         }
       }
     });
@@ -140,38 +155,40 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
           }}
           position={[0, 0, 25 + (index * 60)]}
         >
-          {/* Neon terrain with grid pattern and depth */}
+          {/* Dark terrain base with displacement */}
           <mesh
             geometry={backgroundGeometry}
             rotation={[-Math.PI * 0.5, 0, 0]}
-            position={[0, -2.5, 0]}
+            position={[0, -3.0, 0]}
           >
             <meshStandardMaterial
               ref={index === 0 ? backgroundMaterialRef : undefined}
-              map={wireframeTexture}
+              map={backgroundTexture}
               normalMap={normalTexture}
-              color="#100530"
-              emissive="#100530"
-              emissiveIntensity={0.7}
-              roughness={0.2}
-              metalness={0.8}
+              displacementMap={wireframeTexture}
+              displacementScale={0.8}
+              color="#0a0a0a"
+              emissive="#1a0505"
+              emissiveIntensity={0.3}
+              roughness={0.8}
+              metalness={0.2}
               transparent={true}
-              opacity={0.95}
+              opacity={0.9}
               side={THREE.DoubleSide}
               wireframe={false}
             />
           </mesh>
           
-          {/* Wireframe overlay for neon grid effect */}
+          {/* Orange neon wireframe overlay */}
           <mesh
             geometry={backgroundGeometry}
             rotation={[-Math.PI * 0.5, 0, 0]}
-            position={[0, -2.48, 0]}
+            position={[0, -2.95, 0]}
           >
             <meshBasicMaterial
-              color="#2A689D"
+              color="#ff8c00"
               transparent={true}
-              opacity={0.8}
+              opacity={0.85}
               wireframe={true}
             />
           </mesh>
