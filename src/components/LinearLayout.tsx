@@ -4,7 +4,6 @@ import { VaporwaveScene } from './VaporwaveScene';
 import { HeroSection } from './HeroSection';
 import { FeatureSection } from './FeatureSection';
 import { Footer } from './Footer';
-import { SiteFooter } from './SiteFooter';
 import { Navigation } from './Navigation';
 import { SectionContainer } from './SectionContainer';
 import { ScrollProgress } from './ScrollProgress';
@@ -110,11 +109,6 @@ export const LinearLayout = () => {
             <Footer />
           </SectionContainer>
         </div>
-      </div>
-
-      {/* Fixed Site Footer */}
-      <div className="fixed bottom-0 left-0 right-0 z-30">
-        <SiteFooter />
       </div>
 
       {/* Scroll Progress Indicator */}

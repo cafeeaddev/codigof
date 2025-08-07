@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
-import { Wifi, User, Lock } from 'lucide-react';
+import { Wifi, User, Lock, Building2, Code2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from './ui/use-toast';
 
@@ -123,6 +123,38 @@ export const Footer = () => {
               {isLoading ? 'AUTENTICANDO...' : 'INICIALIZAR SISTEMA'}
             </Button>
           </form>
+
+          {/* Community and Developer section */}
+          <div className="mt-8 pt-6 border-t border-border/30 space-y-6">
+            {/* Community section */}
+            <div className="text-center space-y-3">
+              <div className="flex justify-center mb-2">
+                <Building2 className="w-6 h-6 text-secondary" />
+              </div>
+              <p className="text-foreground text-sm font-medium leading-relaxed">
+                Faça parte da comunidade que impulsiona a transformação digital na{' '}
+                <span className="text-secondary font-bold">Forvis Mazars</span>
+              </p>
+            </div>
+
+            {/* Divider */}
+            <div className="flex items-center justify-center">
+              <div className="h-px bg-gradient-to-r from-transparent via-secondary/30 to-transparent w-full max-w-xs"></div>
+            </div>
+
+            {/* Developer section */}
+            <div className="text-center space-y-2">
+              <div className="flex justify-center mb-2">
+                <Code2 className="w-5 h-5 text-accent" />
+              </div>
+              <p className="text-muted-foreground text-xs">
+                Desenvolvido pela{' '}
+                <span className="text-accent font-semibold">Café EAD</span>
+                {' '}- Empresa do Grupo{' '}
+                <span className="text-accent font-semibold">Café Educacional</span>
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </footer>
