@@ -11,7 +11,7 @@ const features = [
   {
     id: 'timeline',
     title: 'Sou a Cody, sua IA mentora.',
-    subtitle: 'Plan visually with live predictions',
+    subtitle: 'Pronto(a) para ativar seu modo Ninja digital?',
     description: 'A roadmap that stays in sync. View and update projects from one simple interface. We calculate when projects will complete based on issue data and historical velocity so you\'re always a step ahead.',
     image: '/placeholder-timeline.jpg'
   },
