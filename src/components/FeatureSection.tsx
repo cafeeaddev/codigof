@@ -48,19 +48,19 @@ export const FeatureSection = ({
       customIcon: "/lovable-uploads/437ccd6a-15f4-45cb-b6cc-cdad65d9594a.png",
       title: "4 MISSÕES",
       subtitle: "Desafios interativos",
-      color: "from-blue-500 to-cyan-500"
+      color: "bg-neon-cyan"
     },
     {
       icon: Trophy,
       title: "XP & LEVELS", 
       subtitle: "Pontuação e progresso",
-      color: "from-purple-500 to-pink-500"
+      color: "bg-neon-purple"
     },
     {
       icon: Medal,
       title: "MEDALHAS",
       subtitle: "Perfis de habilidade", 
-      color: "from-yellow-500 to-orange-500"
+      color: "bg-neon-pink"
     }
   ];
 
@@ -118,11 +118,11 @@ export const FeatureSection = ({
                   key={feature.title}
                   className="bg-card/80 backdrop-blur-xl rounded-xl border border-border/50 p-6 text-center shadow-neon hover:shadow-glow transition-all duration-300"
                 >
-                  <div className={`w-12 h-12 mx-auto mb-4 bg-gradient-to-br ${feature.color} rounded-lg flex items-center justify-center`}>
+                  <div className={`w-16 h-16 mx-auto mb-4 ${feature.color} rounded-full flex items-center justify-center`}>
                     {feature.customIcon ? (
-                      <img src={feature.customIcon} alt={feature.title} className="w-6 h-6" />
+                      <img src={feature.customIcon} alt={feature.title} className="w-8 h-8" />
                     ) : (
-                      <feature.icon className="w-6 h-6 text-foreground" />
+                      <feature.icon className="w-8 h-8 text-background" />
                     )}
                   </div>
                   
