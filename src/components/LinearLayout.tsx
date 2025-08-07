@@ -6,6 +6,7 @@ import { HeroSection } from './HeroSection';
 import { FeatureSection } from './FeatureSection';
 import { CompaniesSection } from './CompaniesSection';
 import { Footer } from './Footer';
+import { Navigation } from './Navigation';
 
 const features = [
   {
@@ -48,6 +49,9 @@ export const LinearLayout = () => {
 
       {/* Content layer */}
       <div className="relative z-10">
+        {/* Navigation */}
+        <Navigation />
+        
         <main className="relative">
           <HeroSection />
           

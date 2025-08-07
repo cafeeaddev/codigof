@@ -22,7 +22,7 @@ export const HeroSection = () => {
   });
 
   return (
-    <section className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 pt-16">
+    <section className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 pt-24">
       <div className="max-w-4xl mx-auto text-center">
         {/* Main content positioned above the terrain */}
         <div className="mb-12">
@@ -34,19 +34,6 @@ export const HeroSection = () => {
             <p className="text-white mb-6 uppercase tracking-wider font-montserrat font-bold break-words" style={{ fontSize: '23.77px' }}>
               SUA JORNADA DIGITAL COMEÇA AQUI!
             </p>
-          </div>
-
-          {/* Logo */}
-          <div 
-            ref={logoReveal.elementRef}
-            style={logoReveal.style}
-            className="mb-12"
-          >
-            <img 
-              src="/lovable-uploads/89624b0a-ec75-460d-9b68-0a73c6c945eb.png" 
-              alt="Código F"
-              className="mx-auto w-auto h-24 sm:h-32 lg:h-40"
-            />
           </div>
 
           {/* CTA Buttons */}

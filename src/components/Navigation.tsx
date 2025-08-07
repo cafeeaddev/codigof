@@ -16,11 +16,10 @@ export const Navigation = () => {
   }, []);
 
   const navLinks = [
-    { name: 'Product', href: '#product' },
-    { name: 'Features', href: '#features' },
-    { name: 'Pricing', href: '#pricing' },
-    { name: 'Resources', href: '#resources' },
-    { name: 'Contact', href: '#contact' },
+    { name: 'Início', href: '#home' },
+    { name: 'Missões', href: '#missions' },
+    { name: 'Sobre', href: '#about' },
+    { name: 'Contato', href: '#contact' },
   ];
 
   return (
@@ -31,11 +30,13 @@ export const Navigation = () => {
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* Logo */}
+          {/* Logo - CÓDIGO F */}
           <div className="flex-shrink-0">
-            <h1 className="text-xl font-bold bg-gradient-neon bg-clip-text text-transparent">
-              Vaporwave
-            </h1>
+            <img 
+              src="/lovable-uploads/89624b0a-ec75-460d-9b68-0a73c6c945eb.png" 
+              alt="Código F"
+              className="h-8 w-auto"
+            />
           </div>
 
           {/* Desktop Navigation */}
@@ -56,11 +57,8 @@ export const Navigation = () => {
           {/* Desktop CTA */}
           <div className="hidden md:block">
             <div className="ml-4 flex items-center md:ml-6 space-x-4">
-              <Button variant="ghost" className="text-white hover:bg-white/10">
-                Log in
-              </Button>
               <Button className="bg-white/10 text-white border border-white/20 hover:bg-white/20 backdrop-blur-sm">
-                Sign up
+                INICIAR MISSÃO
               </Button>
             </div>
           </div>
@@ -93,11 +91,8 @@ export const Navigation = () => {
                 </a>
               ))}
               <div className="pt-4 pb-2 space-y-2">
-                <Button variant="ghost" className="w-full text-white hover:bg-white/10">
-                  Log in
-                </Button>
                 <Button className="w-full bg-white/10 text-white border border-white/20 hover:bg-white/20 backdrop-blur-sm">
-                  Sign up
+                  INICIAR MISSÃO
                 </Button>
               </div>
             </div>
