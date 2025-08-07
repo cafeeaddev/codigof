@@ -11,9 +11,14 @@ interface VaporwaveTerrainProps {
 }
 
 export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrainProps) => {
-  const groupRefs = useRef<THREE.Group[]>([]);
+  const plane1Ref = useRef<THREE.Group>(null);
+  const plane2Ref = useRef<THREE.Group>(null);
   const backgroundMaterialRef = useRef<THREE.MeshStandardMaterial>(null);
   const scrollProgress = useScrollProgress();
+  
+  // Configurações do sistema de 2 planos
+  const PLANE_SIZE = 60; // Tamanho de cada plano
+  const PLANE_DISTANCE = PLANE_SIZE * 0.8; // Distância entre os planos
   
   // Load the grid texture but we'll use it minimally
   const texture = useLoader(TextureLoader, gridTexture);
@@ -102,81 +107,120 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
     return `rgb(${r}, ${g}, ${b})`;
   };
   
-  // Animation and color updates
+  // Sistema de animação com 2 planos infinitos
   useFrame((state) => {
-    // Movimento automático contínuo + efeito do scroll + posição da câmera
-    const timeMovement = state.clock.elapsedTime * 0.5; // Movimento automático
-    const scrollMovement = scrollProgress * 4; // Acelera com o scroll
-    const cameraZOffset = cameraPosition[2] * 0.3; // Ajusta baseado na posição Z da câmera
+    const timeMovement = state.clock.elapsedTime * 0.8;
+    const scrollMovement = scrollProgress * 6;
+    const totalMovement = timeMovement + scrollMovement;
     
-    // Combina os três movimentos
-    const totalMovement = timeMovement + scrollMovement + cameraZOffset;
+    // Posição base da câmera no eixo Z
+    const cameraZ = cameraPosition[2];
     
-    // Move cada grupo de terreno individualmente
-    groupRefs.current.forEach((group, index) => {
-      if (group) {
-        // Calcula posição com loop infinito, ajustando pela câmera
-        const basePosition = 5 + (index * 30);
-        group.position.z = basePosition + (totalMovement % 90);
-        
-        // Reset position quando passa muito longe para criar loop infinito
-        if (group.position.z > 40) {
-          group.position.z -= 90;
-        }
+    // Atualizar posições dos planos
+    if (plane1Ref.current && plane2Ref.current) {
+      // Plane 1 - sempre à frente
+      const plane1Z = cameraZ + 10 + (totalMovement % PLANE_DISTANCE);
+      plane1Ref.current.position.z = plane1Z;
+      
+      // Plane 2 - sempre atrás do Plane 1
+      const plane2Z = plane1Z + PLANE_DISTANCE;
+      plane2Ref.current.position.z = plane2Z;
+      
+      // Sistema de teleporting: quando um plano fica muito atrás da câmera,
+      // teleporta ele para frente do outro plano
+      if (plane1Ref.current.position.z < cameraZ - 20) {
+        plane1Ref.current.position.z = plane2Ref.current.position.z + PLANE_DISTANCE;
       }
-    });
+      if (plane2Ref.current.position.z < cameraZ - 20) {
+        plane2Ref.current.position.z = plane1Ref.current.position.z + PLANE_DISTANCE;
+      }
+    }
   });
   
   return (
     <group>
-      {/* Múltiplos terrenos para loop infinito perfeito */}
-      {[0, 1, 2].map((index) => (
-        <group 
-          key={index}
-          ref={(el) => {
-            if (el) {
-              groupRefs.current[index] = el;
-            }
-          }}
-          position={[0, 0, 5 + (index * 30)]}
+      {/* Plane 1 - Sistema de 2 planos infinitos */}
+      <group 
+        ref={plane1Ref}
+        position={[0, 0, cameraPosition[2] + 10]}
+      >
+        {/* Neon terrain with grid pattern and depth */}
+        <mesh
+          geometry={backgroundGeometry}
+          rotation={[-Math.PI * 0.5, 0, 0]}
+          position={[0, -1, 0]}
         >
-          {/* Neon terrain with grid pattern and depth */}
-          <mesh
-            geometry={backgroundGeometry}
-            rotation={[-Math.PI * 0.5, 0, 0]}
-            position={[0, -0.5, 0]}
-          >
-            <meshStandardMaterial
-              ref={index === 0 ? backgroundMaterialRef : undefined}
-              map={wireframeTexture}
-              normalMap={normalTexture}
-              color="#100530"
-              emissive="#100530"
-              emissiveIntensity={0.7}
-              roughness={0.2}
-              metalness={0.8}
-              transparent={true}
-              opacity={0.95}
-              side={THREE.DoubleSide}
-              wireframe={false}
-            />
-          </mesh>
-          
-          {/* Wireframe overlay for neon grid effect */}
-          <mesh
-            geometry={backgroundGeometry}
-            rotation={[-Math.PI * 0.5, 0, 0]}
-            position={[0, -0.48, 0]}
-          >
-            <meshBasicMaterial
-              color="#2A689D"
-              transparent={true}
-              opacity={0.8}
-              wireframe={true}
-            />
-          </mesh>
-        </group>
-      ))}
+          <meshStandardMaterial
+            ref={backgroundMaterialRef}
+            map={wireframeTexture}
+            normalMap={normalTexture}
+            color="#0D0825"
+            emissive="#0D0825"
+            emissiveIntensity={0.8}
+            roughness={0.1}
+            metalness={0.9}
+            transparent={true}
+            opacity={0.97}
+            side={THREE.DoubleSide}
+            wireframe={false}
+          />
+        </mesh>
+        
+        {/* Wireframe overlay for neon grid effect */}
+        <mesh
+          geometry={backgroundGeometry}
+          rotation={[-Math.PI * 0.5, 0, 0]}
+          position={[0, -0.98, 0]}
+        >
+          <meshBasicMaterial
+            color="#2A689D"
+            transparent={true}
+            opacity={0.9}
+            wireframe={true}
+          />
+        </mesh>
+      </group>
+
+      {/* Plane 2 - Sistema de 2 planos infinitos */}
+      <group 
+        ref={plane2Ref}
+        position={[0, 0, cameraPosition[2] + 10 + PLANE_DISTANCE]}
+      >
+        {/* Neon terrain with grid pattern and depth */}
+        <mesh
+          geometry={backgroundGeometry}
+          rotation={[-Math.PI * 0.5, 0, 0]}
+          position={[0, -1, 0]}
+        >
+          <meshStandardMaterial
+            map={wireframeTexture}
+            normalMap={normalTexture}
+            color="#0D0825"
+            emissive="#0D0825"
+            emissiveIntensity={0.8}
+            roughness={0.1}
+            metalness={0.9}
+            transparent={true}
+            opacity={0.97}
+            side={THREE.DoubleSide}
+            wireframe={false}
+          />
+        </mesh>
+        
+        {/* Wireframe overlay for neon grid effect */}
+        <mesh
+          geometry={backgroundGeometry}
+          rotation={[-Math.PI * 0.5, 0, 0]}
+          position={[0, -0.98, 0]}
+        >
+          <meshBasicMaterial
+            color="#2A689D"
+            transparent={true}
+            opacity={0.9}
+            wireframe={true}
+          />
+        </mesh>
+      </group>
     </group>
   );
 };
