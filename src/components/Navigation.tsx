@@ -30,13 +30,11 @@ export const Navigation = () => {
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* Logo - CÓDIGO F */}
+          {/* Logo - CÓDIGO F Text in Neon */}
           <div className="flex-shrink-0">
-            <img 
-              src="/lovable-uploads/89624b0a-ec75-460d-9b68-0a73c6c945eb.png" 
-              alt="Código F"
-              className="h-8 w-auto"
-            />
+            <h1 className="text-2xl lg:text-3xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent tracking-wider">
+              CÓDIGO F
+            </h1>
           </div>
 
           {/* Desktop Navigation */}
