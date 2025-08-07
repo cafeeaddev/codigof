@@ -65,14 +65,35 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
   }
 
   return (
-    <div 
-      className="fixed inset-0 bg-background z-[9999] scrollbar-hide" 
-      style={{ 
-        height: '100vh', 
-        pointerEvents: 'auto',
-        overflow: 'hidden'
-      }}
-    >
+    <>
+      {/* CSS global para esconder scrollbars */}
+      <style>{`
+        * {
+          scrollbar-width: none !important;
+          -ms-overflow-style: none !important;
+        }
+        *::-webkit-scrollbar {
+          display: none !important;
+        }
+        .welcome-screen * {
+          overflow: hidden !important;
+        }
+      `}</style>
+      
+      <div 
+        className="fixed inset-0 bg-background z-[9999] welcome-screen" 
+        style={{ 
+          height: '100vh', 
+          width: '100vw',
+          pointerEvents: 'auto',
+          overflow: 'hidden',
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0
+        }}
+      >
       {/* Header */}
       <div className="bg-card/90 backdrop-blur-xl border-b border-secondary/50 p-4 relative z-10" style={{ pointerEvents: 'auto' }}>
         <div className="flex items-center justify-between max-w-7xl mx-auto" style={{ pointerEvents: 'auto' }}>
@@ -231,5 +252,6 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
         </div>
       </div>
     </div>
+    </>
   );
 };
