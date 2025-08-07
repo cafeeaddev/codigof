@@ -58,8 +58,6 @@ export const LinearLayout = () => {
         <main className="relative">
           <HeroSection />
           
-          <CompaniesSection />
-          
           {features.map((feature, index) => (
             <FeatureSection
               key={feature.id}
