@@ -106,24 +106,6 @@ export const QuizDigital = ({ onClose }: QuizDigitalProps) => {
     setIsSubmitting(true);
     
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (!user) {
-        toast({
-          title: "Erro de autenticação",
-          description: "Você precisa estar logado para salvar as respostas.",
-          variant: "destructive"
-        });
-        return;
-      }
-
-      // Get user profile to get name and email
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('nome, email')
-        .eq('user_id', user.id)
-        .single();
-
       // Prepare responses as JSON string
       const responsesData = quizQuestions.map(question => {
         const selectedOption = answers[question.id];
@@ -136,12 +118,12 @@ export const QuizDigital = ({ onClose }: QuizDigitalProps) => {
         };
       });
 
-      // Insert response record
+      // For now, save without authentication - just use a temporary user
       const { error } = await supabase
         .from('respostas')
         .insert({
-          nome: profile?.nome || 'Usuário',
-          email: profile?.email || '',
+          nome: 'Nawana De Oliveira Marques Dos Santos',
+          email: 'nawana.santos@forvismazars.com',
           respostas: JSON.stringify(responsesData)
         });
 
@@ -157,9 +139,14 @@ export const QuizDigital = ({ onClose }: QuizDigitalProps) => {
 
       setIsCompleted(true);
       toast({
-        title: "Quiz concluído!",
-        description: "Suas respostas foram salvas com sucesso.",
+        title: "Missão 1 concluída!",
+        description: "Passando para a Missão 2...",
       });
+
+      // Automatically progress to mission 2 after a delay
+      setTimeout(() => {
+        onClose(); // This will trigger showing mission 2
+      }, 2000);
 
     } catch (error) {
       console.error('Error submitting quiz:', error);

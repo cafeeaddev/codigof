@@ -4,6 +4,7 @@ import { LogOut, User, Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 import { QuizDigital } from './QuizDigital';
+import { MissaoDois } from './MissaoDois';
 
 interface WelcomeScreenProps {
   user: {
@@ -17,7 +18,7 @@ interface WelcomeScreenProps {
 
 export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
   const [isLoading, setIsLoading] = useState(true);
-  
+  const [currentMission, setCurrentMission] = useState<1 | 2>(1);
 
   useEffect(() => {
     // Simular carregamento inicial
@@ -158,8 +159,8 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
 
                     <div className="space-y-4 overflow-hidden flex-1">
                       {[
-                        { title: "MISSÃO 1 – Como você encara o digital?", progress: 2, total: 3, xp: 150 },
-                        { title: "MISSÃO 2 – O digital no seu dia a dia", progress: 0, total: 1, xp: 200 },
+                        { title: currentMission === 1 ? "MISSÃO 1 – Como você encara o digital?" : "MISSÃO 2 – O digital no seu dia a dia", progress: currentMission === 1 ? 0 : 3, total: currentMission === 1 ? 4 : 3, xp: 150 },
+                        { title: "MISSÃO 3 – Quando o desafio é maior", progress: 0, total: 1, xp: 200 },
                         { title: "MISSÃO 3 – Quando o desafio é maior", progress: 1, total: 1, xp: 100 },
                         { title: "Missão 4 – Seu Radar de Ferramentas", progress: 0, total: 2, xp: 250 }
                       ].map((mission, index) => (
@@ -190,11 +191,22 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
                   <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-6 shadow-neon h-full overflow-hidden flex flex-col">
                     <div className="flex items-center gap-2 mb-6 p-3 bg-muted/50 rounded-lg">
                       <div className="w-3 h-3 bg-accent rounded-full"></div>
-                      <span className="text-accent text-sm font-mono font-bold">MISSÃO 1 ATIVADA</span>
+                      <span className="text-accent text-sm font-mono font-bold">
+                        {currentMission === 1 ? 'MISSÃO 1 ATIVADA' : 'MISSÃO 2 ATIVADA'}
+                      </span>
                     </div>
 
                     <div className="flex-1 overflow-hidden">
-                      <QuizDigital onClose={() => {}} />
+                      {currentMission === 1 ? (
+                        <QuizDigital onClose={() => setCurrentMission(2)} />
+                      ) : (
+                        <MissaoDois onComplete={() => {
+                          toast({
+                            title: "Missão 2 concluída!",
+                            description: "Parabéns! Continue evoluindo.",
+                          });
+                        }} />
+                      )}
                     </div>
                   </div>
                 </div>
