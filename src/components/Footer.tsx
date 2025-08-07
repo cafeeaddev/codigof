@@ -5,11 +5,14 @@ import { Label } from './ui/label';
 import { Wifi, User, Lock, Building2, Code2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from './ui/use-toast';
+import { WelcomeScreen } from './WelcomeScreen';
 
 export const Footer = () => {
   const [email, setEmail] = useState('');
   const [cpf, setCpf] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const [showWelcome, setShowWelcome] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,13 +37,13 @@ export const Footer = () => {
       }
 
       // Login bem-sucedido
+      setUser(profile);
+      setShowWelcome(true);
+      
       toast({
         title: "Login realizado",
         description: `Bem-vindo, ${profile.nome}!`,
       });
-
-      // Aqui você pode redirecionar ou atualizar o estado da aplicação
-      console.log('Usuário autenticado:', profile);
       
     } catch (error) {
       toast({
@@ -52,6 +55,23 @@ export const Footer = () => {
       setIsLoading(false);
     }
   };
+
+  const handleLogout = () => {
+    setShowWelcome(false);
+    setUser(null);
+    setEmail('');
+    setCpf('');
+  };
+
+  // Show welcome screen if user is logged in
+  if (showWelcome && user) {
+    return (
+      <WelcomeScreen 
+        user={user} 
+        onLogout={handleLogout}
+      />
+    );
+  }
 
   return (
     <footer className="relative py-16 px-4 sm:px-6 lg:px-8">
