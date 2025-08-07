@@ -56,13 +56,6 @@ export const LinearLayout = () => {
         />
       </div>
 
-      {/* Centered F Code */}
-      <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-5">
-        <div className="text-secondary/20 text-[12rem] font-bold font-mono select-none">
-          F
-        </div>
-      </div>
-
       {/* Content layer with internal scroll */}
       <div className="relative z-10">
         {/* Fixed Navigation */}

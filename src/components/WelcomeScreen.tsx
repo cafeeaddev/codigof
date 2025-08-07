@@ -90,9 +90,17 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background relative">
+      {/* Centered Logo Background */}
+      <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
+        <img 
+          src="/lovable-uploads/437ccd6a-15f4-45cb-b6cc-cdad65d9594a.png" 
+          alt="Logo" 
+          className="w-64 h-64 opacity-10 select-none object-contain"
+        />
+      </div>
       {/* Header */}
-      <div className="bg-card/90 backdrop-blur-xl border-b border-secondary/50 p-4">
+      <div className="bg-card/90 backdrop-blur-xl border-b border-secondary/50 p-4 relative z-10">
         <div className="flex items-center justify-between max-w-7xl mx-auto">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 bg-secondary/20 rounded-full flex items-center justify-center border border-secondary/50">
@@ -128,7 +136,7 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto p-6">
+      <div className="max-w-7xl mx-auto p-6 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Missões Diárias */}
           <div className="lg:col-span-2">
