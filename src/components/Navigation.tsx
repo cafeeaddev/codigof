@@ -28,8 +28,8 @@ export const Navigation = () => {
         ? 'bg-black/20 backdrop-blur-xl border-b border-white/10' 
         : 'bg-transparent'
     }`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-start h-16">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 xl:px-8">
+        <div className="flex items-center justify-start h-12 sm:h-14 lg:h-16">
           {/* Navigation content can be added here if needed */}
         </div>
       </div>
