@@ -5,6 +5,9 @@ interface ScrollRevealOptions {
   duration?: number;
   distance?: number;
   direction?: 'up' | 'down' | 'left' | 'right' | 'fade';
+  threshold?: number;
+  rootMargin?: string;
+  triggerOnce?: boolean;
 }
 
 export const useScrollReveal = (options: ScrollRevealOptions = {}) => {
@@ -12,34 +15,46 @@ export const useScrollReveal = (options: ScrollRevealOptions = {}) => {
     delay = 0,
     duration = 600,
     distance = 50,
-    direction = 'up'
+    direction = 'up',
+    threshold = 0.3,
+    rootMargin = '0px',
+    triggerOnce = false
   } = options;
 
   const [isVisible, setIsVisible] = useState(false);
+  const [hasTriggered, setHasTriggered] = useState(false);
   const elementRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const element = elementRef.current;
     if (!element) return;
 
+    // Find the internal scroll container
+    const scrollContainer = element.closest('[data-internal-scroll]') as HTMLElement;
+    const root = scrollContainer || null;
+
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && !isVisible) {
+        if (entry.isIntersecting && (!triggerOnce || !hasTriggered)) {
           setTimeout(() => {
             setIsVisible(true);
+            setHasTriggered(true);
           }, delay);
+        } else if (!entry.isIntersecting && !triggerOnce) {
+          setIsVisible(false);
         }
       },
       { 
-        threshold: 0.2,
-        rootMargin: '0px'
+        threshold,
+        rootMargin,
+        root
       }
     );
 
     observer.observe(element);
 
     return () => observer.disconnect();
-  }, [delay, isVisible]);
+  }, [delay, threshold, rootMargin, triggerOnce, hasTriggered]);
 
   const getTransform = () => {
     switch (direction) {

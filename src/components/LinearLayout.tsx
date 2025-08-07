@@ -1,12 +1,13 @@
 
 import { useState } from 'react';
 import { VaporwaveScene } from './VaporwaveScene';
-import { CameraControls } from './CameraControls';
 import { HeroSection } from './HeroSection';
 import { FeatureSection } from './FeatureSection';
-import { CompaniesSection } from './CompaniesSection';
 import { Footer } from './Footer';
 import { Navigation } from './Navigation';
+import { SectionContainer } from './SectionContainer';
+import { ScrollProgress } from './ScrollProgress';
+import { useInternalScroll } from '@/hooks/useInternalScroll';
 
 const features = [
   {
@@ -35,10 +36,18 @@ const features = [
 export const LinearLayout = () => {
   const [cameraPosition, setCameraPosition] = useState<[number, number, number]>([0, 1, -8]);
   const [cameraFov, setCameraFov] = useState(65);
+  
+  const {
+    containerRef,
+    currentSection,
+    totalSections,
+    scrollToSection,
+    registerSection,
+    unregisterSection
+  } = useInternalScroll();
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden">
-      
+    <div className="relative h-screen w-full overflow-hidden">
       {/* Fixed vaporwave background */}
       <div className="fixed inset-0 z-0">
         <VaporwaveScene 
@@ -47,26 +56,64 @@ export const LinearLayout = () => {
         />
       </div>
 
-
-      {/* Content layer */}
-      <div className="relative z-10">
-        {/* Navigation */}
+      {/* Fixed Navigation */}
+      <div className="fixed top-0 left-0 right-0 z-30">
         <Navigation />
-        
-        <main className="relative">
-          <HeroSection />
-          
-          {features.map((feature, index) => (
-            <FeatureSection
-              key={feature.id}
-              {...feature}
-              index={index}
-            />
-          ))}
-          
-          <Footer />
-        </main>
       </div>
+
+      {/* Internal scroll container */}
+      <div 
+        ref={containerRef}
+        className="relative z-10 h-full w-full overflow-y-auto overflow-x-hidden scrollbar-hide"
+        data-internal-scroll="true"
+        style={{
+          scrollBehavior: 'smooth',
+          scrollSnapType: 'y mandatory'
+        }}
+      >
+        {/* Hero Section */}
+        <SectionContainer
+          sectionId="hero"
+          sectionIndex={0}
+          registerSection={registerSection}
+          unregisterSection={unregisterSection}
+          className="scroll-snap-start"
+        >
+          <HeroSection />
+        </SectionContainer>
+
+        {/* Feature Section */}
+        <SectionContainer
+          sectionId="features"
+          sectionIndex={1}
+          registerSection={registerSection}
+          unregisterSection={unregisterSection}
+          className="scroll-snap-start"
+        >
+          <FeatureSection
+            {...features[0]}
+            index={0}
+          />
+        </SectionContainer>
+
+        {/* Footer Section */}
+        <SectionContainer
+          sectionId="footer"
+          sectionIndex={2}
+          registerSection={registerSection}
+          unregisterSection={unregisterSection}
+          className="scroll-snap-start"
+        >
+          <Footer />
+        </SectionContainer>
+      </div>
+
+      {/* Scroll Progress Indicator */}
+      <ScrollProgress
+        currentSection={currentSection}
+        totalSections={totalSections}
+        onSectionClick={scrollToSection}
+      />
     </div>
   );
 };
