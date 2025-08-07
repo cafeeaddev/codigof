@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { ChevronLeft, ChevronRight, CheckCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
+import { ScrollArea } from './ui/scroll-area';
 
 interface QuizQuestion {
   id: number;
@@ -189,90 +190,92 @@ export const QuizDigital = ({ onClose }: QuizDigitalProps) => {
 
   return (
     <div className="h-full flex flex-col">
-      <div className="mb-4">
-        <h3 className="text-lg font-bold text-foreground mb-1">Como você encara o digital?</h3>
-      </div>
+      <ScrollArea className="flex-1">
+        <div className="p-4 pb-20">
+          <div className="mb-4">
+            <h3 className="text-lg font-bold text-foreground mb-1">Como você encara o digital?</h3>
+          </div>
 
-      <div className="mb-4">
-        <div className="flex justify-between items-center mb-2">
-          <span className="text-xs text-muted-foreground">
-            Pergunta {currentQuestion + 1} de {quizQuestions.length}
-          </span>
-          <span className="text-xs text-muted-foreground">
-            {Math.round(progress)}%
-          </span>
+          <div className="mb-4">
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-xs text-muted-foreground">
+                Pergunta {currentQuestion + 1} de {quizQuestions.length}
+              </span>
+              <span className="text-xs text-muted-foreground">
+                {Math.round(progress)}%
+              </span>
+            </div>
+            <div className="w-full bg-secondary/20 rounded-full h-1.5">
+              <div
+                className="bg-primary h-1.5 rounded-full transition-all duration-300"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+          </div>
+
+          <div className="mb-6">
+            <h4 className="text-base font-medium text-foreground mb-4">
+              {currentQuestionData.question}
+            </h4>
+
+            <RadioGroup
+              value={answers[currentQuestionData.id] || ""}
+              onValueChange={(value) => handleAnswerSelect(currentQuestionData.id, value)}
+              className="space-y-2"
+            >
+              {currentQuestionData.options.map((option) => (
+                <div key={option.letter} className="flex items-start space-x-2 p-2 rounded hover:bg-muted/20">
+                  <RadioGroupItem
+                    value={option.letter}
+                    id={`q${currentQuestionData.id}-${option.letter}`}
+                    className="border-secondary mt-0.5"
+                  />
+                  <Label
+                    htmlFor={`q${currentQuestionData.id}-${option.letter}`}
+                    className="text-xs text-foreground cursor-pointer flex-1 leading-relaxed"
+                  >
+                    <span className="font-medium text-primary mr-1">{option.letter})</span>
+                    {option.text}
+                  </Label>
+                </div>
+              ))}
+            </RadioGroup>
+          </div>
         </div>
-        <div className="w-full bg-secondary/20 rounded-full h-1.5">
-          <div
-            className="bg-primary h-1.5 rounded-full transition-all duration-300"
-            style={{ width: `${progress}%` }}
-          />
-        </div>
-      </div>
+      </ScrollArea>
+      
+      <div className="flex justify-between p-4 pt-2 border-t border-secondary/30 bg-background">
+        <Button
+          onClick={goToPreviousQuestion}
+          disabled={currentQuestion === 0}
+          variant="outline"
+          size="sm"
+          className="border-secondary text-secondary hover:bg-secondary hover:text-secondary-foreground"
+        >
+          <ChevronLeft className="w-3 h-3 mr-1" />
+          Anterior
+        </Button>
 
-      <div className="flex-1 flex flex-col">
-        <h4 className="text-base font-medium text-foreground mb-4">
-          {currentQuestionData.question}
-        </h4>
-
-        <div className="flex-1 overflow-y-auto">
-          <RadioGroup
-            value={answers[currentQuestionData.id] || ""}
-            onValueChange={(value) => handleAnswerSelect(currentQuestionData.id, value)}
-            className="space-y-2"
-          >
-            {currentQuestionData.options.map((option) => (
-              <div key={option.letter} className="flex items-start space-x-2 p-2 rounded hover:bg-muted/20">
-                <RadioGroupItem
-                  value={option.letter}
-                  id={`q${currentQuestionData.id}-${option.letter}`}
-                  className="border-secondary mt-0.5"
-                />
-                <Label
-                  htmlFor={`q${currentQuestionData.id}-${option.letter}`}
-                  className="text-xs text-foreground cursor-pointer flex-1 leading-relaxed"
-                >
-                  <span className="font-medium text-primary mr-1">{option.letter})</span>
-                  {option.text}
-                </Label>
-              </div>
-            ))}
-          </RadioGroup>
-        </div>
-
-        <div className="flex justify-between mt-4 pt-4 border-t border-secondary/30">
+        {currentQuestion === quizQuestions.length - 1 ? (
           <Button
-            onClick={goToPreviousQuestion}
-            disabled={currentQuestion === 0}
-            variant="outline"
+            onClick={submitQuiz}
+            disabled={!answers[currentQuestionData.id] || isSubmitting}
             size="sm"
-            className="border-secondary text-secondary hover:bg-secondary hover:text-secondary-foreground"
+            className="bg-primary hover:bg-primary/90"
           >
-            <ChevronLeft className="w-3 h-3 mr-1" />
-            Anterior
+            {isSubmitting ? 'Enviando...' : 'Finalizar'}
           </Button>
-
-          {currentQuestion === quizQuestions.length - 1 ? (
-            <Button
-              onClick={submitQuiz}
-              disabled={!answers[currentQuestionData.id] || isSubmitting}
-              size="sm"
-              className="bg-primary hover:bg-primary/90"
-            >
-              {isSubmitting ? 'Enviando...' : 'Finalizar'}
-            </Button>
-          ) : (
-            <Button
-              onClick={goToNextQuestion}
-              disabled={!answers[currentQuestionData.id]}
-              size="sm"
-              className="bg-primary hover:bg-primary/90"
-            >
-              Próxima
-              <ChevronRight className="w-3 h-3 ml-1" />
-            </Button>
-          )}
-        </div>
+        ) : (
+          <Button
+            onClick={goToNextQuestion}
+            disabled={!answers[currentQuestionData.id]}
+            size="sm"
+            className="bg-primary hover:bg-primary/90"
+          >
+            Próxima
+            <ChevronRight className="w-3 h-3 ml-1" />
+          </Button>
+        )}
       </div>
     </div>
   );
