@@ -10,7 +10,7 @@ export const VaporwaveBackground = () => {
   const geometry = new THREE.PlaneGeometry(200, 200);
   
   // Geometria para o sol vaporwave
-  const sunGeometry = new THREE.SphereGeometry(8, 32, 16);
+  const sunGeometry = new THREE.SphereGeometry(12, 32, 16);
   
   // Create shader material for animated gradient background
   const material = new THREE.ShaderMaterial({
@@ -31,35 +31,28 @@ export const VaporwaveBackground = () => {
       varying vec2 vUv;
       
       void main() {
-        // Vaporwave sky gradient - mais dramático
-        vec3 topColor = vec3(0.05, 0.02, 0.15);      // Roxo bem escuro no topo
-        vec3 horizonColor = vec3(0.9, 0.2, 0.8);     // Rosa/magenta vibrante
-        vec3 bottomColor = vec3(1.0, 0.7, 0.1);      // Laranja/amarelo vibrante
-        vec3 midColor = vec3(0.6, 0.1, 0.6);         // Roxo médio
+        // Vaporwave sky gradient exatamente como na referência
+        vec3 topColor = vec3(0.02, 0.02, 0.08);      // Roxo bem escuro no topo
+        vec3 midColor = vec3(0.4, 0.1, 0.6);         // Roxo médio
+        vec3 horizonColor = vec3(0.9, 0.3, 0.8);     // Rosa/magenta vibrante
+        vec3 bottomColor = vec3(0.2, 0.1, 0.4);      // Roxo escuro embaixo
         
-        // Create dramatic vertical gradient with multiple zones
+        // Create smooth vertical gradient matching the reference
         float y = vUv.y;
         vec3 finalColor;
         
-        if (y > 0.8) {
+        if (y > 0.75) {
           // Zona superior: roxo escuro
-          float t = (y - 0.8) / 0.2;
+          float t = (y - 0.75) / 0.25;
           finalColor = mix(midColor, topColor, t);
-        } else if (y > 0.6) {
-          // Zona média superior: transição para rosa
-          float t = (y - 0.6) / 0.2;
+        } else if (y > 0.5) {
+          // Zona média: transição para rosa
+          float t = (y - 0.5) / 0.25;
           finalColor = mix(horizonColor, midColor, t);
-        } else if (y > 0.4) {
-          // Zona do horizonte: rosa/magenta vibrante
-          finalColor = horizonColor;
         } else {
-          // Zona inferior: transição para laranja
-          float t = y / 0.4;
-          finalColor = mix(bottomColor, horizonColor, t);
+          // Zona do horizonte: rosa vibrante
+          finalColor = horizonColor;
         }
-        
-        // Adicionar um pouco de brilho dinâmico
-        finalColor += sin(time * 0.5) * 0.05;
         
         gl_FragColor = vec4(finalColor, 1.0);
       }
@@ -87,19 +80,25 @@ export const VaporwaveBackground = () => {
         vec2 center = vec2(0.5, 0.5);
         float dist = distance(vUv, center);
         
-        // Gradiente radial para o sol
-        vec3 sunColor = vec3(1.0, 0.8, 0.1);
-        vec3 sunGlow = vec3(1.0, 0.4, 0.6);
+        // Gradiente do sol exatamente como na referência
+        vec3 centerColor = vec3(1.0, 1.0, 0.8);     // Amarelo claro no centro
+        vec3 midColor = vec3(1.0, 0.6, 0.1);        // Laranja médio
+        vec3 outerColor = vec3(1.0, 0.2, 0.4);      // Rosa/vermelho nas bordas
         
-        // Efeito pulsante
-        float pulse = sin(time * 2.0) * 0.1 + 0.9;
-        
-        // Gradiente do centro para fora
-        float intensity = 1.0 - smoothstep(0.0, 0.5, dist);
-        vec3 finalColor = mix(sunGlow, sunColor, intensity) * pulse;
+        // Gradiente radial suave
+        vec3 finalColor;
+        if (dist < 0.2) {
+          finalColor = centerColor;
+        } else if (dist < 0.35) {
+          float t = (dist - 0.2) / 0.15;
+          finalColor = mix(centerColor, midColor, t);
+        } else {
+          float t = (dist - 0.35) / 0.15;
+          finalColor = mix(midColor, outerColor, smoothstep(0.0, 1.0, t));
+        }
         
         // Adicionar transparência nas bordas
-        float alpha = 1.0 - smoothstep(0.3, 0.5, dist);
+        float alpha = 1.0 - smoothstep(0.4, 0.5, dist);
         
         gl_FragColor = vec4(finalColor, alpha);
       }
@@ -121,29 +120,17 @@ export const VaporwaveBackground = () => {
   
   return (
     <>
-      {/* Céu com gradiente vaporwave - posicionado mais próximo */}
+      {/* Céu com gradiente vaporwave - matching the reference */}
       <mesh ref={backgroundRef} material={material} geometry={geometry} position={[0, 20, -15]} scale={[1, 1, 1]} />
       
-      {/* Sol vaporwave - mais visível */}
+      {/* Sol vaporwave - posicionado como na referência */}
       <mesh 
         ref={sunRef} 
         material={sunMaterial} 
         geometry={sunGeometry} 
-        position={[-20, 25, -10]}
-        scale={[1.5, 1.5, 1.5]}
+        position={[0, 20, -12]}
+        scale={[1, 1, 1]}
       />
-      
-      {/* Linhas horizontais do grid no céu - mais próximas */}
-      {Array.from({ length: 12 }, (_, i) => (
-        <mesh key={i} position={[0, 20 - (i * 3), -12]} rotation={[0, 0, 0]}>
-          <planeGeometry args={[200, 0.2]} />
-          <meshBasicMaterial 
-            color="#FF1493" 
-            transparent={true} 
-            opacity={0.4 - (i * 0.02)}
-          />
-        </mesh>
-      ))}
     </>
   );
 };
