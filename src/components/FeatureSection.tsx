@@ -79,7 +79,7 @@ export const FeatureSection = ({
             <div className="flex items-start gap-6 lg:gap-8">
               {/* Avatar/Video section */}
               <div className="flex-shrink-0">
-                <div className="w-32 h-32 lg:w-40 lg:h-40 bg-muted/30 rounded-2xl border border-border/30 overflow-hidden">
+                <div className="w-48 h-48 lg:w-56 lg:h-56 bg-muted/30 rounded-2xl border border-border/30 overflow-hidden">
                   <video 
                     className="w-full h-full object-cover"
                     autoPlay
