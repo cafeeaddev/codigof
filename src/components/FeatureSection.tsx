@@ -56,7 +56,13 @@ export const FeatureSection = ({
       color: "from-blue-500 to-cyan-500"
     },
     {
-      icon: Trophy,
+      icon: () => (
+        <img 
+          src="/lovable-uploads/7796eb0b-f570-48ec-a7d9-cbd0bd2ad47a.png" 
+          alt="Trophy" 
+          className="w-6 h-6"
+        />
+      ),
       title: "XP & LEVELS", 
       subtitle: "Pontuação e progresso",
       color: "from-purple-500 to-pink-500"
