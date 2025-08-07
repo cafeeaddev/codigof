@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Button } from './ui/button';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Flag, Trophy, Medal } from 'lucide-react';
 
 interface FeatureSectionProps {
   id: string;
@@ -39,7 +39,29 @@ export const FeatureSection = ({
     return () => observer.disconnect();
   }, []);
 
-  const isEven = index % 2 === 0;
+  // Only show the first feature section as our missions/xp/medals section
+  if (index !== 0) return null;
+
+  const features = [
+    {
+      icon: Flag,
+      title: "4 MISSÕES",
+      subtitle: "Desafios interativos",
+      color: "from-blue-500 to-cyan-500"
+    },
+    {
+      icon: Trophy,
+      title: "XP & LEVELS", 
+      subtitle: "Pontuação e progresso",
+      color: "from-purple-500 to-pink-500"
+    },
+    {
+      icon: Medal,
+      title: "MEDALHAS",
+      subtitle: "Perfis de habilidade", 
+      color: "from-yellow-500 to-orange-500"
+    }
+  ];
 
   return (
     <section 
@@ -48,11 +70,9 @@ export const FeatureSection = ({
       className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 py-16"
     >
       <div className="max-w-7xl mx-auto">
-        <div className={`grid lg:grid-cols-2 gap-12 lg:gap-16 items-center ${
-          isEven ? '' : 'lg:grid-flow-col-dense'
-        }`}>
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           {/* Content */}
-          <div className={`${isEven ? '' : 'lg:col-start-2'} ${
+          <div className={`${
             isVisible ? 'animate-fade-in' : 'opacity-0'
           }`}>
             <div className="bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 p-8 lg:p-12 shadow-neon">
@@ -87,28 +107,29 @@ export const FeatureSection = ({
             </div>
           </div>
 
-          {/* Image/Visual */}
-          <div className={`${isEven ? '' : 'lg:col-start-1'} ${
+          {/* Feature Cards Grid */}
+          <div className={`${
             isVisible ? 'animate-scale-in' : 'opacity-0'
           }`}>
-            <div className="relative">
-              <div className="bg-gradient-to-br from-neon-pink/20 to-neon-cyan/20 rounded-2xl border border-white/10 backdrop-blur-xl p-8 lg:p-12 shadow-glow">
-                {/* Placeholder for actual image/demo */}
-                <div className="aspect-[4/3] bg-gradient-to-br from-neon-pink/10 to-neon-cyan/10 rounded-xl border border-white/5 flex items-center justify-center">
-                  <div className="text-center">
-                    <div className="w-16 h-16 mx-auto mb-4 bg-gradient-neon rounded-xl flex items-center justify-center">
-                      <span className="text-2xl">🎨</span>
-                    </div>
-                    <p className="text-white/60 text-sm">
-                      {title} Demo
-                    </p>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {features.map((feature, idx) => (
+                <div 
+                  key={feature.title}
+                  className="bg-gradient-to-br from-gray-900/80 to-blue-900/40 backdrop-blur-xl rounded-xl border border-cyan-400/30 p-6 text-center shadow-lg hover:shadow-cyan-400/20 transition-all duration-300"
+                >
+                  <div className={`w-12 h-12 mx-auto mb-4 bg-gradient-to-br ${feature.color} rounded-lg flex items-center justify-center`}>
+                    <feature.icon className="w-6 h-6 text-white" />
                   </div>
+                  
+                  <h4 className="text-white font-bold text-sm mb-2">
+                    {feature.title}
+                  </h4>
+                  
+                  <p className="text-white/60 text-xs">
+                    {feature.subtitle}
+                  </p>
                 </div>
-              </div>
-              
-              {/* Floating elements */}
-              <div className="absolute -top-4 -right-4 w-8 h-8 bg-neon-pink/30 rounded-full blur-sm animate-pulse"></div>
-              <div className="absolute -bottom-4 -left-4 w-6 h-6 bg-neon-cyan/30 rounded-full blur-sm animate-pulse delay-1000"></div>
+              ))}
             </div>
           </div>
         </div>
