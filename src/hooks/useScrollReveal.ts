@@ -18,31 +18,70 @@ export const useScrollReveal = (options: ScrollRevealOptions = {}) => {
   } = options;
 
   const [isVisible, setIsVisible] = useState(false);
+  const [hasBeenVisible, setHasBeenVisible] = useState(false);
   const elementRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const element = elementRef.current;
-    if (!element) return;
+    if (!element) {
+      console.log('useScrollReveal: No element found');
+      return;
+    }
+
+    console.log('useScrollReveal: Setting up observer for direction:', direction);
+
+    // Check if element is already in viewport on mount
+    const checkInitialVisibility = () => {
+      const rect = element.getBoundingClientRect();
+      const isInViewport = rect.top < window.innerHeight && rect.bottom > 0;
+      console.log('Initial visibility check:', { isInViewport, direction });
+      
+      if (isInViewport && !hasBeenVisible) {
+        console.log('Element already in viewport, triggering animation for:', direction);
+        setTimeout(() => {
+          setIsVisible(true);
+          setHasBeenVisible(true);
+        }, delay);
+      }
+    };
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
+        console.log('useScrollReveal: Intersection observed', {
+          isIntersecting: entry.isIntersecting,
+          intersectionRatio: entry.intersectionRatio,
+          direction,
+          hasBeenVisible
+        });
+        
+        if (entry.isIntersecting && !hasBeenVisible) {
+          console.log('useScrollReveal: Element is intersecting, applying delay:', delay);
           setTimeout(() => {
+            console.log('useScrollReveal: Setting visible to true for direction:', direction);
             setIsVisible(true);
+            setHasBeenVisible(true);
           }, delay);
         }
-        // Don't reset visibility to keep elements visible once revealed
       },
       { 
         threshold,
-        rootMargin: '0px 0px -100px 0px' // Only trigger when element is well into viewport
+        rootMargin: '0px 0px -50px 0px' // Less restrictive
       }
     );
 
+    // Initial check
+    checkInitialVisibility();
+    
     observer.observe(element);
+    console.log('useScrollReveal: Observer set up successfully for direction:', direction);
 
-    return () => observer.disconnect();
-  }, [threshold, delay]);
+    return () => {
+      console.log('useScrollReveal: Cleaning up observer for direction:', direction);
+      observer.disconnect();
+    };
+  }, [threshold, delay, direction, hasBeenVisible]);
+
+  console.log('useScrollReveal render:', { direction, isVisible, hasBeenVisible, delay });
 
   const getInitialTransform = () => {
     switch (direction) {
