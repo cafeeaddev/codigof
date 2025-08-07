@@ -19,6 +19,7 @@ interface WelcomeScreenProps {
 export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
   const [isLoading, setIsLoading] = useState(true);
   const [currentMission, setCurrentMission] = useState<1 | 2>(1);
+  const [completedMissions, setCompletedMissions] = useState<Set<number>>(new Set());
 
   useEffect(() => {
     // Simular carregamento inicial
@@ -185,15 +186,35 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
               </div>
 
               <div className="flex-1 overflow-hidden">
-                {currentMission === 1 ? (
-                  <QuizDigital onClose={() => setCurrentMission(2)} />
-                ) : (
+                {currentMission === 1 && !completedMissions.has(1) ? (
+                  <QuizDigital onClose={() => {
+                    setCompletedMissions(prev => new Set([...prev, 1]));
+                    setCurrentMission(2);
+                  }} />
+                ) : currentMission === 2 && !completedMissions.has(2) ? (
                   <MissaoDois onComplete={() => {
+                    setCompletedMissions(prev => new Set([...prev, 2]));
                     toast({
                       title: "Missão 2 concluída!",
                       description: "Parabéns! Continue evoluindo.",
                     });
                   }} />
+                ) : (
+                  <div className="h-full flex flex-col items-center justify-center space-y-4 p-4">
+                    <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center">
+                      <svg className="w-6 h-6 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                    <div className="text-center">
+                      <h4 className="text-lg font-bold text-primary mb-1">
+                        Missões Completadas!
+                      </h4>
+                      <p className="text-sm text-muted-foreground">
+                        Aguarde novas missões em breve.
+                      </p>
+                    </div>
+                  </div>
                 )}
               </div>
             </div>
@@ -212,44 +233,67 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
 
                   <div className="space-y-4 overflow-hidden flex-1">
                     {[
-                      { title: currentMission === 1 ? "MISSÃO 1 – Como você encara o digital?" : "MISSÃO 2 – O digital no seu dia a dia", progress: currentMission === 1 ? 0 : 3, total: currentMission === 1 ? 4 : 3, xp: 150, active: true },
-                      { title: "MISSÃO 3 – Quando o desafio é maior", progress: 0, total: 1, xp: 200, active: false },
-                      { title: "MISSÃO 4 – Ferramentas Avançadas", progress: 1, total: 1, xp: 100, active: false },
-                      { title: "Missão 5 – Seu Radar de Ferramentas", progress: 0, total: 2, xp: 250, active: false }
-                    ].map((mission, index) => (
-                      <div 
-                        key={index} 
-                        className={`bg-muted/30 rounded-lg p-4 border transition-all cursor-pointer ${
-                          mission.active 
-                            ? 'border-primary/50 bg-primary/10' 
-                            : 'border-secondary/30 hover:border-secondary/50'
-                        }`}
-                        onClick={() => mission.active && setCurrentMission(index === 0 ? (currentMission === 1 ? 2 : 1) : currentMission)}
-                      >
-                        <div className="flex items-center justify-between mb-2">
-                          <h3 className="text-foreground font-medium text-sm">{mission.title}</h3>
-                          <span className="text-accent text-xs font-bold">+{mission.xp} XP</span>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <div className="flex-1 bg-secondary/20 rounded-full h-2">
-                            <div 
-                              className={`h-2 rounded-full transition-all duration-300 ${
-                                mission.active ? 'bg-primary' : 'bg-secondary'
-                              }`}
-                              style={{ width: `${(mission.progress / mission.total) * 100}%` }}
-                            ></div>
+                      { id: 1, title: "MISSÃO 1 – Como você encara o digital?", progress: completedMissions.has(1) ? 4 : 0, total: 4, xp: 150 },
+                      { id: 2, title: "MISSÃO 2 – O digital no seu dia a dia", progress: completedMissions.has(2) ? 3 : 0, total: 3, xp: 150 },
+                      { id: 3, title: "MISSÃO 3 – Quando o desafio é maior", progress: 0, total: 1, xp: 200 },
+                      { id: 4, title: "MISSÃO 4 – Ferramentas Avançadas", progress: 1, total: 1, xp: 100 },
+                      { id: 5, title: "Missão 5 – Seu Radar de Ferramentas", progress: 0, total: 2, xp: 250 }
+                    ].map((mission) => {
+                      const isCompleted = completedMissions.has(mission.id);
+                      const isActive = mission.id === currentMission && !isCompleted;
+                      return (
+                        <div 
+                          key={mission.id} 
+                          className={`bg-muted/30 rounded-lg p-4 border transition-all ${
+                            isCompleted
+                              ? 'border-primary/50 bg-primary/5 opacity-80' 
+                              : isActive 
+                                ? 'border-primary/50 bg-primary/10 cursor-pointer' 
+                                : 'border-secondary/30'
+                          }`}
+                          onClick={() => isActive && mission.id <= 2 && setCurrentMission(mission.id as 1 | 2)}
+                        >
+                          <div className="flex items-center justify-between mb-2">
+                            <div className="flex items-center gap-2">
+                              {isCompleted && (
+                                <div className="w-4 h-4 bg-primary rounded-full flex items-center justify-center">
+                                  <svg className="w-2.5 h-2.5 text-primary-foreground" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                  </svg>
+                                </div>
+                              )}
+                              <h3 className={`font-medium text-sm ${
+                                isCompleted ? 'text-primary line-through' : 'text-foreground'
+                              }`}>{mission.title}</h3>
+                            </div>
+                            <span className="text-accent text-xs font-bold">+{mission.xp} XP</span>
                           </div>
-                          <span className="text-muted-foreground text-xs">
-                            {mission.progress}/{mission.total}
-                          </span>
-                        </div>
-                        {mission.active && (
-                          <div className="mt-2 text-xs text-primary font-medium">
-                            ● ATIVA
+                          <div className="flex items-center gap-3">
+                            <div className="flex-1 bg-secondary/20 rounded-full h-2">
+                              <div 
+                                className={`h-2 rounded-full transition-all duration-300 ${
+                                  isCompleted ? 'bg-primary' : isActive ? 'bg-primary' : 'bg-secondary'
+                                }`}
+                                style={{ width: `${(mission.progress / mission.total) * 100}%` }}
+                              ></div>
+                            </div>
+                            <span className="text-muted-foreground text-xs">
+                              {mission.progress}/{mission.total}
+                            </span>
                           </div>
-                        )}
-                      </div>
-                    ))}
+                          {isCompleted && (
+                            <div className="mt-2 text-xs text-primary font-medium">
+                              ✓ CONCLUÍDA
+                            </div>
+                          )}
+                          {isActive && (
+                            <div className="mt-2 text-xs text-primary font-medium">
+                              ● ATIVA
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               </div>
@@ -265,15 +309,35 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
                   </div>
 
                   <div className="flex-1 overflow-hidden">
-                    {currentMission === 1 ? (
-                      <QuizDigital onClose={() => setCurrentMission(2)} />
-                    ) : (
+                    {currentMission === 1 && !completedMissions.has(1) ? (
+                      <QuizDigital onClose={() => {
+                        setCompletedMissions(prev => new Set([...prev, 1]));
+                        setCurrentMission(2);
+                      }} />
+                    ) : currentMission === 2 && !completedMissions.has(2) ? (
                       <MissaoDois onComplete={() => {
+                        setCompletedMissions(prev => new Set([...prev, 2]));
                         toast({
                           title: "Missão 2 concluída!",
                           description: "Parabéns! Continue evoluindo.",
                         });
                       }} />
+                    ) : (
+                      <div className="h-full flex flex-col items-center justify-center space-y-4">
+                        <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center">
+                          <svg className="w-8 h-8 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                        </div>
+                        <div className="text-center">
+                          <h4 className="text-lg font-bold text-primary mb-1">
+                            Missões Completadas!
+                          </h4>
+                          <p className="text-sm text-muted-foreground">
+                            Aguarde novas missões em breve.
+                          </p>
+                        </div>
+                      </div>
                     )}
                   </div>
                 </div>
