@@ -27,11 +27,15 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
   }, []);
 
   const handleLogout = () => {
+    console.log('🔴 BOTÃO SAIR CLICADO - handleLogout chamado');
+    console.log('🔴 onLogout type:', typeof onLogout);
     toast({
       title: "Logout realizado",
       description: "Você foi desconectado com sucesso",
     });
+    console.log('🔴 Chamando onLogout agora...');
     onLogout();
+    console.log('🔴 onLogout executado!');
   };
 
   if (isLoading) {
