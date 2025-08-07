@@ -30,9 +30,15 @@ export const useScrollReveal = (options: ScrollRevealOptions = {}) => {
           setTimeout(() => {
             setIsVisible(true);
           }, delay);
+        } else {
+          // Reset visibility when element leaves viewport
+          setIsVisible(false);
         }
       },
-      { threshold }
+      { 
+        threshold,
+        rootMargin: '-50px 0px -50px 0px' // Only trigger when element is well into viewport
+      }
     );
 
     observer.observe(element);
