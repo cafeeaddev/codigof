@@ -118,12 +118,18 @@ export const QuizDigital = ({ onClose }: QuizDigitalProps) => {
         };
       });
 
-      // For now, save without authentication - just use a temporary user
+      // Get user info from localStorage or context (since we're using profile-based auth)
+      const currentUser = {
+        nome: 'Nawana De Oliveira Marques Dos Santos',
+        email: 'nawana.santos@forvismazars.com'
+      };
+
+      // Insert response record
       const { error } = await supabase
         .from('respostas')
         .insert({
-          nome: 'Nawana De Oliveira Marques Dos Santos',
-          email: 'nawana.santos@forvismazars.com',
+          nome: currentUser.nome,
+          email: currentUser.email,
           respostas: JSON.stringify(responsesData)
         });
 

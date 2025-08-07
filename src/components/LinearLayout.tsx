@@ -8,6 +8,8 @@ import { Navigation } from './Navigation';
 import { SectionContainer } from './SectionContainer';
 import { ScrollProgress } from './ScrollProgress';
 import { useInternalScroll } from '@/hooks/useInternalScroll';
+import { LoginScreen } from './LoginScreen';
+import { WelcomeScreen } from './WelcomeScreen';
 
 const features = [
   {
@@ -34,6 +36,8 @@ const features = [
 ];
 
 export const LinearLayout = () => {
+  const [user, setUser] = useState<any>(null);
+  const [showLogin, setShowLogin] = useState(true);
   const [cameraPosition, setCameraPosition] = useState<[number, number, number]>([0, 1, -8]);
   const [cameraFov, setCameraFov] = useState(65);
   
@@ -45,6 +49,26 @@ export const LinearLayout = () => {
     registerSection,
     unregisterSection
   } = useInternalScroll();
+
+  const handleLogin = (userData: any) => {
+    setUser(userData);
+    setShowLogin(false);
+  };
+
+  const handleLogout = () => {
+    setUser(null);
+    setShowLogin(true);
+  };
+
+  // Show login screen if not authenticated
+  if (showLogin) {
+    return <LoginScreen onLogin={handleLogin} />;
+  }
+
+  // Show welcome screen if authenticated
+  if (user) {
+    return <WelcomeScreen user={user} onLogout={handleLogout} />;
+  }
 
   return (
     <div className="relative h-screen w-full overflow-hidden">
