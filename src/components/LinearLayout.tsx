@@ -47,6 +47,14 @@ export const LinearLayout = () => {
         />
       </div>
 
+      {/* Camera Controls */}
+      <CameraControls
+        position={cameraPosition}
+        fov={cameraFov}
+        onPositionChange={setCameraPosition}
+        onFovChange={setCameraFov}
+      />
+
       {/* Content layer */}
       <div className="relative z-10">
         {/* Navigation */}
