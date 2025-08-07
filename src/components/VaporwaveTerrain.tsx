@@ -58,8 +58,8 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
 
   // Create dramatic terrain geometry for realistic mountains
   const { backgroundGeometry, maxHeight } = useMemo(() => {
-    // High-resolution terrain geometry for dramatic mountains
-    const bgGeo = new THREE.PlaneGeometry(100, 100, 200, 200);
+    // Reduced resolution terrain geometry for cleaner wireframe
+    const bgGeo = new THREE.PlaneGeometry(100, 100, 50, 50);
     const positionAttribute = bgGeo.getAttribute('position');
     const positions = positionAttribute.array as Float32Array;
     let maxHeight = 0;
