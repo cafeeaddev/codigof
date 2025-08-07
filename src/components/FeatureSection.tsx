@@ -20,10 +20,28 @@ export const FeatureSection = ({
   image, 
   index 
 }: FeatureSectionProps) => {
-  // Scroll reveal hooks for different elements with increased distances
-  const titleReveal = useScrollReveal({ direction: 'left', delay: 100, distance: 80 });
-  const videoReveal = useScrollReveal({ direction: 'right', delay: 300, distance: 120 });
-  const cardsReveal = useScrollReveal({ direction: 'up', delay: 500, distance: 100 });
+  // Scroll reveal hooks for staggered animations
+  const titleReveal = useScrollReveal({ 
+    direction: 'left', 
+    delay: 0, 
+    distance: 100,
+    startOffset: 0.9,
+    endOffset: 0.3
+  });
+  const videoReveal = useScrollReveal({ 
+    direction: 'right', 
+    delay: 200, 
+    distance: 120,
+    startOffset: 0.8,
+    endOffset: 0.2
+  });
+  const cardsReveal = useScrollReveal({ 
+    direction: 'up', 
+    delay: 400, 
+    distance: 80,
+    startOffset: 0.7,
+    endOffset: 0.1
+  });
 
   // Only show the first feature section as our missions/xp/medals section
   if (index !== 0) return null;

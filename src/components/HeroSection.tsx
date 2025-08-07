@@ -1,20 +1,52 @@
 
 import { Button } from './ui/button';
 import { Play } from 'lucide-react';
+import { useScrollReveal } from '@/hooks/useScrollReveal';
 
 export const HeroSection = () => {
+  // Scroll reveal for hero elements
+  const titleReveal = useScrollReveal({ 
+    direction: 'up', 
+    distance: 60,
+    startOffset: 1.0,
+    endOffset: 0.6
+  });
+  const logoReveal = useScrollReveal({ 
+    direction: 'up', 
+    delay: 200,
+    distance: 80,
+    startOffset: 0.9,
+    endOffset: 0.5
+  });
+  const buttonsReveal = useScrollReveal({ 
+    direction: 'up', 
+    delay: 400,
+    distance: 40,
+    startOffset: 0.8,
+    endOffset: 0.4
+  });
+
   return (
     <section className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 pt-16">
       <div className="max-w-4xl mx-auto text-center">
         {/* Main content positioned above the terrain */}
         <div className="mb-12">
           {/* Top text */}
-          <p className="text-white mb-6 uppercase tracking-wider font-montserrat font-bold break-words" style={{ fontSize: '23.77px' }}>
-            SUA JORNADA DIGITAL COMEÇA AQUI!
-          </p>
+          <div 
+            ref={titleReveal.elementRef}
+            style={titleReveal.style}
+          >
+            <p className="text-white mb-6 uppercase tracking-wider font-montserrat font-bold break-words" style={{ fontSize: '23.77px' }}>
+              SUA JORNADA DIGITAL COMEÇA AQUI!
+            </p>
+          </div>
 
           {/* Logo */}
-          <div className="mb-12">
+          <div 
+            ref={logoReveal.elementRef}
+            style={logoReveal.style}
+            className="mb-12"
+          >
             <img 
               src="/lovable-uploads/89624b0a-ec75-460d-9b68-0a73c6c945eb.png" 
               alt="Código F"
@@ -23,7 +55,11 @@ export const HeroSection = () => {
           </div>
 
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <div 
+            ref={buttonsReveal.elementRef}
+            style={buttonsReveal.style}
+            className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+          >
             <Button 
               size="lg" 
               className="bg-white/10 text-white hover:bg-white/20 px-8 py-6 text-lg font-medium backdrop-blur-md rounded-xl shadow-lg"
