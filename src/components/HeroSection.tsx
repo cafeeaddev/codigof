@@ -1,6 +1,6 @@
 
 import { Button } from './ui/button';
-import { Play } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
 
 export const HeroSection = () => {
@@ -58,11 +58,10 @@ export const HeroSection = () => {
           </div>
         </div>
 
-        {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-          <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center">
-            <div className="w-1 h-3 bg-white/50 rounded-full mt-2 animate-pulse"></div>
-          </div>
+        {/* Scroll indicator - CONTINUE */}
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center text-white/60 hover:text-white/80 transition-colors duration-300 cursor-pointer">
+          <span className="text-sm font-medium tracking-wider mb-2">CONTINUE</span>
+          <ChevronDown className="w-6 h-6 animate-bounce" />
         </div>
       </div>
     </section>
