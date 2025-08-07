@@ -48,64 +48,67 @@ export const LinearLayout = () => {
 
   return (
     <div className="relative h-screen w-full overflow-hidden">
-      {/* Fixed vaporwave background - PRIMEIRO para ficar atrás */}
-      <div className="absolute inset-0 z-0">
+      {/* Fixed vaporwave background */}
+      <div className="fixed inset-0 z-0">
         <VaporwaveScene 
           cameraPosition={cameraPosition}
           cameraFov={cameraFov}
         />
       </div>
 
-      {/* Fixed Navigation */}
-      <div className="fixed top-0 left-0 right-0 z-30">
-        <Navigation />
-      </div>
-
-      {/* Internal scroll container */}
-      <div 
-        ref={containerRef}
-        className="relative z-10 h-full w-full overflow-y-auto overflow-x-hidden scrollbar-hide bg-transparent"
-        data-internal-scroll="true"
-        style={{
-          scrollBehavior: 'smooth',
-          scrollSnapType: 'y mandatory'
-        }}
-      >
-        {/* Hero Section */}
-        <SectionContainer
-          sectionId="hero"
-          sectionIndex={0}
-          registerSection={registerSection}
-          unregisterSection={unregisterSection}
-          className="scroll-snap-start"
+      {/* Content layer with internal scroll */}
+      <div className="relative z-10">
+        {/* Fixed Navigation */}
+        <div className="fixed top-0 left-0 right-0 z-30">
+          <Navigation />
+        </div>
+        
+        {/* Internal scroll container */}
+        <div 
+          ref={containerRef}
+          className="h-screen w-full overflow-y-auto overflow-x-hidden scrollbar-hide"
+          data-internal-scroll="true"
+          style={{
+            scrollBehavior: 'smooth',
+            scrollSnapType: 'y mandatory'
+          }}
         >
-          <HeroSection />
-        </SectionContainer>
+          {/* Hero Section */}
+          <SectionContainer
+            sectionId="hero"
+            sectionIndex={0}
+            registerSection={registerSection}
+            unregisterSection={unregisterSection}
+            className="scroll-snap-start bg-transparent"
+          >
+            <HeroSection />
+          </SectionContainer>
 
-        {/* Feature Section */}
-        <SectionContainer
-          sectionId="features"
-          sectionIndex={1}
-          registerSection={registerSection}
-          unregisterSection={unregisterSection}
-          className="scroll-snap-start"
-        >
-          <FeatureSection
-            {...features[0]}
-            index={0}
-          />
-        </SectionContainer>
+          {/* Feature Section */}
+          <SectionContainer
+            sectionId="features"
+            sectionIndex={1}
+            registerSection={registerSection}
+            unregisterSection={unregisterSection}
+            className="scroll-snap-start bg-transparent"
+          >
+            <FeatureSection
+              {...features[0]}
+              index={0}
+            />
+          </SectionContainer>
 
-        {/* Footer Section */}
-        <SectionContainer
-          sectionId="footer"
-          sectionIndex={2}
-          registerSection={registerSection}
-          unregisterSection={unregisterSection}
-          className="scroll-snap-start"
-        >
-          <Footer />
-        </SectionContainer>
+          {/* Footer Section */}
+          <SectionContainer
+            sectionId="footer"
+            sectionIndex={2}
+            registerSection={registerSection}
+            unregisterSection={unregisterSection}
+            className="scroll-snap-start bg-transparent"
+          >
+            <Footer />
+          </SectionContainer>
+        </div>
       </div>
 
       {/* Scroll Progress Indicator */}
