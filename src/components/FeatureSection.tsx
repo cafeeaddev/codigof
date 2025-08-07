@@ -77,19 +77,28 @@ export const FeatureSection = ({
           {/* Main content card */}
           <div className="bg-card/80 backdrop-blur-xl rounded-2xl border border-border/50 p-8 lg:p-12 shadow-neon mb-8">
             <div className="flex items-start gap-6 lg:gap-8">
-              {/* Avatar/Video section */}
-              <div className="flex-shrink-0">
-                <div className="w-48 h-48 lg:w-56 lg:h-56 bg-muted/30 rounded-2xl border border-border/30 overflow-hidden">
-                  <video 
-                    className="w-full h-full object-cover"
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                  >
-                    <source src="https://meta.cafeeadhost.com.br/Cody/hero-animation.mp4" type="video/mp4" />
-                  </video>
+              {/* Avatar/Video section with circular design */}
+              <div className="flex-shrink-0 relative">
+                {/* Glowing circle border */}
+                <div className="w-56 h-56 lg:w-64 lg:h-64 rounded-full bg-gradient-to-r from-neon-pink via-neon-purple to-neon-cyan p-1 shadow-glow">
+                  <div className="w-full h-full rounded-full bg-card/90 backdrop-blur-xl border border-border/30 overflow-hidden relative">
+                    <video 
+                      className="w-full h-full object-cover rounded-full"
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                    >
+                      <source src="https://meta.cafeeadhost.com.br/Cody/hero-animation.mp4" type="video/mp4" />
+                    </video>
+                    {/* Additional glow effect */}
+                    <div className="absolute inset-0 rounded-full bg-gradient-to-t from-transparent via-transparent to-neon-cyan/10"></div>
+                  </div>
                 </div>
+                {/* Floating particles effect */}
+                <div className="absolute -top-2 -right-2 w-4 h-4 bg-neon-cyan rounded-full opacity-60 animate-pulse"></div>
+                <div className="absolute top-8 -left-3 w-2 h-2 bg-neon-pink rounded-full opacity-40 animate-pulse delay-500"></div>
+                <div className="absolute -bottom-1 left-8 w-3 h-3 bg-neon-purple rounded-full opacity-50 animate-pulse delay-1000"></div>
               </div>
 
               {/* Content section */}
