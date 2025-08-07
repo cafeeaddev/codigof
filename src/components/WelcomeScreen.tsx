@@ -71,8 +71,8 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
   return (
     <div className="fixed inset-0 bg-background overflow-hidden" style={{ height: '100vh' }}>
       {/* Header */}
-      <div className="bg-card/90 backdrop-blur-xl border-b border-secondary/50 p-4 relative z-10">
-        <div className="flex items-center justify-between max-w-7xl mx-auto">
+      <div className="bg-card/90 backdrop-blur-xl border-b border-secondary/50 p-4 relative z-10" style={{ pointerEvents: 'auto' }}>
+        <div className="flex items-center justify-between max-w-7xl mx-auto" style={{ pointerEvents: 'auto' }}>
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 bg-secondary/20 rounded-full flex items-center justify-center border border-secondary/50">
               <User className="w-6 h-6 text-secondary" />
@@ -86,15 +86,19 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
               </p>
             </div>
           </div>
-          <Button
-            onClick={handleLogout}
-            variant="outline"
-            className="bg-transparent border-secondary text-secondary hover:bg-secondary hover:text-secondary-foreground relative z-50 cursor-pointer"
-            style={{ pointerEvents: 'auto' }}
+          
+          {/* Teste com button nativo primeiro */}
+          <button
+            onClick={() => {
+              console.log('🟢 BUTTON NATIVO CLICADO!');
+              handleLogout();
+            }}
+            className="px-4 py-2 border border-secondary text-secondary rounded-md hover:bg-secondary hover:text-secondary-foreground transition-colors cursor-pointer"
+            style={{ pointerEvents: 'auto', zIndex: 9999 }}
           >
-            <LogOut className="w-4 h-4 mr-2" />
-            SAIR
-          </Button>
+            <LogOut className="w-4 h-4 mr-2 inline" />
+            SAIR (TESTE)
+          </button>
         </div>
       </div>
 
