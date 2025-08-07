@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Button } from './ui/button';
-import { ArrowRight, Flag, Trophy, Medal } from 'lucide-react';
+import { ArrowRight, Trophy, Medal } from 'lucide-react';
 
 interface FeatureSectionProps {
   id: string;
@@ -44,7 +44,8 @@ export const FeatureSection = ({
 
   const features = [
     {
-      icon: Flag,
+      icon: null,
+      customIcon: "/lovable-uploads/437ccd6a-15f4-45cb-b6cc-cdad65d9594a.png",
       title: "4 MISSÕES",
       subtitle: "Desafios interativos",
       color: "from-blue-500 to-cyan-500"
@@ -118,7 +119,11 @@ export const FeatureSection = ({
                   className="bg-gradient-to-br from-gray-900/80 to-blue-900/40 backdrop-blur-xl rounded-xl border border-cyan-400/30 p-6 text-center shadow-lg hover:shadow-cyan-400/20 transition-all duration-300"
                 >
                   <div className={`w-12 h-12 mx-auto mb-4 bg-gradient-to-br ${feature.color} rounded-lg flex items-center justify-center`}>
-                    <feature.icon className="w-6 h-6 text-white" />
+                    {feature.customIcon ? (
+                      <img src={feature.customIcon} alt={feature.title} className="w-6 h-6" />
+                    ) : (
+                      <feature.icon className="w-6 h-6 text-white" />
+                    )}
                   </div>
                   
                   <h4 className="text-white font-bold text-sm mb-2">
