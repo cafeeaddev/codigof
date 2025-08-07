@@ -68,22 +68,27 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
       const x = positions[i];
       const z = positions[i + 1];
       
-      // Create dramatic mountain terrain with peaks and valleys
-      const wave1 = Math.sin(x * 0.2) * Math.cos(z * 0.2) * 2.5;
-      const wave2 = Math.sin(x * 0.4) * Math.cos(z * 0.4) * 1.8;
-      const wave3 = Math.sin(x * 0.8) * Math.cos(z * 0.8) * 1.2;
-      const wave4 = Math.sin(x * 1.6) * Math.cos(z * 1.6) * 0.8;
-      const wave5 = Math.sin(x * 3.2) * Math.cos(z * 3.2) * 0.4;
+      // Create valley/path in the center (when x is close to 0)
+      const centerDistance = Math.abs(x);
+      const pathEffect = Math.max(0, 1 - centerDistance / 15); // Path width of ~30 units
       
-      // Ridge-like formations for more realistic mountains
-      const ridgeEffect = Math.abs(Math.sin(x * 0.1)) * Math.abs(Math.cos(z * 0.1)) * 1.5;
+      // Mountains on the sides - stronger effect farther from center
+      const sideEffect = Math.pow(centerDistance / 25, 2) * 3;
       
-      // Distance-based variation for depth
-      const distance = Math.sqrt(x * x + z * z);
-      const distanceEffect = Math.sin(distance * 0.15) * Math.cos(distance * 0.1) * 0.8;
+      // Base terrain variation
+      const wave1 = Math.sin(x * 0.2) * Math.cos(z * 0.2) * 1.5;
+      const wave2 = Math.sin(x * 0.4) * Math.cos(z * 0.4) * 0.8;
+      const wave3 = Math.sin(z * 0.3) * 0.6; // Z-direction waves for depth
       
-      // Combine all effects for dramatic terrain
-      const height = wave1 + wave2 + wave3 + wave4 + wave5 + ridgeEffect + distanceEffect;
+      // Ridge formations for mountains (stronger on sides)
+      const ridgeEffect = Math.abs(Math.sin(x * 0.1)) * sideEffect * 0.8;
+      
+      // Subtle path depression in center
+      const pathDepression = pathEffect * -0.5;
+      
+      // Combine effects: lower in center, higher on sides
+      const height = (wave1 + wave2 + wave3 + ridgeEffect + sideEffect + pathDepression) * (1 - pathEffect * 0.7);
+      
       positions[i + 2] = height;
       maxHeight = Math.max(maxHeight, Math.abs(height));
     }
