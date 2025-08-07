@@ -175,21 +175,18 @@ export const QuizDigital = ({ onClose }: QuizDigitalProps) => {
 
   if (isCompleted) {
     return (
-      <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <Card className="w-full max-w-2xl bg-card/90 backdrop-blur-xl border-secondary/50">
-          <CardContent className="text-center space-y-6 p-8">
-            <CheckCircle className="w-16 h-16 text-primary mx-auto" />
-            <div>
-              <h2 className="text-2xl font-bold text-primary mb-2">Quiz Concluído!</h2>
-              <p className="text-muted-foreground">
-                Suas respostas foram registradas com sucesso. Continue explorando seus desafios!
-              </p>
-            </div>
-            <Button onClick={onClose} className="bg-primary hover:bg-primary/90">
-              Voltar aos Desafios
-            </Button>
-          </CardContent>
-        </Card>
+      <div className="h-full flex flex-col items-center justify-center space-y-4 p-4">
+        <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center">
+          <CheckCircle className="w-6 h-6 text-primary" />
+        </div>
+        <div className="text-center">
+          <h4 className="text-lg font-bold text-primary mb-1">
+            Missão Concluída!
+          </h4>
+          <p className="text-sm text-muted-foreground">
+            Suas respostas foram salvas. Próxima missão em breve.
+          </p>
+        </div>
       </div>
     );
   }
@@ -198,86 +195,93 @@ export const QuizDigital = ({ onClose }: QuizDigitalProps) => {
   const progress = ((currentQuestion + 1) / quizQuestions.length) * 100;
 
   return (
-    <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <Card className="w-full max-w-3xl bg-card/90 backdrop-blur-xl border-secondary/50">
-        <CardHeader>
-          <div className="flex items-center justify-between mb-4">
-            <CardTitle className="text-primary">Quiz de Avaliação Digital</CardTitle>
-            <Button variant="outline" onClick={onClose} size="sm">
-              ✕
-            </Button>
-          </div>
-          
-          {/* Progress bar */}
-          <div className="w-full bg-secondary/20 rounded-full h-2 mb-4">
-            <div 
-              className="bg-primary h-2 rounded-full transition-all duration-300"
-              style={{ width: `${progress}%` }}
-            />
-          </div>
-          
-          <div className="text-sm text-muted-foreground">
+    <div className="h-full flex flex-col">
+      <div className="mb-4">
+        <h3 className="text-lg font-bold text-foreground mb-1">Quiz Digital - Avaliação de Perfil</h3>
+        <p className="text-sm text-muted-foreground">Primeira missão semanal</p>
+      </div>
+
+      <div className="mb-4">
+        <div className="flex justify-between items-center mb-2">
+          <span className="text-xs text-muted-foreground">
             Pergunta {currentQuestion + 1} de {quizQuestions.length}
-          </div>
-        </CardHeader>
+          </span>
+          <span className="text-xs text-muted-foreground">
+            {Math.round(progress)}%
+          </span>
+        </div>
+        <div className="w-full bg-secondary/20 rounded-full h-1.5">
+          <div
+            className="bg-primary h-1.5 rounded-full transition-all duration-300"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+      </div>
 
-        <CardContent className="space-y-6">
-          <div>
-            <h3 className="text-lg font-medium mb-6">
-              {currentQuestionData.question}
-            </h3>
+      <div className="flex-1 flex flex-col">
+        <h4 className="text-base font-medium text-foreground mb-4">
+          {currentQuestionData.question}
+        </h4>
 
-            <RadioGroup
-              value={answers[currentQuestionData.id] || ""}
-              onValueChange={(value) => handleAnswerSelect(currentQuestionData.id, value)}
-              className="space-y-4"
-            >
-              {currentQuestionData.options.map((option) => (
-                <div key={option.letter} className="flex items-start space-x-3 p-4 rounded-lg border border-secondary/30 hover:border-secondary/60 transition-colors">
-                  <RadioGroupItem value={option.letter} id={`q${currentQuestionData.id}-${option.letter}`} />
-                  <Label 
-                    htmlFor={`q${currentQuestionData.id}-${option.letter}`}
-                    className="flex-1 cursor-pointer leading-relaxed"
-                  >
-                    <span className="font-medium text-primary mr-2">{option.letter})</span>
-                    {option.text}
-                  </Label>
-                </div>
-              ))}
-            </RadioGroup>
-          </div>
+        <div className="flex-1 overflow-y-auto">
+          <RadioGroup
+            value={answers[currentQuestionData.id] || ""}
+            onValueChange={(value) => handleAnswerSelect(currentQuestionData.id, value)}
+            className="space-y-2"
+          >
+            {currentQuestionData.options.map((option) => (
+              <div key={option.letter} className="flex items-start space-x-2 p-2 rounded hover:bg-muted/20">
+                <RadioGroupItem
+                  value={option.letter}
+                  id={`q${currentQuestionData.id}-${option.letter}`}
+                  className="border-secondary mt-0.5"
+                />
+                <Label
+                  htmlFor={`q${currentQuestionData.id}-${option.letter}`}
+                  className="text-xs text-foreground cursor-pointer flex-1 leading-relaxed"
+                >
+                  <span className="font-medium text-primary mr-1">{option.letter})</span>
+                  {option.text}
+                </Label>
+              </div>
+            ))}
+          </RadioGroup>
+        </div>
 
-          <div className="flex justify-between pt-6">
+        <div className="flex justify-between mt-4 pt-4 border-t border-secondary/30">
+          <Button
+            onClick={goToPreviousQuestion}
+            disabled={currentQuestion === 0}
+            variant="outline"
+            size="sm"
+            className="border-secondary text-secondary hover:bg-secondary hover:text-secondary-foreground"
+          >
+            <ChevronLeft className="w-3 h-3 mr-1" />
+            Anterior
+          </Button>
+
+          {currentQuestion === quizQuestions.length - 1 ? (
             <Button
-              variant="outline"
-              onClick={goToPreviousQuestion}
-              disabled={currentQuestion === 0}
+              onClick={submitQuiz}
+              disabled={!answers[currentQuestionData.id] || isSubmitting}
+              size="sm"
+              className="bg-primary hover:bg-primary/90"
             >
-              <ChevronLeft className="w-4 h-4 mr-2" />
-              Anterior
+              {isSubmitting ? 'Enviando...' : 'Finalizar'}
             </Button>
-
-            {currentQuestion === quizQuestions.length - 1 ? (
-              <Button
-                onClick={submitQuiz}
-                disabled={!answers[currentQuestionData.id] || isSubmitting}
-                className="bg-primary hover:bg-primary/90"
-              >
-                {isSubmitting ? "Salvando..." : "Finalizar Quiz"}
-              </Button>
-            ) : (
-              <Button
-                onClick={goToNextQuestion}
-                disabled={!answers[currentQuestionData.id]}
-                className="bg-primary hover:bg-primary/90"
-              >
-                Próxima
-                <ChevronRight className="w-4 h-4 ml-2" />
-              </Button>
-            )}
-          </div>
-        </CardContent>
-      </Card>
+          ) : (
+            <Button
+              onClick={goToNextQuestion}
+              disabled={!answers[currentQuestionData.id]}
+              size="sm"
+              className="bg-primary hover:bg-primary/90"
+            >
+              Próxima
+              <ChevronRight className="w-3 h-3 ml-1" />
+            </Button>
+          )}
+        </div>
+      </div>
     </div>
   );
 };

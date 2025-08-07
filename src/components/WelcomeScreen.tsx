@@ -17,7 +17,7 @@ interface WelcomeScreenProps {
 
 export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [showQuiz, setShowQuiz] = useState(false);
+  
 
   useEffect(() => {
     // Simular carregamento inicial
@@ -193,31 +193,8 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
                       <span className="text-accent text-sm font-mono font-bold">DESAFIOS SEMANAIS</span>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4 flex-1 overflow-hidden">
-                      {[
-                        { title: "Quiz Digital - Avaliação de Perfil", status: "Disponível", difficulty: "Médio", isQuiz: true },
-                        { title: "Projeto Colaborativo", status: "Em Progresso", difficulty: "Médio" },
-                        { title: "Avaliação Técnica", status: "Bloqueado", difficulty: "Difícil" },
-                        { title: "Workshop Prático", status: "Disponível", difficulty: "Médio" }
-                      ].map((challenge, index) => (
-                        <div 
-                          key={index} 
-                          className="bg-muted/30 rounded-lg p-4 border border-secondary/30 hover:border-secondary/60 transition-colors cursor-pointer"
-                          onClick={() => challenge.isQuiz ? setShowQuiz(true) : undefined}
-                        >
-                          <h3 className="text-foreground font-medium mb-2">{challenge.title}</h3>
-                          <div className="flex items-center justify-between">
-                            <span className={`text-xs px-2 py-1 rounded-full ${
-                              challenge.status === 'Disponível' ? 'bg-primary/20 text-primary' :
-                              challenge.status === 'Em Progresso' ? 'bg-accent/20 text-accent' :
-                              'bg-muted text-muted-foreground'
-                            }`}>
-                              {challenge.status}
-                            </span>
-                            <span className="text-muted-foreground text-xs">{challenge.difficulty}</span>
-                          </div>
-                        </div>
-                      ))}
+                    <div className="flex-1 overflow-hidden">
+                      <QuizDigital onClose={() => {}} />
                     </div>
                   </div>
                 </div>
@@ -228,10 +205,6 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
         </div>
       </div>
 
-      {/* Quiz Modal */}
-      {showQuiz && (
-        <QuizDigital onClose={() => setShowQuiz(false)} />
-      )}
     </>
   );
 };
