@@ -121,26 +121,26 @@ export const VaporwaveBackground = () => {
   
   return (
     <>
-      {/* Céu com gradiente vaporwave */}
-      <mesh ref={backgroundRef} material={material} geometry={geometry} position={[0, 0, -20]} scale={[1, 1, 1]} />
+      {/* Céu com gradiente vaporwave - posicionado mais próximo */}
+      <mesh ref={backgroundRef} material={material} geometry={geometry} position={[0, 20, -15]} scale={[1, 1, 1]} />
       
-      {/* Sol vaporwave */}
+      {/* Sol vaporwave - mais visível */}
       <mesh 
         ref={sunRef} 
         material={sunMaterial} 
         geometry={sunGeometry} 
-        position={[0, 15, -15]}
-        scale={[1, 1, 1]}
+        position={[-20, 25, -10]}
+        scale={[1.5, 1.5, 1.5]}
       />
       
-      {/* Linhas horizontais do grid no céu */}
-      {Array.from({ length: 8 }, (_, i) => (
-        <mesh key={i} position={[0, 8 - (i * 2), -10]} rotation={[0, 0, 0]}>
-          <planeGeometry args={[150, 0.1]} />
+      {/* Linhas horizontais do grid no céu - mais próximas */}
+      {Array.from({ length: 12 }, (_, i) => (
+        <mesh key={i} position={[0, 20 - (i * 3), -12]} rotation={[0, 0, 0]}>
+          <planeGeometry args={[200, 0.2]} />
           <meshBasicMaterial 
-            color="#FF00FF" 
+            color="#FF1493" 
             transparent={true} 
-            opacity={0.3 - (i * 0.03)}
+            opacity={0.4 - (i * 0.02)}
           />
         </mesh>
       ))}
