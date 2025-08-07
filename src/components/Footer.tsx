@@ -4,7 +4,7 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Wifi, User, Lock, Building2, Code2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import { toast } from './ui/use-toast';
+import { toast } from '@/hooks/use-toast';
 import { WelcomeScreen } from './WelcomeScreen';
 
 export const Footer = () => {

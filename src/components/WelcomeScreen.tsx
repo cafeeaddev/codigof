@@ -96,7 +96,7 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
   }
 
   return (
-    <div className="min-h-screen bg-background relative">
+    <div className="fixed inset-0 bg-background overflow-hidden">
       {/* Centered Logo Background */}
       <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
         <img 
@@ -142,128 +142,130 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto p-6 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Missões Diárias */}
-          <div className="lg:col-span-2">
-            <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-6 shadow-neon">
-              <div className="flex items-center gap-2 mb-6 p-3 bg-muted/50 rounded-lg">
-                <div className="w-3 h-3 bg-primary rounded-full"></div>
-                <span className="text-primary text-sm font-mono font-bold">MISSÕES DIÁRIAS</span>
-              </div>
+      <div className="h-screen overflow-y-auto p-6 relative z-10">
+        <div className="max-w-7xl mx-auto h-full flex flex-col">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1 min-h-0">
+            {/* Missões Diárias */}
+            <div className="lg:col-span-2">
+              <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-6 shadow-neon">
+                <div className="flex items-center gap-2 mb-6 p-3 bg-muted/50 rounded-lg">
+                  <div className="w-3 h-3 bg-primary rounded-full"></div>
+                  <span className="text-primary text-sm font-mono font-bold">MISSÕES DIÁRIAS</span>
+                </div>
 
-              <div className="space-y-4">
-                {[
-                  { title: "Completar 3 treinamentos", progress: 2, total: 3, xp: 150 },
-                  { title: "Participar de 1 reunião de equipe", progress: 0, total: 1, xp: 200 },
-                  { title: "Revisar documentação técnica", progress: 1, total: 1, xp: 100 }
-                ].map((mission, index) => (
-                  <div key={index} className="bg-muted/30 rounded-lg p-4 border border-secondary/30">
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="text-foreground font-medium">{mission.title}</h3>
-                      <span className="text-accent text-sm font-bold">+{mission.xp} XP</span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <div className="flex-1 bg-secondary/20 rounded-full h-2">
-                        <div 
-                          className="bg-primary h-2 rounded-full transition-all duration-300"
-                          style={{ width: `${(mission.progress / mission.total) * 100}%` }}
-                        ></div>
+                <div className="space-y-4">
+                  {[
+                    { title: "Completar 3 treinamentos", progress: 2, total: 3, xp: 150 },
+                    { title: "Participar de 1 reunião de equipe", progress: 0, total: 1, xp: 200 },
+                    { title: "Revisar documentação técnica", progress: 1, total: 1, xp: 100 }
+                  ].map((mission, index) => (
+                    <div key={index} className="bg-muted/30 rounded-lg p-4 border border-secondary/30">
+                      <div className="flex items-center justify-between mb-2">
+                        <h3 className="text-foreground font-medium">{mission.title}</h3>
+                        <span className="text-accent text-sm font-bold">+{mission.xp} XP</span>
                       </div>
-                      <span className="text-muted-foreground text-sm">
-                        {mission.progress}/{mission.total}
-                      </span>
+                      <div className="flex items-center gap-3">
+                        <div className="flex-1 bg-secondary/20 rounded-full h-2">
+                          <div 
+                            className="bg-primary h-2 rounded-full transition-all duration-300"
+                            style={{ width: `${(mission.progress / mission.total) * 100}%` }}
+                          ></div>
+                        </div>
+                        <span className="text-muted-foreground text-sm">
+                          {mission.progress}/{mission.total}
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Desafios Semanais */}
-            <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-6 shadow-neon mt-6">
-              <div className="flex items-center gap-2 mb-6 p-3 bg-muted/50 rounded-lg">
-                <div className="w-3 h-3 bg-accent rounded-full"></div>
-                <span className="text-accent text-sm font-mono font-bold">DESAFIOS SEMANAIS</span>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {[
-                  { title: "Quiz de Segurança", status: "Disponível", difficulty: "Fácil" },
-                  { title: "Projeto Colaborativo", status: "Em Progresso", difficulty: "Médio" },
-                  { title: "Avaliação Técnica", status: "Bloqueado", difficulty: "Difícil" },
-                  { title: "Workshop Prático", status: "Disponível", difficulty: "Médio" }
-                ].map((challenge, index) => (
-                  <div key={index} className="bg-muted/30 rounded-lg p-4 border border-secondary/30 hover:border-secondary/60 transition-colors cursor-pointer">
-                    <h3 className="text-foreground font-medium mb-2">{challenge.title}</h3>
-                    <div className="flex items-center justify-between">
-                      <span className={`text-xs px-2 py-1 rounded-full ${
-                        challenge.status === 'Disponível' ? 'bg-primary/20 text-primary' :
-                        challenge.status === 'Em Progresso' ? 'bg-accent/20 text-accent' :
-                        'bg-muted text-muted-foreground'
-                      }`}>
-                        {challenge.status}
-                      </span>
-                      <span className="text-muted-foreground text-xs">{challenge.difficulty}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Painel Lateral */}
-          <div className="space-y-6">
-            {/* Estatísticas */}
-            <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-6 shadow-neon">
-              <div className="flex items-center gap-2 mb-4 p-3 bg-muted/50 rounded-lg">
-                <div className="w-3 h-3 bg-secondary rounded-full"></div>
-                <span className="text-secondary text-sm font-mono font-bold">ESTATÍSTICAS</span>
-              </div>
-              
-              <div className="space-y-4">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-primary">1,250</div>
-                  <div className="text-muted-foreground text-sm">Total XP</div>
+                  ))}
                 </div>
-                <div className="grid grid-cols-2 gap-4 text-center">
-                  <div>
-                    <div className="text-lg font-bold text-accent">15</div>
-                    <div className="text-muted-foreground text-xs">Missões</div>
-                  </div>
-                  <div>
-                    <div className="text-lg font-bold text-secondary">8</div>
-                    <div className="text-muted-foreground text-xs">Desafios</div>
-                  </div>
+              </div>
+
+              {/* Desafios Semanais */}
+              <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-6 shadow-neon mt-6">
+                <div className="flex items-center gap-2 mb-6 p-3 bg-muted/50 rounded-lg">
+                  <div className="w-3 h-3 bg-accent rounded-full"></div>
+                  <span className="text-accent text-sm font-mono font-bold">DESAFIOS SEMANAIS</span>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {[
+                    { title: "Quiz de Segurança", status: "Disponível", difficulty: "Fácil" },
+                    { title: "Projeto Colaborativo", status: "Em Progresso", difficulty: "Médio" },
+                    { title: "Avaliação Técnica", status: "Bloqueado", difficulty: "Difícil" },
+                    { title: "Workshop Prático", status: "Disponível", difficulty: "Médio" }
+                  ].map((challenge, index) => (
+                    <div key={index} className="bg-muted/30 rounded-lg p-4 border border-secondary/30 hover:border-secondary/60 transition-colors cursor-pointer">
+                      <h3 className="text-foreground font-medium mb-2">{challenge.title}</h3>
+                      <div className="flex items-center justify-between">
+                        <span className={`text-xs px-2 py-1 rounded-full ${
+                          challenge.status === 'Disponível' ? 'bg-primary/20 text-primary' :
+                          challenge.status === 'Em Progresso' ? 'bg-accent/20 text-accent' :
+                          'bg-muted text-muted-foreground'
+                        }`}>
+                          {challenge.status}
+                        </span>
+                        <span className="text-muted-foreground text-xs">{challenge.difficulty}</span>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
 
-            {/* Ranking */}
-            <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-6 shadow-neon">
-              <div className="flex items-center gap-2 mb-4 p-3 bg-muted/50 rounded-lg">
-                <div className="w-3 h-3 bg-accent rounded-full"></div>
-                <span className="text-accent text-sm font-mono font-bold">RANKING</span>
-              </div>
-              
-              <div className="space-y-3">
-                {[
-                  { name: "João Silva", xp: 2100, position: 1 },
-                  { name: "Maria Santos", xp: 1850, position: 2 },
-                  { name: user.nome, xp: 1250, position: 3 },
-                  { name: "Pedro Costa", xp: 980, position: 4 }
-                ].map((player, index) => (
-                  <div key={index} className={`flex items-center justify-between p-2 rounded ${
-                    player.name === user.nome ? 'bg-primary/20 border border-primary/50' : 'bg-muted/20'
-                  }`}>
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-bold text-muted-foreground">#{player.position}</span>
-                      <span className={`text-sm ${player.name === user.nome ? 'text-primary font-bold' : 'text-foreground'}`}>
-                        {player.name}
-                      </span>
-                    </div>
-                    <span className="text-xs text-accent font-bold">{player.xp} XP</span>
+            {/* Painel Lateral */}
+            <div className="space-y-6">
+              {/* Estatísticas */}
+              <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-6 shadow-neon">
+                <div className="flex items-center gap-2 mb-4 p-3 bg-muted/50 rounded-lg">
+                  <div className="w-3 h-3 bg-secondary rounded-full"></div>
+                  <span className="text-secondary text-sm font-mono font-bold">ESTATÍSTICAS</span>
+                </div>
+                
+                <div className="space-y-4">
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-primary">1,250</div>
+                    <div className="text-muted-foreground text-sm">Total XP</div>
                   </div>
-                ))}
+                  <div className="grid grid-cols-2 gap-4 text-center">
+                    <div>
+                      <div className="text-lg font-bold text-accent">15</div>
+                      <div className="text-muted-foreground text-xs">Missões</div>
+                    </div>
+                    <div>
+                      <div className="text-lg font-bold text-secondary">8</div>
+                      <div className="text-muted-foreground text-xs">Desafios</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Ranking */}
+              <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-6 shadow-neon">
+                <div className="flex items-center gap-2 mb-4 p-3 bg-muted/50 rounded-lg">
+                  <div className="w-3 h-3 bg-accent rounded-full"></div>
+                  <span className="text-accent text-sm font-mono font-bold">RANKING</span>
+                </div>
+                
+                <div className="space-y-3">
+                  {[
+                    { name: "João Silva", xp: 2100, position: 1 },
+                    { name: "Maria Santos", xp: 1850, position: 2 },
+                    { name: user.nome, xp: 1250, position: 3 },
+                    { name: "Pedro Costa", xp: 980, position: 4 }
+                  ].map((player, index) => (
+                    <div key={index} className={`flex items-center justify-between p-2 rounded ${
+                      player.name === user.nome ? 'bg-primary/20 border border-primary/50' : 'bg-muted/20'
+                    }`}>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-bold text-muted-foreground">#{player.position}</span>
+                        <span className={`text-sm ${player.name === user.nome ? 'text-primary font-bold' : 'text-foreground'}`}>
+                          {player.name}
+                        </span>
+                      </div>
+                      <span className="text-xs text-accent font-bold">{player.xp} XP</span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
