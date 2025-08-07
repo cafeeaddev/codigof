@@ -28,10 +28,13 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
   }, []);
 
   const handleLogout = async () => {
+    console.log('handleLogout chamado');
     setIsLoggingOut(true);
     
     try {
+      console.log('Tentando fazer logout...');
       const { error } = await supabase.auth.signOut();
+      console.log('Resultado do signOut:', { error });
       
       if (error) {
         toast({
@@ -42,13 +45,16 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
         return;
       }
 
+      console.log('Logout bem-sucedido');
       toast({
         title: "Logout realizado",
         description: "Você foi desconectado com sucesso",
       });
 
+      console.log('Chamando onLogout...');
       onLogout();
     } catch (error) {
+      console.log('Erro no logout:', error);
       toast({
         title: "Erro",
         description: "Ocorreu um erro inesperado",
