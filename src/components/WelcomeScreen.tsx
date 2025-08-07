@@ -27,42 +27,19 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
     return () => clearTimeout(timer);
   }, []);
 
-  const handleLogout = async () => {
-    console.log('handleLogout chamado');
+  const handleLogout = () => {
     setIsLoggingOut(true);
     
-    try {
-      console.log('Tentando fazer logout...');
-      const { error } = await supabase.auth.signOut();
-      console.log('Resultado do signOut:', { error });
-      
-      if (error) {
-        toast({
-          title: "Erro ao sair",
-          description: "Ocorreu um erro ao fazer logout",
-          variant: "destructive",
-        });
-        return;
-      }
+    toast({
+      title: "Logout realizado",
+      description: "Você foi desconectado com sucesso",
+    });
 
-      console.log('Logout bem-sucedido');
-      toast({
-        title: "Logout realizado",
-        description: "Você foi desconectado com sucesso",
-      });
-
-      console.log('Chamando onLogout...');
+    // Simular delay do logout
+    setTimeout(() => {
       onLogout();
-    } catch (error) {
-      console.log('Erro no logout:', error);
-      toast({
-        title: "Erro",
-        description: "Ocorreu um erro inesperado",
-        variant: "destructive",
-      });
-    } finally {
       setIsLoggingOut(false);
-    }
+    }, 500);
   };
 
   if (isLoading) {
@@ -142,12 +119,12 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
         </div>
       </div>
 
-      <div className="h-screen overflow-y-auto p-6 relative z-10">
+      <div className="h-[calc(100vh-5rem)] overflow-hidden p-6 relative z-10">
         <div className="max-w-7xl mx-auto h-full flex flex-col">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1 min-h-0">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full overflow-hidden">
             {/* Missões Diárias */}
-            <div className="lg:col-span-2">
-              <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-6 shadow-neon">
+            <div className="lg:col-span-2 flex flex-col overflow-hidden">
+              <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-6 shadow-neon flex-1 overflow-y-auto">
                 <div className="flex items-center gap-2 mb-6 p-3 bg-muted/50 rounded-lg">
                   <div className="w-3 h-3 bg-primary rounded-full"></div>
                   <span className="text-primary text-sm font-mono font-bold">MISSÕES DIÁRIAS</span>
@@ -213,7 +190,7 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
             </div>
 
             {/* Painel Lateral */}
-            <div className="space-y-6">
+            <div className="space-y-6 overflow-y-auto">
               {/* Estatísticas */}
               <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-6 shadow-neon">
                 <div className="flex items-center gap-2 mb-4 p-3 bg-muted/50 rounded-lg">
