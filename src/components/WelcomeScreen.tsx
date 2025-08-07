@@ -69,11 +69,14 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
   }
 
   return (
-    <div className="fixed inset-0 bg-background overflow-hidden" style={{ height: '100vh', pointerEvents: 'auto' }}>
+    <div className="fixed inset-0 bg-background overflow-hidden z-[9999]" style={{ height: '100vh', pointerEvents: 'auto' }}>
       {/* Teste de clique absoluto */}
       <div 
-        className="fixed top-4 right-4 z-[9999] bg-red-500 text-white p-4 rounded cursor-pointer"
-        onClick={() => console.log('🔴 CLIQUE NO TESTE ABSOLUTO FUNCIONOU!')}
+        className="absolute top-4 right-4 z-[10000] bg-red-500 text-white p-4 rounded cursor-pointer"
+        onClick={() => {
+          console.log('🔴 CLIQUE NO TESTE ABSOLUTO FUNCIONOU!');
+          handleLogout();
+        }}
         style={{ pointerEvents: 'auto' }}
       >
         TESTE CLIQUE
