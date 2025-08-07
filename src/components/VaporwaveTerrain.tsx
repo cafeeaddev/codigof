@@ -183,13 +183,15 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
           <mesh
             geometry={backgroundGeometry}
             rotation={[-Math.PI * 0.5, 0, 0]}
-            position={[0, -2.95, 0]}
+            position={[0, -2.94, 0]}
           >
             <meshBasicMaterial
               color="#00ffff"
               transparent={true}
-              opacity={0.85}
+              opacity={0.95}
               wireframe={true}
+              depthTest={false}
+              depthWrite={false}
             />
           </mesh>
         </group>
