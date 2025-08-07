@@ -30,12 +30,7 @@ export const Navigation = () => {
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-start h-16">
-          {/* Logo - CÓDIGO F Text in Neon */}
-          <div className="flex-shrink-0">
-            <h1 className="text-2xl lg:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-500 tracking-wider drop-shadow-[0_0_20px_rgba(0,128,255,0.8)] animate-pulse">
-              CÓDIGO F
-            </h1>
-          </div>
+          {/* Navigation content can be added here if needed */}
         </div>
       </div>
     </nav>
