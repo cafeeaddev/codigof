@@ -43,27 +43,17 @@ export const HeroSection = () => {
             </h1>
           </div>
 
-          {/* CTA Buttons */}
+          {/* CTA Button */}
           <div 
             ref={buttonsReveal.elementRef}
             style={buttonsReveal.style}
-            className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+            className="flex justify-center"
           >
             <Button 
               size="lg" 
-              className="bg-white/10 text-white hover:bg-white/20 px-8 py-6 text-lg font-medium backdrop-blur-md rounded-xl shadow-lg"
-              style={{ outline: '1.96px white solid', outlineOffset: '0px' }}
+              className="bg-white/10 text-white hover:bg-white/20 px-8 py-6 text-lg font-medium backdrop-blur-md rounded-xl shadow-lg border border-white/20"
             >
               Sistema de Diagnóstico Ativado
-            </Button>
-            
-            <Button 
-              size="lg"
-              style={{ backgroundColor: '#442C77', borderColor: '#E04AD8' }}
-              className="text-white hover:opacity-90 px-8 py-4 text-lg font-medium rounded-lg transition-opacity border-2"
-            >
-              <Play className="mr-2 h-5 w-5 fill-current" />
-              INICIAR
             </Button>
           </div>
         </div>
