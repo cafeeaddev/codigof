@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Button } from './ui/button';
 import { LogOut, User, Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import { toast } from './ui/use-toast';
+import { toast } from '@/hooks/use-toast';
 
 interface WelcomeScreenProps {
   user: {
