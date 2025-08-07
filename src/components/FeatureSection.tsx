@@ -97,13 +97,6 @@ export const FeatureSection = ({
                   Learn more
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
-                
-                <Button 
-                  variant="ghost"
-                  className="text-white hover:bg-white/10 border border-white/20 backdrop-blur-sm"
-                >
-                  View demo
-                </Button>
               </div>
             </div>
           </div>
