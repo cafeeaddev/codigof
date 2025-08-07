@@ -151,15 +151,15 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
                   <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-6 shadow-neon h-full overflow-hidden flex flex-col">
                     <div className="flex items-center gap-2 mb-6 p-3 bg-muted/50 rounded-lg">
                       <div className="w-3 h-3 bg-primary rounded-full"></div>
-                      <span className="text-primary text-sm font-mono font-bold">MISSÕES DIÁRIAS</span>
+                      <span className="text-primary text-sm font-mono font-bold">MISSÕES DO CÓDIGO F</span>
                     </div>
 
                     <div className="space-y-4 overflow-hidden flex-1">
                       {[
-                        { title: "Missão Alpha: Segurança Digital", progress: 2, total: 3, xp: 150 },
-                        { title: "Missão Beta: Colaboração em Equipe", progress: 0, total: 1, xp: 200 },
-                        { title: "Missão Gamma: Inovação Técnica", progress: 1, total: 1, xp: 100 },
-                        { title: "Missão Delta: Desenvolvimento Pessoal", progress: 0, total: 2, xp: 250 }
+                        { title: "MISSÃO 1 – Como você encara o digital?", progress: 2, total: 3, xp: 150 },
+                        { title: "MISSÃO 2 – O digital no seu dia a dia", progress: 0, total: 1, xp: 200 },
+                        { title: "MISSÃO 3 – Quando o desafio é maior", progress: 1, total: 1, xp: 100 },
+                        { title: "Missão 4 – Seu Radar de Ferramentas", progress: 0, total: 2, xp: 250 }
                       ].map((mission, index) => (
                         <div key={index} className="bg-muted/30 rounded-lg p-4 border border-secondary/30">
                           <div className="flex items-center justify-between mb-2">
