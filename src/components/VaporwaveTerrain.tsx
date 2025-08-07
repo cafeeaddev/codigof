@@ -1,5 +1,4 @@
 
-// Terrain component with infinite 2-plane system
 import { useRef, useMemo } from 'react';
 import { useFrame, useLoader } from '@react-three/fiber';
 import { TextureLoader } from 'three';
@@ -12,13 +11,9 @@ interface VaporwaveTerrainProps {
 }
 
 export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrainProps) => {
-  const terrainRefs = useRef<THREE.Group[]>([]);
+  const groupRefs = useRef<THREE.Group[]>([]);
   const backgroundMaterialRef = useRef<THREE.MeshStandardMaterial>(null);
   const scrollProgress = useScrollProgress();
-  
-  // Configurações do sistema de múltiplos terrenos infinitos
-  const TERRAIN_SIZE = 40; // Tamanho de cada terreno
-  const NUM_TERRAINS = 6; // Número de terrenos para garantir cobertura total
   
   // Load the grid texture but we'll use it minimally
   const texture = useLoader(TextureLoader, gridTexture);
@@ -107,27 +102,26 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
     return `rgb(${r}, ${g}, ${b})`;
   };
   
-  // Sistema de animação com múltiplos terrenos infinitos
+  // Animation and color updates
   useFrame((state) => {
-    const timeMovement = state.clock.elapsedTime * 1.2; // Movimento automático mais rápido
-    const scrollMovement = scrollProgress * 8; // Mais responsivo ao scroll
-    const totalMovement = timeMovement + scrollMovement;
+    // Movimento automático contínuo + efeito do scroll + posição da câmera
+    const timeMovement = state.clock.elapsedTime * 0.5; // Movimento automático
+    const scrollMovement = scrollProgress * 4; // Acelera com o scroll
+    const cameraZOffset = cameraPosition[2] * 0.3; // Ajusta baseado na posição Z da câmera
     
-    // Posição base: comece no meio da tela (posição da câmera)
-    const baseCameraZ = cameraPosition[2];
+    // Combina os três movimentos
+    const totalMovement = timeMovement + scrollMovement + cameraZOffset;
     
-    // Atualizar posições de todos os terrenos
-    terrainRefs.current.forEach((terrain, index) => {
-      if (terrain) {
-        // Cada terreno fica posicionado em sequência, começando do meio da tela
-        const basePosition = baseCameraZ - TERRAIN_SIZE + (index * TERRAIN_SIZE);
-        terrain.position.z = basePosition - (totalMovement % (NUM_TERRAINS * TERRAIN_SIZE));
+    // Move cada grupo de terreno individualmente
+    groupRefs.current.forEach((group, index) => {
+      if (group) {
+        // Calcula posição com loop infinito, ajustando pela câmera
+        const basePosition = 15 + (index * 60);
+        group.position.z = basePosition + (totalMovement % 180);
         
-        // Sistema de teleporting: quando um terreno sai muito da frente da câmera,
-        // reposiciona ele atrás de todos os outros
-        const totalDistance = NUM_TERRAINS * TERRAIN_SIZE;
-        if (terrain.position.z < baseCameraZ - (totalDistance + TERRAIN_SIZE)) {
-          terrain.position.z += totalDistance;
+        // Reset position quando passa muito longe para criar loop infinito
+        if (group.position.z > 100) {
+          group.position.z -= 180;
         }
       }
     });
@@ -135,34 +129,34 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
   
   return (
     <group>
-      {/* Sistema de múltiplos terrenos infinitos */}
-      {Array.from({ length: NUM_TERRAINS }, (_, index) => (
+      {/* Múltiplos terrenos para loop infinito perfeito */}
+      {[0, 1, 2].map((index) => (
         <group 
           key={index}
           ref={(el) => {
             if (el) {
-              terrainRefs.current[index] = el;
+              groupRefs.current[index] = el;
             }
           }}
-          position={[0, 0, cameraPosition[2] - TERRAIN_SIZE + (index * TERRAIN_SIZE)]}
+          position={[0, 0, 40 + (index * 60)]}
         >
           {/* Neon terrain with grid pattern and depth */}
           <mesh
             geometry={backgroundGeometry}
             rotation={[-Math.PI * 0.5, 0, 0]}
-            position={[0, -1, 0]}
+            position={[0, -4.0, 0]}
           >
             <meshStandardMaterial
               ref={index === 0 ? backgroundMaterialRef : undefined}
               map={wireframeTexture}
               normalMap={normalTexture}
-              color="#0D0825"
-              emissive="#0D0825"
-              emissiveIntensity={0.8}
-              roughness={0.1}
-              metalness={0.9}
+              color="#100530"
+              emissive="#100530"
+              emissiveIntensity={0.7}
+              roughness={0.2}
+              metalness={0.8}
               transparent={true}
-              opacity={0.97}
+              opacity={0.95}
               side={THREE.DoubleSide}
               wireframe={false}
             />
@@ -172,12 +166,12 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
           <mesh
             geometry={backgroundGeometry}
             rotation={[-Math.PI * 0.5, 0, 0]}
-            position={[0, -0.98, 0]}
+            position={[0, -3.98, 0]}
           >
             <meshBasicMaterial
-              color="#00FFFF"
+              color="#2A689D"
               transparent={true}
-              opacity={0.9}
+              opacity={0.8}
               wireframe={true}
             />
           </mesh>

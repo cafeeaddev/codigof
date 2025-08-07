@@ -9,21 +9,14 @@ interface VaporwaveSceneProps {
 }
 
 export const VaporwaveScene = ({ cameraPosition, cameraFov }: VaporwaveSceneProps) => {
-  // Ajustar a posição da câmera para uma perspectiva mais elevada
-  const adjustedCameraPosition: [number, number, number] = [
-    cameraPosition[0], 
-    Math.max(cameraPosition[1], 5), // Mínimo Y = 5 para perspectiva elevada
-    cameraPosition[2]
-  ];
-  
   return (
     <div className="w-full h-screen relative overflow-hidden">
       <Canvas
         camera={{
-          position: adjustedCameraPosition,
-          fov: Math.min(cameraFov, 60), // Limitar FOV para perspectiva mais focada
+          position: cameraPosition,
+          fov: cameraFov,
           near: 0.01,
-          far: 200,
+          far: 300,
         }}
         gl={{ alpha: true }}
         className="w-full h-full"
