@@ -138,13 +138,13 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
               groupRefs.current[index] = el;
             }
           }}
-          position={[0, 0, 40 + (index * 60)]}
+          position={[0, 0, 25 + (index * 60)]}
         >
           {/* Neon terrain with grid pattern and depth */}
           <mesh
             geometry={backgroundGeometry}
             rotation={[-Math.PI * 0.5, 0, 0]}
-            position={[0, -4.0, 0]}
+            position={[0, -2.5, 0]}
           >
             <meshStandardMaterial
               ref={index === 0 ? backgroundMaterialRef : undefined}
@@ -166,7 +166,7 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
           <mesh
             geometry={backgroundGeometry}
             rotation={[-Math.PI * 0.5, 0, 0]}
-            position={[0, -3.98, 0]}
+            position={[0, -2.48, 0]}
           >
             <meshBasicMaterial
               color="#2A689D"
