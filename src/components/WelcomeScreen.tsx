@@ -76,14 +76,6 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
 
   return (
     <div className="fixed inset-0 bg-background overflow-hidden" style={{ height: '100vh' }}>
-      {/* Centered Logo Background */}
-      <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
-        <img 
-          src="/lovable-uploads/437ccd6a-15f4-45cb-b6cc-cdad65d9594a.png" 
-          alt="Logo" 
-          className="w-64 h-64 opacity-10 select-none object-contain"
-        />
-      </div>
       {/* Header */}
       <div className="bg-card/90 backdrop-blur-xl border-b border-secondary/50 p-4 relative z-10">
         <div className="flex items-center justify-between max-w-7xl mx-auto">
@@ -101,7 +93,10 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
             </div>
           </div>
           <Button
-            onClick={handleLogout}
+            onClick={() => {
+              console.log('BOTÃO SAIR CLICADO!');
+              handleLogout();
+            }}
             disabled={isLoggingOut}
             variant="outline"
             className="bg-transparent border-secondary text-secondary hover:bg-secondary hover:text-secondary-foreground"
