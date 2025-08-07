@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Button } from './ui/button';
-import { ArrowRight, Trophy, Medal } from 'lucide-react';
+import { ArrowRight, Trophy, Medal, Target } from 'lucide-react';
 
 interface FeatureSectionProps {
   id: string;
@@ -44,8 +44,8 @@ export const FeatureSection = ({
 
   const features = [
     {
-      icon: null,
-      customIcon: "/lovable-uploads/437ccd6a-15f4-45cb-b6cc-cdad65d9594a.png",
+      icon: Target,
+      customIcon: null,
       title: "4 MISSÕES",
       subtitle: "Desafios interativos",
       color: "bg-neon-cyan"
