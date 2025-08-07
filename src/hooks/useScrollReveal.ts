@@ -31,8 +31,8 @@ export const useScrollReveal = (options: ScrollRevealOptions = {}) => {
         }
       },
       { 
-        threshold: 0.1,
-        rootMargin: '0px 0px -10% 0px'
+        threshold: 0.2,
+        rootMargin: '0px'
       }
     );
 
@@ -41,46 +41,28 @@ export const useScrollReveal = (options: ScrollRevealOptions = {}) => {
     return () => observer.disconnect();
   }, [delay, isVisible]);
 
-  const getInitialStyle = () => {
-    if (isVisible) {
-      return {
-        opacity: 1,
-        transform: 'translate(0, 0)',
-        transition: `all ${duration}ms ease-out`
-      };
-    }
-
-    let transform = '';
+  const getTransform = () => {
     switch (direction) {
       case 'up':
-        transform = `translateY(${distance}px)`;
-        break;
+        return `translateY(${distance}px)`;
       case 'down':
-        transform = `translateY(-${distance}px)`;
-        break;
+        return `translateY(-${distance}px)`;
       case 'left':
-        transform = `translateX(${distance}px)`;
-        break;
+        return `translateX(${distance}px)`;
       case 'right':
-        transform = `translateX(-${distance}px)`;
-        break;
+        return `translateX(-${distance}px)`;
       case 'fade':
-        transform = 'translate(0, 0)';
-        break;
+        return 'translate(0)';
       default:
-        transform = `translateY(${distance}px)`;
+        return `translateY(${distance}px)`;
     }
-
-    return {
-      opacity: 0,
-      transform,
-      transition: `all ${duration}ms ease-out`
-    };
   };
 
-  return { 
-    elementRef, 
-    style: getInitialStyle(), 
-    isVisible 
+  const style = {
+    opacity: isVisible ? 1 : 0,
+    transform: isVisible ? 'translate(0)' : getTransform(),
+    transition: `all ${duration}ms cubic-bezier(0.4, 0, 0.2, 1)`,
   };
+
+  return { elementRef, style, isVisible };
 };
