@@ -44,7 +44,13 @@ export const FeatureSection = ({
 
   const features = [
     {
-      icon: Flag,
+      icon: () => (
+        <img 
+          src="/lovable-uploads/8c58641c-39ee-4d1b-b153-1fa3c658ff8e.png" 
+          alt="Flag" 
+          className="w-6 h-6"
+        />
+      ),
       title: "4 MISSÕES",
       subtitle: "Desafios interativos",
       color: "from-blue-500 to-cyan-500"
