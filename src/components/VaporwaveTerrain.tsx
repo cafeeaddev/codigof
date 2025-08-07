@@ -114,8 +114,8 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
     const scrollMovement = scrollProgress * 6; // Acelera mais com o scroll
     const cameraZOffset = cameraPosition[2] * 0.2; // Ajusta baseado na posição Z da câmera
     
-    // Combina os três movimentos
-    const totalMovement = timeMovement + scrollMovement + cameraZOffset;
+    // Combina os três movimentos - INVERTIDO para ir para frente
+    const totalMovement = -(timeMovement + scrollMovement + cameraZOffset);
     
     // Pulsating effect for wireframe material
     const pulseIntensity = 2.0 + Math.sin(state.clock.elapsedTime * 2) * 0.5;
@@ -123,13 +123,13 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
     // Move cada grupo de terreno individualmente
     groupRefs.current.forEach((group, index) => {
       if (group) {
-        // Calcula posição com loop infinito, ajustando pela câmera
-        const basePosition = 20 + (index * 80);
+        // Calcula posição com loop infinito, ajustando pela câmera - MOVIMENTO PARA FRENTE
+        const basePosition = -20 + (index * -80);
         group.position.z = basePosition + (totalMovement % 240);
         
         // Reset position quando passa muito longe para criar loop infinito
-        if (group.position.z > 120) {
-          group.position.z -= 240;
+        if (group.position.z < -120) {
+          group.position.z += 240;
         }
         
         // Apply pulsating effect to wireframe materials
@@ -153,7 +153,7 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
               groupRefs.current[index] = el;
             }
           }}
-          position={[0, 0, 25 + (index * 60)]}
+          position={[0, 0, -25 + (index * -60)]}
         >
           {/* Dark terrain base with displacement */}
           <mesh
