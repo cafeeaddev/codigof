@@ -95,14 +95,14 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
   }, []);
   
   
-  // Enhanced color calculation with orange/gold neon
+  // Enhanced color calculation with cyan/blue neon
   const getEnhancedColor = (progress: number): string => {
-    // Use orange/gold color for neon lines like in reference image
-    const neonOrange = [255, 140, 0]; // #ff8c00
+    // Use cyan/blue color for neon lines like in reference image
+    const neonCyan = [0, 255, 255]; // #00ffff
     
-    const r = neonOrange[0];
-    const g = neonOrange[1];
-    const b = neonOrange[2];
+    const r = neonCyan[0];
+    const g = neonCyan[1];
+    const b = neonCyan[2];
     
     return `rgb(${r}, ${g}, ${b})`;
   };
@@ -167,8 +167,8 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
               normalMap={normalTexture}
               displacementMap={wireframeTexture}
               displacementScale={0.8}
-              color="#2a1810"
-              emissive="#3d2817"
+              color="#0a0a1a"
+              emissive="#050a1a"
               emissiveIntensity={0.4}
               roughness={0.7}
               metalness={0.3}
@@ -179,14 +179,14 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
             />
           </mesh>
           
-          {/* Orange neon wireframe overlay */}
+          {/* Cyan/blue neon wireframe overlay */}
           <mesh
             geometry={backgroundGeometry}
             rotation={[-Math.PI * 0.5, 0, 0]}
             position={[0, -2.95, 0]}
           >
             <meshBasicMaterial
-              color="#ff8c00"
+              color="#00ffff"
               transparent={true}
               opacity={0.85}
               wireframe={true}
