@@ -27,15 +27,11 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
   }, []);
 
   const handleLogout = () => {
-    console.log('🔴 BOTÃO SAIR CLICADO - handleLogout chamado');
-    console.log('🔴 onLogout type:', typeof onLogout);
     toast({
       title: "Logout realizado",
       description: "Você foi desconectado com sucesso",
     });
-    console.log('🔴 Chamando onLogout agora...');
     onLogout();
-    console.log('🔴 onLogout executado!');
   };
 
   if (isLoading) {
@@ -70,17 +66,6 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
 
   return (
     <div className="fixed inset-0 bg-background overflow-hidden z-[9999]" style={{ height: '100vh', pointerEvents: 'auto' }}>
-      {/* Teste de clique absoluto */}
-      <div 
-        className="absolute top-4 right-4 z-[10000] bg-red-500 text-white p-4 rounded cursor-pointer"
-        onClick={() => {
-          console.log('🔴 CLIQUE NO TESTE ABSOLUTO FUNCIONOU!');
-          handleLogout();
-        }}
-        style={{ pointerEvents: 'auto' }}
-      >
-        TESTE CLIQUE
-      </div>
       {/* Header */}
       <div className="bg-card/90 backdrop-blur-xl border-b border-secondary/50 p-4 relative z-10" style={{ pointerEvents: 'auto' }}>
         <div className="flex items-center justify-between max-w-7xl mx-auto" style={{ pointerEvents: 'auto' }}>
@@ -97,19 +82,15 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
               </p>
             </div>
           </div>
-          
-          {/* Teste com button nativo primeiro */}
-          <button
-            onClick={() => {
-              console.log('🟢 BUTTON NATIVO CLICADO!');
-              handleLogout();
-            }}
-            className="px-4 py-2 border border-secondary text-secondary rounded-md hover:bg-secondary hover:text-secondary-foreground transition-colors cursor-pointer"
-            style={{ pointerEvents: 'auto', zIndex: 9999 }}
+          <Button
+            onClick={handleLogout}
+            variant="outline"
+            className="bg-transparent border-secondary text-secondary hover:bg-secondary hover:text-secondary-foreground relative z-50 cursor-pointer"
+            style={{ pointerEvents: 'auto' }}
           >
-            <LogOut className="w-4 h-4 mr-2 inline" />
-            SAIR (TESTE)
-          </button>
+            <LogOut className="w-4 h-4 mr-2" />
+            SAIR
+          </Button>
         </div>
       </div>
 
