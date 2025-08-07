@@ -65,7 +65,14 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
   }
 
   return (
-    <div className="fixed inset-0 bg-background overflow-hidden z-[9999]" style={{ height: '100vh', pointerEvents: 'auto' }}>
+    <div 
+      className="fixed inset-0 bg-background z-[9999] scrollbar-hide" 
+      style={{ 
+        height: '100vh', 
+        pointerEvents: 'auto',
+        overflow: 'hidden'
+      }}
+    >
       {/* Header */}
       <div className="bg-card/90 backdrop-blur-xl border-b border-secondary/50 p-4 relative z-10" style={{ pointerEvents: 'auto' }}>
         <div className="flex items-center justify-between max-w-7xl mx-auto" style={{ pointerEvents: 'auto' }}>
