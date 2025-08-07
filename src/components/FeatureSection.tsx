@@ -90,14 +90,6 @@ export const FeatureSection = ({
                 {description}
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Button 
-                  className="bg-gradient-neon text-black font-medium hover:opacity-90 transition-opacity"
-                >
-                  Learn more
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </div>
             </div>
           </div>
 
