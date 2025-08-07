@@ -16,7 +16,7 @@ export const VaporwaveScene = ({ cameraPosition, cameraFov }: VaporwaveSceneProp
           position: cameraPosition,
           fov: cameraFov,
           near: 0.01,
-          far: 200,
+          far: 300,
         }}
         gl={{ alpha: true }}
         className="w-full h-full"
