@@ -48,8 +48,8 @@ export const LinearLayout = () => {
 
   return (
     <div className="relative h-screen w-full overflow-hidden">
-      {/* Fixed vaporwave background */}
-      <div className="fixed inset-0 z-0">
+      {/* Fixed vaporwave background - mantém o terreno sempre visível */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
         <VaporwaveScene 
           cameraPosition={cameraPosition}
           cameraFov={cameraFov}
