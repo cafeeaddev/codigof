@@ -155,7 +155,7 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
           }}
           position={[0, 0, -25 + (index * -60)]}
         >
-          {/* Dark terrain base with displacement */}
+          {/* Dark terrain base with gradient effect */}
           <mesh
             geometry={backgroundGeometry}
             rotation={[-Math.PI * 0.5, 0, 0]}
@@ -167,13 +167,13 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
               normalMap={normalTexture}
               displacementMap={wireframeTexture}
               displacementScale={0.8}
-              color="#0a0a0a"
-              emissive="#1a0505"
-              emissiveIntensity={0.3}
-              roughness={0.8}
-              metalness={0.2}
+              color="#2a1810"
+              emissive="#3d2817"
+              emissiveIntensity={0.4}
+              roughness={0.7}
+              metalness={0.3}
               transparent={true}
-              opacity={0.9}
+              opacity={0.95}
               side={THREE.DoubleSide}
               wireframe={false}
             />
