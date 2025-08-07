@@ -89,7 +89,8 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
           <Button
             onClick={handleLogout}
             variant="outline"
-            className="bg-transparent border-secondary text-secondary hover:bg-secondary hover:text-secondary-foreground"
+            className="bg-transparent border-secondary text-secondary hover:bg-secondary hover:text-secondary-foreground relative z-50 cursor-pointer"
+            style={{ pointerEvents: 'auto' }}
           >
             <LogOut className="w-4 h-4 mr-2" />
             SAIR
