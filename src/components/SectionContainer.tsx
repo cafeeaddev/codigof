@@ -39,6 +39,7 @@ export const SectionContainer = ({
       ref={sectionRef}
       className={cn(
         "min-h-screen w-full flex-shrink-0 relative",
+        "bg-transparent backdrop-blur-none",
         className
       )}
       data-section-id={sectionId}
