@@ -1,71 +1,128 @@
+import { useState } from 'react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Wifi, User, Lock } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from './ui/use-toast';
 
 export const Footer = () => {
+  const [email, setEmail] = useState('');
+  const [cpf, setCpf] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    try {
+      // Buscar usuário na tabela profiles usando email e CPF
+      const { data: profile, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('email', email)
+        .eq('cpf', cpf)
+        .single();
+
+      if (error || !profile) {
+        toast({
+          title: "Erro de autenticação",
+          description: "Email ou CPF inválidos",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Login bem-sucedido
+      toast({
+        title: "Login realizado",
+        description: `Bem-vindo, ${profile.nome}!`,
+      });
+
+      // Aqui você pode redirecionar ou atualizar o estado da aplicação
+      console.log('Usuário autenticado:', profile);
+      
+    } catch (error) {
+      toast({
+        title: "Erro",
+        description: "Ocorreu um erro durante o login",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <footer className="relative py-16 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md mx-auto">
-        <div className="bg-gray-900/90 backdrop-blur-xl rounded-xl border border-cyan-400/50 p-8 shadow-2xl">
+        <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-8 shadow-neon">
           {/* Terminal header */}
-          <div className="flex items-center gap-2 mb-6 p-3 bg-gray-800/50 rounded-t-lg">
-            <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-            <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-            <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-            <span className="text-white/60 text-sm ml-2 font-mono">NAVE_TERMINAL_v2.0</span>
+          <div className="flex items-center gap-2 mb-6 p-3 bg-muted/50 rounded-t-lg">
+            <div className="w-3 h-3 bg-destructive rounded-full"></div>
+            <div className="w-3 h-3 bg-accent rounded-full"></div>
+            <div className="w-3 h-3 bg-primary rounded-full"></div>
+            <span className="text-muted-foreground text-sm ml-2 font-mono">NAVE_TERMINAL_v2.0</span>
           </div>
 
           {/* Wifi icon and title */}
           <div className="text-center mb-6">
             <div className="flex justify-center mb-3">
-              <Wifi className="w-8 h-8 text-cyan-400" />
+              <Wifi className="w-8 h-8 text-secondary" />
             </div>
-            <h2 className="text-cyan-400 text-xl font-bold mb-2">ACESSO SEGURO</h2>
-            <p className="text-white/60 text-sm">Acesse com seu usuário da UM</p>
+            <h2 className="text-secondary text-xl font-bold mb-2">ACESSO SEGURO</h2>
+            <p className="text-muted-foreground text-sm">Acesse com seu usuário da UM</p>
           </div>
 
           {/* Login form */}
-          <div className="space-y-6">
-            {/* Username field */}
+          <form onSubmit={handleLogin} className="space-y-6">
+            {/* Email field */}
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <User className="w-4 h-4 text-cyan-400" />
-                <Label htmlFor="username" className="text-cyan-400 text-sm font-medium">
-                  Login
+                <User className="w-4 h-4 text-secondary" />
+                <Label htmlFor="email" className="text-secondary text-sm font-medium">
+                  Email
                 </Label>
               </div>
               <Input
-                id="username"
-                type="text"
-                placeholder="Digite seu usuário"
-                className="bg-gray-800/50 border-cyan-400/30 text-white placeholder-white/40 focus:border-cyan-400 focus:ring-cyan-400/50 rounded-lg"
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Digite seu email"
+                className="bg-input border-border text-foreground placeholder-muted-foreground focus:border-secondary focus:ring-secondary/50 rounded-lg"
+                required
               />
             </div>
 
-            {/* Password field */}
+            {/* CPF field */}
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <Lock className="w-4 h-4 text-cyan-400" />
-                <Label htmlFor="password" className="text-cyan-400 text-sm font-medium">
-                  Senha
+                <Lock className="w-4 h-4 text-secondary" />
+                <Label htmlFor="cpf" className="text-secondary text-sm font-medium">
+                  CPF
                 </Label>
               </div>
               <Input
-                id="password"
-                type="password"
-                placeholder="Digite sua senha"
-                className="bg-gray-800/50 border-cyan-400/30 text-white placeholder-white/40 focus:border-cyan-400 focus:ring-cyan-400/50 rounded-lg"
+                id="cpf"
+                type="text"
+                value={cpf}
+                onChange={(e) => setCpf(e.target.value)}
+                placeholder="Digite seu CPF"
+                className="bg-input border-border text-foreground placeholder-muted-foreground focus:border-secondary focus:ring-secondary/50 rounded-lg"
+                required
               />
             </div>
 
             {/* Login button */}
             <Button 
-              className="w-full bg-cyan-400 hover:bg-cyan-300 text-black font-bold py-3 rounded-lg transition-colors duration-200"
+              type="submit"
+              disabled={isLoading}
+              className="w-full bg-secondary hover:bg-secondary/80 text-secondary-foreground font-bold py-3 rounded-lg transition-colors duration-200"
             >
-              INICIALIZAR SISTEMA
+              {isLoading ? 'AUTENTICANDO...' : 'INICIALIZAR SISTEMA'}
             </Button>
-          </div>
+          </form>
         </div>
       </div>
     </footer>
