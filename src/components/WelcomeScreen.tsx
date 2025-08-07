@@ -195,7 +195,7 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
             {/* Painel Lateral */}
             <div className="space-y-6 h-full overflow-hidden flex flex-col">
               {/* Estatísticas */}
-              <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-6 shadow-neon flex-shrink-0">
+              <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-6 shadow-neon flex-1">
                 <div className="flex items-center gap-2 mb-4 p-3 bg-muted/50 rounded-lg">
                   <div className="w-3 h-3 bg-secondary rounded-full"></div>
                   <span className="text-secondary text-sm font-mono font-bold">ESTATÍSTICAS</span>
@@ -218,37 +218,7 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
                   </div>
                 </div>
               </div>
-
-              {/* Ranking */}
-              <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-6 shadow-neon flex-1 flex flex-col min-h-0" style={{ overflow: 'hidden' }}>
-                <div className="flex items-center gap-2 mb-4 p-3 bg-muted/50 rounded-lg">
-                  <div className="w-3 h-3 bg-accent rounded-full"></div>
-                  <span className="text-accent text-sm font-mono font-bold">RANKING</span>
-                </div>
-                
-                <div className="flex-1 min-h-0" style={{ overflow: 'hidden', height: 'auto', maxHeight: '200px' }}>
-                  <div className="space-y-3" style={{ overflow: 'hidden' }}>
-                    {[
-                      { name: "João Silva", xp: 2100, position: 1 },
-                      { name: "Maria Santos", xp: 1850, position: 2 },
-                      { name: user.nome, xp: 1250, position: 3 }
-                     ].map((player, index) => (
-                       <div key={index} className={`flex items-center justify-between p-2 rounded ${
-                         player.name === user.nome ? 'bg-primary/20 border border-primary/50' : 'bg-muted/20'
-                       }`}>
-                         <div className="flex items-center gap-2">
-                           <span className="text-xs font-bold text-muted-foreground">#{player.position}</span>
-                           <span className={`text-sm ${player.name === user.nome ? 'text-primary font-bold' : 'text-foreground'}`}>
-                             {player.name}
-                           </span>
-                         </div>
-                         <span className="text-xs text-accent font-bold">{player.xp} XP</span>
-                       </div>
-                     ))}
-                   </div>
-                 </div>
-               </div>
-             </div>
+            </div>
            </div>
          </div>
        </div>
