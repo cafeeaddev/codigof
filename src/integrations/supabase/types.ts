@@ -74,6 +74,33 @@ export type Database = {
         }
         Relationships: []
       }
+      respostas_missao2: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          nome: string
+          respostas: Json
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          nome: string
+          respostas: Json
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          nome?: string
+          respostas?: Json
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
