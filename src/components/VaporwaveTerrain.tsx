@@ -116,12 +116,12 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
     groupRefs.current.forEach((group, index) => {
       if (group) {
         // Calcula posição com loop infinito, ajustando pela câmera
-        const basePosition = 15 + (index * 40);
-        group.position.z = basePosition + (totalMovement % 120);
+        const basePosition = 5 + (index * 30);
+        group.position.z = basePosition + (totalMovement % 90);
         
         // Reset position quando passa muito longe para criar loop infinito
-        if (group.position.z > 60) {
-          group.position.z -= 120;
+        if (group.position.z > 40) {
+          group.position.z -= 90;
         }
       }
     });
@@ -138,13 +138,13 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
               groupRefs.current[index] = el;
             }
           }}
-          position={[0, 0, 15 + (index * 40)]}
+          position={[0, 0, 5 + (index * 30)]}
         >
           {/* Neon terrain with grid pattern and depth */}
           <mesh
             geometry={backgroundGeometry}
             rotation={[-Math.PI * 0.5, 0, 0]}
-            position={[0, -1.5, 0]}
+            position={[0, -0.5, 0]}
           >
             <meshStandardMaterial
               ref={index === 0 ? backgroundMaterialRef : undefined}
@@ -166,7 +166,7 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
           <mesh
             geometry={backgroundGeometry}
             rotation={[-Math.PI * 0.5, 0, 0]}
-            position={[0, -1.48, 0]}
+            position={[0, -0.48, 0]}
           >
             <meshBasicMaterial
               color="#2A689D"
