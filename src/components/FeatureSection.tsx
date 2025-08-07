@@ -71,69 +71,69 @@ export const FeatureSection = ({
       className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 py-16"
     >
       <div className="max-w-7xl mx-auto">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          {/* Content */}
-          <div className={`${
-            isVisible ? 'animate-fade-in' : 'opacity-0'
-          }`}>
-            <div className="bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 p-8 lg:p-12 shadow-neon">
-              <div className="mb-6">
-                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-4">
-                  {title}
-                </h2>
-                <h3 className="text-lg sm:text-xl text-neon-cyan font-medium mb-6">
-                  {subtitle}
-                </h3>
-              </div>
-              
-              <p className="text-white/80 text-lg leading-relaxed mb-8">
-                {description}
-              </p>
-
-              {/* Video */}
-              <div className="mb-8">
-                <video 
-                  className="w-full rounded-lg shadow-neon"
-                  controls
-                  autoPlay
-                  muted
-                  loop
-                >
-                  <source src="https://meta.cafeeadhost.com.br/Cody/hero-animation.mp4" type="video/mp4" />
-                  Seu navegador não suporta vídeo HTML5.
-                </video>
-              </div>
-
-            </div>
-          </div>
-
-          {/* Feature Cards Grid */}
-          <div className={`${
-            isVisible ? 'animate-scale-in' : 'opacity-0'
-          }`}>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-              {features.map((feature, idx) => (
-                <div 
-                  key={feature.title}
-                  className="bg-card/80 backdrop-blur-xl rounded-xl border border-border/50 p-6 text-center shadow-neon hover:shadow-glow transition-all duration-300"
-                >
-                  <div className={`w-16 h-16 mx-auto mb-4 ${feature.color} rounded-full flex items-center justify-center`}>
-                    {feature.customIcon ? (
-                      <img src={feature.customIcon} alt={feature.title} className="w-8 h-8" />
-                    ) : (
-                      <feature.icon className="w-8 h-8 text-background" />
-                    )}
-                  </div>
-                  
-                  <h4 className="text-foreground font-bold text-sm mb-2">
-                    {feature.title}
-                  </h4>
-                  
-                  <p className="text-muted-foreground text-xs">
-                    {feature.subtitle}
-                  </p>
+        {/* Unified container */}
+        <div className={`${
+          isVisible ? 'animate-fade-in' : 'opacity-0'
+        }`}>
+          <div className="bg-card/80 backdrop-blur-xl rounded-2xl border border-border/50 p-8 lg:p-12 shadow-neon">
+            <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-start">
+              {/* Left side - Content */}
+              <div>
+                <div className="mb-6">
+                  <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground mb-4">
+                    {title}
+                  </h2>
+                  <h3 className="text-lg sm:text-xl text-secondary font-medium mb-6">
+                    {subtitle}
+                  </h3>
                 </div>
-              ))}
+                
+                <p className="text-muted-foreground text-lg leading-relaxed mb-8">
+                  {description}
+                </p>
+
+                {/* Video */}
+                <div className="mb-6">
+                  <video 
+                    className="w-full rounded-lg shadow-neon border border-border/30"
+                    controls
+                    autoPlay
+                    muted
+                    loop
+                  >
+                    <source src="https://meta.cafeeadhost.com.br/Cody/hero-animation.mp4" type="video/mp4" />
+                    Seu navegador não suporta vídeo HTML5.
+                  </video>
+                </div>
+              </div>
+
+              {/* Right side - Feature Cards */}
+              <div className="flex flex-col justify-center">
+                <div className="grid grid-cols-1 gap-4">
+                  {features.map((feature, idx) => (
+                    <div 
+                      key={feature.title}
+                      className="bg-muted/30 backdrop-blur-sm rounded-xl border border-border/30 p-6 text-center hover:bg-muted/50 transition-all duration-300"
+                    >
+                      <div className={`w-16 h-16 mx-auto mb-4 ${feature.color} rounded-full flex items-center justify-center`}>
+                        {feature.customIcon ? (
+                          <img src={feature.customIcon} alt={feature.title} className="w-8 h-8" />
+                        ) : (
+                          <feature.icon className="w-8 h-8 text-background" />
+                        )}
+                      </div>
+                      
+                      <h4 className="text-foreground font-bold text-sm mb-2">
+                        {feature.title}
+                      </h4>
+                      
+                      <p className="text-muted-foreground text-xs">
+                        {feature.subtitle}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </div>
