@@ -33,8 +33,8 @@ const features = [
 ];
 
 export const LinearLayout = () => {
-  const [cameraPosition, setCameraPosition] = useState<[number, number, number]>([0, 8, 2]);
-  const [cameraFov, setCameraFov] = useState(75);
+  const [cameraPosition, setCameraPosition] = useState<[number, number, number]>([0, 15, 0]);
+  const [cameraFov, setCameraFov] = useState(90);
 
   return (
     <div className="relative min-h-screen overflow-x-hidden">
