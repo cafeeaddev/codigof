@@ -57,10 +57,12 @@ export const Footer = () => {
   };
 
   const handleLogout = () => {
+    console.log('handleLogout Footer chamado');
     setShowWelcome(false);
     setUser(null);
     setEmail('');
     setCpf('');
+    console.log('Estado limpo - voltando para login');
   };
 
   // Show welcome screen if user is logged in

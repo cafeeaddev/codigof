@@ -28,6 +28,7 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
   }, []);
 
   const handleLogout = () => {
+    console.log('handleLogout WelcomeScreen chamado');
     setIsLoggingOut(true);
     
     toast({
@@ -37,6 +38,7 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
 
     // Simular delay do logout
     setTimeout(() => {
+      console.log('Chamando onLogout...');
       onLogout();
       setIsLoggingOut(false);
     }, 500);
@@ -73,7 +75,7 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
   }
 
   return (
-    <div className="fixed inset-0 bg-background overflow-hidden">
+    <div className="fixed inset-0 bg-background overflow-hidden" style={{ height: '100vh' }}>
       {/* Centered Logo Background */}
       <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
         <img 
@@ -217,13 +219,13 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
               </div>
 
               {/* Ranking */}
-              <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-6 shadow-neon flex-1 overflow-hidden flex flex-col">
+              <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-6 shadow-neon flex-1 overflow-hidden flex flex-col min-h-0">
                 <div className="flex items-center gap-2 mb-4 p-3 bg-muted/50 rounded-lg">
                   <div className="w-3 h-3 bg-accent rounded-full"></div>
                   <span className="text-accent text-sm font-mono font-bold">RANKING</span>
                 </div>
                 
-                <div className="space-y-3 overflow-y-auto flex-1">
+                <div className="space-y-3 overflow-hidden flex-1 min-h-0">
                   {[
                     { name: "João Silva", xp: 2100, position: 1 },
                     { name: "Maria Santos", xp: 1850, position: 2 },
