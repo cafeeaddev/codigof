@@ -48,8 +48,8 @@ export const LinearLayout = () => {
 
   return (
     <div className="relative h-screen w-full overflow-hidden">
-      {/* Fixed vaporwave background - volta com força total! */}
-      <div className="fixed inset-0 z-0">
+      {/* Fixed vaporwave background - PRIMEIRO para ficar atrás */}
+      <div className="absolute inset-0 z-0">
         <VaporwaveScene 
           cameraPosition={cameraPosition}
           cameraFov={cameraFov}
@@ -64,7 +64,7 @@ export const LinearLayout = () => {
       {/* Internal scroll container */}
       <div 
         ref={containerRef}
-        className="relative z-10 h-full w-full overflow-y-auto overflow-x-hidden scrollbar-hide"
+        className="relative z-10 h-full w-full overflow-y-auto overflow-x-hidden scrollbar-hide bg-transparent"
         data-internal-scroll="true"
         style={{
           scrollBehavior: 'smooth',
