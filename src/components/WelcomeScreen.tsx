@@ -156,9 +156,10 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
 
                     <div className="space-y-4 overflow-hidden flex-1">
                       {[
-                        { title: "Completar 3 treinamentos", progress: 2, total: 3, xp: 150 },
-                        { title: "Participar de 1 reunião de equipe", progress: 0, total: 1, xp: 200 },
-                        { title: "Revisar documentação técnica", progress: 1, total: 1, xp: 100 }
+                        { title: "Missão Alpha: Segurança Digital", progress: 2, total: 3, xp: 150 },
+                        { title: "Missão Beta: Colaboração em Equipe", progress: 0, total: 1, xp: 200 },
+                        { title: "Missão Gamma: Inovação Técnica", progress: 1, total: 1, xp: 100 },
+                        { title: "Missão Delta: Desenvolvimento Pessoal", progress: 0, total: 2, xp: 250 }
                       ].map((mission, index) => (
                         <div key={index} className="bg-muted/30 rounded-lg p-4 border border-secondary/30">
                           <div className="flex items-center justify-between mb-2">
