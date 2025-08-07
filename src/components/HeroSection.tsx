@@ -4,21 +4,16 @@ import { ChevronDown } from 'lucide-react';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
 
 export const HeroSection = () => {
-  // Scroll reveal for hero elements - keep always visible like spaace.io
+  // Scroll reveal for hero elements
   const titleReveal = useScrollReveal({ 
-    direction: 'fade', 
+    direction: 'up', 
     delay: 0,
-    stayVisible: true
-  });
-  const logoReveal = useScrollReveal({ 
-    direction: 'fade', 
-    delay: 200,
-    stayVisible: true
+    distance: 50
   });
   const buttonsReveal = useScrollReveal({ 
-    direction: 'fade', 
-    delay: 400,
-    stayVisible: true
+    direction: 'up', 
+    delay: 300,
+    distance: 30
   });
 
   return (

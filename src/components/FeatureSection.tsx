@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Button } from './ui/button';
-import { ArrowRight, Trophy, Medal, Target } from 'lucide-react';
+import { ArrowRight, Trophy, Medal, Target, ChevronDown } from 'lucide-react';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
 
 interface FeatureSectionProps {
@@ -20,22 +20,21 @@ export const FeatureSection = ({
   image, 
   index 
 }: FeatureSectionProps) => {
-  // Scroll reveal hooks - keep main content always visible like spaace.io
+  // Scroll reveal hooks with proper animations
   const titleReveal = useScrollReveal({ 
-    direction: 'fade',
+    direction: 'left',
     delay: 0,
-    stayVisible: true
+    distance: 100
   });
   const videoReveal = useScrollReveal({ 
-    direction: 'fade',
+    direction: 'right',
     delay: 200,
-    stayVisible: true
+    distance: 100
   });
   const cardsReveal = useScrollReveal({ 
     direction: 'up', 
     delay: 400, 
-    distance: 40,
-    stayVisible: true
+    distance: 80
   });
 
   // Only show the first feature section as our missions/xp/medals section
@@ -160,6 +159,12 @@ export const FeatureSection = ({
               </p>
             </div>
           ))}
+        </div>
+
+        {/* Scroll indicator - CONTINUE */}
+        <div className="flex flex-col items-center text-white/60 hover:text-white/80 transition-colors duration-300 cursor-pointer mt-16">
+          <span className="text-sm font-medium tracking-wider mb-2">CONTINUE</span>
+          <ChevronDown className="w-6 h-6 animate-bounce" />
         </div>
       </div>
     </section>
