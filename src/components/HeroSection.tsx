@@ -4,26 +4,21 @@ import { Play } from 'lucide-react';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
 
 export const HeroSection = () => {
-  // Scroll reveal for hero elements
+  // Scroll reveal for hero elements - keep always visible like spaace.io
   const titleReveal = useScrollReveal({ 
-    direction: 'up', 
-    distance: 60,
-    startOffset: 1.0,
-    endOffset: 0.6
+    direction: 'fade', 
+    delay: 0,
+    stayVisible: true
   });
   const logoReveal = useScrollReveal({ 
-    direction: 'up', 
+    direction: 'fade', 
     delay: 200,
-    distance: 80,
-    startOffset: 0.9,
-    endOffset: 0.5
+    stayVisible: true
   });
   const buttonsReveal = useScrollReveal({ 
-    direction: 'up', 
+    direction: 'fade', 
     delay: 400,
-    distance: 40,
-    startOffset: 0.8,
-    endOffset: 0.4
+    stayVisible: true
   });
 
   return (

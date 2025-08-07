@@ -4,19 +4,21 @@ interface ScrollRevealOptions {
   delay?: number;
   duration?: number;
   distance?: number;
-  direction?: 'up' | 'down' | 'left' | 'right';
-  startOffset?: number; // When to start the animation (0-1, where 0.5 = middle of viewport)
-  endOffset?: number;   // When to complete the animation
+  direction?: 'up' | 'down' | 'left' | 'right' | 'fade';
+  startOffset?: number;
+  endOffset?: number;
+  stayVisible?: boolean; // Keep element always visible like spaace.io
 }
 
 export const useScrollReveal = (options: ScrollRevealOptions = {}) => {
   const {
     delay = 0,
     duration = 800,
-    distance = 50,
-    direction = 'up',
-    startOffset = 0.8, // Start animation when element is 80% into viewport
-    endOffset = 0.2     // Complete when element is 20% into viewport
+    distance = 30, // Reduced distance for subtle effect
+    direction = 'fade',
+    startOffset = 0.8,
+    endOffset = 0.2,
+    stayVisible = true // Default to always stay visible like spaace.io
   } = options;
 
   const [progress, setProgress] = useState(0);
@@ -34,19 +36,34 @@ export const useScrollReveal = (options: ScrollRevealOptions = {}) => {
       const elementTop = rect.top;
       const elementHeight = rect.height;
       
-      // Calculate scroll progress for this element
-      const startPoint = windowHeight * startOffset;
-      const endPoint = windowHeight * endOffset;
+      // For spaace.io effect - calculate when element is in center area
+      const centerArea = windowHeight * 0.5; // Middle 50% of screen
+      const elementCenter = elementTop + elementHeight / 2;
       
-      // Calculate progress (0 to 1)
       let scrollProgress = 0;
       
-      if (elementTop <= startPoint && elementTop >= endPoint - elementHeight) {
-        const totalDistance = startPoint - endPoint + elementHeight;
-        const currentDistance = startPoint - elementTop;
-        scrollProgress = Math.min(Math.max(currentDistance / totalDistance, 0), 1);
-      } else if (elementTop < endPoint - elementHeight) {
-        scrollProgress = 1;
+      if (stayVisible) {
+        // Always visible mode - just fade in when near center
+        if (elementCenter <= windowHeight * 0.7 && elementCenter >= windowHeight * 0.3) {
+          scrollProgress = 1;
+        } else {
+          // Gradual fade based on distance from center
+          const distanceFromCenter = Math.abs(elementCenter - windowHeight * 0.5);
+          const maxDistance = windowHeight * 0.3;
+          scrollProgress = Math.max(0, 1 - (distanceFromCenter / maxDistance));
+        }
+      } else {
+        // Original behavior for elements that should move off-screen
+        const startPoint = windowHeight * startOffset;
+        const endPoint = windowHeight * endOffset;
+        
+        if (elementTop <= startPoint && elementTop >= endPoint - elementHeight) {
+          const totalDistance = startPoint - endPoint + elementHeight;
+          const currentDistance = startPoint - elementTop;
+          scrollProgress = Math.min(Math.max(currentDistance / totalDistance, 0), 1);
+        } else if (elementTop < endPoint - elementHeight) {
+          scrollProgress = 1;
+        }
       }
       
       // Apply delay
@@ -72,10 +89,12 @@ export const useScrollReveal = (options: ScrollRevealOptions = {}) => {
     return () => {
       window.removeEventListener('scroll', throttledScroll);
     };
-  }, [delay, startOffset, endOffset]);
+  }, [delay, startOffset, endOffset, stayVisible]);
 
   const getTransform = () => {
-    const easedProgress = 1 - Math.pow(1 - progress, 3); // Ease-out cubic
+    if (direction === 'fade') return 'translate(0)';
+    
+    const easedProgress = 1 - Math.pow(1 - progress, 2); // Gentler easing
     const moveDistance = distance * (1 - easedProgress);
     
     switch (direction) {
@@ -88,14 +107,14 @@ export const useScrollReveal = (options: ScrollRevealOptions = {}) => {
       case 'right':
         return `translateX(-${moveDistance}px)`;
       default:
-        return `translateY(${moveDistance}px)`;
+        return 'translate(0)';
     }
   };
 
   const style = {
-    opacity: Math.pow(progress, 0.5), // Slightly ease opacity
+    opacity: Math.pow(progress, 0.3), // Very gentle opacity curve
     transform: getTransform(),
-    transition: `none`, // Remove transitions for smooth scroll-based animation
+    transition: 'none',
   };
 
   return { elementRef, style, progress };

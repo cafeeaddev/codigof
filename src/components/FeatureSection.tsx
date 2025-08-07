@@ -20,27 +20,22 @@ export const FeatureSection = ({
   image, 
   index 
 }: FeatureSectionProps) => {
-  // Scroll reveal hooks for staggered animations
+  // Scroll reveal hooks - keep main content always visible like spaace.io
   const titleReveal = useScrollReveal({ 
-    direction: 'left', 
-    delay: 0, 
-    distance: 100,
-    startOffset: 0.9,
-    endOffset: 0.3
+    direction: 'fade',
+    delay: 0,
+    stayVisible: true
   });
   const videoReveal = useScrollReveal({ 
-    direction: 'right', 
-    delay: 200, 
-    distance: 120,
-    startOffset: 0.8,
-    endOffset: 0.2
+    direction: 'fade',
+    delay: 200,
+    stayVisible: true
   });
   const cardsReveal = useScrollReveal({ 
     direction: 'up', 
     delay: 400, 
-    distance: 80,
-    startOffset: 0.7,
-    endOffset: 0.1
+    distance: 40,
+    stayVisible: true
   });
 
   // Only show the first feature section as our missions/xp/medals section
