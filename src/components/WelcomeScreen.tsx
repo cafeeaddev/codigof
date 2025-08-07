@@ -16,7 +16,6 @@ interface WelcomeScreenProps {
 
 export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   useEffect(() => {
     // Simular carregamento inicial
@@ -28,20 +27,11 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
   }, []);
 
   const handleLogout = () => {
-    console.log('handleLogout WelcomeScreen chamado');
-    setIsLoggingOut(true);
-    
     toast({
       title: "Logout realizado",
       description: "Você foi desconectado com sucesso",
     });
-
-    // Simular delay do logout
-    setTimeout(() => {
-      console.log('Chamando onLogout...');
-      onLogout();
-      setIsLoggingOut(false);
-    }, 500);
+    onLogout();
   };
 
   if (isLoading) {
@@ -93,25 +83,12 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
             </div>
           </div>
           <Button
-            onClick={() => {
-              console.log('BOTÃO SAIR CLICADO!');
-              handleLogout();
-            }}
-            disabled={isLoggingOut}
+            onClick={handleLogout}
             variant="outline"
             className="bg-transparent border-secondary text-secondary hover:bg-secondary hover:text-secondary-foreground"
           >
-            {isLoggingOut ? (
-              <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                SAIR
-              </>
-            ) : (
-              <>
-                <LogOut className="w-4 h-4 mr-2" />
-                SAIR
-              </>
-            )}
+            <LogOut className="w-4 h-4 mr-2" />
+            SAIR
           </Button>
         </div>
       </div>
@@ -121,13 +98,13 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full">
             {/* Missões Diárias */}
             <div className="lg:col-span-2 h-full overflow-hidden">
-              <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-6 shadow-neon h-full overflow-hidden flex flex-col">
+              <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-6 shadow-neon h-[60%] overflow-hidden flex flex-col">
                 <div className="flex items-center gap-2 mb-6 p-3 bg-muted/50 rounded-lg">
                   <div className="w-3 h-3 bg-primary rounded-full"></div>
                   <span className="text-primary text-sm font-mono font-bold">MISSÕES DIÁRIAS</span>
                 </div>
 
-                <div className="space-y-4 overflow-y-auto flex-1">
+                <div className="space-y-4 overflow-hidden flex-1">
                   {[
                     { title: "Completar 3 treinamentos", progress: 2, total: 3, xp: 150 },
                     { title: "Participar de 1 reunião de equipe", progress: 0, total: 1, xp: 200 },
@@ -155,7 +132,7 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
               </div>
 
               {/* Desafios Semanais */}
-              <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-6 shadow-neon mt-6 flex-shrink-0">
+              <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-6 shadow-neon mt-6 h-[35%] overflow-hidden">
                 <div className="flex items-center gap-2 mb-6 p-3 bg-muted/50 rounded-lg">
                   <div className="w-3 h-3 bg-accent rounded-full"></div>
                   <span className="text-accent text-sm font-mono font-bold">DESAFIOS SEMANAIS</span>
