@@ -190,7 +190,7 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
                   <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-6 shadow-neon h-full overflow-hidden flex flex-col">
                     <div className="flex items-center gap-2 mb-6 p-3 bg-muted/50 rounded-lg">
                       <div className="w-3 h-3 bg-accent rounded-full"></div>
-                      <span className="text-accent text-sm font-mono font-bold">DESAFIOS SEMANAIS</span>
+                      <span className="text-accent text-sm font-mono font-bold">MISSÃO 1 ATIVADA</span>
                     </div>
 
                     <div className="flex-1 overflow-hidden">

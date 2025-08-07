@@ -197,8 +197,7 @@ export const QuizDigital = ({ onClose }: QuizDigitalProps) => {
   return (
     <div className="h-full flex flex-col">
       <div className="mb-4">
-        <h3 className="text-lg font-bold text-foreground mb-1">Quiz Digital - Avaliação de Perfil</h3>
-        <p className="text-sm text-muted-foreground">Primeira missão semanal</p>
+        <h3 className="text-lg font-bold text-foreground mb-1">Como você encara o digital?</h3>
       </div>
 
       <div className="mb-4">
