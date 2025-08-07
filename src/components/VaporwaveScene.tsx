@@ -42,39 +42,39 @@ export const VaporwaveScene = ({ cameraPosition, cameraFov }: VaporwaveSceneProp
           color="#ffffff"
         />
         
-        {/* Lava lighting from center/below */}
+        {/* Blue lighting from center/below */}
         <pointLight
           position={[0, -2, 0]}
           intensity={8}
-          color="#ff6b00"
+          color="#0080ff"
           distance={50}
           decay={2}
         />
         
-        {/* Additional lava spot light for more dramatic effect */}
+        {/* Additional blue spot light for more dramatic effect */}
         <spotLight
           position={[0, -5, 5]}
           target-position={[0, 0, 0]}
           intensity={4}
-          color="#ff4500"
+          color="#0099ff"
           distance={40}
           angle={Math.PI / 3}
           penumbra={0.5}
           decay={2}
         />
         
-        {/* Side accent lights with orange tint */}
+        {/* Side accent lights with blue tint */}
         <pointLight
           position={[-8, 1, 0]}
           intensity={0.8}
-          color="#ff8c00"
+          color="#0066cc"
           distance={25}
           decay={2}
         />
         <pointLight
           position={[8, 1, 0]}
           intensity={0.8}
-          color="#ffa500"
+          color="#0080ff"
           distance={25}
           decay={2}
         />

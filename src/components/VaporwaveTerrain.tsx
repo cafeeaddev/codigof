@@ -191,7 +191,7 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
             position={[0, -2.94, 0]}
           >
             <meshBasicMaterial
-              color="#00ffff"
+              color="#0080ff"
               transparent={true}
               opacity={0.95}
               wireframe={true}
