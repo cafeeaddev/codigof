@@ -37,13 +37,6 @@ export const LinearLayout = () => {
 
   return (
     <div className="relative min-h-screen overflow-x-hidden">
-      {/* Camera Controls - positioned above all other content */}
-      <CameraControls
-        position={cameraPosition}
-        fov={cameraFov}
-        onPositionChange={setCameraPosition}
-        onFovChange={setCameraFov}
-      />
       
       {/* Fixed vaporwave background */}
       <div className="fixed inset-0 z-0">
