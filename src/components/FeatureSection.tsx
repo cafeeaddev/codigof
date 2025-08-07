@@ -90,6 +90,20 @@ export const FeatureSection = ({
                 {description}
               </p>
 
+              {/* Video */}
+              <div className="mb-8">
+                <video 
+                  className="w-full rounded-lg shadow-neon"
+                  controls
+                  autoPlay
+                  muted
+                  loop
+                >
+                  <source src="https://meta.cafeeadhost.com.br/Cody/hero-animation.mp4" type="video/mp4" />
+                  Seu navegador não suporta vídeo HTML5.
+                </video>
+              </div>
+
             </div>
           </div>
 
