@@ -1,9 +1,17 @@
 
+import { useState } from 'react';
 import { Button } from './ui/button';
 import { ChevronDown } from 'lucide-react';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
+import { LoginScreen } from './LoginScreen';
 
-export const HeroSection = () => {
+interface HeroSectionProps {
+  onLogin?: (userData: any) => void;
+}
+
+export const HeroSection = ({ onLogin }: HeroSectionProps) => {
+  const [showLogin, setShowLogin] = useState(false);
+  
   // Scroll reveal for hero elements
   const titleReveal = useScrollReveal({ 
     direction: 'up', 
@@ -15,6 +23,11 @@ export const HeroSection = () => {
     delay: 300,
     distance: 30
   });
+
+  const handleLoginSuccess = (userData: any) => {
+    setShowLogin(false);
+    onLogin?.(userData);
+  };
 
   return (
     <section className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 pt-24">
@@ -47,6 +60,7 @@ export const HeroSection = () => {
             <Button 
               size="lg" 
               className="bg-white/10 text-white hover:bg-white/20 px-8 py-6 text-lg font-medium backdrop-blur-md rounded-xl shadow-lg border border-white/20"
+              onClick={() => setShowLogin(true)}
             >
               Sistema de Diagnóstico Ativado
             </Button>
@@ -59,6 +73,23 @@ export const HeroSection = () => {
           <ChevronDown className="w-6 h-6 animate-bounce" />
         </div>
       </div>
+
+      {/* Login Modal */}
+      {showLogin && (
+        <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
+          <div className="relative">
+            <button
+              onClick={() => setShowLogin(false)}
+              className="absolute -top-4 -right-4 z-10 w-8 h-8 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white"
+            >
+              ✕
+            </button>
+            <div className="max-w-md">
+              <LoginScreen onLogin={handleLoginSuccess} />
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 };

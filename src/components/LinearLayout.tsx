@@ -37,7 +37,7 @@ const features = [
 
 export const LinearLayout = () => {
   const [user, setUser] = useState<any>(null);
-  const [showLogin, setShowLogin] = useState(true);
+  const [showWelcome, setShowWelcome] = useState(false);
   const [cameraPosition, setCameraPosition] = useState<[number, number, number]>([0, 1, -8]);
   const [cameraFov, setCameraFov] = useState(65);
   
@@ -52,21 +52,16 @@ export const LinearLayout = () => {
 
   const handleLogin = (userData: any) => {
     setUser(userData);
-    setShowLogin(false);
+    setShowWelcome(true);
   };
 
   const handleLogout = () => {
     setUser(null);
-    setShowLogin(true);
+    setShowWelcome(false);
   };
 
-  // Show login screen if not authenticated
-  if (showLogin) {
-    return <LoginScreen onLogin={handleLogin} />;
-  }
-
   // Show welcome screen if authenticated
-  if (user) {
+  if (showWelcome && user) {
     return <WelcomeScreen user={user} onLogout={handleLogout} />;
   }
 
@@ -105,7 +100,7 @@ export const LinearLayout = () => {
             unregisterSection={unregisterSection}
             className="scroll-snap-start bg-transparent"
           >
-            <HeroSection />
+            <HeroSection onLogin={handleLogin} />
           </SectionContainer>
 
           {/* Feature Section */}
