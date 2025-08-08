@@ -6,29 +6,11 @@ import { useAuth } from '@/components/AuthContext';
 import { useScrollProgress } from '@/hooks/useScrollProgress';
 
 const Index = () => {
-  const { user, isLoading } = useAuth();
+  const { user } = useAuth();
   const [showGame, setShowGame] = useState(false);
-  const scrollProgress = useScrollProgress();
-
-  // Calculate camera position based on scroll
-  const basePosition: [number, number, number] = [0, 8, 30];
-  const scrollOffset = scrollProgress * 20;
-  const cameraPosition: [number, number, number] = [
-    basePosition[0],
-    basePosition[1] - scrollOffset * 0.5,
-    basePosition[2] - scrollOffset
-  ];
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-4 text-muted-foreground">Carregando sistema...</p>
-        </div>
-      </div>
-    );
-  }
+  
+  // Fixed camera position - no scroll dependency to avoid issues
+  const cameraPosition: [number, number, number] = [0, 8, 30];
 
   // If user is logged in and wants to access the game
   if (user && showGame) {
