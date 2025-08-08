@@ -3,7 +3,6 @@ import { Button } from './ui/button';
 import { LogOut, User, Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
-import { useAuth } from '@/contexts/AuthContext';
 import { QuizDigital } from './QuizDigital';
 import { MissaoDois } from './MissaoDois';
 import { MissaoTres } from './MissaoTres';
