@@ -70,6 +70,7 @@ export const Footer = () => {
     return (
       <WelcomeScreen 
         user={user} 
+        userId={user.user_id || user.id} // Fallback to appropriate userId field
         onLogout={handleLogout}
       />
     );

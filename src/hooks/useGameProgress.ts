@@ -19,14 +19,20 @@ export const useGameProgress = () => {
     lastSavedAt: new Date(),
   });
   
+  console.log('[useGameProgress] Hook initialized with user:', user?.id);
+  
   const sessionStartRef = useRef<Date>(new Date());
   const autoSaveIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const lastSaveTimeRef = useRef<number>(Date.now());
 
   // Load progress when user logs in
   const loadProgress = useCallback(async () => {
-    if (!user?.id) return;
+    if (!user?.id) {
+      console.log('[useGameProgress] No user.id available, skipping load');
+      return;
+    }
 
+    console.log('[useGameProgress] Loading progress for user:', user.id);
     try {
       const { data, error } = await supabase
         .from('user_progress')
@@ -35,7 +41,7 @@ export const useGameProgress = () => {
         .maybeSingle();
 
       if (error) {
-        console.error('Error loading progress:', error);
+        console.error('[useGameProgress] Error loading progress:', error);
         return;
       }
 
@@ -82,7 +88,10 @@ export const useGameProgress = () => {
 
   // Save progress to database
   const saveProgress = useCallback(async (position?: string, forceUpdate = false) => {
-    if (!user?.id) return;
+    if (!user?.id) {
+      console.log('[useGameProgress] No user.id available, skipping save');
+      return;
+    }
 
     const now = Date.now();
     const sessionTime = Math.floor((now - sessionStartRef.current.getTime()) / 1000);
@@ -90,8 +99,11 @@ export const useGameProgress = () => {
 
     // Throttle saves to avoid too frequent database updates (max every 10 seconds)
     if (!forceUpdate && now - lastSaveTimeRef.current < 10000) {
+      console.log('[useGameProgress] Save throttled');
       return;
     }
+
+    console.log('[useGameProgress] Saving progress for user:', user.id, 'position:', currentPosition);
 
     try {
       const updateData = {

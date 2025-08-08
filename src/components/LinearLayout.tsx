@@ -44,6 +44,17 @@ export const LinearLayout = () => {
   const [cameraPosition, setCameraPosition] = useState<[number, number, number]>([0, 1, -8]);
   const [cameraFov, setCameraFov] = useState(65);
   const { user, profile, isLoading, signOut } = useAuth();
+  
+  console.log('[LinearLayout] Auth state:', { 
+    user: user?.id, 
+    profile: profile?.nome, 
+    isLoading,
+    userExists: !!user,
+    profileExists: !!profile 
+  });
+  
+  // Only initialize game progress when user is fully authenticated
+  const gameProgressEnabled = !isLoading && !!user?.id;
   const { updatePosition, currentPosition, totalPlayTime, formatPlayTime } = useGameProgress();
   
   const {
@@ -55,28 +66,37 @@ export const LinearLayout = () => {
     unregisterSection
   } = useInternalScroll();
 
-  // Update position when section changes
+  // Update position when section changes - only if user is authenticated and game progress is enabled
   useEffect(() => {
-    if (user && currentSection !== undefined) {
+    if (gameProgressEnabled && user && currentSection !== undefined) {
+      console.log('[LinearLayout] Updating position for section:', currentSection, 'user:', user.id);
       const sectionNames = ['hero', 'features', 'footer'];
       const sectionName = sectionNames[currentSection] || 'hero';
       updatePosition(sectionName);
     }
-  }, [currentSection, user, updatePosition]);
+  }, [currentSection, user, updatePosition, gameProgressEnabled]);
 
   const handleLogout = async () => {
     await signOut();
     setShowWelcome(false);
   };
 
-  // Show welcome screen if authenticated
+  // Show welcome screen if authenticated - ensure both user and profile are ready
   useEffect(() => {
-    console.log('[LinearLayout] Auth state - user:', !!user, 'profile:', !!profile, 'showWelcome:', showWelcome);
-    if (user && profile && !showWelcome) {
-      console.log('[LinearLayout] Setting showWelcome to true');
+    console.log('[LinearLayout] Auth state check:', { 
+      user: !!user, 
+      userId: user?.id,
+      profile: !!profile, 
+      profileName: profile?.nome,
+      showWelcome, 
+      isLoading 
+    });
+    
+    if (!isLoading && user && profile && !showWelcome) {
+      console.log('[LinearLayout] Setting showWelcome to true for user:', user.id);
       setShowWelcome(true);
     }
-  }, [user, profile, showWelcome]);
+  }, [user, profile, showWelcome, isLoading]);
 
   // Show loading state
   if (isLoading) {
@@ -88,10 +108,10 @@ export const LinearLayout = () => {
     );
   }
 
-  // Show welcome screen if authenticated with profile
+  // Show welcome screen if authenticated with profile - pass userId explicitly
   if (user && profile && showWelcome) {
-    console.log('[LinearLayout] Rendering WelcomeScreen for user:', profile.nome);
-    return <WelcomeScreen user={profile} onLogout={handleLogout} />;
+    console.log('[LinearLayout] Rendering WelcomeScreen for user:', profile.nome, 'userId:', user.id);
+    return <WelcomeScreen user={profile} userId={user.id} onLogout={handleLogout} />;
   }
 
   // Show login screen if explicitly requested
