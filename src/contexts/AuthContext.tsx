@@ -8,6 +8,14 @@ const SESSION_TIMEOUT = 3 * 60 * 60 * 1000; // 3 hours in milliseconds
 const WARNING_TIME = 15 * 60 * 1000; // 15 minutes before timeout
 const LAST_ACTIVITY_KEY = 'lastActivity';
 
+// CPF helpers
+const normalizeCPF = (value: string) => value.replace(/\D/g, '');
+const formatCPF = (digits: string) => {
+  const d = digits.replace(/\D/g, '').slice(0, 11);
+  if (d.length !== 11) return digits;
+  return `${d.slice(0,3)}.${d.slice(3,6)}.${d.slice(6,9)}-${d.slice(9,11)}`;
+};
+
 interface UserProfile {
   id: string;
   nome: string;
@@ -198,11 +206,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const fetchUserProfile = async (userId: string) => {
     try {
       console.log('[AuthContext] Fetching profile for userId:', userId);
-      const { data: profile, error } = await supabase
+const { data: profile, error } = await supabase
         .from('profiles')
         .select('*')
         .eq('user_id', userId)
-        .single();
+        .maybeSingle();
 
       if (error) {
         console.error('[AuthContext] Error fetching profile:', error);
@@ -217,19 +225,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const signInWithCredentials = async (email: string, cpf: string): Promise<{ error?: string }> => {
-    try {
+  try {
       console.log('[AuthContext] Starting login with email:', email);
+      // Normalize CPF and allow both formatted and unformatted matches
+      const cleanCpf = normalizeCPF(cpf);
+      const formattedCpf = formatCPF(cleanCpf);
+
       // First, validate user exists and is active
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('*')
         .eq('email', email)
-        .eq('cpf', cpf)
         .eq('situacao', 'ATIVO')
-        .single();
+        .or(`cpf.eq.${formattedCpf},cpf.eq.${cleanCpf}`)
+        .maybeSingle();
 
-      if (profileError || !profile) {
-        console.log('[AuthContext] Profile not found or error:', profileError);
+      if (profileError) {
+        console.log('[AuthContext] Profile query error:', profileError);
+      }
+      if (!profile) {
+        console.log('[AuthContext] Profile not found for email/cpf combo');
         return { error: 'Email ou CPF incorretos ou usuário inativo' };
       }
 
@@ -249,11 +264,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
 
         console.log('[AuthContext] Direct sign in successful, user:', signInData.user?.id);
+        // Immediately set profile to unblock UI
+        setProfile(profile);
         toast({
           title: "Login realizado",
           description: `Bem-vindo(a), ${profile.nome}!`,
         });
-
         return {};
       }
 
@@ -329,6 +345,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       console.log('[AuthContext] Sign in after signup successful:', signInData.user?.id);
+      // Immediately set profile to unblock UI
+      setProfile(profile);
 
       toast({
         title: "Login realizado",
