@@ -84,12 +84,22 @@ export const QuizDigital = ({ onClose }: QuizDigitalProps) => {
     console.log('QuizDigital useEffect - user structure:', JSON.stringify(user, null, 2));
     const loadProgress = async () => {
       try {
-        console.log('Loading progress for user:', user?.id);
-        if (user?.id) {
+        console.log('Loading progress for user from context:', user?.id);
+        
+        let userId = user?.id;
+        
+        if (!userId) {
+          console.log('No user from context, trying direct supabase call...');
+          const { data: { user: authUser } } = await supabase.auth.getUser();
+          userId = authUser?.id;
+          console.log('Direct supabase user for loading:', authUser);
+        }
+        
+        if (userId) {
           const { data: progress, error } = await supabase
             .from('user_progress')
             .select('missao_1_current_question, missao_1_answers')
-            .eq('user_id', user.id)
+            .eq('user_id', userId)
             .maybeSingle();
 
           console.log('Loaded progress data:', progress, 'error:', error);
@@ -115,12 +125,24 @@ export const QuizDigital = ({ onClose }: QuizDigitalProps) => {
   // Salvar progresso quando resposta for selecionada
   const saveProgress = async (questionIndex: number, newAnswers: Record<number, string>) => {
     try {
-      console.log('Saving progress for user:', user?.id, 'question:', questionIndex + 1, 'answers:', newAnswers);
-      if (user?.id) {
+      // Tentar obter user do contexto primeiro, depois do supabase direto
+      let userId = user?.id;
+      
+      if (!userId) {
+        console.log('No user from context, trying direct supabase call...');
+        const { data: { user: authUser } } = await supabase.auth.getUser();
+        userId = authUser?.id;
+        console.log('Direct supabase user:', authUser);
+      }
+      
+      console.log('Final userId for saving:', userId);
+      console.log('Saving progress for user:', userId, 'question:', questionIndex + 1, 'answers:', newAnswers);
+      
+      if (userId) {
         const { data, error } = await supabase
           .from('user_progress')
           .upsert({
-            user_id: user.id,
+            user_id: userId,
             missao_1_current_question: questionIndex + 1,
             missao_1_answers: newAnswers
           }, {
