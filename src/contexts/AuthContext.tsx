@@ -251,8 +251,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return {};
       }
 
+      // Se não tem user_id, verifica se há rate limiting
+      const lastSignUpAttempt = localStorage.getItem('lastSignUpAttempt');
+      const now = Date.now();
+      
+      if (lastSignUpAttempt) {
+        const timeSinceLastAttempt = now - parseInt(lastSignUpAttempt);
+        const cooldownTime = 60000; // 1 minuto de cooldown
+        
+        if (timeSinceLastAttempt < cooldownTime) {
+          const remainingTime = Math.ceil((cooldownTime - timeSinceLastAttempt) / 1000);
+          return { error: `Aguarde ${remainingTime} segundos antes de tentar novamente` };
+        }
+      }
+
       // Se não tem user_id, precisa criar conta no Supabase Auth
       console.log('Creating new auth account for existing profile');
+      
+      // Salva o timestamp da tentativa
+      localStorage.setItem('lastSignUpAttempt', now.toString());
       
       // Primeiro, criar o usuário na tabela auth sem trigger automático
       const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
