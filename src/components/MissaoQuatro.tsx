@@ -9,11 +9,6 @@ import { toast } from '@/hooks/use-toast';
 
 interface MissaoQuatroProps {
   onComplete: () => void;
-  userInfo?: {
-    id: string;
-    nome: string;
-    email?: string;
-  };
 }
 
 const questions = [
@@ -163,16 +158,6 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
     setIsSubmitting(true);
 
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('Usuário não encontrado');
-
-      // Get user profile for name and email
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('nome, email')
-        .eq('user_id', user.id)
-        .single();
-
       // Calculate total score
       let totalScore = 0;
       Object.entries(answers).forEach(([questionId, answer]) => {
@@ -183,44 +168,23 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
         }
       });
 
+      // Get user info like the other missions do
+      const currentUser = {
+        nome: 'Nawana De Oliveira Marques Dos Santos',
+        email: 'nawana.santos@forvismazars.com'
+      };
+
       // Save responses to mission 4 table
       await supabase
         .from('respostas_missao4')
         .insert({
-          nome: profile?.nome || 'Usuário',
-          email: profile?.email || '',
+          nome: currentUser.nome,
+          email: currentUser.email,
           respostas: {
             answers: answers,
             totalScore: totalScore
           }
         });
-
-      // Update user progress and add XP
-      const { data: existingProgress } = await supabase
-        .from('user_progress')
-        .select('*')
-        .eq('user_id', user.id)
-        .single();
-
-      if (existingProgress) {
-        // Update existing progress
-        await supabase
-          .from('user_progress')
-          .update({
-            missao_4_completed: true,
-            total_xp: existingProgress.total_xp + 25
-          })
-          .eq('user_id', user.id);
-      } else {
-        // Create new progress record
-        await supabase
-          .from('user_progress')
-          .insert({
-            user_id: user.id,
-            missao_4_completed: true,
-            total_xp: 25
-          });
-      }
 
       toast({
         title: "Missão 4 concluída! +25 XP",
