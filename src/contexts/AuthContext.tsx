@@ -1,7 +1,12 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState, useCallback, useRef } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
+
+// Session timeout constants
+const SESSION_TIMEOUT = 3 * 60 * 60 * 1000; // 3 hours in milliseconds
+const WARNING_TIME = 15 * 60 * 1000; // 15 minutes before timeout
+const LAST_ACTIVITY_KEY = 'lastActivity';
 
 interface UserProfile {
   id: string;
@@ -37,6 +42,104 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const warningShownRef = useRef(false);
+  const timeoutWarningRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Update last activity timestamp
+  const updateLastActivity = useCallback(() => {
+    localStorage.setItem(LAST_ACTIVITY_KEY, Date.now().toString());
+  }, []);
+
+  // Check if session has expired
+  const checkSessionTimeout = useCallback(() => {
+    const lastActivity = localStorage.getItem(LAST_ACTIVITY_KEY);
+    if (!lastActivity) return false;
+    
+    const timeSinceLastActivity = Date.now() - parseInt(lastActivity);
+    return timeSinceLastActivity > SESSION_TIMEOUT;
+  }, []);
+
+  // Show warning before session expires
+  const scheduleSessionWarning = useCallback(() => {
+    const lastActivity = localStorage.getItem(LAST_ACTIVITY_KEY);
+    if (!lastActivity) return;
+
+    const timeSinceLastActivity = Date.now() - parseInt(lastActivity);
+    const timeUntilWarning = SESSION_TIMEOUT - WARNING_TIME - timeSinceLastActivity;
+
+    if (timeUntilWarning > 0 && !warningShownRef.current) {
+      timeoutWarningRef.current = setTimeout(() => {
+        if (user && !warningShownRef.current) {
+          warningShownRef.current = true;
+          toast({
+            title: "Sessão expirando",
+            description: "Sua sessão expirará em 15 minutos. Clique em qualquer lugar para renovar.",
+            duration: 10000,
+          });
+        }
+      }, timeUntilWarning);
+    }
+  }, [user]);
+
+  // Handle session timeout
+  const handleSessionTimeout = useCallback(async () => {
+    if (checkSessionTimeout() && user) {
+      await supabase.auth.signOut();
+      localStorage.removeItem(LAST_ACTIVITY_KEY);
+      toast({
+        title: "Sessão expirada",
+        description: "Sua sessão expirou após 3 horas de inatividade.",
+        duration: 5000,
+      });
+    }
+  }, [user, checkSessionTimeout]);
+
+  // Set up activity listeners
+  useEffect(() => {
+    if (!user) return;
+
+    const handleActivity = () => {
+      updateLastActivity();
+      warningShownRef.current = false;
+      if (timeoutWarningRef.current) {
+        clearTimeout(timeoutWarningRef.current);
+        timeoutWarningRef.current = null;
+      }
+      scheduleSessionWarning();
+    };
+
+    const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'];
+    
+    // Throttle activity updates to avoid excessive localStorage writes
+    let throttleTimeout: NodeJS.Timeout | null = null;
+    const throttledActivity = () => {
+      if (!throttleTimeout) {
+        throttleTimeout = setTimeout(() => {
+          handleActivity();
+          throttleTimeout = null;
+        }, 30000); // Update every 30 seconds max
+      }
+    };
+
+    events.forEach(event => {
+      document.addEventListener(event, throttledActivity, true);
+    });
+
+    // Initial activity update and warning schedule
+    updateLastActivity();
+    scheduleSessionWarning();
+
+    // Check for timeout on mount
+    handleSessionTimeout();
+
+    return () => {
+      events.forEach(event => {
+        document.removeEventListener(event, throttledActivity, true);
+      });
+      if (throttleTimeout) clearTimeout(throttleTimeout);
+      if (timeoutWarningRef.current) clearTimeout(timeoutWarningRef.current);
+    };
+  }, [user, updateLastActivity, scheduleSessionWarning, handleSessionTimeout]);
 
   useEffect(() => {
     // Set up auth state listener FIRST
@@ -46,12 +149,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setUser(session?.user ?? null);
         
         if (session?.user) {
+          updateLastActivity(); // Set activity on login
           // Defer profile fetch to avoid deadlock
           setTimeout(() => {
             fetchUserProfile(session.user.id);
           }, 0);
         } else {
           setProfile(null);
+          localStorage.removeItem(LAST_ACTIVITY_KEY);
         }
         
         setIsLoading(false);
@@ -64,13 +169,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(session?.user ?? null);
       
       if (session?.user) {
-        fetchUserProfile(session.user.id);
+        // Check timeout on existing session
+        if (checkSessionTimeout()) {
+          supabase.auth.signOut();
+          localStorage.removeItem(LAST_ACTIVITY_KEY);
+          toast({
+            title: "Sessão expirada",
+            description: "Sua sessão expirou após 3 horas de inatividade.",
+            duration: 5000,
+          });
+        } else {
+          fetchUserProfile(session.user.id);
+        }
       }
       setIsLoading(false);
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [updateLastActivity, checkSessionTimeout]);
 
   const fetchUserProfile = async (userId: string) => {
     try {
