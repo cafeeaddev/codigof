@@ -46,8 +46,8 @@ export const LinearLayout = () => {
   const { user, profile, isLoading, signOut } = useAuth();
   
   console.log('[LinearLayout] Auth state:', { 
-    user: user?.id, 
-    profile: profile?.nome, 
+    user: user ? { id: user.id, email: user.email } : undefined, 
+    profile: profile ? { nome: profile.nome, email: profile.email } : undefined, 
     isLoading,
     userExists: !!user,
     profileExists: !!profile 
@@ -86,15 +86,21 @@ export const LinearLayout = () => {
     console.log('[LinearLayout] Auth state check:', { 
       user: !!user, 
       userId: user?.id,
+      userEmail: user?.email,
       profile: !!profile, 
       profileName: profile?.nome,
+      profileEmail: profile?.email,
       showWelcome, 
       isLoading 
     });
     
     if (!isLoading && user && profile && !showWelcome) {
-      console.log('[LinearLayout] Setting showWelcome to true for user:', user.id);
+      console.log('[LinearLayout] Setting showWelcome to true for user:', user.id, 'profile:', profile.nome);
       setShowWelcome(true);
+    } else if (!isLoading && user && profile && showWelcome) {
+      console.log('[LinearLayout] Welcome already showing for user:', user.id);
+    } else if (!isLoading && (!user || !profile)) {
+      console.log('[LinearLayout] Not showing welcome - user:', !!user, 'profile:', !!profile);
     }
   }, [user, profile, showWelcome, isLoading]);
 

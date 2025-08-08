@@ -148,6 +148,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         console.log('[AuthContext] Auth state change:', event, 'session exists:', !!session, 'user:', session?.user?.id);
+        console.log('[AuthContext] Full session object:', session);
         setSession(session);
         setUser(session?.user ?? null);
         
@@ -217,6 +218,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signInWithCredentials = async (email: string, cpf: string): Promise<{ error?: string }> => {
     try {
+      console.log('[AuthContext] Starting login with email:', email);
       // First, validate user exists and is active
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
@@ -227,22 +229,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         .single();
 
       if (profileError || !profile) {
+        console.log('[AuthContext] Profile not found or error:', profileError);
         return { error: 'Email ou CPF incorretos ou usuário inativo' };
       }
 
+      console.log('[AuthContext] Found profile:', profile.nome, 'user_id:', profile.user_id);
+
       // Se já tem user_id, tenta fazer login direto
       if (profile.user_id) {
-        console.log('Profile has user_id, attempting direct sign in');
+        console.log('[AuthContext] Profile has user_id, attempting direct sign in');
         const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
           email: email,
           password: cpf,
         });
 
         if (signInError) {
-          console.error('Direct sign in failed:', signInError);
+          console.error('[AuthContext] Direct sign in failed:', signInError);
           return { error: 'Credenciais inválidas' };
         }
 
+        console.log('[AuthContext] Direct sign in successful, user:', signInData.user?.id);
         toast({
           title: "Login realizado",
           description: `Bem-vindo(a), ${profile.nome}!`,
@@ -266,7 +272,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       // Se não tem user_id, precisa criar conta no Supabase Auth
-      console.log('Creating new auth account for existing profile');
+      console.log('[AuthContext] Creating new auth account for existing profile');
       
       // Salva o timestamp da tentativa
       localStorage.setItem('lastSignUpAttempt', now.toString());
@@ -286,13 +292,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
 
       if (signUpError) {
-        console.error('Sign up error:', signUpError);
+        console.error('[AuthContext] Sign up error:', signUpError);
         return { error: 'Erro ao criar conta de acesso: ' + signUpError.message };
       }
 
       if (!signUpData.user) {
+        console.error('[AuthContext] No user returned from signUp');
         return { error: 'Erro ao criar usuário' };
       }
+
+      console.log('[AuthContext] SignUp successful, user created:', signUpData.user.id);
 
       // Atualizar o perfil existente com o user_id
       const { error: updateError } = await supabase
@@ -301,8 +310,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         .eq('id', profile.id);
 
       if (updateError) {
-        console.error('Error updating profile with user_id:', updateError);
+        console.error('[AuthContext] Error updating profile with user_id:', updateError);
         // Mesmo se falhar a atualização, o login funcionou
+      } else {
+        console.log('[AuthContext] Profile updated successfully with user_id:', signUpData.user.id);
       }
 
       toast({
