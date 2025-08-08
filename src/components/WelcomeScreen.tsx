@@ -160,7 +160,7 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
             </div>
             
             {/* Estatísticas no Header - Apenas Desktop */}
-            <div className="hidden md:flex items-center gap-6 ml-8">
+            <div className="hidden md:flex items-center gap-6 ml-12">
               <div className="text-center">
                 <div className="text-lg font-bold text-primary">{userProgress.total_xp}</div>
                 <div className="text-muted-foreground text-xs">Total XP</div>
