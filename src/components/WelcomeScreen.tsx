@@ -42,9 +42,9 @@ export const WelcomeScreen = ({ user: userProfile, onLogout }: WelcomeScreenProp
   useEffect(() => {
     const loadUserProgress = async () => {
       try {
-        console.log('WelcomeScreen: authUser from context:', authUser);
+        console.log('[WelcomeScreen] authUser from context:', authUser);
         if (authUser?.id) {
-          console.log('WelcomeScreen: Loading progress for user:', authUser.id);
+          console.log('[WelcomeScreen] Loading progress for user:', authUser.id);
           const { data: progress } = await supabase
             .from('user_progress')
             .select('*')
@@ -70,16 +70,18 @@ export const WelcomeScreen = ({ user: userProfile, onLogout }: WelcomeScreenProp
             if (progress.missao_4_completed) completed.add(4);
             setCompletedMissions(completed);
           }
+        } else {
+          console.log('[WelcomeScreen] No authUser found');
         }
       } catch (error) {
-        console.error('Error loading user progress:', error);
+        console.error('[WelcomeScreen] Error loading user progress:', error);
       } finally {
         setTimeout(() => setIsLoading(false), 1000);
       }
     };
 
     loadUserProgress();
-  }, []);
+  }, [authUser]);
 
   const handleLogout = () => {
     toast({

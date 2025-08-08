@@ -61,7 +61,6 @@ interface MissaoDoisProps {
 
 export const MissaoDois = ({ onComplete, userId }: MissaoDoisProps) => {
   const { user: authUser } = useAuth();
-  const user = authUser || { id: userId };
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [isCompleted, setIsCompleted] = useState(false);
@@ -72,44 +71,56 @@ export const MissaoDois = ({ onComplete, userId }: MissaoDoisProps) => {
   useEffect(() => {
     const loadProgress = async () => {
       try {
-        if (user?.id) {
+        const currentUserId = authUser?.id || userId;
+        console.log('[MissaoDois] Loading progress for userId:', currentUserId);
+        
+        if (currentUserId) {
           const { data: progress } = await supabase
             .from('user_progress')
             .select('missao_2_current_question, missao_2_answers')
-            .eq('user_id', user.id)
+            .eq('user_id', currentUserId)
             .maybeSingle();
 
+          console.log('[MissaoDois] Loaded progress:', progress);
           if (progress) {
             setCurrentQuestion((progress.missao_2_current_question as number) - 1);
             setAnswers((progress.missao_2_answers as Record<number, string>) || {});
           }
+        } else {
+          console.log('[MissaoDois] No userId available for loading progress');
         }
       } catch (error) {
-        console.error('Error loading mission 2 progress:', error);
+        console.error('[MissaoDois] Error loading mission 2 progress:', error);
       } finally {
         setIsLoading(false);
       }
     };
 
     loadProgress();
-  }, [user]);
+  }, [authUser, userId]);
 
   // Salvar progresso quando resposta for selecionada
   const saveProgress = async (questionIndex: number, newAnswers: Record<number, string>) => {
     try {
-      if (user?.id) {
+      const currentUserId = authUser?.id || userId;
+      console.log('[MissaoDois] Saving progress for userId:', currentUserId, 'question:', questionIndex + 1);
+      
+      if (currentUserId) {
         await supabase
           .from('user_progress')
           .upsert({
-            user_id: user.id,
+            user_id: currentUserId,
             missao_2_current_question: questionIndex + 1,
             missao_2_answers: newAnswers
           }, {
             onConflict: 'user_id'
           });
+        console.log('[MissaoDois] Progress saved successfully');
+      } else {
+        console.log('[MissaoDois] No userId found, cannot save progress');
       }
     } catch (error) {
-      console.error('Error saving mission 2 progress:', error);
+      console.error('[MissaoDois] Error saving mission 2 progress:', error);
     }
   };
 
@@ -188,12 +199,12 @@ export const MissaoDois = ({ onComplete, userId }: MissaoDoisProps) => {
       }
 
       // Update user progress and add XP
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
+      const currentUserId = authUser?.id || userId;
+      if (currentUserId) {
         const { data: existingProgress } = await supabase
           .from('user_progress')
           .select('*')
-          .eq('user_id', user.id)
+          .eq('user_id', currentUserId)
           .maybeSingle();
 
         if (existingProgress) {
@@ -203,12 +214,12 @@ export const MissaoDois = ({ onComplete, userId }: MissaoDoisProps) => {
               missao_2_completed: true,
               total_xp: existingProgress.total_xp + 25
             })
-            .eq('user_id', user.id);
+            .eq('user_id', currentUserId);
         } else {
           await supabase
             .from('user_progress')
             .insert({
-              user_id: user.id,
+              user_id: currentUserId,
               missao_2_completed: true,
               total_xp: 25
             });

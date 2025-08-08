@@ -71,13 +71,16 @@ export const LinearLayout = () => {
 
   // Show welcome screen if authenticated
   useEffect(() => {
+    console.log('[LinearLayout] Auth state - user:', !!user, 'profile:', !!profile, 'showWelcome:', showWelcome);
     if (user && profile && !showWelcome) {
+      console.log('[LinearLayout] Setting showWelcome to true');
       setShowWelcome(true);
     }
   }, [user, profile, showWelcome]);
 
   // Show loading state
   if (isLoading) {
+    console.log('[LinearLayout] Showing loading state');
     return (
       <div className="h-screen w-full bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center">
         <div className="text-white text-xl">Carregando...</div>
@@ -87,6 +90,7 @@ export const LinearLayout = () => {
 
   // Show welcome screen if authenticated with profile
   if (user && profile && showWelcome) {
+    console.log('[LinearLayout] Rendering WelcomeScreen for user:', profile.nome);
     return <WelcomeScreen user={profile} onLogout={handleLogout} />;
   }
 

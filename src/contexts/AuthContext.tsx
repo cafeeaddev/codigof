@@ -145,17 +145,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        console.log('Auth state change:', event, 'session:', session, 'user:', session?.user);
+        console.log('[AuthContext] Auth state change:', event, 'session exists:', !!session, 'user:', session?.user?.id);
         setSession(session);
         setUser(session?.user ?? null);
         
         if (session?.user) {
+          console.log('[AuthContext] User logged in, userId:', session.user.id);
           updateLastActivity(); // Set activity on login
           // Defer profile fetch to avoid deadlock
           setTimeout(() => {
             fetchUserProfile(session.user.id);
           }, 0);
         } else {
+          console.log('[AuthContext] User logged out');
           setProfile(null);
           localStorage.removeItem(LAST_ACTIVITY_KEY);
         }
@@ -166,13 +168,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // THEN check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
-      console.log('Initial session check:', session, 'user:', session?.user);
+      console.log('[AuthContext] Initial session check - session exists:', !!session, 'user:', session?.user?.id);
       setSession(session);
       setUser(session?.user ?? null);
       
       if (session?.user) {
+        console.log('[AuthContext] Found existing session for user:', session.user.id);
         // Check timeout on existing session
         if (checkSessionTimeout()) {
+          console.log('[AuthContext] Session expired, signing out');
           supabase.auth.signOut();
           localStorage.removeItem(LAST_ACTIVITY_KEY);
           toast({
@@ -181,8 +185,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             duration: 5000,
           });
         } else {
+          console.log('[AuthContext] Session valid, fetching profile');
           fetchUserProfile(session.user.id);
         }
+      } else {
+        console.log('[AuthContext] No existing session found');
       }
       setIsLoading(false);
     });

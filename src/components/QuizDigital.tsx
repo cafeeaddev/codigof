@@ -73,7 +73,6 @@ interface QuizDigitalProps {
 
 export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
   const { user: authUser } = useAuth();
-  const user = authUser || { id: userId };
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [isCompleted, setIsCompleted] = useState(false);
@@ -84,63 +83,49 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
   useEffect(() => {
     const loadProgress = async () => {
       try {
-        let userId = user?.id;
+        const currentUserId = authUser?.id || userId;
+        console.log('[QuizDigital] Loading progress for userId:', currentUserId);
         
-        if (!userId) {
-          console.log('No user from context, trying direct supabase call...');
-          const { data: { user: authUser } } = await supabase.auth.getUser();
-          userId = authUser?.id;
-          console.log('Direct supabase user for loading:', authUser);
-        }
-        
-        if (userId) {
+        if (currentUserId) {
           const { data: progress, error } = await supabase
             .from('user_progress')
             .select('missao_1_current_question, missao_1_answers')
-            .eq('user_id', userId)
+            .eq('user_id', currentUserId)
             .maybeSingle();
 
-          console.log('Loaded progress data:', progress, 'error:', error);
+          console.log('[QuizDigital] Loaded progress data:', progress, 'error:', error);
           
           if (progress) {
             const questionIndex = (progress.missao_1_current_question as number) - 1;
             const savedAnswers = (progress.missao_1_answers as Record<number, string>) || {};
-            console.log('Setting question to:', questionIndex, 'answers:', savedAnswers);
+            console.log('[QuizDigital] Setting question to:', questionIndex, 'answers:', savedAnswers);
             setCurrentQuestion(questionIndex);
             setAnswers(savedAnswers);
           }
+        } else {
+          console.log('[QuizDigital] No userId available for loading progress');
         }
       } catch (error) {
-        console.error('Error loading quiz progress:', error);
+        console.error('[QuizDigital] Error loading quiz progress:', error);
       } finally {
         setIsLoading(false);
       }
     };
 
     loadProgress();
-  }, [user]);
+  }, [authUser, userId]);
 
   // Salvar progresso quando resposta for selecionada
   const saveProgress = async (questionIndex: number, newAnswers: Record<number, string>) => {
     try {
-      // Tentar obter user do contexto primeiro, depois do supabase direto
-      let userId = user?.id;
+      const currentUserId = authUser?.id || userId;
+      console.log('[QuizDigital] Saving progress for userId:', currentUserId, 'question:', questionIndex + 1, 'answers:', newAnswers);
       
-      if (!userId) {
-        console.log('No user from context, trying direct supabase call...');
-        const { data: { user: authUser } } = await supabase.auth.getUser();
-        userId = authUser?.id;
-        console.log('Direct supabase user:', authUser);
-      }
-      
-      console.log('Final userId for saving:', userId);
-      console.log('Saving progress for user:', userId, 'question:', questionIndex + 1, 'answers:', newAnswers);
-      
-      if (userId) {
+      if (currentUserId) {
         const { data, error } = await supabase
           .from('user_progress')
           .upsert({
-            user_id: userId,
+            user_id: currentUserId,
             missao_1_current_question: questionIndex + 1,
             missao_1_answers: newAnswers
           }, {
@@ -148,15 +133,15 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
           });
         
         if (error) {
-          console.error('Error saving quiz progress:', error);
+          console.error('[QuizDigital] Error saving quiz progress:', error);
         } else {
-          console.log('Progress saved successfully:', data);
+          console.log('[QuizDigital] Progress saved successfully:', data);
         }
       } else {
-        console.log('No user found, cannot save progress');
+        console.log('[QuizDigital] No userId found, cannot save progress');
       }
     } catch (error) {
-      console.error('Error saving progress:', error);
+      console.error('[QuizDigital] Error saving progress:', error);
     }
   };
 
@@ -232,12 +217,12 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
       }
 
       // Update user progress and add XP
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
+      const currentUserId = authUser?.id || userId;
+      if (currentUserId) {
         const { data: existingProgress } = await supabase
           .from('user_progress')
           .select('*')
-          .eq('user_id', user.id)
+          .eq('user_id', currentUserId)
           .maybeSingle();
 
         if (existingProgress) {
@@ -247,12 +232,12 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
               missao_1_completed: true,
               total_xp: existingProgress.total_xp + 25
             })
-            .eq('user_id', user.id);
+            .eq('user_id', currentUserId);
         } else {
           await supabase
             .from('user_progress')
             .insert({
-              user_id: user.id,
+              user_id: currentUserId,
               missao_1_completed: true,
               total_xp: 25
             });
