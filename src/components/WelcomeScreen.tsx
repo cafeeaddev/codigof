@@ -5,6 +5,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 import { QuizDigital } from './QuizDigital';
 import { MissaoDois } from './MissaoDois';
+import { MissaoTres } from './MissaoTres';
 
 interface WelcomeScreenProps {
   user: {
@@ -18,7 +19,7 @@ interface WelcomeScreenProps {
 
 export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [currentMission, setCurrentMission] = useState<1 | 2>(1);
+  const [currentMission, setCurrentMission] = useState<1 | 2 | 3>(1);
   const [completedMissions, setCompletedMissions] = useState<Set<number>>(new Set());
 
   useEffect(() => {
@@ -172,16 +173,16 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 bg-accent rounded-full"></div>
                   <span className="text-accent text-sm font-mono font-bold">
-                    {currentMission === 1 ? 'MISSÃO 1 ATIVADA' : 'MISSÃO 2 ATIVADA'}
+                    MISSÃO {currentMission} ATIVADA
                   </span>
                 </div>
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => setCurrentMission(currentMission === 1 ? 2 : 1)}
+                  onClick={() => setCurrentMission(currentMission >= 3 ? 1 : (currentMission + 1) as 1 | 2 | 3)}
                   className="text-xs"
                 >
-                  Ver Missão {currentMission === 1 ? '2' : '1'}
+                  Próxima Missão
                 </Button>
               </div>
 
@@ -194,8 +195,17 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
                 ) : currentMission === 2 && !completedMissions.has(2) ? (
                   <MissaoDois onComplete={() => {
                     setCompletedMissions(prev => new Set([...prev, 2]));
+                    setCurrentMission(3);
                     toast({
                       title: "Missão 2 concluída!",
+                      description: "Missão 3 desbloqueada! Continue evoluindo.",
+                    });
+                  }} />
+                ) : currentMission === 3 && !completedMissions.has(3) ? (
+                  <MissaoTres onComplete={() => {
+                    setCompletedMissions(prev => new Set([...prev, 3]));
+                    toast({
+                      title: "Missão 3 concluída!",
                       description: "Parabéns! Continue evoluindo.",
                     });
                   }} />
@@ -251,7 +261,7 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
                                 ? 'border-primary/50 bg-primary/10 cursor-pointer' 
                                 : 'border-secondary/30'
                           }`}
-                          onClick={() => isActive && mission.id <= 2 && setCurrentMission(mission.id as 1 | 2)}
+                          onClick={() => isActive && mission.id <= 3 && setCurrentMission(mission.id as 1 | 2 | 3)}
                         >
                           <div className="flex items-center justify-between mb-2">
                             <div className="flex items-center gap-2">
@@ -304,7 +314,7 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
                   <div className="flex items-center gap-2 mb-6 p-3 bg-muted/50 rounded-lg">
                     <div className="w-3 h-3 bg-accent rounded-full"></div>
                     <span className="text-accent text-sm font-mono font-bold">
-                      {currentMission === 1 ? 'MISSÃO 1 ATIVADA' : 'MISSÃO 2 ATIVADA'}
+                      MISSÃO {currentMission} ATIVADA
                     </span>
                   </div>
 
@@ -317,8 +327,17 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
                     ) : currentMission === 2 && !completedMissions.has(2) ? (
                       <MissaoDois onComplete={() => {
                         setCompletedMissions(prev => new Set([...prev, 2]));
+                        setCurrentMission(3);
                         toast({
                           title: "Missão 2 concluída!",
+                          description: "Missão 3 desbloqueada! Continue evoluindo.",
+                        });
+                      }} />
+                    ) : currentMission === 3 && !completedMissions.has(3) ? (
+                      <MissaoTres onComplete={() => {
+                        setCompletedMissions(prev => new Set([...prev, 3]));
+                        toast({
+                          title: "Missão 3 concluída!",
                           description: "Parabéns! Continue evoluindo.",
                         });
                       }} />
