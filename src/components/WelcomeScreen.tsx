@@ -26,6 +26,12 @@ export const WelcomeScreen = ({ user: userProfile, onLogout }: WelcomeScreenProp
   const [completedMissions, setCompletedMissions] = useState<Set<number>>(new Set());
   const [userProgress, setUserProgress] = useState({ total_xp: 0, completedMissionsCount: 0 });
   
+  // Se não há usuário autenticado, não renderize a tela
+  if (!authUser) {
+    console.log('WelcomeScreen: No authenticated user, redirecting to login');
+    return null;
+  }
+  
   console.log('WelcomeScreen - authUser from context:', authUser);
 
   // Função para atualizar progresso localmente
