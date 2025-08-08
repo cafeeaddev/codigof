@@ -39,6 +39,7 @@ const features = [
 
 export const LinearLayout = () => {
   const [showWelcome, setShowWelcome] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
   const [cameraPosition, setCameraPosition] = useState<[number, number, number]>([0, 1, -8]);
   const [cameraFov, setCameraFov] = useState(65);
   const { user, profile, isLoading, signOut } = useAuth();
@@ -88,8 +89,8 @@ export const LinearLayout = () => {
     return <WelcomeScreen user={profile} onLogout={handleLogout} />;
   }
 
-  // Show login screen if not authenticated OR if authenticated but no profile yet
-  if (!user || !profile) {
+  // Show login screen if explicitly requested
+  if (showLogin) {
     return (
       <div className="h-screen w-full bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center p-4">
         <div className="w-full max-w-md">
@@ -134,7 +135,7 @@ export const LinearLayout = () => {
             unregisterSection={unregisterSection}
             className="scroll-snap-start bg-transparent"
           >
-            <HeroSection />
+            <HeroSection onLoginClick={() => setShowLogin(true)} />
           </SectionContainer>
 
           {/* Feature Section */}

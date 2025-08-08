@@ -1,13 +1,13 @@
 
-import { useState } from 'react';
 import { Button } from './ui/button';
 import { ChevronDown } from 'lucide-react';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
-import { LoginScreen } from './LoginScreen';
 
-export const HeroSection = () => {
-  const [showLogin, setShowLogin] = useState(false);
-  
+interface HeroSectionProps {
+  onLoginClick?: () => void;
+}
+
+export const HeroSection = ({ onLoginClick }: HeroSectionProps) => {
   // Scroll reveal for hero elements
   const titleReveal = useScrollReveal({ 
     direction: 'up', 
@@ -19,10 +19,6 @@ export const HeroSection = () => {
     delay: 300,
     distance: 30
   });
-
-  const handleLoginSuccess = () => {
-    setShowLogin(false);
-  };
 
   return (
     <section className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20 lg:pt-24">
@@ -55,7 +51,7 @@ export const HeroSection = () => {
             <Button 
               size="lg" 
               className="bg-white/10 text-white hover:bg-white/20 px-4 sm:px-6 lg:px-8 py-4 sm:py-5 lg:py-6 text-sm sm:text-base lg:text-lg font-medium backdrop-blur-md rounded-xl shadow-lg border border-white/20 w-full sm:w-auto max-w-xs sm:max-w-none"
-              onClick={() => setShowLogin(true)}
+              onClick={onLoginClick}
             >
               <span className="hidden sm:inline">Sistema de Diagnóstico Ativado</span>
               <span className="sm:hidden">Diagnóstico Ativado</span>
@@ -69,23 +65,6 @@ export const HeroSection = () => {
           <ChevronDown className="w-5 h-5 sm:w-6 sm:h-6 animate-bounce" />
         </div>
       </div>
-
-      {/* Login Modal */}
-      {showLogin && (
-        <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 sm:p-6">
-          <div className="relative w-full max-w-sm sm:max-w-md">
-            <button
-              onClick={() => setShowLogin(false)}
-              className="absolute -top-2 -right-2 sm:-top-4 sm:-right-4 z-10 w-8 h-8 sm:w-10 sm:h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white text-sm sm:text-base"
-            >
-              ✕
-            </button>
-            <div className="w-full">
-              <LoginScreen />
-            </div>
-          </div>
-        </div>
-      )}
     </section>
   );
 };
