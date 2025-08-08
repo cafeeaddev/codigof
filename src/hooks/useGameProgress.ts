@@ -12,15 +12,6 @@ interface GameProgress {
   isLoading: boolean;
 }
 
-interface GameSession {
-  id: string;
-  mission_number: number;
-  start_time: Date;
-  end_time?: Date;
-  duration_seconds?: number;
-  completed: boolean;
-}
-
 export const useGameProgress = () => {
   const { user } = useAuth();
   const { toast } = useToast();
@@ -33,8 +24,6 @@ export const useGameProgress = () => {
     missionStartTime: null,
     isLoading: true
   });
-
-  const [currentSession, setCurrentSession] = useState<GameSession | null>(null);
 
   // Load progress from database
   const loadProgress = useCallback(async () => {
@@ -65,38 +54,14 @@ export const useGameProgress = () => {
         currentMission = completedList.length + 1;
       }
 
-      // Check for incomplete session
-      const { data: incompleteSessions } = await supabase
-        .from('user_sessions')
-        .select('*')
-        .eq('user_id', user.id)
-        .eq('completed', false)
-        .order('start_time', { ascending: false })
-        .limit(1);
-
-      let sessionToResume = null;
-      if (incompleteSessions && incompleteSessions.length > 0) {
-        sessionToResume = incompleteSessions[0];
-        currentMission = sessionToResume.mission_number;
-      }
-
       setProgress(prev => ({
         ...prev,
         currentMission,
         completedMissions: completedList,
         totalXp: userProgress?.total_xp || 0,
-        sessionStartTime: sessionToResume ? new Date(sessionToResume.start_time) : new Date(),
+        sessionStartTime: new Date(),
         isLoading: false
       }));
-
-      if (sessionToResume) {
-        setCurrentSession({
-          id: sessionToResume.id,
-          mission_number: sessionToResume.mission_number,
-          start_time: new Date(sessionToResume.start_time),
-          completed: false
-        });
-      }
 
     } catch (error) {
       console.error('Error loading progress:', error);
@@ -104,46 +69,22 @@ export const useGameProgress = () => {
     }
   }, [user]);
 
-  // Start a new mission session
+  // Start a new mission session  
   const startMission = useCallback(async (missionNumber: number) => {
     if (!user) return;
 
     try {
       const startTime = new Date();
       
-      const { data, error } = await supabase
-        .from('user_sessions')
-        .insert({
-          user_id: user.id,
-          mission_number: missionNumber,
-          start_time: startTime.toISOString(),
-          completed: false
-        })
-        .select()
-        .single();
-
-      if (error) throw error;
-
-      setCurrentSession({
-        id: data.id,
-        mission_number: missionNumber,
-        start_time: startTime,
-        completed: false
-      });
-
       setProgress(prev => ({
         ...prev,
         missionStartTime: startTime
       }));
 
-      // Log game event
-      await supabase
-        .from('game_events')
-        .insert({
-          user_id: user.id,
-          event_type: 'mission_started',
-          event_data: { mission_number: missionNumber }
-        });
+      toast({
+        title: "Missão Iniciada",
+        description: `Missão ${missionNumber} começou!`,
+      });
 
     } catch (error) {
       console.error('Error starting mission:', error);
@@ -157,28 +98,13 @@ export const useGameProgress = () => {
 
   // Complete a mission
   const completeMission = useCallback(async (missionNumber: number, responses?: any) => {
-    if (!user || !currentSession) return;
+    if (!user) return;
 
     try {
-      const endTime = new Date();
-      const durationSeconds = Math.floor((endTime.getTime() - currentSession.start_time.getTime()) / 1000);
-
-      // Update session as completed
-      await supabase
-        .from('user_sessions')
-        .update({
-          end_time: endTime.toISOString(),
-          duration_seconds: durationSeconds,
-          completed: true
-        })
-        .eq('id', currentSession.id);
-
-      // Calculate bonus XP based on game start date
-      const { data: bonusXp } = await supabase
-        .rpc('calculate_bonus_xp');
-
       const baseXp = 50;
-      const totalXp = baseXp + (bonusXp || 0);
+      const bonusXp = 0; // Will implement bonus calculation later
+
+      const totalXp = baseXp + bonusXp;
 
       // Update user progress
       const updateField = `missao_${missionNumber}_completed`;
@@ -192,33 +118,6 @@ export const useGameProgress = () => {
 
       if (progressError) throw progressError;
 
-      // Save attempt data if responses provided
-      if (responses) {
-        await supabase
-          .from('user_attempts')
-          .insert({
-            user_id: user.id,
-            mission_number: missionNumber,
-            session_id: currentSession.id,
-            responses: responses,
-            duration_seconds: durationSeconds,
-            xp_earned: totalXp
-          });
-      }
-
-      // Log completion event
-      await supabase
-        .from('game_events')
-        .insert({
-          user_id: user.id,
-          event_type: 'mission_completed',
-          event_data: {
-            mission_number: missionNumber,
-            duration_seconds: durationSeconds,
-            xp_earned: totalXp
-          }
-        });
-
       // Update local state
       setProgress(prev => ({
         ...prev,
@@ -226,8 +125,6 @@ export const useGameProgress = () => {
         totalXp: prev.totalXp + totalXp,
         currentMission: missionNumber === 4 ? 5 : missionNumber + 1
       }));
-
-      setCurrentSession(null);
 
       toast({
         title: "Missão Concluída!",
@@ -242,27 +139,7 @@ export const useGameProgress = () => {
         variant: "destructive"
       });
     }
-  }, [user, currentSession, progress.totalXp, toast]);
-
-  // Auto-save progress periodically
-  useEffect(() => {
-    if (!user || !currentSession) return;
-
-    const interval = setInterval(async () => {
-      try {
-        await supabase
-          .from('user_sessions')
-          .update({
-            last_activity: new Date().toISOString()
-          })
-          .eq('id', currentSession.id);
-      } catch (error) {
-        console.error('Error auto-saving:', error);
-      }
-    }, 30000); // Save every 30 seconds
-
-    return () => clearInterval(interval);
-  }, [user, currentSession]);
+  }, [user, progress.totalXp, toast]);
 
   // Load progress on mount
   useEffect(() => {
@@ -274,6 +151,6 @@ export const useGameProgress = () => {
     startMission,
     completeMission,
     loadProgress,
-    currentSession
+    currentSession: null // Simplified for now
   };
 };

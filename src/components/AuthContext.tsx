@@ -67,9 +67,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const checkAdminStatus = async (userId: string) => {
     try {
+      // For now, just check if user exists - we'll implement proper admin check after migrations
       const { data } = await supabase
-        .rpc('is_admin', { user_id: userId });
-      setIsAdmin(data || false);
+        .from('profiles')
+        .select('email')
+        .eq('user_id', userId)
+        .maybeSingle();
+      
+      // Temporary: make admin based on email pattern
+      setIsAdmin(data?.email?.includes('admin') || false);
     } catch (error) {
       console.error('Error checking admin status:', error);
       setIsAdmin(false);

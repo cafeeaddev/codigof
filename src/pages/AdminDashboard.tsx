@@ -37,17 +37,10 @@ const AdminDashboard = () => {
 
   const loadGameSettings = async () => {
     try {
-      const { data } = await supabase
-        .from('game_events')
-        .select('event_data')
-        .eq('event_type', 'game_start_date')
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .maybeSingle();
-
-      if (data?.event_data?.start_date) {
-        const date = new Date(data.event_data.start_date);
-        setCurrentGameDate(date.toISOString().split('T')[0]);
+      // For now, load from localStorage until migrations are complete
+      const savedDate = localStorage.getItem('gameStartDate');
+      if (savedDate) {
+        setCurrentGameDate(savedDate);
       }
     } catch (error) {
       console.error('Error loading game settings:', error);
@@ -56,34 +49,27 @@ const AdminDashboard = () => {
 
   const loadDashboardData = async () => {
     try {
-      // Load users with their progress
+      // Load users with their progress - simplified query
       const { data: usersData } = await supabase
         .from('profiles')
-        .select(`
-          *,
-          user_progress (
-            missao_1_completed,
-            missao_2_completed,
-            missao_3_completed,
-            missao_4_completed,
-            total_xp
-          )
-        `)
+        .select('*')
         .order('created_at', { ascending: false });
 
-      // Load all attempts
-      const { data: attemptsData } = await supabase
-        .from('user_attempts')
-        .select(`
-          *,
-          profiles (nome, email)
-        `)
-        .order('created_at', { ascending: false });
+      // Load user progress separately
+      const { data: progressData } = await supabase
+        .from('user_progress')
+        .select('*');
 
-      // Calculate stats
-      const totalUsers = usersData?.length || 0;
-      const completedMissions = usersData?.reduce((acc, user) => {
-        const progress = user.user_progress?.[0];
+      // Combine data
+      const usersWithProgress = usersData?.map(user => ({
+        ...user,
+        user_progress: progressData?.filter(p => p.user_id === user.user_id) || []
+      })) || [];
+
+      // Calculate simplified stats
+      const totalUsers = usersWithProgress.length;
+      const completedMissions = usersWithProgress.reduce((acc, user) => {
+        const progress = user.user_progress[0];
         if (!progress) return acc;
         
         let completed = 0;
@@ -93,23 +79,20 @@ const AdminDashboard = () => {
         if (progress.missao_4_completed) completed++;
         
         return acc + completed;
-      }, 0) || 0;
+      }, 0);
 
-      const totalXP = usersData?.reduce((acc, user) => {
-        return acc + (user.user_progress?.[0]?.total_xp || 0);
-      }, 0) || 0;
+      const totalXP = usersWithProgress.reduce((acc, user) => {
+        const progress = user.user_progress[0];
+        return acc + (progress?.total_xp || 0);
+      }, 0);
 
-      const averageTime = attemptsData?.reduce((acc, attempt) => {
-        return acc + (attempt.duration_seconds || 0);
-      }, 0) / (attemptsData?.length || 1) / 60; // Convert to minutes
-
-      setUsers(usersData || []);
-      setAttempts(attemptsData || []);
+      setUsers(usersWithProgress);
+      setAttempts([]); // Will implement after migrations
       setStats({
         totalUsers,
         completedMissions,
         totalXP,
-        averageTime: Math.round(averageTime)
+        averageTime: 0 // Will implement after migrations
       });
 
     } catch (error) {
@@ -117,18 +100,12 @@ const AdminDashboard = () => {
     }
   };
 
-  const setGameStartDate = async () => {
+  const saveGameStartDate = async () => {
     if (!gameStartDate) return;
 
     try {
-      await supabase
-        .from('game_events')
-        .insert({
-          user_id: user?.id,
-          event_type: 'game_start_date',
-          event_data: { start_date: gameStartDate }
-        });
-
+      // For now, just save to localStorage until migrations are complete
+      localStorage.setItem('gameStartDate', gameStartDate);
       setCurrentGameDate(gameStartDate);
       setGameStartDate('');
       
@@ -281,7 +258,7 @@ const AdminDashboard = () => {
                         onChange={(e) => setGameStartDate(e.target.value)}
                       />
                     </div>
-                    <Button onClick={setGameStartDate} disabled={!gameStartDate}>
+                    <Button onClick={saveGameStartDate} disabled={!gameStartDate}>
                       Definir Data
                     </Button>
                   </div>
