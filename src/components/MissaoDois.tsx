@@ -6,6 +6,7 @@ import { ChevronLeft, ChevronRight, CheckCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 import { ScrollArea } from './ui/scroll-area';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface QuizQuestion {
   id: number;
@@ -58,6 +59,7 @@ interface MissaoDoisProps {
 }
 
 export const MissaoDois = ({ onComplete }: MissaoDoisProps) => {
+  const { user } = useAuth();
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [isCompleted, setIsCompleted] = useState(false);
@@ -68,8 +70,7 @@ export const MissaoDois = ({ onComplete }: MissaoDoisProps) => {
   useEffect(() => {
     const loadProgress = async () => {
       try {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (user) {
+        if (user?.id) {
           const { data: progress } = await supabase
             .from('user_progress')
             .select('missao_2_current_question, missao_2_answers')
@@ -89,13 +90,12 @@ export const MissaoDois = ({ onComplete }: MissaoDoisProps) => {
     };
 
     loadProgress();
-  }, []);
+  }, [user?.id]);
 
   // Salvar progresso quando resposta for selecionada
   const saveProgress = async (questionIndex: number, newAnswers: Record<number, string>) => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
+      if (user?.id) {
         await supabase
           .from('user_progress')
           .upsert({

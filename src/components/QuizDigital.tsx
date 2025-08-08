@@ -7,6 +7,7 @@ import { ChevronLeft, ChevronRight, CheckCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 import { ScrollArea } from './ui/scroll-area';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface QuizQuestion {
   id: number;
@@ -70,6 +71,7 @@ interface QuizDigitalProps {
 }
 
 export const QuizDigital = ({ onClose }: QuizDigitalProps) => {
+  const { user } = useAuth();
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [isCompleted, setIsCompleted] = useState(false);
@@ -80,9 +82,8 @@ export const QuizDigital = ({ onClose }: QuizDigitalProps) => {
   useEffect(() => {
     const loadProgress = async () => {
       try {
-        const { data: { user } } = await supabase.auth.getUser();
         console.log('Loading progress for user:', user?.id);
-        if (user) {
+        if (user?.id) {
           const { data: progress, error } = await supabase
             .from('user_progress')
             .select('missao_1_current_question, missao_1_answers')
@@ -107,14 +108,13 @@ export const QuizDigital = ({ onClose }: QuizDigitalProps) => {
     };
 
     loadProgress();
-  }, []);
+  }, [user?.id]);
 
   // Salvar progresso quando resposta for selecionada
   const saveProgress = async (questionIndex: number, newAnswers: Record<number, string>) => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
       console.log('Saving progress for user:', user?.id, 'question:', questionIndex + 1, 'answers:', newAnswers);
-      if (user) {
+      if (user?.id) {
         const { data, error } = await supabase
           .from('user_progress')
           .upsert({
@@ -130,6 +130,8 @@ export const QuizDigital = ({ onClose }: QuizDigitalProps) => {
         } else {
           console.log('Progress saved successfully:', data);
         }
+      } else {
+        console.log('No user found, cannot save progress');
       }
     } catch (error) {
       console.error('Error saving progress:', error);
