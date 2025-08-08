@@ -224,55 +224,66 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return { error: 'Email ou CPF incorretos ou usuário inativo' };
       }
 
-      // Check if user already has an auth account
-      let authResult;
-      
-      // Try to sign in first (if account exists)
-      console.log('Attempting sign in with:', email);
-      const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
-        email: email,
-        password: cpf, // Using CPF as password for simplicity
-      });
-
-      console.log('Sign in result:', signInData, 'error:', signInError);
-
-      if (signInError) {
-        // If sign in fails, try to create account
-        console.log('Sign in failed, attempting sign up...');
-        const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+      // Se já tem user_id, tenta fazer login direto
+      if (profile.user_id) {
+        console.log('Profile has user_id, attempting direct sign in');
+        const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
           email: email,
           password: cpf,
-          options: {
-            emailRedirectTo: `${window.location.origin}/`,
-            data: {
-              nome: profile.nome,
-              cpf: profile.cpf
-            }
-          }
         });
 
-        console.log('Sign up result:', signUpData, 'error:', signUpError);
-
-        if (signUpError) {
-          console.error('Sign up error:', signUpError);
-          return { error: 'Erro ao criar conta de acesso: ' + signUpError.message };
+        if (signInError) {
+          console.error('Direct sign in failed:', signInError);
+          return { error: 'Credenciais inválidas' };
         }
 
-        authResult = signUpData;
-      } else {
-        authResult = signInData;
+        toast({
+          title: "Login realizado",
+          description: `Bem-vindo(a), ${profile.nome}!`,
+        });
+
+        return {};
       }
 
-      // Update profile with user_id if needed
-      if (authResult.user && !profile.user_id) {
-        await supabase
-          .from('profiles')
-          .update({ user_id: authResult.user.id })
-          .eq('id', profile.id);
+      // Se não tem user_id, precisa criar conta no Supabase Auth
+      console.log('Creating new auth account for existing profile');
+      
+      // Primeiro, criar o usuário na tabela auth sem trigger automático
+      const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+        email: email,
+        password: cpf,
+        options: {
+          emailRedirectTo: `${window.location.origin}/`,
+          data: {
+            nome: profile.nome,
+            cpf: profile.cpf,
+            skip_profile_creation: true // Flag para evitar criar perfil duplicado
+          }
+        }
+      });
+
+      if (signUpError) {
+        console.error('Sign up error:', signUpError);
+        return { error: 'Erro ao criar conta de acesso: ' + signUpError.message };
+      }
+
+      if (!signUpData.user) {
+        return { error: 'Erro ao criar usuário' };
+      }
+
+      // Atualizar o perfil existente com o user_id
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({ user_id: signUpData.user.id })
+        .eq('id', profile.id);
+
+      if (updateError) {
+        console.error('Error updating profile with user_id:', updateError);
+        // Mesmo se falhar a atualização, o login funcionou
       }
 
       toast({
-        title: "Acesso autorizado",
+        title: "Login realizado",
         description: `Bem-vindo(a), ${profile.nome}!`,
       });
 
