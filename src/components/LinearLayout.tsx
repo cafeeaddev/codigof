@@ -83,13 +83,13 @@ export const LinearLayout = () => {
     );
   }
 
-  // Show welcome screen if authenticated
+  // Show welcome screen if authenticated with profile
   if (user && profile && showWelcome) {
     return <WelcomeScreen user={profile} onLogout={handleLogout} />;
   }
 
-  // Show login screen if not authenticated
-  if (!user) {
+  // Show login screen if not authenticated OR if authenticated but no profile yet
+  if (!user || !profile) {
     return (
       <div className="h-screen w-full bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center p-4">
         <div className="w-full max-w-md">
