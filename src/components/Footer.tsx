@@ -1,51 +1,35 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Wifi, User, Lock, Building2, Code2 } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
 import { WelcomeScreen } from './WelcomeScreen';
 
 export const Footer = () => {
   const [email, setEmail] = useState('');
   const [cpf, setCpf] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [user, setUser] = useState<any>(null);
-  const [showWelcome, setShowWelcome] = useState(false);
+  const { user, profile, signInWithCredentials, signOut } = useAuth();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      // Buscar usuário na tabela profiles usando email e CPF
-      const { data: profile, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('email', email)
-        .eq('cpf', cpf)
-        .single();
-
-      if (error || !profile) {
+      const result = await signInWithCredentials(email, cpf);
+      
+      if (result.error) {
         toast({
           title: "Erro de autenticação",
-          description: "Email ou CPF inválidos",
+          description: result.error,
           variant: "destructive",
         });
-        return;
       }
-
-      // Login bem-sucedido
-      setUser(profile);
-      setShowWelcome(true);
-      
-      toast({
-        title: "Login realizado",
-        description: `Bem-vindo, ${profile.nome}!`,
-      });
-      
+      // Success is handled by the AuthContext and onAuthStateChange
     } catch (error) {
+      console.error('[Footer] Login error:', error);
       toast({
         title: "Erro",
         description: "Ocorreu um erro durante o login",
@@ -56,21 +40,20 @@ export const Footer = () => {
     }
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     console.log('handleLogout Footer chamado');
-    setShowWelcome(false);
-    setUser(null);
+    await signOut();
     setEmail('');
     setCpf('');
     console.log('Estado limpo - voltando para login');
   };
 
-  // Show welcome screen if user is logged in
-  if (showWelcome && user) {
+  // Show welcome screen if user is authenticated
+  if (user && profile) {
     return (
       <WelcomeScreen 
-        user={user} 
-        userId={user.user_id || user.id} // Fallback to appropriate userId field
+        user={profile} 
+        userId={user.id}
         onLogout={handleLogout}
       />
     );
