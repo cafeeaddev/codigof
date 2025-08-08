@@ -262,14 +262,18 @@ setTimeout(() => {
       console.error('[AuthContext] Error fetching profile:', error);
     }
   };
-  const signInWithCredentials = async (email: string, cpf: string): Promise<{ error?: string }> => {
-  try {
-      console.log('[AuthContext] Starting login with email:', email);
-      // Normalize CPF and allow both formatted and unformatted matches
-      const cleanCpf = normalizeCPF(cpf);
-      const formattedCpf = formatCPF(cleanCpf);
 
-      // First, validate user exists and is active (buscar por email apenas)
+  const signInWithCredentials = async (email: string, cpf: string): Promise<{ error?: string }> => {
+    try {
+      console.log('[AuthContext] Starting login with email:', email);
+
+      // Validar que o usuário informou exatamente os 4 últimos dígitos
+      const inputClean = cpf.replace(/\D/g, '');
+      if (inputClean.length !== 4) {
+        return { error: 'Informe apenas os 4 últimos dígitos do CPF' };
+      }
+
+      // Buscar perfil ativo pelo email
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('*')
@@ -282,32 +286,23 @@ setTimeout(() => {
         console.log('[AuthContext] Profile query error:', profileError);
       }
       if (!profile) {
-        console.log('[AuthContext] Profile not found for email/cpf combo');
+        console.log('[AuthContext] Profile not found for email');
         return { error: 'Email ou CPF incorretos ou usuário inativo' };
       }
 
       console.log('[AuthContext] Found profile:', profile.nome, 'user_id:', profile.user_id);
 
-      // Valida CPF: aceita 4 últimos dígitos ou CPF completo
-      const inputClean = normalizeCPF(cpf);
-      const storedFullCpf = normalizeCPF(profile.cpf);
-      const isLast4 = inputClean.length === 4;
-
-      if (isLast4) {
-        if (!storedFullCpf.endsWith(inputClean)) {
-          return { error: 'CPF incorreto' };
-        }
-      } else {
-        if (storedFullCpf !== inputClean) {
-          return { error: 'CPF incorreto' };
-        }
+      // Validar últimos 4 dígitos do CPF cadastrado
+      const storedFullCpf = String(profile.cpf || '').replace(/\D/g, '');
+      if (!storedFullCpf || !storedFullCpf.endsWith(inputClean)) {
+        return { error: 'CPF incorreto' };
       }
 
-      // Se já tem user_id, tenta fazer login direto usando o CPF completo armazenado
+      // Se já tem user_id, login direto com o CPF completo como senha
       if (profile.user_id) {
         console.log('[AuthContext] Profile has user_id, attempting direct sign in');
         const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
-          email: email,
+          email,
           password: storedFullCpf,
         });
 
@@ -317,47 +312,37 @@ setTimeout(() => {
         }
 
         console.log('[AuthContext] Direct sign in successful, user:', signInData.user?.id);
-        // Immediately set profile to unblock UI
-        setProfile(profile);
-        toast({
-          title: "Login realizado",
-          description: `Bem-vindo(a), ${profile.nome}!`,
-        });
+        // Desbloqueia a UI rapidamente
+        // O fetchUserProfile complementará se necessário
         return {};
       }
 
-      // Se não tem user_id, verifica se há rate limiting
+      // Rate limiting simples
       const lastSignUpAttempt = localStorage.getItem('lastSignUpAttempt');
       const now = Date.now();
-      
       if (lastSignUpAttempt) {
         const timeSinceLastAttempt = now - parseInt(lastSignUpAttempt);
-        const cooldownTime = 60000; // 1 minuto de cooldown
-        
+        const cooldownTime = 60000; // 1 minuto
         if (timeSinceLastAttempt < cooldownTime) {
           const remainingTime = Math.ceil((cooldownTime - timeSinceLastAttempt) / 1000);
           return { error: `Aguarde ${remainingTime} segundos antes de tentar novamente` };
         }
       }
-
-      // Se não tem user_id, precisa criar conta no Supabase Auth
-      console.log('[AuthContext] Creating new auth account for existing profile');
-      
-      // Salva o timestamp da tentativa
       localStorage.setItem('lastSignUpAttempt', now.toString());
-      
-      // Primeiro, criar o usuário na tabela auth sem trigger automático
+
+      // Criar conta no Supabase Auth usando o CPF completo como senha
+      console.log('[AuthContext] Creating new auth account for existing profile');
       const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-        email: email,
+        email,
         password: storedFullCpf,
         options: {
           emailRedirectTo: `${window.location.origin}/`,
           data: {
             nome: profile.nome,
             cpf: profile.cpf,
-            skip_profile_creation: true // Flag para evitar criar perfil duplicado
-          }
-        }
+            skip_profile_creation: true,
+          },
+        },
       });
 
       if (signUpError) {
@@ -372,23 +357,10 @@ setTimeout(() => {
 
       console.log('[AuthContext] SignUp successful, user created:', signUpData.user.id);
 
-      // Atualizar o perfil existente com o user_id
-      const { error: updateError } = await supabase
-        .from('profiles')
-        .update({ user_id: signUpData.user.id })
-        .eq('id', profile.id);
-
-      if (updateError) {
-        console.error('[AuthContext] Error updating profile with user_id:', updateError);
-        // Mesmo se falhar a atualização, o login funcionou
-      } else {
-        console.log('[AuthContext] Profile updated successfully with user_id:', signUpData.user.id);
-      }
-
       // Agora fazer login para criar a sessão ativa
       console.log('[AuthContext] Now signing in to create active session');
       const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
-        email: email,
+        email,
         password: storedFullCpf,
       });
 
@@ -398,16 +370,14 @@ setTimeout(() => {
       }
 
       console.log('[AuthContext] Sign in after signup successful:', signInData.user?.id);
-      // Immediately set profile to unblock UI
-      setProfile(profile);
 
+      // fetchUserProfile fará o vínculo user_id via política RLS após autenticação, se necessário
       toast({
         title: "Login realizado",
         description: `Bem-vindo(a), ${profile.nome}!`,
       });
 
       return {};
-
     } catch (error) {
       console.error('Login error:', error);
       return { error: 'Erro de conexão. Tente novamente.' };

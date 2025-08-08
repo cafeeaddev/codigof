@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
@@ -106,15 +107,18 @@ export const Footer = () => {
               <div className="flex items-center gap-2">
                 <Lock className="w-4 h-4 text-secondary" />
                 <Label htmlFor="cpf" className="text-secondary text-sm font-medium">
-                  CPF
+                  CPF (4 últimos dígitos)
                 </Label>
               </div>
               <Input
                 id="cpf"
                 type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                maxLength={4}
                 value={cpf}
-                onChange={(e) => setCpf(e.target.value)}
-                placeholder="Digite seu CPF"
+                onChange={(e) => setCpf(e.target.value.replace(/\D/g, '').slice(0, 4))}
+                placeholder="Digite os 4 últimos dígitos do seu CPF"
                 className="bg-input border-border text-foreground placeholder-muted-foreground focus:border-secondary focus:ring-secondary/50 rounded-lg"
                 required
               />

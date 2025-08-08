@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
@@ -89,14 +90,17 @@ export const LoginScreen = () => {
           <div className="space-y-1 sm:space-y-2">
             <Label htmlFor="cpf" className="text-primary flex items-center gap-1 sm:gap-2 text-sm sm:text-base">
               <Lock className="w-3 h-3 sm:w-4 sm:h-4" />
-              CPF
+              CPF (4 últimos dígitos)
             </Label>
             <Input
               id="cpf"
               type="text"
-              placeholder="Digite seu CPF"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              maxLength={4}
+              placeholder="Digite os 4 últimos dígitos do seu CPF"
               value={cpf}
-              onChange={(e) => setCpf(e.target.value)}
+              onChange={(e) => setCpf(e.target.value.replace(/\D/g, '').slice(0, 4))}
               className="bg-muted/30 border-secondary/50 text-foreground placeholder:text-muted-foreground focus:border-primary text-sm sm:text-base h-10 sm:h-12"
               disabled={isLoading}
             />
