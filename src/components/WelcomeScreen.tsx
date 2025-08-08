@@ -169,9 +169,6 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
                 <div className="text-lg font-bold text-accent">{userProgress.completedMissionsCount}</div>
                 <div className="text-muted-foreground text-xs">Concluídas</div>
               </div>
-              <div className="text-center">
-                <div className="text-lg font-bold text-secondary">4</div>
-              </div>
             </div>
           </div>
           
@@ -198,9 +195,6 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
           <div className="text-center">
             <div className="text-lg font-bold text-accent">{userProgress.completedMissionsCount}</div>
             <div className="text-muted-foreground text-xs">Concluídas</div>
-          </div>
-          <div className="text-center">
-            <div className="text-lg font-bold text-secondary">4</div>
           </div>
         </div>
       </div>
