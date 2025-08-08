@@ -81,6 +81,7 @@ export const QuizDigital = ({ onClose }: QuizDigitalProps) => {
   // Carregar progresso salvo ao iniciar
   useEffect(() => {
     console.log('QuizDigital useEffect - user:', user);
+    console.log('QuizDigital useEffect - user structure:', JSON.stringify(user, null, 2));
     const loadProgress = async () => {
       try {
         console.log('Loading progress for user:', user?.id);
