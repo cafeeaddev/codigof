@@ -108,7 +108,7 @@ export const QuizDigital = ({ onClose }: QuizDigitalProps) => {
     };
 
     loadProgress();
-  }, [user?.id]);
+  }, [user]);
 
   // Salvar progresso quando resposta for selecionada
   const saveProgress = async (questionIndex: number, newAnswers: Record<number, string>) => {
