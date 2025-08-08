@@ -69,19 +69,14 @@ export const LinearLayout = () => {
 
   // Show welcome screen if authenticated
   useEffect(() => {
-    console.log('LinearLayout effect - user:', user, 'profile:', profile, 'showWelcome:', showWelcome);
     if (user && profile && !showWelcome) {
-      console.log('Setting showWelcome to true');
       setShowWelcome(true);
     }
   }, [user, profile, showWelcome]);
 
   if (user && profile && showWelcome) {
-    console.log('Rendering WelcomeScreen');
     return <WelcomeScreen user={profile} onLogout={handleLogout} />;
   }
-
-  console.log('LinearLayout render - user:', user, 'profile:', profile, 'isLoading:', isLoading);
 
   // Show loading state
   if (isLoading) {
@@ -90,12 +85,6 @@ export const LinearLayout = () => {
         <div className="text-white text-xl">Carregando...</div>
       </div>
     );
-  }
-
-  // Show login screen if not authenticated
-  if (!user || !profile) {
-    console.log('Rendering LoginScreen - no user or profile');
-    return <LoginScreen />;
   }
 
   return (
