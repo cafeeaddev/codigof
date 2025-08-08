@@ -24,6 +24,16 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
   const [completedMissions, setCompletedMissions] = useState<Set<number>>(new Set());
   const [userProgress, setUserProgress] = useState({ total_xp: 0, completedMissionsCount: 0 });
 
+  // Função para atualizar progresso localmente
+  const updateProgress = (missionId: number) => {
+    if (!completedMissions.has(missionId)) {
+      setUserProgress(prev => ({
+        total_xp: prev.total_xp + 25,
+        completedMissionsCount: prev.completedMissionsCount + 1
+      }));
+    }
+  };
+
   useEffect(() => {
     const loadUserProgress = async () => {
       try {
@@ -157,11 +167,10 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
               </div>
               <div className="text-center">
                 <div className="text-lg font-bold text-accent">{userProgress.completedMissionsCount}</div>
-                <div className="text-muted-foreground text-xs">Missões</div>
+                <div className="text-muted-foreground text-xs">Concluídas</div>
               </div>
               <div className="text-center">
                 <div className="text-lg font-bold text-secondary">4</div>
-                <div className="text-muted-foreground text-xs">Disponíveis</div>
               </div>
             </div>
           </div>
@@ -188,11 +197,10 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
           </div>
           <div className="text-center">
             <div className="text-lg font-bold text-accent">{userProgress.completedMissionsCount}</div>
-            <div className="text-muted-foreground text-xs">Missões</div>
+            <div className="text-muted-foreground text-xs">Concluídas</div>
           </div>
           <div className="text-center">
             <div className="text-lg font-bold text-secondary">4</div>
-            <div className="text-muted-foreground text-xs">Disponíveis</div>
           </div>
         </div>
       </div>
@@ -223,32 +231,36 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
               <div className="flex-1 overflow-hidden">
                 {currentMission === 1 && !completedMissions.has(1) ? (
                   <QuizDigital onClose={() => {
+                    updateProgress(1);
                     setCompletedMissions(prev => new Set([...prev, 1]));
                     setCurrentMission(2);
                   }} />
                 ) : currentMission === 2 && !completedMissions.has(2) ? (
                   <MissaoDois onComplete={() => {
+                    updateProgress(2);
                     setCompletedMissions(prev => new Set([...prev, 2]));
                     setCurrentMission(3);
                     toast({
-                      title: "Missão 2 concluída!",
+                      title: "Missão 2 concluída! +25 XP",
                       description: "Missão 3 desbloqueada! Continue evoluindo.",
                     });
                   }} />
                 ) : currentMission === 3 && !completedMissions.has(3) ? (
                   <MissaoTres onComplete={() => {
+                    updateProgress(3);
                     setCompletedMissions(prev => new Set([...prev, 3]));
                     setCurrentMission(4);
                     toast({
-                      title: "Missão 3 concluída!",
+                      title: "Missão 3 concluída! +25 XP",
                       description: "Missão 4 desbloqueada! Continue evoluindo.",
                     });
                   }} />
                 ) : currentMission === 4 && !completedMissions.has(4) ? (
                   <MissaoQuatro onComplete={() => {
+                    updateProgress(4);
                     setCompletedMissions(prev => new Set([...prev, 4]));
                     toast({
-                      title: "Missão 4 concluída!",
+                      title: "Missão 4 concluída! +25 XP",
                       description: "Parabéns! Todas as missões foram concluídas.",
                     });
                   }} />
@@ -363,32 +375,36 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
                   <div className="flex-1 overflow-hidden">
                     {currentMission === 1 && !completedMissions.has(1) ? (
                       <QuizDigital onClose={() => {
+                        updateProgress(1);
                         setCompletedMissions(prev => new Set([...prev, 1]));
                         setCurrentMission(2);
                       }} />
                     ) : currentMission === 2 && !completedMissions.has(2) ? (
                       <MissaoDois onComplete={() => {
+                        updateProgress(2);
                         setCompletedMissions(prev => new Set([...prev, 2]));
                         setCurrentMission(3);
                         toast({
-                          title: "Missão 2 concluída!",
+                          title: "Missão 2 concluída! +25 XP",
                           description: "Missão 3 desbloqueada! Continue evoluindo.",
                         });
                       }} />
                     ) : currentMission === 3 && !completedMissions.has(3) ? (
                       <MissaoTres onComplete={() => {
+                        updateProgress(3);
                         setCompletedMissions(prev => new Set([...prev, 3]));
                         setCurrentMission(4);
                         toast({
-                          title: "Missão 3 concluída!",
+                          title: "Missão 3 concluída! +25 XP",
                           description: "Missão 4 desbloqueada! Continue evoluindo.",
                         });
                       }} />
                     ) : currentMission === 4 && !completedMissions.has(4) ? (
                       <MissaoQuatro onComplete={() => {
+                        updateProgress(4);
                         setCompletedMissions(prev => new Set([...prev, 4]));
                         toast({
-                          title: "Missão 4 concluída!",
+                          title: "Missão 4 concluída! +25 XP",
                           description: "Parabéns! Todas as missões foram concluídas.",
                         });
                       }} />
