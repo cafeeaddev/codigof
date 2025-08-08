@@ -144,9 +144,37 @@ export const QuizDigital = ({ onClose }: QuizDigitalProps) => {
         return;
       }
 
+      // Update user progress and add XP
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: existingProgress } = await supabase
+          .from('user_progress')
+          .select('*')
+          .eq('user_id', user.id)
+          .maybeSingle();
+
+        if (existingProgress) {
+          await supabase
+            .from('user_progress')
+            .update({
+              missao_1_completed: true,
+              total_xp: existingProgress.total_xp + 25
+            })
+            .eq('user_id', user.id);
+        } else {
+          await supabase
+            .from('user_progress')
+            .insert({
+              user_id: user.id,
+              missao_1_completed: true,
+              total_xp: 25
+            });
+        }
+      }
+
       setIsCompleted(true);
       toast({
-        title: "Missão 1 concluída!",
+        title: "Missão 1 concluída! +25 XP",
         description: "Passando para a Missão 2...",
       });
 

@@ -101,6 +101,69 @@ export type Database = {
         }
         Relationships: []
       }
+      respostas_missao4: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          nome: string
+          respostas: Json
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          nome: string
+          respostas: Json
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          nome?: string
+          respostas?: Json
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_progress: {
+        Row: {
+          created_at: string
+          id: string
+          missao_1_completed: boolean | null
+          missao_2_completed: boolean | null
+          missao_3_completed: boolean | null
+          missao_4_completed: boolean | null
+          total_xp: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          missao_1_completed?: boolean | null
+          missao_2_completed?: boolean | null
+          missao_3_completed?: boolean | null
+          missao_4_completed?: boolean | null
+          total_xp?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          missao_1_completed?: boolean | null
+          missao_2_completed?: boolean | null
+          missao_3_completed?: boolean | null
+          missao_4_completed?: boolean | null
+          total_xp?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

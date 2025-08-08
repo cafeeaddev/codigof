@@ -6,6 +6,7 @@ import { toast } from '@/hooks/use-toast';
 import { QuizDigital } from './QuizDigital';
 import { MissaoDois } from './MissaoDois';
 import { MissaoTres } from './MissaoTres';
+import { MissaoQuatro } from './MissaoQuatro';
 
 interface WelcomeScreenProps {
   user: {
@@ -19,16 +20,49 @@ interface WelcomeScreenProps {
 
 export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [currentMission, setCurrentMission] = useState<1 | 2 | 3>(1);
+  const [currentMission, setCurrentMission] = useState<1 | 2 | 3 | 4>(1);
   const [completedMissions, setCompletedMissions] = useState<Set<number>>(new Set());
+  const [userProgress, setUserProgress] = useState({ total_xp: 0, completedMissionsCount: 0 });
 
   useEffect(() => {
-    // Simular carregamento inicial
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
+    const loadUserProgress = async () => {
+      try {
+        const { data: { user: authUser } } = await supabase.auth.getUser();
+        if (authUser) {
+          const { data: progress } = await supabase
+            .from('user_progress')
+            .select('*')
+            .eq('user_id', authUser.id)
+            .maybeSingle();
 
-    return () => clearTimeout(timer);
+          if (progress) {
+            setUserProgress({ 
+              total_xp: progress.total_xp, 
+              completedMissionsCount: [
+                progress.missao_1_completed,
+                progress.missao_2_completed,
+                progress.missao_3_completed,
+                progress.missao_4_completed
+              ].filter(Boolean).length
+            });
+            
+            // Set completed missions
+            const completed = new Set<number>();
+            if (progress.missao_1_completed) completed.add(1);
+            if (progress.missao_2_completed) completed.add(2);
+            if (progress.missao_3_completed) completed.add(3);
+            if (progress.missao_4_completed) completed.add(4);
+            setCompletedMissions(completed);
+          }
+        }
+      } catch (error) {
+        console.error('Error loading user progress:', error);
+      } finally {
+        setTimeout(() => setIsLoading(false), 1000);
+      }
+    };
+
+    loadUserProgress();
   }, []);
 
   const handleLogout = () => {
@@ -118,16 +152,16 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
             {/* Estatísticas no Header - Apenas Desktop */}
             <div className="hidden md:flex items-center gap-6 ml-8">
               <div className="text-center">
-                <div className="text-lg font-bold text-primary">1,250</div>
+                <div className="text-lg font-bold text-primary">{userProgress.total_xp}</div>
                 <div className="text-muted-foreground text-xs">Total XP</div>
               </div>
               <div className="text-center">
-                <div className="text-lg font-bold text-accent">15</div>
+                <div className="text-lg font-bold text-accent">{userProgress.completedMissionsCount}</div>
                 <div className="text-muted-foreground text-xs">Missões</div>
               </div>
               <div className="text-center">
-                <div className="text-lg font-bold text-secondary">8</div>
-                <div className="text-muted-foreground text-xs">Desafios</div>
+                <div className="text-lg font-bold text-secondary">4</div>
+                <div className="text-muted-foreground text-xs">Disponíveis</div>
               </div>
             </div>
           </div>
@@ -149,16 +183,16 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
       <div className="block md:hidden bg-card/80 backdrop-blur-xl border-b border-secondary/30 px-4 py-3">
         <div className="flex items-center justify-center gap-8 max-w-sm mx-auto">
           <div className="text-center">
-            <div className="text-lg font-bold text-primary">1,250</div>
+            <div className="text-lg font-bold text-primary">{userProgress.total_xp}</div>
             <div className="text-muted-foreground text-xs">XP Total</div>
           </div>
           <div className="text-center">
-            <div className="text-lg font-bold text-accent">15</div>
+            <div className="text-lg font-bold text-accent">{userProgress.completedMissionsCount}</div>
             <div className="text-muted-foreground text-xs">Missões</div>
           </div>
           <div className="text-center">
-            <div className="text-lg font-bold text-secondary">8</div>
-            <div className="text-muted-foreground text-xs">Desafios</div>
+            <div className="text-lg font-bold text-secondary">4</div>
+            <div className="text-muted-foreground text-xs">Disponíveis</div>
           </div>
         </div>
       </div>
@@ -179,7 +213,7 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => setCurrentMission(currentMission >= 3 ? 1 : (currentMission + 1) as 1 | 2 | 3)}
+                  onClick={() => setCurrentMission(currentMission >= 4 ? 1 : (currentMission + 1) as 1 | 2 | 3 | 4)}
                   className="text-xs"
                 >
                   Próxima Missão
@@ -204,9 +238,18 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
                 ) : currentMission === 3 && !completedMissions.has(3) ? (
                   <MissaoTres onComplete={() => {
                     setCompletedMissions(prev => new Set([...prev, 3]));
+                    setCurrentMission(4);
                     toast({
                       title: "Missão 3 concluída!",
-                      description: "Parabéns! Continue evoluindo.",
+                      description: "Missão 4 desbloqueada! Continue evoluindo.",
+                    });
+                  }} />
+                ) : currentMission === 4 && !completedMissions.has(4) ? (
+                  <MissaoQuatro onComplete={() => {
+                    setCompletedMissions(prev => new Set([...prev, 4]));
+                    toast({
+                      title: "Missão 4 concluída!",
+                      description: "Parabéns! Todas as missões foram concluídas.",
                     });
                   }} />
                 ) : (
@@ -243,10 +286,10 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
 
                   <div className="space-y-4 overflow-hidden flex-1">
                     {[
-                      { id: 1, title: "MISSÃO 1 – Como você encara o digital?", progress: completedMissions.has(1) ? 4 : 0, total: 4, xp: 150 },
-                      { id: 2, title: "MISSÃO 2 – O digital no seu dia a dia", progress: completedMissions.has(2) ? 3 : 0, total: 3, xp: 150 },
-                      { id: 3, title: "MISSÃO 3 – Quando o desafio é maior", progress: 0, total: 1, xp: 200 },
-                      { id: 4, title: "MISSÃO 4 - Seu Radar de Ferramentas", progress: 1, total: 1, xp: 100 }
+                      { id: 1, title: "MISSÃO 1 – Como você encara o digital?", progress: completedMissions.has(1) ? 4 : 0, total: 4, xp: 25 },
+                      { id: 2, title: "MISSÃO 2 – O digital no seu dia a dia", progress: completedMissions.has(2) ? 3 : 0, total: 3, xp: 25 },
+                      { id: 3, title: "MISSÃO 3 – Quando o desafio é maior", progress: completedMissions.has(3) ? 1 : 0, total: 1, xp: 25 },
+                      { id: 4, title: "MISSÃO 4 - Seu Radar de Ferramentas", progress: completedMissions.has(4) ? 10 : 0, total: 10, xp: 25 }
                     ].map((mission) => {
                       const isCompleted = completedMissions.has(mission.id);
                       const isActive = mission.id === currentMission && !isCompleted;
@@ -260,7 +303,7 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
                                 ? 'border-primary/50 bg-primary/10 cursor-pointer' 
                                 : 'border-secondary/30'
                           }`}
-                          onClick={() => isActive && mission.id <= 3 && setCurrentMission(mission.id as 1 | 2 | 3)}
+                          onClick={() => isActive && setCurrentMission(mission.id as 1 | 2 | 3 | 4)}
                         >
                           <div className="flex items-center justify-between mb-2">
                             <div className="flex items-center gap-2">
@@ -335,9 +378,18 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
                     ) : currentMission === 3 && !completedMissions.has(3) ? (
                       <MissaoTres onComplete={() => {
                         setCompletedMissions(prev => new Set([...prev, 3]));
+                        setCurrentMission(4);
                         toast({
                           title: "Missão 3 concluída!",
-                          description: "Parabéns! Continue evoluindo.",
+                          description: "Missão 4 desbloqueada! Continue evoluindo.",
+                        });
+                      }} />
+                    ) : currentMission === 4 && !completedMissions.has(4) ? (
+                      <MissaoQuatro onComplete={() => {
+                        setCompletedMissions(prev => new Set([...prev, 4]));
+                        toast({
+                          title: "Missão 4 concluída!",
+                          description: "Parabéns! Todas as missões foram concluídas.",
                         });
                       }} />
                     ) : (
