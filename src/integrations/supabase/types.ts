@@ -134,10 +134,18 @@ export type Database = {
           current_position: string | null
           id: string
           last_saved_at: string | null
+          missao_1_answers: Json | null
           missao_1_completed: boolean | null
+          missao_1_current_question: number | null
+          missao_2_answers: Json | null
           missao_2_completed: boolean | null
+          missao_2_current_question: number | null
+          missao_3_answers: Json | null
           missao_3_completed: boolean | null
+          missao_3_current_question: number | null
+          missao_4_answers: Json | null
           missao_4_completed: boolean | null
+          missao_4_current_question: number | null
           session_start_time: string | null
           total_play_time: number | null
           total_xp: number | null
@@ -149,10 +157,18 @@ export type Database = {
           current_position?: string | null
           id?: string
           last_saved_at?: string | null
+          missao_1_answers?: Json | null
           missao_1_completed?: boolean | null
+          missao_1_current_question?: number | null
+          missao_2_answers?: Json | null
           missao_2_completed?: boolean | null
+          missao_2_current_question?: number | null
+          missao_3_answers?: Json | null
           missao_3_completed?: boolean | null
+          missao_3_current_question?: number | null
+          missao_4_answers?: Json | null
           missao_4_completed?: boolean | null
+          missao_4_current_question?: number | null
           session_start_time?: string | null
           total_play_time?: number | null
           total_xp?: number | null
@@ -164,10 +180,18 @@ export type Database = {
           current_position?: string | null
           id?: string
           last_saved_at?: string | null
+          missao_1_answers?: Json | null
           missao_1_completed?: boolean | null
+          missao_1_current_question?: number | null
+          missao_2_answers?: Json | null
           missao_2_completed?: boolean | null
+          missao_2_current_question?: number | null
+          missao_3_answers?: Json | null
           missao_3_completed?: boolean | null
+          missao_3_current_question?: number | null
+          missao_4_answers?: Json | null
           missao_4_completed?: boolean | null
+          missao_4_current_question?: number | null
           session_start_time?: string | null
           total_play_time?: number | null
           total_xp?: number | null

@@ -74,12 +74,62 @@ export const QuizDigital = ({ onClose }: QuizDigitalProps) => {
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [isCompleted, setIsCompleted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Carregar progresso salvo ao iniciar
+  useEffect(() => {
+    const loadProgress = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          const { data: progress } = await supabase
+            .from('user_progress')
+            .select('missao_1_current_question, missao_1_answers')
+            .eq('user_id', user.id)
+            .maybeSingle();
+
+          if (progress) {
+            setCurrentQuestion((progress.missao_1_current_question as number) - 1);
+            setAnswers((progress.missao_1_answers as Record<number, string>) || {});
+          }
+        }
+      } catch (error) {
+        console.error('Error loading quiz progress:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadProgress();
+  }, []);
+
+  // Salvar progresso quando resposta for selecionada
+  const saveProgress = async (questionIndex: number, newAnswers: Record<number, string>) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        await supabase
+          .from('user_progress')
+          .upsert({
+            user_id: user.id,
+            missao_1_current_question: questionIndex + 1,
+            missao_1_answers: newAnswers
+          }, {
+            onConflict: 'user_id'
+          });
+      }
+    } catch (error) {
+      console.error('Error saving progress:', error);
+    }
+  };
 
   const handleAnswerSelect = (questionId: number, optionLetter: string) => {
-    setAnswers(prev => ({
-      ...prev,
+    const newAnswers = {
+      ...answers,
       [questionId]: optionLetter
-    }));
+    };
+    setAnswers(newAnswers);
+    saveProgress(currentQuestion, newAnswers);
   };
 
   const goToNextQuestion = () => {
@@ -195,6 +245,17 @@ export const QuizDigital = ({ onClose }: QuizDigitalProps) => {
     }
   };
 
+  if (isLoading) {
+    return (
+      <div className="h-full flex flex-col items-center justify-center space-y-4 p-4">
+        <div className="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center animate-spin">
+          <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full"></div>
+        </div>
+        <p className="text-sm text-muted-foreground">Carregando progresso...</p>
+      </div>
+    );
+  }
+
   if (isCompleted) {
     return (
       <div className="h-full flex flex-col items-center justify-center space-y-4 p-4">
@@ -203,10 +264,10 @@ export const QuizDigital = ({ onClose }: QuizDigitalProps) => {
         </div>
         <div className="text-center">
           <h4 className="text-lg font-bold text-primary mb-1">
-            Missão Concluída!
+            Quiz Concluído!
           </h4>
           <p className="text-sm text-muted-foreground">
-            Suas respostas foram salvas. Próxima missão em breve.
+            Suas respostas foram salvas com sucesso.
           </p>
         </div>
       </div>
