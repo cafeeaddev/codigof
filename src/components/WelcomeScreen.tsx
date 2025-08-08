@@ -4,7 +4,7 @@ import { QuizDigital } from './QuizDigital';
 import { MissaoDois } from './MissaoDois';
 import { MissaoTres } from './MissaoTres';
 import { MissaoQuatro } from './MissaoQuatro';
-import { VaporwaveBackground } from './VaporwaveBackground';
+
 import { useGameProgress } from '@/hooks/useGameProgress';
 import { useAuth } from './AuthContext';
 import { useToast } from '@/hooks/use-toast';
@@ -76,8 +76,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ user, onLogout }) 
   }
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-background">
-      <VaporwaveBackground />
+    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-background via-background to-muted/20">
       
       <div className="relative z-10 min-h-screen">
         {/* Header */}

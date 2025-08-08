@@ -5,8 +5,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from './AuthContext';
-import { VaporwaveBackground } from './VaporwaveBackground';
-
 const AuthScreen = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { signIn, signUp } = useAuth();
@@ -51,8 +49,7 @@ const AuthScreen = () => {
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-background">
-      <VaporwaveBackground />
+    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-background via-background to-muted/20">
       
       <div className="relative z-10 min-h-screen flex items-center justify-center p-4">
         <Card className="w-full max-w-md bg-background/80 backdrop-blur-sm border-primary/20">
