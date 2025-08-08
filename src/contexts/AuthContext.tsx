@@ -228,13 +228,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       let authResult;
       
       // Try to sign in first (if account exists)
+      console.log('Attempting sign in with:', email);
       const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
         email: email,
         password: cpf, // Using CPF as password for simplicity
       });
 
+      console.log('Sign in result:', signInData, 'error:', signInError);
+
       if (signInError) {
         // If sign in fails, try to create account
+        console.log('Sign in failed, attempting sign up...');
         const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
           email: email,
           password: cpf,
@@ -247,8 +251,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           }
         });
 
+        console.log('Sign up result:', signUpData, 'error:', signUpError);
+
         if (signUpError) {
-          return { error: 'Erro ao criar conta de acesso' };
+          console.error('Sign up error:', signUpError);
+          return { error: 'Erro ao criar conta de acesso: ' + signUpError.message };
         }
 
         authResult = signUpData;
