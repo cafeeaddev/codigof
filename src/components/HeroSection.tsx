@@ -5,11 +5,7 @@ import { ChevronDown } from 'lucide-react';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
 import { LoginScreen } from './LoginScreen';
 
-interface HeroSectionProps {
-  onLogin?: (userData: any) => void;
-}
-
-export const HeroSection = ({ onLogin }: HeroSectionProps) => {
+export const HeroSection = () => {
   const [showLogin, setShowLogin] = useState(false);
   
   // Scroll reveal for hero elements
@@ -24,9 +20,8 @@ export const HeroSection = ({ onLogin }: HeroSectionProps) => {
     distance: 30
   });
 
-  const handleLoginSuccess = (userData: any) => {
+  const handleLoginSuccess = () => {
     setShowLogin(false);
-    onLogin?.(userData);
   };
 
   return (
@@ -86,7 +81,7 @@ export const HeroSection = ({ onLogin }: HeroSectionProps) => {
               ✕
             </button>
             <div className="w-full">
-              <LoginScreen onLogin={handleLoginSuccess} />
+              <LoginScreen />
             </div>
           </div>
         </div>

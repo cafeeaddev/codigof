@@ -3,17 +3,14 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { User, Lock, Wifi } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 import { toast } from '@/hooks/use-toast';
 
-interface LoginScreenProps {
-  onLogin: (user: any) => void;
-}
-
-export const LoginScreen = ({ onLogin }: LoginScreenProps) => {
+export const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [cpf, setCpf] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const { signInWithCredentials } = useAuth();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,37 +27,15 @@ export const LoginScreen = ({ onLogin }: LoginScreenProps) => {
     setIsLoading(true);
 
     try {
-      // Find user in profiles table by email and CPF
-      const { data: profile, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('email', email)
-        .eq('cpf', cpf)
-        .eq('situacao', 'ATIVO')
-        .single();
-
-      if (error || !profile) {
+      const { error } = await signInWithCredentials(email, cpf);
+      
+      if (error) {
         toast({
           title: "Acesso negado",
-          description: "Email ou CPF incorretos ou usuário inativo",
+          description: error,
           variant: "destructive"
         });
-        return;
       }
-
-      toast({
-        title: "Acesso autorizado",
-        description: `Bem-vindo(a), ${profile.nome}!`,
-      });
-
-      // Pass user data to parent component
-      onLogin({
-        nome: profile.nome,
-        email: profile.email,
-        area: profile.area,
-        cargo: profile.cargo
-      });
-
     } catch (error) {
       console.error('Login error:', error);
       toast({

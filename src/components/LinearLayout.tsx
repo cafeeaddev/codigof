@@ -10,6 +10,7 @@ import { ScrollProgress } from './ScrollProgress';
 import { useInternalScroll } from '@/hooks/useInternalScroll';
 import { LoginScreen } from './LoginScreen';
 import { WelcomeScreen } from './WelcomeScreen';
+import { useAuth } from '@/contexts/AuthContext';
 
 const features = [
   {
@@ -36,10 +37,10 @@ const features = [
 ];
 
 export const LinearLayout = () => {
-  const [user, setUser] = useState<any>(null);
   const [showWelcome, setShowWelcome] = useState(false);
   const [cameraPosition, setCameraPosition] = useState<[number, number, number]>([0, 1, -8]);
   const [cameraFov, setCameraFov] = useState(65);
+  const { user, profile, isLoading, signOut } = useAuth();
   
   const {
     containerRef,
@@ -50,19 +51,28 @@ export const LinearLayout = () => {
     unregisterSection
   } = useInternalScroll();
 
-  const handleLogin = (userData: any) => {
-    setUser(userData);
-    setShowWelcome(true);
-  };
-
-  const handleLogout = () => {
-    setUser(null);
+  const handleLogout = async () => {
+    await signOut();
     setShowWelcome(false);
   };
 
   // Show welcome screen if authenticated
-  if (showWelcome && user) {
-    return <WelcomeScreen user={user} onLogout={handleLogout} />;
+  if (user && profile && showWelcome) {
+    return <WelcomeScreen user={profile} onLogout={handleLogout} />;
+  }
+
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="h-screen w-full bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center">
+        <div className="text-white text-xl">Carregando...</div>
+      </div>
+    );
+  }
+
+  // If user is authenticated but not showing welcome, show welcome
+  if (user && profile && !showWelcome) {
+    setShowWelcome(true);
   }
 
   return (
@@ -100,7 +110,7 @@ export const LinearLayout = () => {
             unregisterSection={unregisterSection}
             className="scroll-snap-start bg-transparent"
           >
-            <HeroSection onLogin={handleLogin} />
+            <HeroSection />
           </SectionContainer>
 
           {/* Feature Section */}
