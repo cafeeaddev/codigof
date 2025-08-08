@@ -40,6 +40,7 @@ const features = [
 export const LinearLayout = () => {
   const [showWelcome, setShowWelcome] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
+  // Camera configuration for vaporwave scene
   const [cameraPosition, setCameraPosition] = useState<[number, number, number]>([0, 1, -8]);
   const [cameraFov, setCameraFov] = useState(65);
   const { user, profile, isLoading, signOut } = useAuth();
