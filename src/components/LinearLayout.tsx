@@ -13,16 +13,6 @@ import { WelcomeScreen } from './WelcomeScreen';
 import { useAuth } from '@/contexts/AuthContext';
 import { useGameProgress } from '@/hooks/useGameProgress';
 
-// Ensure component is only rendered within AuthProvider
-const useAuthSafe = () => {
-  try {
-    return useAuth();
-  } catch (error) {
-    console.error('[LinearLayout] AuthContext not available:', error);
-    return { user: null, profile: null, isLoading: true, signOut: async () => {} };
-  }
-};
-
 const features = [
   {
     id: 'timeline',
@@ -53,7 +43,7 @@ export const LinearLayout = () => {
   // Camera configuration for vaporwave scene
   const [cameraPosition, setCameraPosition] = useState<[number, number, number]>([0, 1, -8]);
   const [cameraFov, setCameraFov] = useState(65);
-  const { user, profile, isLoading, signOut } = useAuthSafe();
+  const { user, profile, isLoading, signOut } = useAuth();
   const { updatePosition, currentPosition, totalPlayTime, formatPlayTime } = useGameProgress();
   
   const {

@@ -98,6 +98,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     if (!user) return;
 
+    console.log('[AuthContext] Setting up activity listeners for user:', user.id);
+
     const handleActivity = () => {
       updateLastActivity();
       warningShownRef.current = false;
@@ -129,8 +131,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     updateLastActivity();
     scheduleSessionWarning();
 
-    // Check for timeout on mount
-    handleSessionTimeout();
+    // DON'T check for timeout on mount - let Supabase handle session validity
+    console.log('[AuthContext] Activity listeners configured');
 
     return () => {
       events.forEach(event => {
@@ -139,7 +141,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (throttleTimeout) clearTimeout(throttleTimeout);
       if (timeoutWarningRef.current) clearTimeout(timeoutWarningRef.current);
     };
-  }, [user, updateLastActivity, scheduleSessionWarning, handleSessionTimeout]);
+  }, [user, updateLastActivity, scheduleSessionWarning]);
 
   useEffect(() => {
     // Set up auth state listener FIRST
@@ -169,36 +171,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // THEN check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
       console.log('[AuthContext] Initial session check - session exists:', !!session, 'user:', session?.user?.id);
-      setSession(session);
-      setUser(session?.user ?? null);
       
       if (session?.user) {
         console.log('[AuthContext] Found existing session for user:', session.user.id);
-        // Check timeout on existing session
-        if (checkSessionTimeout()) {
-          console.log('[AuthContext] Session expired, signing out');
-          supabase.auth.signOut();
-          localStorage.removeItem(LAST_ACTIVITY_KEY);
-          toast({
-            title: "Sessão expirada",
-            description: "Sua sessão expirou após 3 horas de inatividade.",
-            duration: 5000,
-          });
-        } else {
-          console.log('[AuthContext] Session valid, fetching profile');
-          fetchUserProfile(session.user.id);
+        // Only set state if we haven't already processed this via onAuthStateChange
+        if (!user) {
+          setSession(session);
+          setUser(session.user);
+          updateLastActivity(); // Mark as active
+          setTimeout(() => {
+            fetchUserProfile(session.user.id);
+          }, 0);
         }
       } else {
         console.log('[AuthContext] No existing session found');
+        setSession(null);
+        setUser(null);
       }
       setIsLoading(false);
     });
 
     return () => subscription.unsubscribe();
-  }, [updateLastActivity, checkSessionTimeout]);
+  }, [updateLastActivity]);
 
   const fetchUserProfile = async (userId: string) => {
     try {
+      console.log('[AuthContext] Fetching profile for userId:', userId);
       const { data: profile, error } = await supabase
         .from('profiles')
         .select('*')
@@ -206,13 +204,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         .single();
 
       if (error) {
-        console.error('Error fetching profile:', error);
+        console.error('[AuthContext] Error fetching profile:', error);
         return;
       }
 
+      console.log('[AuthContext] Profile fetched successfully:', profile.nome);
       setProfile(profile);
     } catch (error) {
-      console.error('Error fetching profile:', error);
+      console.error('[AuthContext] Error fetching profile:', error);
     }
   };
 
