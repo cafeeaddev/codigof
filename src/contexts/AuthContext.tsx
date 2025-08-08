@@ -316,6 +316,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         console.log('[AuthContext] Profile updated successfully with user_id:', signUpData.user.id);
       }
 
+      // Agora fazer login para criar a sessão ativa
+      console.log('[AuthContext] Now signing in to create active session');
+      const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+        email: email,
+        password: cpf,
+      });
+
+      if (signInError) {
+        console.error('[AuthContext] Sign in after signup failed:', signInError);
+        return { error: 'Conta criada mas erro no login: ' + signInError.message };
+      }
+
+      console.log('[AuthContext] Sign in after signup successful:', signInData.user?.id);
+
       toast({
         title: "Login realizado",
         description: `Bem-vindo(a), ${profile.nome}!`,
