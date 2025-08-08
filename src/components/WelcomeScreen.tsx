@@ -3,6 +3,7 @@ import { Button } from './ui/button';
 import { LogOut, User, Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
 import { QuizDigital } from './QuizDigital';
 import { MissaoDois } from './MissaoDois';
 import { MissaoTres } from './MissaoTres';
@@ -18,12 +19,14 @@ interface WelcomeScreenProps {
   onLogout: () => void;
 }
 
-export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
+export const WelcomeScreen = ({ user: userProfile, onLogout }: WelcomeScreenProps) => {
+  const { user: authUser } = useAuth(); // Usuário autenticado do contexto
   const [isLoading, setIsLoading] = useState(true);
   const [currentMission, setCurrentMission] = useState<1 | 2 | 3 | 4>(1);
   const [completedMissions, setCompletedMissions] = useState<Set<number>>(new Set());
   const [userProgress, setUserProgress] = useState({ total_xp: 0, completedMissionsCount: 0 });
-  const [authUserId, setAuthUserId] = useState<string | null>(null);
+  
+  console.log('WelcomeScreen - authUser from context:', authUser);
 
   // Função para atualizar progresso localmente
   const updateProgress = (missionId: number) => {
@@ -38,10 +41,9 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
   useEffect(() => {
     const loadUserProgress = async () => {
       try {
-        const { data: { user: authUser } } = await supabase.auth.getUser();
-        console.log('WelcomeScreen - authUser from supabase:', authUser);
-        if (authUser) {
-          setAuthUserId(authUser.id);
+        console.log('WelcomeScreen: authUser from context:', authUser);
+        if (authUser?.id) {
+          console.log('WelcomeScreen: Loading progress for user:', authUser.id);
           const { data: progress } = await supabase
             .from('user_progress')
             .select('*')
@@ -155,10 +157,10 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
             </div>
             <div className="min-w-0 flex-1">
               <h1 className="text-secondary text-sm md:text-xl font-bold tracking-wider truncate">
-                {user.nome}
+                {userProfile.nome}
               </h1>
               <p className="text-muted-foreground text-xs md:text-sm truncate">
-                {user.area} {user.cargo && `• ${user.cargo}`}
+                {userProfile.area} {userProfile.cargo && `• ${userProfile.cargo}`}
               </p>
             </div>
             
@@ -228,7 +230,7 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
               <div className="flex-1 overflow-hidden">
                 {currentMission === 1 && !completedMissions.has(1) ? (
                   <QuizDigital 
-                    userId={authUserId || undefined}
+                    userId={authUser?.id}
                     onClose={() => {
                       updateProgress(1);
                       setCompletedMissions(prev => new Set([...prev, 1]));
@@ -236,7 +238,7 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
                     }} />
                 ) : currentMission === 2 && !completedMissions.has(2) ? (
                   <MissaoDois 
-                    userId={authUserId || undefined}
+                    userId={authUser?.id}
                     onComplete={() => {
                       updateProgress(2);
                       setCompletedMissions(prev => new Set([...prev, 2]));
@@ -376,7 +378,7 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
                   <div className="flex-1 overflow-hidden">
                     {currentMission === 1 && !completedMissions.has(1) ? (
                       <QuizDigital 
-                        userId={authUserId || undefined}
+                        userId={authUser?.id}
                         onClose={() => {
                           updateProgress(1);
                           setCompletedMissions(prev => new Set([...prev, 1]));
@@ -384,7 +386,7 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
                         }} />
                     ) : currentMission === 2 && !completedMissions.has(2) ? (
                       <MissaoDois 
-                        userId={authUserId || undefined}
+                        userId={authUser?.id}
                         onComplete={() => {
                           updateProgress(2);
                           setCompletedMissions(prev => new Set([...prev, 2]));
