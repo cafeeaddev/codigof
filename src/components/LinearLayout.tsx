@@ -74,15 +74,27 @@ export const LinearLayout = () => {
     }
   }, [user, profile, showWelcome]);
 
-  if (user && profile && showWelcome) {
-    return <WelcomeScreen user={profile} onLogout={handleLogout} />;
-  }
-
   // Show loading state
   if (isLoading) {
     return (
       <div className="h-screen w-full bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center">
         <div className="text-white text-xl">Carregando...</div>
+      </div>
+    );
+  }
+
+  // Show welcome screen if authenticated
+  if (user && profile && showWelcome) {
+    return <WelcomeScreen user={profile} onLogout={handleLogout} />;
+  }
+
+  // Show login screen if not authenticated
+  if (!user) {
+    return (
+      <div className="h-screen w-full bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center p-4">
+        <div className="w-full max-w-md">
+          <LoginScreen />
+        </div>
       </div>
     );
   }
