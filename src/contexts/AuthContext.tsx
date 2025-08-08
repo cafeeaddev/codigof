@@ -164,8 +164,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           console.log('[AuthContext] User logged in, userId:', session.user.id);
           updateLastActivity(); // Set activity on login
           // Defer profile fetch to avoid deadlock
-          setTimeout(() => {
-            fetchUserProfile(session.user.id);
+setTimeout(() => {
+            fetchUserProfile(session.user.id, session.user.email ?? undefined);
           }, 0);
         } else {
           console.log('[AuthContext] User logged out');
@@ -188,8 +188,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           setSession(session);
           setUser(session.user);
           updateLastActivity(); // Mark as active
-          setTimeout(() => {
-            fetchUserProfile(session.user.id);
+setTimeout(() => {
+            fetchUserProfile(session.user.id, session.user.email ?? undefined);
           }, 0);
         }
       } else {
@@ -203,27 +203,65 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return () => subscription.unsubscribe();
   }, [updateLastActivity]);
 
-  const fetchUserProfile = async (userId: string) => {
+  const fetchUserProfile = async (userId: string, userEmail?: string) => {
     try {
       console.log('[AuthContext] Fetching profile for userId:', userId);
-const { data: profile, error } = await supabase
+      const { data: profileById, error: byIdError } = await supabase
         .from('profiles')
         .select('*')
         .eq('user_id', userId)
         .maybeSingle();
 
-      if (error) {
-        console.error('[AuthContext] Error fetching profile:', error);
+      if (byIdError) {
+        console.warn('[AuthContext] Error fetching profile by user_id:', byIdError);
+      }
+
+      let resolved: any = profileById ?? null;
+
+      // Fallback: try by email if not found
+      if (!resolved && userEmail) {
+        console.log('[AuthContext] Profile not linked to user_id. Trying by email:', userEmail);
+        const { data: profileByEmail, error: byEmailError } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('email', userEmail)
+          .eq('situacao', 'ATIVO')
+          .limit(1)
+          .maybeSingle();
+
+        if (byEmailError) {
+          console.warn('[AuthContext] Error fetching profile by email:', byEmailError);
+        }
+
+        if (profileByEmail) {
+          resolved = profileByEmail;
+          // Attempt to link profile with user_id
+          if (!profileByEmail.user_id) {
+            const { error: linkError } = await supabase
+              .from('profiles')
+              .update({ user_id: userId })
+              .eq('id', profileByEmail.id);
+            if (linkError) {
+              console.warn('[AuthContext] Failed to link profile.user_id:', linkError);
+            } else {
+              console.log('[AuthContext] Linked profile to user_id:', userId);
+            }
+          }
+        }
+      }
+
+      if (!resolved) {
+        console.log('[AuthContext] No profile found for user. Proceeding without profile.');
+        setProfile(null);
         return;
       }
 
-      console.log('[AuthContext] Profile fetched successfully:', profile.nome);
-      setProfile(profile);
+      console.log('[AuthContext] Profile fetched successfully for:', resolved.email);
+      setProfile(resolved as UserProfile);
     } catch (error) {
       console.error('[AuthContext] Error fetching profile:', error);
     }
   };
-
   const signInWithCredentials = async (email: string, cpf: string): Promise<{ error?: string }> => {
   try {
       console.log('[AuthContext] Starting login with email:', email);
@@ -231,13 +269,13 @@ const { data: profile, error } = await supabase
       const cleanCpf = normalizeCPF(cpf);
       const formattedCpf = formatCPF(cleanCpf);
 
-      // First, validate user exists and is active
+      // First, validate user exists and is active (buscar por email apenas)
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('*')
         .eq('email', email)
         .eq('situacao', 'ATIVO')
-        .or(`cpf.eq.${formattedCpf},cpf.eq.${cleanCpf}`)
+        .limit(1)
         .maybeSingle();
 
       if (profileError) {
@@ -250,12 +288,27 @@ const { data: profile, error } = await supabase
 
       console.log('[AuthContext] Found profile:', profile.nome, 'user_id:', profile.user_id);
 
-      // Se já tem user_id, tenta fazer login direto
+      // Valida CPF: aceita 4 últimos dígitos ou CPF completo
+      const inputClean = normalizeCPF(cpf);
+      const storedFullCpf = normalizeCPF(profile.cpf);
+      const isLast4 = inputClean.length === 4;
+
+      if (isLast4) {
+        if (!storedFullCpf.endsWith(inputClean)) {
+          return { error: 'CPF incorreto' };
+        }
+      } else {
+        if (storedFullCpf !== inputClean) {
+          return { error: 'CPF incorreto' };
+        }
+      }
+
+      // Se já tem user_id, tenta fazer login direto usando o CPF completo armazenado
       if (profile.user_id) {
         console.log('[AuthContext] Profile has user_id, attempting direct sign in');
         const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
           email: email,
-          password: cpf,
+          password: storedFullCpf,
         });
 
         if (signInError) {
@@ -296,7 +349,7 @@ const { data: profile, error } = await supabase
       // Primeiro, criar o usuário na tabela auth sem trigger automático
       const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
         email: email,
-        password: cpf,
+        password: storedFullCpf,
         options: {
           emailRedirectTo: `${window.location.origin}/`,
           data: {
@@ -336,7 +389,7 @@ const { data: profile, error } = await supabase
       console.log('[AuthContext] Now signing in to create active session');
       const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
         email: email,
-        password: cpf,
+        password: storedFullCpf,
       });
 
       if (signInError) {
