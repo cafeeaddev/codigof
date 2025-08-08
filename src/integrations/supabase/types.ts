@@ -131,33 +131,45 @@ export type Database = {
       user_progress: {
         Row: {
           created_at: string
+          current_position: string | null
           id: string
+          last_saved_at: string | null
           missao_1_completed: boolean | null
           missao_2_completed: boolean | null
           missao_3_completed: boolean | null
           missao_4_completed: boolean | null
+          session_start_time: string | null
+          total_play_time: number | null
           total_xp: number | null
           updated_at: string
           user_id: string
         }
         Insert: {
           created_at?: string
+          current_position?: string | null
           id?: string
+          last_saved_at?: string | null
           missao_1_completed?: boolean | null
           missao_2_completed?: boolean | null
           missao_3_completed?: boolean | null
           missao_4_completed?: boolean | null
+          session_start_time?: string | null
+          total_play_time?: number | null
           total_xp?: number | null
           updated_at?: string
           user_id: string
         }
         Update: {
           created_at?: string
+          current_position?: string | null
           id?: string
+          last_saved_at?: string | null
           missao_1_completed?: boolean | null
           missao_2_completed?: boolean | null
           missao_3_completed?: boolean | null
           missao_4_completed?: boolean | null
+          session_start_time?: string | null
+          total_play_time?: number | null
           total_xp?: number | null
           updated_at?: string
           user_id?: string

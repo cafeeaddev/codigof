@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { VaporwaveScene } from './VaporwaveScene';
 import { HeroSection } from './HeroSection';
 import { FeatureSection } from './FeatureSection';
@@ -11,6 +11,7 @@ import { useInternalScroll } from '@/hooks/useInternalScroll';
 import { LoginScreen } from './LoginScreen';
 import { WelcomeScreen } from './WelcomeScreen';
 import { useAuth } from '@/contexts/AuthContext';
+import { useGameProgress } from '@/hooks/useGameProgress';
 
 const features = [
   {
@@ -41,6 +42,7 @@ export const LinearLayout = () => {
   const [cameraPosition, setCameraPosition] = useState<[number, number, number]>([0, 1, -8]);
   const [cameraFov, setCameraFov] = useState(65);
   const { user, profile, isLoading, signOut } = useAuth();
+  const { updatePosition, currentPosition, totalPlayTime, formatPlayTime } = useGameProgress();
   
   const {
     containerRef,
@@ -50,6 +52,15 @@ export const LinearLayout = () => {
     registerSection,
     unregisterSection
   } = useInternalScroll();
+
+  // Update position when section changes
+  useEffect(() => {
+    if (user && currentSection !== undefined) {
+      const sectionNames = ['hero', 'features', 'footer'];
+      const sectionName = sectionNames[currentSection] || 'hero';
+      updatePosition(sectionName);
+    }
+  }, [currentSection, user, updatePosition]);
 
   const handleLogout = async () => {
     await signOut();
