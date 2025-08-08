@@ -81,16 +81,22 @@ export const QuizDigital = ({ onClose }: QuizDigitalProps) => {
     const loadProgress = async () => {
       try {
         const { data: { user } } = await supabase.auth.getUser();
+        console.log('Loading progress for user:', user?.id);
         if (user) {
-          const { data: progress } = await supabase
+          const { data: progress, error } = await supabase
             .from('user_progress')
             .select('missao_1_current_question, missao_1_answers')
             .eq('user_id', user.id)
             .maybeSingle();
 
+          console.log('Loaded progress data:', progress, 'error:', error);
+          
           if (progress) {
-            setCurrentQuestion((progress.missao_1_current_question as number) - 1);
-            setAnswers((progress.missao_1_answers as Record<number, string>) || {});
+            const questionIndex = (progress.missao_1_current_question as number) - 1;
+            const savedAnswers = (progress.missao_1_answers as Record<number, string>) || {};
+            console.log('Setting question to:', questionIndex, 'answers:', savedAnswers);
+            setCurrentQuestion(questionIndex);
+            setAnswers(savedAnswers);
           }
         }
       } catch (error) {
@@ -107,8 +113,9 @@ export const QuizDigital = ({ onClose }: QuizDigitalProps) => {
   const saveProgress = async (questionIndex: number, newAnswers: Record<number, string>) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
+      console.log('Saving progress for user:', user?.id, 'question:', questionIndex + 1, 'answers:', newAnswers);
       if (user) {
-        await supabase
+        const { data, error } = await supabase
           .from('user_progress')
           .upsert({
             user_id: user.id,
@@ -117,6 +124,12 @@ export const QuizDigital = ({ onClose }: QuizDigitalProps) => {
           }, {
             onConflict: 'user_id'
           });
+        
+        if (error) {
+          console.error('Error saving quiz progress:', error);
+        } else {
+          console.log('Progress saved successfully:', data);
+        }
       }
     } catch (error) {
       console.error('Error saving progress:', error);
