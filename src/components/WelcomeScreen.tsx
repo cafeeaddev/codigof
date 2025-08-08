@@ -206,7 +206,7 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
               <div className="flex items-center justify-between mb-4 p-3 bg-muted/50 rounded-lg">
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 bg-accent rounded-full"></div>
-                  <span className="text-accent text-sm font-mono font-bold">
+                  <span className="text-accent text-sm font-bold tracking-wider">
                     MISSÃO {currentMission} ATIVADA
                   </span>
                 </div>
@@ -281,7 +281,7 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
                 <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-6 shadow-neon h-full overflow-hidden flex flex-col">
                   <div className="flex items-center gap-2 mb-6 p-3 bg-muted/50 rounded-lg">
                     <div className="w-3 h-3 bg-primary rounded-full"></div>
-                    <span className="text-primary text-sm font-mono font-bold">MISSÕES DO CÓDIGO F</span>
+                    <span className="text-primary text-sm font-bold tracking-wider">MISSÕES DO CÓDIGO F</span>
                   </div>
 
                   <div className="space-y-4 overflow-hidden flex-1">
@@ -355,7 +355,7 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
                 <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-6 shadow-neon h-full overflow-hidden flex flex-col">
                   <div className="flex items-center gap-2 mb-6 p-3 bg-muted/50 rounded-lg">
                     <div className="w-3 h-3 bg-accent rounded-full"></div>
-                    <span className="text-accent text-sm font-mono font-bold">
+                    <span className="text-accent text-sm font-bold tracking-wider">
                       MISSÃO {currentMission} ATIVADA
                     </span>
                   </div>
