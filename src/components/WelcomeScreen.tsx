@@ -23,6 +23,7 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
   const [currentMission, setCurrentMission] = useState<1 | 2 | 3 | 4>(1);
   const [completedMissions, setCompletedMissions] = useState<Set<number>>(new Set());
   const [userProgress, setUserProgress] = useState({ total_xp: 0, completedMissionsCount: 0 });
+  const [authUserId, setAuthUserId] = useState<string | null>(null);
 
   // Função para atualizar progresso localmente
   const updateProgress = (missionId: number) => {
@@ -38,7 +39,9 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
     const loadUserProgress = async () => {
       try {
         const { data: { user: authUser } } = await supabase.auth.getUser();
+        console.log('WelcomeScreen - authUser from supabase:', authUser);
         if (authUser) {
+          setAuthUserId(authUser.id);
           const { data: progress } = await supabase
             .from('user_progress')
             .select('*')
@@ -224,16 +227,20 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
 
               <div className="flex-1 overflow-hidden">
                 {currentMission === 1 && !completedMissions.has(1) ? (
-                  <QuizDigital onClose={() => {
-                    updateProgress(1);
-                    setCompletedMissions(prev => new Set([...prev, 1]));
-                    setCurrentMission(2);
-                  }} />
+                  <QuizDigital 
+                    userId={authUserId || undefined}
+                    onClose={() => {
+                      updateProgress(1);
+                      setCompletedMissions(prev => new Set([...prev, 1]));
+                      setCurrentMission(2);
+                    }} />
                 ) : currentMission === 2 && !completedMissions.has(2) ? (
-                  <MissaoDois onComplete={() => {
-                    updateProgress(2);
-                    setCompletedMissions(prev => new Set([...prev, 2]));
-                    setCurrentMission(3);
+                  <MissaoDois 
+                    userId={authUserId || undefined}
+                    onComplete={() => {
+                      updateProgress(2);
+                      setCompletedMissions(prev => new Set([...prev, 2]));
+                      setCurrentMission(3);
                     toast({
                       title: "Missão 2 concluída! +25 XP",
                       description: "Missão 3 desbloqueada! Continue evoluindo.",
@@ -368,21 +375,25 @@ export const WelcomeScreen = ({ user, onLogout }: WelcomeScreenProps) => {
 
                   <div className="flex-1 overflow-hidden">
                     {currentMission === 1 && !completedMissions.has(1) ? (
-                      <QuizDigital onClose={() => {
-                        updateProgress(1);
-                        setCompletedMissions(prev => new Set([...prev, 1]));
-                        setCurrentMission(2);
-                      }} />
+                      <QuizDigital 
+                        userId={authUserId || undefined}
+                        onClose={() => {
+                          updateProgress(1);
+                          setCompletedMissions(prev => new Set([...prev, 1]));
+                          setCurrentMission(2);
+                        }} />
                     ) : currentMission === 2 && !completedMissions.has(2) ? (
-                      <MissaoDois onComplete={() => {
-                        updateProgress(2);
-                        setCompletedMissions(prev => new Set([...prev, 2]));
-                        setCurrentMission(3);
-                        toast({
-                          title: "Missão 2 concluída! +25 XP",
-                          description: "Missão 3 desbloqueada! Continue evoluindo.",
-                        });
-                      }} />
+                      <MissaoDois 
+                        userId={authUserId || undefined}
+                        onComplete={() => {
+                          updateProgress(2);
+                          setCompletedMissions(prev => new Set([...prev, 2]));
+                          setCurrentMission(3);
+                          toast({
+                            title: "Missão 2 concluída! +25 XP",
+                            description: "Missão 3 desbloqueada! Continue evoluindo.",
+                          });
+                        }} />
                     ) : currentMission === 3 && !completedMissions.has(3) ? (
                       <MissaoTres onComplete={() => {
                         updateProgress(3);

@@ -56,10 +56,12 @@ const quizQuestions: QuizQuestion[] = [
 
 interface MissaoDoisProps {
   onComplete: () => void;
+  userId?: string;
 }
 
-export const MissaoDois = ({ onComplete }: MissaoDoisProps) => {
-  const { user } = useAuth();
+export const MissaoDois = ({ onComplete, userId }: MissaoDoisProps) => {
+  const { user: authUser } = useAuth();
+  const user = authUser || { id: userId };
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [isCompleted, setIsCompleted] = useState(false);

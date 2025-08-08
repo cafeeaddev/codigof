@@ -68,10 +68,12 @@ const quizQuestions: QuizQuestion[] = [
 
 interface QuizDigitalProps {
   onClose: () => void;
+  userId?: string;
 }
 
-export const QuizDigital = ({ onClose }: QuizDigitalProps) => {
-  const { user } = useAuth();
+export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
+  const { user: authUser } = useAuth();
+  const user = authUser || { id: userId };
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [isCompleted, setIsCompleted] = useState(false);
@@ -80,12 +82,8 @@ export const QuizDigital = ({ onClose }: QuizDigitalProps) => {
 
   // Carregar progresso salvo ao iniciar
   useEffect(() => {
-    console.log('QuizDigital useEffect - user:', user);
-    console.log('QuizDigital useEffect - user structure:', JSON.stringify(user, null, 2));
     const loadProgress = async () => {
       try {
-        console.log('Loading progress for user from context:', user?.id);
-        
         let userId = user?.id;
         
         if (!userId) {
