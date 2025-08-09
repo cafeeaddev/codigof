@@ -104,16 +104,24 @@ serve(async (req) => {
     const password = storedCpf.slice(-4);
 
     // Verificar se já existe usuário no Auth com este email
-    const { data: existingUser } = await supabaseAdmin.auth.admin.getUserByEmail(email);
+    const { data: existingUsers, error: listError } = await supabaseAdmin.auth.admin.listUsers({
+      page: 1,
+      perPage: 1000
+    });
 
-    if (existingUser.user) {
+    let existingUser = null;
+    if (!listError && existingUsers?.users) {
+      existingUser = existingUsers.users.find(user => user.email === email);
+    }
+
+    if (existingUser) {
       console.log('Usuário já existe no Auth, fazendo login');
       
       // Se o profile não tem user_id, vincular com o usuário existente
       if (!profile.user_id) {
         const { error: updateError } = await supabaseAdmin
           .from('profiles')
-          .update({ user_id: existingUser.user.id })
+          .update({ user_id: existingUser.id })
           .eq('email', email);
 
         if (updateError) {
