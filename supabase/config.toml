@@ -2,3 +2,6 @@ project_id = "rbjfnuzbrotruqpoermr"
 
 [functions.auth-with-cpf]
 verify_jwt = false
+
+[functions.create-admin-user]
+verify_jwt = false
