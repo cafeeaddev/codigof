@@ -105,12 +105,22 @@ const AdminDashboard = () => {
 
       // Calcular estatísticas baseado na tabela user_progress
       const progress = progressData.data || [];
+      console.log('Progress data loaded:', progress);
+      
       const totalUsers = progress.length;
       
-      const mission1Completed = progress.filter(p => p.missao_1_completed).length;
-      const mission2Completed = progress.filter(p => p.missao_2_completed).length;
-      const mission3Completed = progress.filter(p => p.missao_3_completed).length;
-      const mission4Completed = progress.filter(p => p.missao_4_completed).length;
+      const mission1Completed = progress.filter(p => p.missao_1_completed === true).length;
+      const mission2Completed = progress.filter(p => p.missao_2_completed === true).length;
+      const mission3Completed = progress.filter(p => p.missao_3_completed === true).length;
+      const mission4Completed = progress.filter(p => p.missao_4_completed === true).length;
+      
+      console.log('Mission completion counts:', {
+        totalUsers,
+        mission1Completed,
+        mission2Completed,
+        mission3Completed,
+        mission4Completed
+      });
       
       setStats({
         mission1: {
