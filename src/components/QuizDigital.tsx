@@ -302,12 +302,12 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
   return (
     <div className="h-full flex flex-col">
       <ScrollArea className="flex-1">
-        <div className="p-4 pb-20">
-          <div className="mb-4">
-            <h3 className="text-lg font-bold text-foreground mb-1">Como você encara o digital?</h3>
+        <div className="p-3 pb-16">
+          <div className="mb-3">
+            <h3 className="text-base font-bold text-foreground mb-1">Como você encara o digital?</h3>
           </div>
 
-          <div className="mb-4">
+          <div className="mb-3">
             <div className="flex justify-between items-center mb-2">
               <span className="text-xs text-muted-foreground">
                 Pergunta {currentQuestion + 1} de {quizQuestions.length}
@@ -316,16 +316,16 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
                 {Math.round(progress)}%
               </span>
             </div>
-            <div className="w-full bg-secondary/20 rounded-full h-1.5">
+            <div className="w-full bg-secondary/20 rounded-full h-1">
               <div
-                className="bg-primary h-1.5 rounded-full transition-all duration-300"
+                className="bg-primary h-1 rounded-full transition-all duration-300"
                 style={{ width: `${progress}%` }}
               />
             </div>
           </div>
 
-          <div className="mb-6">
-            <h4 className="text-base font-medium text-foreground mb-4">
+          <div className="mb-4">
+            <h4 className="text-sm font-medium text-foreground mb-3">
               {currentQuestionData.question}
             </h4>
 
@@ -355,7 +355,7 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
         </div>
       </ScrollArea>
       
-      <div className="flex justify-between p-4 pt-2 border-t border-secondary/30 bg-background">
+      <div className="flex justify-between p-3 border-t border-secondary/30 bg-background">
         <Button
           onClick={goToPreviousQuestion}
           disabled={currentQuestion === 0}

@@ -201,7 +201,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
 
       {/* Remover estatísticas Mobile */}
 
-      <div className="h-[calc(100vh-4rem)] md:h-[calc(100vh-5rem)] overflow-hidden p-3 md:p-6 relative z-10">
+      <div className="h-[calc(100vh-3rem)] md:h-[calc(100vh-4rem)] overflow-hidden p-2 md:p-4 relative z-10">
         <div className="max-w-7xl mx-auto h-full flex flex-col">
           
           {/* Layout Mobile: Apenas a missão ativa em tela cheia */}
@@ -286,9 +286,9 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
           </div>
 
           {/* Barra de Missões Horizontal - Estilo Game */}
-          <div className="hidden md:block mb-6">
-            <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-4 shadow-neon">
-              <div className="flex items-center gap-4">
+          <div className="hidden md:block mb-4">
+            <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-3 shadow-neon">
+              <div className="flex items-center gap-3">
                 {[
                   { id: 1, title: "MISSÃO 1", progress: completedMissions.has(1) ? 4 : 0, total: 4 },
                   { id: 2, title: "MISSÃO 2", progress: completedMissions.has(2) ? 3 : 0, total: 3 },
@@ -302,7 +302,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                   return (
                     <div key={mission.id} className="flex items-center flex-1">
                       <div 
-                        className={`relative flex-1 p-3 rounded-lg border transition-all cursor-pointer ${
+                        className={`relative flex-1 p-2 rounded-lg border transition-all cursor-pointer ${
                           isCompleted 
                             ? 'bg-primary/20 border-primary text-primary' 
                             : isActive 
@@ -344,7 +344,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                         </div>
                         
                         {/* Progress bar */}
-                        <div className="mt-2 bg-background/20 rounded-full h-1">
+                        <div className="mt-1 bg-background/20 rounded-full h-1">
                           <div 
                             className={`h-1 rounded-full transition-all duration-500 ${
                               isCompleted ? 'bg-primary' : isActive ? 'bg-accent' : 'bg-secondary/30'
@@ -356,8 +356,8 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                       
                       {/* Connector line */}
                       {index < 3 && (
-                        <div className="flex items-center mx-2">
-                          <div className={`h-0.5 w-8 ${
+                        <div className="flex items-center mx-1">
+                          <div className={`h-0.5 w-6 ${
                             completedMissions.has(mission.id) ? 'bg-primary' : 'bg-secondary/30'
                           }`}></div>
                           <div className={`w-2 h-2 rounded-full ${
@@ -374,8 +374,8 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
 
           {/* Área Principal das Perguntas */}
           <div className="flex-1 overflow-hidden">
-            <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-6 shadow-neon h-full flex flex-col">
-              <div className="flex items-center gap-2 mb-4 p-3 bg-muted/50 rounded-lg">
+            <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-4 shadow-neon h-full flex flex-col">
+              <div className="flex items-center gap-2 mb-3 p-2 bg-muted/50 rounded-lg">
                 <div className="w-3 h-3 bg-accent rounded-full"></div>
                 <span className="text-accent text-sm font-bold tracking-wider">
                   {currentMission === 1 && "Como você encara o digital?"}
@@ -386,7 +386,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
               </div>
 
               <ScrollArea className="flex-1">
-                <div className="pr-4">
+                <div className="pr-3">
                   {currentMission === 1 && !completedMissions.has(1) ? (
                     <QuizDigital 
                       userId={userId}
