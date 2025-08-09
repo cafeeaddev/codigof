@@ -117,8 +117,25 @@ serve(async (req) => {
     }
 
     if (existingUser) {
-      console.log('Usuário já existe no Auth, fazendo login');
+      console.log('Usuário já existe no Auth, atualizando senha');
       
+      // Atualizar a senha do usuário existente para o padrão dos 4 dígitos duplicados
+      const { error: updateError } = await supabaseAdmin.auth.admin.updateUserById(
+        existingUser.id,
+        { password }
+      );
+
+      if (updateError) {
+        console.error('Erro ao atualizar senha:', updateError);
+        return new Response(
+          JSON.stringify({ error: 'Erro interno do servidor' }),
+          { 
+            status: 500, 
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+          }
+        );
+      }
+
       // Se o profile não tem user_id, vincular com o usuário existente
       if (!profile.user_id) {
         const { error: updateError } = await supabaseAdmin
@@ -131,6 +148,7 @@ serve(async (req) => {
         }
       }
 
+      console.log('Senha atualizada e usuário validado');
       return new Response(
         JSON.stringify({ 
           success: true, 
