@@ -203,7 +203,7 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
         .insert({
           nome: currentUser.nome,
           email: currentUser.email,
-          respostas: JSON.stringify(responsesData)  // Manter como string por enquanto
+          respostas: responsesData  // Now saving as JSONB directly like other missions
         });
 
       if (error) {
