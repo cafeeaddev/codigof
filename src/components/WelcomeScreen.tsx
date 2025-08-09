@@ -378,10 +378,10 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
               <div className="flex items-center gap-2 mb-4 p-3 bg-muted/50 rounded-lg">
                 <div className="w-3 h-3 bg-accent rounded-full"></div>
                 <span className="text-accent text-sm font-bold tracking-wider">
-                  {currentMission === 1 && "MISSÃO 1 – Como você encara o digital?"}
-                  {currentMission === 2 && "MISSÃO 2 – O digital no seu dia a dia"}
-                  {currentMission === 3 && "MISSÃO 3 – Quando o desafio é maior"}
-                  {currentMission === 4 && "MISSÃO 4 – Seu Radar de Ferramentas"}
+                  {currentMission === 1 && "Como você encara o digital?"}
+                  {currentMission === 2 && "O digital no seu dia a dia"}
+                  {currentMission === 3 && "Quando o desafio é maior"}
+                  {currentMission === 4 && "Seu Radar de Ferramentas"}
                 </span>
               </div>
 
