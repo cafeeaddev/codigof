@@ -33,6 +33,7 @@ const AdminDashboard = () => {
   const [responses3, setResponses3] = useState<ResponseData[]>([]);
   const [responses4, setResponses4] = useState<ResponseData[]>([]);
   const [stats, setStats] = useState<Record<string, MissionStats>>({});
+  const [usersStarted, setUsersStarted] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -55,8 +56,8 @@ const AdminDashboard = () => {
     try {
       setIsLoading(true);
       
-      // Carregar respostas de todas as missões
-      const [res1, res2, res3, res4, progressData] = await Promise.all([
+      // Carregar respostas de todas as missões e dados gerais
+      const [res1, res2, res3, res4, progressData, profilesData] = await Promise.all([
         // Filtrar apenas respostas reais da Missão 1 (excluir as migradas)
         supabase.from('respostas').select('*')
           .filter('respostas', 'not.like', '*"missao"*')  // Excluir respostas com campo "missao"
@@ -64,7 +65,8 @@ const AdminDashboard = () => {
         supabase.from('respostas_missao2').select('*').order('created_at', { ascending: false }),
         supabase.from('respostas_missao3').select('*').order('created_at', { ascending: false }),
         supabase.from('respostas_missao4').select('*').order('created_at', { ascending: false }),
-        supabase.from('user_progress').select('*')
+        supabase.from('user_progress').select('*'),
+        supabase.from('profiles').select('id', { count: 'exact', head: true })
       ]);
 
       if (res1.error) console.error('Error loading mission 1:', res1.error);
@@ -105,9 +107,11 @@ const AdminDashboard = () => {
 
       // Calcular estatísticas baseado na tabela user_progress
       const progress = progressData.data || [];
-      console.log('Progress data loaded:', progress);
+      const totalProfiles = profilesData.count || 0; // Total de usuários cadastrados
+      const usersStarted = progress.length; // Usuários que começaram o jogo
       
-      const totalUsers = progress.length;
+      console.log('Progress data loaded:', progress);
+      console.log('Total profiles:', totalProfiles, 'Users started:', usersStarted);
       
       const mission1Completed = progress.filter(p => p.missao_1_completed === true).length;
       const mission2Completed = progress.filter(p => p.missao_2_completed === true).length;
@@ -115,7 +119,8 @@ const AdminDashboard = () => {
       const mission4Completed = progress.filter(p => p.missao_4_completed === true).length;
       
       console.log('Mission completion counts:', {
-        totalUsers,
+        totalProfiles,
+        usersStarted,
         mission1Completed,
         mission2Completed,
         mission3Completed,
@@ -124,26 +129,28 @@ const AdminDashboard = () => {
       
       setStats({
         mission1: {
-          total: totalUsers,
+          total: totalProfiles,
           completed: mission1Completed,
-          percentage: totalUsers > 0 ? Math.round((mission1Completed / totalUsers) * 100) : 0
+          percentage: totalProfiles > 0 ? Math.round((mission1Completed / totalProfiles) * 100) : 0
         },
         mission2: {
-          total: totalUsers,
+          total: totalProfiles,
           completed: mission2Completed,
-          percentage: totalUsers > 0 ? Math.round((mission2Completed / totalUsers) * 100) : 0
+          percentage: totalProfiles > 0 ? Math.round((mission2Completed / totalProfiles) * 100) : 0
         },
         mission3: {
-          total: totalUsers,
+          total: totalProfiles,
           completed: mission3Completed,
-          percentage: totalUsers > 0 ? Math.round((mission3Completed / totalUsers) * 100) : 0
+          percentage: totalProfiles > 0 ? Math.round((mission3Completed / totalProfiles) * 100) : 0
         },
         mission4: {
-          total: totalUsers,
+          total: totalProfiles,
           completed: mission4Completed,
-          percentage: totalUsers > 0 ? Math.round((mission4Completed / totalUsers) * 100) : 0
+          percentage: totalProfiles > 0 ? Math.round((mission4Completed / totalProfiles) * 100) : 0
         }
       });
+      
+      setUsersStarted(usersStarted);
 
     } catch (error) {
       console.error('Error loading responses:', error);
@@ -291,16 +298,20 @@ const AdminDashboard = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-center">
               <div>
                 <p className="text-2xl font-bold text-primary">{stats.mission1?.total || 0}</p>
                 <p className="text-sm text-muted-foreground">Total de Usuários</p>
               </div>
               <div>
+                <p className="text-2xl font-bold text-orange-600">{usersStarted}</p>
+                <p className="text-sm text-muted-foreground">Usuários que Começaram</p>
+              </div>
+              <div>
                 <p className="text-2xl font-bold text-green-600">
                   {Object.values(stats).reduce((acc, stat) => acc + stat.completed, 0)}
                 </p>
-                <p className="text-sm text-muted-foreground">Total de Missões Concluídas</p>
+                <p className="text-sm text-muted-foreground">Missões Concluídas</p>
               </div>
               <div>
                 <p className="text-2xl font-bold text-blue-600">{responses1.length + responses2.length + responses3.length + responses4.length}</p>
