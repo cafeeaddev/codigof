@@ -40,29 +40,29 @@ serve(async (req) => {
 
     console.log('Validando perfil para email:', email, 'e CPF:', cpf);
 
-    // Buscar perfil na tabela profiles
+    // Primeiro buscar perfil por email
     const { data: profile, error: profileError } = await supabaseAdmin
       .from('profiles')
       .select('*')
       .eq('email', email)
-      .eq('cpf', cpf)
-      .single();
+      .eq('situacao', 'ATIVO')
+      .maybeSingle();
 
     if (profileError) {
       console.error('Erro ao buscar perfil:', profileError);
       return new Response(
-        JSON.stringify({ error: 'Credenciais inválidas' }),
+        JSON.stringify({ error: 'Erro interno do servidor' }),
         { 
-          status: 401, 
+          status: 500, 
           headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
         }
       );
     }
 
     if (!profile) {
-      console.log('Perfil não encontrado para email/CPF fornecidos');
+      console.log('Perfil não encontrado para email:', email);
       return new Response(
-        JSON.stringify({ error: 'Credenciais inválidas' }),
+        JSON.stringify({ error: 'Email não encontrado ou usuário inativo' }),
         { 
           status: 401, 
           headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
@@ -70,10 +70,25 @@ serve(async (req) => {
       );
     }
 
-    console.log('Perfil encontrado:', profile.nome);
+    console.log('Perfil encontrado:', profile.nome, 'CPF cadastrado:', profile.cpf);
 
-    // Extrair os 4 dígitos do CPF como senha
-    const password = cpf.slice(-4);
+    // Validar os 4 últimos dígitos do CPF
+    const storedCpf = String(profile.cpf || '').replace(/\D/g, '');
+    const inputCpf = String(cpf || '').replace(/\D/g, '');
+    
+    if (!storedCpf || !inputCpf || storedCpf.slice(-4) !== inputCpf) {
+      console.log('CPF incorreto. Esperado últimos 4 dígitos:', storedCpf.slice(-4), 'Recebido:', inputCpf);
+      return new Response(
+        JSON.stringify({ error: 'CPF incorreto' }),
+        { 
+          status: 401, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      );
+    }
+
+    // Usar os 4 últimos dígitos do CPF como senha
+    const password = storedCpf.slice(-4);
 
     // Verificar se já existe usuário no Auth com este email
     const { data: existingUser } = await supabaseAdmin.auth.admin.getUserByEmail(email);
@@ -86,8 +101,7 @@ serve(async (req) => {
         const { error: updateError } = await supabaseAdmin
           .from('profiles')
           .update({ user_id: existingUser.user.id })
-          .eq('email', email)
-          .eq('cpf', cpf);
+          .eq('email', email);
 
         if (updateError) {
           console.error('Erro ao vincular perfil:', updateError);
@@ -135,8 +149,7 @@ serve(async (req) => {
       const { error: updateError } = await supabaseAdmin
         .from('profiles')
         .update({ user_id: newUser.user.id })
-        .eq('email', email)
-        .eq('cpf', cpf);
+        .eq('email', email);
 
       if (updateError) {
         console.error('Erro ao vincular perfil:', updateError);
