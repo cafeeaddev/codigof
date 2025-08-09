@@ -56,17 +56,19 @@ const AdminDashboard = () => {
       setIsLoading(true);
       
       // Carregar respostas de todas as missões
-      const [res1, res2, res3, res4] = await Promise.all([
+      const [res1, res2, res3, res4, progressData] = await Promise.all([
         supabase.from('respostas').select('*').order('id', { ascending: false }),
         supabase.from('respostas_missao2').select('*').order('created_at', { ascending: false }),
         supabase.from('respostas_missao3').select('*').order('created_at', { ascending: false }),
-        supabase.from('respostas_missao4').select('*').order('created_at', { ascending: false })
+        supabase.from('respostas_missao4').select('*').order('created_at', { ascending: false }),
+        supabase.from('user_progress').select('*')
       ]);
 
       if (res1.error) console.error('Error loading mission 1:', res1.error);
       if (res2.error) console.error('Error loading mission 2:', res2.error);
       if (res3.error) console.error('Error loading mission 3:', res3.error);
       if (res4.error) console.error('Error loading mission 4:', res4.error);
+      if (progressData.error) console.error('Error loading progress:', progressData.error);
 
       // Transform the data to match the expected interface
       setResponses1((res1.data || []).map(item => ({
@@ -98,36 +100,35 @@ const AdminDashboard = () => {
         created_at: item.created_at
       })));
 
-      // Calcular estatísticas
-      const allEmails = new Set([
-        ...res1.data?.map(r => r.email) || [],
-        ...res2.data?.map(r => r.email) || [],
-        ...res3.data?.map(r => r.email) || [],
-        ...res4.data?.map(r => r.email) || []
-      ]);
-
-      const totalUsers = allEmails.size;
+      // Calcular estatísticas baseado na tabela user_progress
+      const progress = progressData.data || [];
+      const totalUsers = progress.length;
+      
+      const mission1Completed = progress.filter(p => p.missao_1_completed).length;
+      const mission2Completed = progress.filter(p => p.missao_2_completed).length;
+      const mission3Completed = progress.filter(p => p.missao_3_completed).length;
+      const mission4Completed = progress.filter(p => p.missao_4_completed).length;
       
       setStats({
         mission1: {
           total: totalUsers,
-          completed: res1.data?.length || 0,
-          percentage: totalUsers > 0 ? Math.round(((res1.data?.length || 0) / totalUsers) * 100) : 0
+          completed: mission1Completed,
+          percentage: totalUsers > 0 ? Math.round((mission1Completed / totalUsers) * 100) : 0
         },
         mission2: {
           total: totalUsers,
-          completed: res2.data?.length || 0,
-          percentage: totalUsers > 0 ? Math.round(((res2.data?.length || 0) / totalUsers) * 100) : 0
+          completed: mission2Completed,
+          percentage: totalUsers > 0 ? Math.round((mission2Completed / totalUsers) * 100) : 0
         },
         mission3: {
           total: totalUsers,
-          completed: res3.data?.length || 0,
-          percentage: totalUsers > 0 ? Math.round(((res3.data?.length || 0) / totalUsers) * 100) : 0
+          completed: mission3Completed,
+          percentage: totalUsers > 0 ? Math.round((mission3Completed / totalUsers) * 100) : 0
         },
         mission4: {
           total: totalUsers,
-          completed: res4.data?.length || 0,
-          percentage: totalUsers > 0 ? Math.round(((res4.data?.length || 0) / totalUsers) * 100) : 0
+          completed: mission4Completed,
+          percentage: totalUsers > 0 ? Math.round((mission4Completed / totalUsers) * 100) : 0
         }
       });
 
@@ -284,7 +285,7 @@ const AdminDashboard = () => {
                 <div className="flex items-center gap-2">
                   <Users className="w-4 h-4 text-primary" />
                   <span className="text-2xl font-bold">{stat.completed}</span>
-                  <span className="text-sm text-muted-foreground">respostas</span>
+                  <span className="text-sm text-muted-foreground">concluíram</span>
                 </div>
                 <div className="mt-2 w-full bg-secondary/20 rounded-full h-2">
                   <div
@@ -293,7 +294,7 @@ const AdminDashboard = () => {
                   />
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">
-                  {stat.percentage}% de conclusão
+                  {stat.completed} de {stat.total} usuários ({stat.percentage}%)
                 </p>
               </CardContent>
             </Card>
