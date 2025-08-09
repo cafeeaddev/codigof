@@ -290,10 +290,10 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
             <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-4 shadow-neon">
               <div className="flex items-center gap-4">
                 {[
-                  { id: 1, title: "MISSÃO 1", subtitle: "Digital Mindset", progress: completedMissions.has(1) ? 4 : 0, total: 4 },
-                  { id: 2, title: "MISSÃO 2", subtitle: "Dia a Dia", progress: completedMissions.has(2) ? 3 : 0, total: 3 },
-                  { id: 3, title: "MISSÃO 3", subtitle: "Desafios", progress: completedMissions.has(3) ? 1 : 0, total: 1 },
-                  { id: 4, title: "MISSÃO 4", subtitle: "Ferramentas", progress: completedMissions.has(4) ? 10 : 0, total: 10 }
+                  { id: 1, title: "MISSÃO 1", progress: completedMissions.has(1) ? 4 : 0, total: 4 },
+                  { id: 2, title: "MISSÃO 2", progress: completedMissions.has(2) ? 3 : 0, total: 3 },
+                  { id: 3, title: "MISSÃO 3", progress: completedMissions.has(3) ? 1 : 0, total: 1 },
+                  { id: 4, title: "MISSÃO 4", progress: completedMissions.has(4) ? 10 : 0, total: 10 }
                 ].map((mission, index) => {
                   const isCompleted = completedMissions.has(mission.id);
                   const isActive = mission.id === currentMission && !isCompleted;
@@ -336,7 +336,6 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                             )}
                             <div>
                               <div className="font-bold text-xs">{mission.title}</div>
-                              <div className="text-xs opacity-70">{mission.subtitle}</div>
                             </div>
                           </div>
                           <div className="text-xs">
@@ -379,7 +378,10 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
               <div className="flex items-center gap-2 mb-4 p-3 bg-muted/50 rounded-lg">
                 <div className="w-3 h-3 bg-accent rounded-full"></div>
                 <span className="text-accent text-sm font-bold tracking-wider">
-                  MISSÃO {currentMission} EM ANDAMENTO
+                  {currentMission === 1 && "MISSÃO 1 – Como você encara o digital?"}
+                  {currentMission === 2 && "MISSÃO 2 – O digital no seu dia a dia"}
+                  {currentMission === 3 && "MISSÃO 3 – Quando o desafio é maior"}
+                  {currentMission === 4 && "MISSÃO 4 – Seu Radar de Ferramentas"}
                 </span>
               </div>
 
