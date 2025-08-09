@@ -212,20 +212,14 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
   return (
     <div className="w-full max-w-4xl mx-auto p-6">
       <Card className="border-primary/20 bg-card/50 backdrop-blur-sm">
-        <CardHeader className="text-center pb-4">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-primary rounded-full"></div>
-              <span className="text-primary text-sm font-mono font-bold">
-                MISSÃO 4 - SEU RADAR DE FERRAMENTAS
-              </span>
-            </div>
+        <CardHeader className="text-center pb-3">
+          <div className="flex items-center justify-between mb-3">
             <span className="text-sm text-muted-foreground">
-              {currentQuestion + 1} de {questions.length}
+              Pergunta {currentQuestion + 1} de {questions.length}
             </span>
           </div>
           
-          <Progress value={progress} className="w-full h-2 mb-4" />
+          <Progress value={progress} className="w-full h-2 mb-3" />
           
           <CardTitle className="text-lg font-bold text-primary">
             {currentQ.id}. {currentQ.question}
