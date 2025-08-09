@@ -34,6 +34,8 @@ const AdminDashboard = () => {
   const [responses4, setResponses4] = useState<ResponseData[]>([]);
   const [stats, setStats] = useState<Record<string, MissionStats>>({});
   const [usersStarted, setUsersStarted] = useState(0);
+  const [progressData, setProgressData] = useState<any>(null);
+  const [adminUsers, setAdminUsers] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -160,6 +162,8 @@ const AdminDashboard = () => {
       });
       
       setUsersStarted(usersStarted);
+      setProgressData(progressData);
+      setAdminUsers(adminUsers);
 
     } catch (error) {
       console.error('Error loading responses:', error);
@@ -367,6 +371,97 @@ const AdminDashboard = () => {
             </Card>
           ))}
         </div>
+
+        {/* Seção: Usuários que Iniciaram o Sistema */}
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Users className="w-5 h-5" />
+              Usuários que Iniciaram o Sistema
+            </CardTitle>
+            <p className="text-sm text-muted-foreground">
+              Usuários que começaram a usar o sistema e status de suas missões
+            </p>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {progressData.data
+                ?.filter(progress => {
+                  const adminUserIds = new Set((adminUsers.data || []).map(admin => admin.user_id));
+                  return !adminUserIds.has(progress.user_id);
+                })
+                .map((progress, index) => {
+                  // Buscar nome do usuário
+                  const userName = progress.user_id === '600d753e-641a-4b06-a430-bbc50cd654a2' ? 'Nawana De Oliveira Marques Dos Santos' :
+                                 progress.user_id === '90b52ea5-a137-45b2-90b1-6c895581c99f' ? 'Raniel De Oliveira Souza' : 
+                                 'Usuário';
+                  
+                  return (
+                    <div key={progress.user_id} className="border border-secondary/20 rounded-lg p-4">
+                      <div className="flex items-center justify-between mb-3">
+                        <div>
+                          <h4 className="font-medium">{userName}</h4>
+                          <p className="text-sm text-muted-foreground">
+                            Iniciado em: {new Date(progress.created_at).toLocaleDateString('pt-BR')}
+                          </p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-sm text-primary font-medium">{progress.total_xp || 0} XP</p>
+                          <p className="text-xs text-muted-foreground">
+                            {Math.floor((progress.total_play_time || 0) / 60)}min jogados
+                          </p>
+                        </div>
+                      </div>
+                      
+                      <div className="grid grid-cols-4 gap-2">
+                        <div className={`text-center p-2 rounded border ${progress.missao_1_completed ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200'}`}>
+                          <p className="text-xs font-medium">Missão 1</p>
+                          <p className="text-lg">{progress.missao_1_completed ? '✅' : '⏳'}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {progress.missao_1_completed ? 'Concluída' : `${progress.missao_1_current_question}/4`}
+                          </p>
+                        </div>
+                        
+                        <div className={`text-center p-2 rounded border ${progress.missao_2_completed ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200'}`}>
+                          <p className="text-xs font-medium">Missão 2</p>
+                          <p className="text-lg">{progress.missao_2_completed ? '✅' : '⏳'}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {progress.missao_2_completed ? 'Concluída' : `${progress.missao_2_current_question}/3`}
+                          </p>
+                        </div>
+                        
+                        <div className={`text-center p-2 rounded border ${progress.missao_3_completed ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200'}`}>
+                          <p className="text-xs font-medium">Missão 3</p>
+                          <p className="text-lg">{progress.missao_3_completed ? '✅' : '⏳'}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {progress.missao_3_completed ? 'Concluída' : `${progress.missao_3_current_question}/5`}
+                          </p>
+                        </div>
+                        
+                        <div className={`text-center p-2 rounded border ${progress.missao_4_completed ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200'}`}>
+                          <p className="text-xs font-medium">Missão 4</p>
+                          <p className="text-lg">{progress.missao_4_completed ? '✅' : '⏳'}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {progress.missao_4_completed ? 'Concluída' : `${progress.missao_4_current_question}/10`}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              
+              {(!progressData.data || progressData.data.filter(progress => {
+                const adminUserIds = new Set((adminUsers.data || []).map(admin => admin.user_id));
+                return !adminUserIds.has(progress.user_id);
+              }).length === 0) && (
+                <div className="text-center py-8 text-muted-foreground">
+                  <Users className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                  <p>Nenhum usuário iniciou o sistema ainda.</p>
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Tabs com Respostas */}
         <Tabs defaultValue="mission1" className="space-y-4">
