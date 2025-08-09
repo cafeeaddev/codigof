@@ -571,7 +571,7 @@ const AdminDashboard = () => {
           <TabsContent value="mission1">
             <Card>
               <CardContent className="p-6">
-                {renderResponses(responses1, "Missão 1 - Como você encara o digital?")}
+                {renderResponses(responses1 || [], "Missão 1 - Como você encara o digital?")}
               </CardContent>
             </Card>
           </TabsContent>
@@ -579,7 +579,7 @@ const AdminDashboard = () => {
           <TabsContent value="mission2">
             <Card>
               <CardContent className="p-6">
-                {renderResponses(responses2, "Missão 2 - O digital no seu dia a dia")}
+                {renderResponses(responses2 || [], "Missão 2 - O digital no seu dia a dia")}
               </CardContent>
             </Card>
           </TabsContent>
@@ -587,7 +587,7 @@ const AdminDashboard = () => {
           <TabsContent value="mission3">
             <Card>
               <CardContent className="p-6">
-                {renderResponses(responses3, "Missão 3 - Quando o desafio é maior")}
+                {renderResponses(responses3 || [], "Missão 3 - Quando o desafio é maior")}
               </CardContent>
             </Card>
           </TabsContent>
@@ -595,7 +595,7 @@ const AdminDashboard = () => {
           <TabsContent value="mission4">
             <Card>
               <CardContent className="p-6">
-                {renderResponses(responses4, "Missão 4 - Seu Radar de Ferramentas")}
+                {renderResponses(responses4 || [], "Missão 4 - Seu Radar de Ferramentas")}
               </CardContent>
             </Card>
           </TabsContent>
