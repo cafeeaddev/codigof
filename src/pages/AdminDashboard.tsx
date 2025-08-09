@@ -56,7 +56,7 @@ const AdminDashboard = () => {
     try {
       setIsLoading(true);
       
-      // Carregar respostas de todas as missões e dados gerais
+      // Carregar respostas de todas as missões e dados gerais (excluindo admins)
       const [res1, res2, res3, res4, progressData, profilesData] = await Promise.all([
         // Filtrar apenas respostas reais da Missão 1 (excluir as migradas)
         supabase.from('respostas').select('*')
@@ -65,8 +65,18 @@ const AdminDashboard = () => {
         supabase.from('respostas_missao2').select('*').order('created_at', { ascending: false }),
         supabase.from('respostas_missao3').select('*').order('created_at', { ascending: false }),
         supabase.from('respostas_missao4').select('*').order('created_at', { ascending: false }),
-        supabase.from('user_progress').select('*'),
+        // Filtrar user_progress excluindo admins
+        supabase.from('user_progress').select(`
+          *,
+          profiles!inner(user_id)
+        `).not('profiles.user_id', 'in', `(
+          SELECT user_id FROM user_roles WHERE role = 'admin'
+        )`),
+        // Contar profiles excluindo admins
         supabase.from('profiles').select('id', { count: 'exact', head: true })
+          .not('user_id', 'in', `(
+            SELECT user_id FROM user_roles WHERE role = 'admin'
+          )`)
       ]);
 
       if (res1.error) console.error('Error loading mission 1:', res1.error);
