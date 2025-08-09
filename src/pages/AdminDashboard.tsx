@@ -57,7 +57,10 @@ const AdminDashboard = () => {
       
       // Carregar respostas de todas as missões
       const [res1, res2, res3, res4, progressData] = await Promise.all([
-        supabase.from('respostas').select('*').order('id', { ascending: false }),
+        // Filtrar apenas respostas reais da Missão 1 (excluir as migradas)
+        supabase.from('respostas').select('*')
+          .filter('respostas', 'not.like', '*"missao"*')  // Excluir respostas com campo "missao"
+          .order('id', { ascending: false }),
         supabase.from('respostas_missao2').select('*').order('created_at', { ascending: false }),
         supabase.from('respostas_missao3').select('*').order('created_at', { ascending: false }),
         supabase.from('respostas_missao4').select('*').order('created_at', { ascending: false }),
@@ -269,7 +272,41 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        {/* Estatísticas Gerais */}
+        {/* Resumo Geral */}
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Users className="w-5 h-5" />
+              Resumo Geral
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+              <div>
+                <p className="text-2xl font-bold text-primary">{stats.mission1?.total || 0}</p>
+                <p className="text-sm text-muted-foreground">Total de Usuários</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-green-600">
+                  {Object.values(stats).reduce((acc, stat) => acc + stat.completed, 0)}
+                </p>
+                <p className="text-sm text-muted-foreground">Total de Missões Concluídas</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-blue-600">{responses1.length + responses2.length + responses3.length + responses4.length}</p>
+                <p className="text-sm text-muted-foreground">Total de Respostas</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-purple-600">
+                  {stats.mission1?.total > 0 ? Math.round((Object.values(stats).reduce((acc, stat) => acc + stat.completed, 0) / (stats.mission1.total * 4)) * 100) : 0}%
+                </p>
+                <p className="text-sm text-muted-foreground">Taxa de Conclusão Geral</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Estatísticas por Missão */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
           {Object.entries(stats).map(([key, stat]) => (
             <Card key={key}>
