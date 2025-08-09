@@ -7,7 +7,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { ArrowLeft, Users, FileText, Calendar, Download } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { ArrowLeft, Users, FileText, Calendar, Download, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 
 interface ResponseData {
@@ -37,6 +39,9 @@ const AdminDashboard = () => {
   const [progressData, setProgressData] = useState<any>(null);
   const [adminUsers, setAdminUsers] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   useEffect(() => {
     if (roleLoading) return;
@@ -384,82 +389,173 @@ const AdminDashboard = () => {
             </p>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              {progressData.data
+            {/* Busca */}
+            <div className="flex items-center gap-4 mb-4">
+              <div className="relative flex-1 max-w-sm">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                <Input
+                  placeholder="Buscar por nome..."
+                  value={searchTerm}
+                  onChange={(e) => {
+                    setSearchTerm(e.target.value);
+                    setCurrentPage(1);
+                  }}
+                  className="pl-10"
+                />
+              </div>
+              <Badge variant="secondary">
+                {progressData.data?.filter(progress => {
+                  const adminUserIds = new Set((adminUsers.data || []).map(admin => admin.user_id));
+                  return !adminUserIds.has(progress.user_id);
+                }).length || 0} usuários encontrados
+              </Badge>
+            </div>
+
+            {/* Tabela */}
+            <div className="border rounded-lg">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Usuário</TableHead>
+                    <TableHead>Data de Início</TableHead>
+                    <TableHead>XP Total</TableHead>
+                    <TableHead>Tempo de Jogo</TableHead>
+                    <TableHead>Missão 1</TableHead>
+                    <TableHead>Missão 2</TableHead>
+                    <TableHead>Missão 3</TableHead>
+                    <TableHead>Missão 4</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {(() => {
+                    const allUsers = progressData.data
+                      ?.filter(progress => {
+                        const adminUserIds = new Set((adminUsers.data || []).map(admin => admin.user_id));
+                        return !adminUserIds.has(progress.user_id);
+                      }) || [];
+                    
+                    // Filtrar por busca
+                    const filteredUsers = allUsers.filter(progress => {
+                      const userName = progress.user_id === '600d753e-641a-4b06-a430-bbc50cd654a2' ? 'Nawana De Oliveira Marques Dos Santos' :
+                                     progress.user_id === '90b52ea5-a137-45b2-90b1-6c895581c99f' ? 'Raniel De Oliveira Souza' : 
+                                     'Usuário';
+                      return userName.toLowerCase().includes(searchTerm.toLowerCase());
+                    });
+
+                    // Paginação
+                    const startIndex = (currentPage - 1) * itemsPerPage;
+                    const endIndex = startIndex + itemsPerPage;
+                    const paginatedUsers = filteredUsers.slice(startIndex, endIndex);
+                    const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
+
+                    return (
+                      <>
+                        {paginatedUsers.map((progress) => {
+                          const userName = progress.user_id === '600d753e-641a-4b06-a430-bbc50cd654a2' ? 'Nawana De Oliveira Marques Dos Santos' :
+                                         progress.user_id === '90b52ea5-a137-45b2-90b1-6c895581c99f' ? 'Raniel De Oliveira Souza' : 
+                                         'Usuário';
+                          
+                          return (
+                            <TableRow key={progress.user_id}>
+                              <TableCell className="font-medium">{userName}</TableCell>
+                              <TableCell>{new Date(progress.created_at).toLocaleDateString('pt-BR')}</TableCell>
+                              <TableCell className="text-primary font-medium">{progress.total_xp || 0} XP</TableCell>
+                              <TableCell>{Math.floor((progress.total_play_time || 0) / 60)}min</TableCell>
+                              <TableCell>
+                                <div className="flex items-center gap-1">
+                                  {progress.missao_1_completed ? '✅' : '⏳'}
+                                  <span className="text-xs text-muted-foreground ml-1">
+                                    {progress.missao_1_completed ? 'Concluída' : `${progress.missao_1_current_question}/4`}
+                                  </span>
+                                </div>
+                              </TableCell>
+                              <TableCell>
+                                <div className="flex items-center gap-1">
+                                  {progress.missao_2_completed ? '✅' : '⏳'}
+                                  <span className="text-xs text-muted-foreground ml-1">
+                                    {progress.missao_2_completed ? 'Concluída' : `${progress.missao_2_current_question}/5`}
+                                  </span>
+                                </div>
+                              </TableCell>
+                              <TableCell>
+                                <div className="flex items-center gap-1">
+                                  {progress.missao_3_completed ? '✅' : '⏳'}
+                                  <span className="text-xs text-muted-foreground ml-1">
+                                    {progress.missao_3_completed ? 'Concluída' : `${progress.missao_3_current_question}/3`}
+                                  </span>
+                                </div>
+                              </TableCell>
+                              <TableCell>
+                                <div className="flex items-center gap-1">
+                                  {progress.missao_4_completed ? '✅' : '⏳'}
+                                  <span className="text-xs text-muted-foreground ml-1">
+                                    {progress.missao_4_completed ? 'Concluída' : `${progress.missao_4_current_question}/3`}
+                                  </span>
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })}
+                        {paginatedUsers.length === 0 && (
+                          <TableRow>
+                            <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
+                              <Users className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                              <p>Nenhum usuário encontrado.</p>
+                            </TableCell>
+                          </TableRow>
+                        )}
+                      </>
+                    );
+                  })()}
+                </TableBody>
+              </Table>
+            </div>
+
+            {/* Paginação */}
+            {(() => {
+              const allUsers = progressData.data
                 ?.filter(progress => {
                   const adminUserIds = new Set((adminUsers.data || []).map(admin => admin.user_id));
                   return !adminUserIds.has(progress.user_id);
-                })
-                .map((progress, index) => {
-                  // Buscar nome do usuário
-                  const userName = progress.user_id === '600d753e-641a-4b06-a430-bbc50cd654a2' ? 'Nawana De Oliveira Marques Dos Santos' :
-                                 progress.user_id === '90b52ea5-a137-45b2-90b1-6c895581c99f' ? 'Raniel De Oliveira Souza' : 
-                                 'Usuário';
-                  
-                  return (
-                    <div key={progress.user_id} className="border border-secondary/20 rounded-lg p-4">
-                      <div className="flex items-center justify-between mb-3">
-                        <div>
-                          <h4 className="font-medium">{userName}</h4>
-                          <p className="text-sm text-muted-foreground">
-                            Iniciado em: {new Date(progress.created_at).toLocaleDateString('pt-BR')}
-                          </p>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-sm text-primary font-medium">{progress.total_xp || 0} XP</p>
-                          <p className="text-xs text-muted-foreground">
-                            {Math.floor((progress.total_play_time || 0) / 60)}min jogados
-                          </p>
-                        </div>
-                      </div>
-                      
-                      <div className="grid grid-cols-4 gap-2">
-                        <div className={`text-center p-2 rounded border ${progress.missao_1_completed ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200'}`}>
-                          <p className="text-xs font-medium">Missão 1</p>
-                          <p className="text-lg">{progress.missao_1_completed ? '✅' : '⏳'}</p>
-                          <p className="text-xs text-muted-foreground">
-                            {progress.missao_1_completed ? 'Concluída' : `${progress.missao_1_current_question}/4`}
-                          </p>
-                        </div>
-                        
-                        <div className={`text-center p-2 rounded border ${progress.missao_2_completed ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200'}`}>
-                          <p className="text-xs font-medium">Missão 2</p>
-                          <p className="text-lg">{progress.missao_2_completed ? '✅' : '⏳'}</p>
-                          <p className="text-xs text-muted-foreground">
-                            {progress.missao_2_completed ? 'Concluída' : `${progress.missao_2_current_question}/3`}
-                          </p>
-                        </div>
-                        
-                        <div className={`text-center p-2 rounded border ${progress.missao_3_completed ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200'}`}>
-                          <p className="text-xs font-medium">Missão 3</p>
-                          <p className="text-lg">{progress.missao_3_completed ? '✅' : '⏳'}</p>
-                          <p className="text-xs text-muted-foreground">
-                            {progress.missao_3_completed ? 'Concluída' : `${progress.missao_3_current_question}/5`}
-                          </p>
-                        </div>
-                        
-                        <div className={`text-center p-2 rounded border ${progress.missao_4_completed ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200'}`}>
-                          <p className="text-xs font-medium">Missão 4</p>
-                          <p className="text-lg">{progress.missao_4_completed ? '✅' : '⏳'}</p>
-                          <p className="text-xs text-muted-foreground">
-                            {progress.missao_4_completed ? 'Concluída' : `${progress.missao_4_current_question}/10`}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
+                }) || [];
               
-              {(!progressData.data || progressData.data.filter(progress => {
-                const adminUserIds = new Set((adminUsers.data || []).map(admin => admin.user_id));
-                return !adminUserIds.has(progress.user_id);
-              }).length === 0) && (
-                <div className="text-center py-8 text-muted-foreground">
-                  <Users className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                  <p>Nenhum usuário iniciou o sistema ainda.</p>
+              const filteredUsers = allUsers.filter(progress => {
+                const userName = progress.user_id === '600d753e-641a-4b06-a430-bbc50cd654a2' ? 'Nawana De Oliveira Marques Dos Santos' :
+                               progress.user_id === '90b52ea5-a137-45b2-90b1-6c895581c99f' ? 'Raniel De Oliveira Souza' : 
+                               'Usuário';
+                return userName.toLowerCase().includes(searchTerm.toLowerCase());
+              });
+
+              const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
+
+              return totalPages > 1 && (
+                <div className="flex items-center justify-between mt-4">
+                  <p className="text-sm text-muted-foreground">
+                    Página {currentPage} de {totalPages} ({filteredUsers.length} usuários)
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                      disabled={currentPage === 1}
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                      Anterior
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                      disabled={currentPage === totalPages}
+                    >
+                      Próxima
+                      <ChevronRight className="w-4 h-4" />
+                    </Button>
+                  </div>
                 </div>
-              )}
-            </div>
+              );
+            })()}
           </CardContent>
         </Card>
 
