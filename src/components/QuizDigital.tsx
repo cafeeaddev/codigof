@@ -302,10 +302,10 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
   return (
     <div className="h-full flex flex-col">
       <ScrollArea className="flex-1">
-        <div className="p-3 pb-16">
+        <div className="p-2 pb-12">
 
-          <div className="mb-2">
-            <div className="flex justify-between items-center mb-2">
+          <div className="mb-1">
+            <div className="flex justify-between items-center mb-1">
               <span className="text-xs text-muted-foreground">
                 Pergunta {currentQuestion + 1} de {quizQuestions.length}
               </span>
@@ -313,16 +313,16 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
                 {Math.round(progress)}%
               </span>
             </div>
-            <div className="w-full bg-secondary/20 rounded-full h-1">
+            <div className="w-full bg-secondary/20 rounded-full h-0.5">
               <div
-                className="bg-primary h-1 rounded-full transition-all duration-300"
+                className="bg-primary h-0.5 rounded-full transition-all duration-300"
                 style={{ width: `${progress}%` }}
               />
             </div>
           </div>
 
-          <div className="mb-3">
-            <h4 className="text-sm font-medium text-foreground mb-2">
+          <div className="mb-2">
+            <h4 className="text-sm font-medium text-foreground mb-1">
               {currentQuestionData.question}
             </h4>
 
@@ -332,7 +332,7 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
               className="space-y-2"
             >
               {currentQuestionData.options.map((option) => (
-                <div key={option.letter} className="flex items-start space-x-2 p-2 rounded hover:bg-muted/20">
+                <div key={option.letter} className="flex items-start space-x-2 p-1 rounded hover:bg-muted/20">
                   <RadioGroupItem
                     value={option.letter}
                     id={`q${currentQuestionData.id}-${option.letter}`}
@@ -340,7 +340,7 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
                   />
                   <Label
                     htmlFor={`q${currentQuestionData.id}-${option.letter}`}
-                    className="text-xs text-foreground cursor-pointer flex-1 leading-relaxed"
+                    className="text-xs text-foreground cursor-pointer flex-1 leading-snug"
                   >
                     <span className="font-medium text-primary mr-1">{option.letter})</span>
                     {option.text}
@@ -352,7 +352,7 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
         </div>
       </ScrollArea>
       
-      <div className="flex justify-between p-3 border-t border-secondary/30 bg-background">
+      <div className="flex justify-between p-2 border-t border-secondary/30 bg-background">
         <Button
           onClick={goToPreviousQuestion}
           disabled={currentQuestion === 0}
