@@ -63,13 +63,26 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
               ].filter(Boolean).length
             });
             
-            // Set completed missions
+            // Set completed missions and determine current mission
             const completed = new Set<number>();
             if (progress.missao_1_completed) completed.add(1);
             if (progress.missao_2_completed) completed.add(2);
             if (progress.missao_3_completed) completed.add(3);
             if (progress.missao_4_completed) completed.add(4);
             setCompletedMissions(completed);
+            
+            // Determine current mission based on completion
+            if (!progress.missao_1_completed) {
+              setCurrentMission(1);
+            } else if (!progress.missao_2_completed) {
+              setCurrentMission(2);
+            } else if (!progress.missao_3_completed) {
+              setCurrentMission(3);
+            } else if (!progress.missao_4_completed) {
+              setCurrentMission(4);
+            } else {
+              setCurrentMission(1); // All completed, default to first
+            }
           }
         } else {
           console.log('[WelcomeScreen] No userId provided');
@@ -77,7 +90,8 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
       } catch (error) {
         console.error('[WelcomeScreen] Error loading user progress:', error);
       } finally {
-        setTimeout(() => setIsLoading(false), 1000);
+        console.log('[WelcomeScreen] Loading complete, isLoading set to false');
+        setTimeout(() => setIsLoading(false), 500); // Reduzir tempo para 500ms
       }
     };
 
