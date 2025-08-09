@@ -184,7 +184,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
             </div>
             
             {/* Estatísticas compactas no Header Desktop */}
-            <div className="hidden md:flex items-center gap-4 ml-4">
+            <div className="hidden md:flex items-center gap-4 ml-4 mr-8">
               <div className="text-center">
                 <div className="text-sm font-bold text-primary">{userProgress.total_xp}</div>
                 <div className="text-muted-foreground text-xs">XP</div>
