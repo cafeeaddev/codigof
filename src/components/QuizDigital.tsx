@@ -303,11 +303,8 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
     <div className="h-full flex flex-col">
       <ScrollArea className="flex-1">
         <div className="p-3 pb-16">
-          <div className="mb-3">
-            <h3 className="text-base font-bold text-foreground mb-1">Como você encara o digital?</h3>
-          </div>
 
-          <div className="mb-3">
+          <div className="mb-2">
             <div className="flex justify-between items-center mb-2">
               <span className="text-xs text-muted-foreground">
                 Pergunta {currentQuestion + 1} de {quizQuestions.length}
@@ -324,8 +321,8 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
             </div>
           </div>
 
-          <div className="mb-4">
-            <h4 className="text-sm font-medium text-foreground mb-3">
+          <div className="mb-3">
+            <h4 className="text-sm font-medium text-foreground mb-2">
               {currentQuestionData.question}
             </h4>
 
