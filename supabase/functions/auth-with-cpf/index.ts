@@ -58,7 +58,7 @@ serve(async (req) => {
       .from('profiles')
       .select('*')
       .eq('email', email)
-      .eq('situacao', 'ATIVO')
+      .eq('situacao', 'Ativo')
       .maybeSingle();
 
     if (profileError) {
