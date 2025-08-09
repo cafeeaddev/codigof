@@ -100,8 +100,10 @@ serve(async (req) => {
       );
     }
 
-    // Usar os 4 últimos dígitos do CPF como senha
-    const password = storedCpf.slice(-4);
+    // Usar o CPF completo (sem formatação) como senha
+    const password = storedCpf;
+
+    console.log('CPF validado. Senha será:', password.slice(0, 3) + '***' + password.slice(-3));
 
     // Verificar se já existe usuário no Auth com este email
     const { data: existingUsers, error: listError } = await supabaseAdmin.auth.admin.listUsers({
