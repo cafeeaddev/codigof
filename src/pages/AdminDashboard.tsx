@@ -56,8 +56,8 @@ const AdminDashboard = () => {
     try {
       setIsLoading(true);
       
-      // Carregar respostas de todas as missões e dados gerais (excluindo admins)
-      const [res1, res2, res3, res4, progressData, profilesData] = await Promise.all([
+      // Carregar respostas de todas as missões e dados gerais
+      const [res1, res2, res3, res4, progressData, profilesData, adminUsers] = await Promise.all([
         // Filtrar apenas respostas reais da Missão 1 (excluir as migradas)
         supabase.from('respostas').select('*')
           .filter('respostas', 'not.like', '*"missao"*')  // Excluir respostas com campo "missao"
@@ -65,18 +65,10 @@ const AdminDashboard = () => {
         supabase.from('respostas_missao2').select('*').order('created_at', { ascending: false }),
         supabase.from('respostas_missao3').select('*').order('created_at', { ascending: false }),
         supabase.from('respostas_missao4').select('*').order('created_at', { ascending: false }),
-        // Filtrar user_progress excluindo admins
-        supabase.from('user_progress').select(`
-          *,
-          profiles!inner(user_id)
-        `).not('profiles.user_id', 'in', `(
-          SELECT user_id FROM user_roles WHERE role = 'admin'
-        )`),
-        // Contar profiles excluindo admins
-        supabase.from('profiles').select('id', { count: 'exact', head: true })
-          .not('user_id', 'in', `(
-            SELECT user_id FROM user_roles WHERE role = 'admin'
-          )`)
+        supabase.from('user_progress').select('*'),
+        supabase.from('profiles').select('id', { count: 'exact', head: true }),
+        // Buscar IDs dos admins
+        supabase.from('user_roles').select('user_id').eq('role', 'admin')
       ]);
 
       if (res1.error) console.error('Error loading mission 1:', res1.error);
@@ -115,21 +107,28 @@ const AdminDashboard = () => {
         created_at: item.created_at
       })));
 
-      // Calcular estatísticas baseado na tabela user_progress
+      // Calcular estatísticas baseado na tabela user_progress (excluindo admins)
       const progress = progressData.data || [];
+      const adminUserIds = new Set((adminUsers.data || []).map(admin => admin.user_id));
+      
+      // Filtrar progresso excluindo admins
+      const nonAdminProgress = progress.filter(p => !adminUserIds.has(p.user_id));
+      
       const totalProfiles = profilesData.count || 0; // Total de usuários cadastrados
-      const usersStarted = progress.length; // Usuários que começaram o jogo
+      const totalNonAdminProfiles = totalProfiles - adminUserIds.size; // Excluir admins do total
+      const usersStarted = nonAdminProgress.length; // Usuários não-admin que começaram o jogo
       
       console.log('Progress data loaded:', progress);
-      console.log('Total profiles:', totalProfiles, 'Users started:', usersStarted);
+      console.log('Admin users:', adminUserIds);
+      console.log('Total profiles:', totalProfiles, 'Non-admin profiles:', totalNonAdminProfiles, 'Users started:', usersStarted);
       
-      const mission1Completed = progress.filter(p => p.missao_1_completed === true).length;
-      const mission2Completed = progress.filter(p => p.missao_2_completed === true).length;
-      const mission3Completed = progress.filter(p => p.missao_3_completed === true).length;
-      const mission4Completed = progress.filter(p => p.missao_4_completed === true).length;
+      const mission1Completed = nonAdminProgress.filter(p => p.missao_1_completed === true).length;
+      const mission2Completed = nonAdminProgress.filter(p => p.missao_2_completed === true).length;
+      const mission3Completed = nonAdminProgress.filter(p => p.missao_3_completed === true).length;
+      const mission4Completed = nonAdminProgress.filter(p => p.missao_4_completed === true).length;
       
-      console.log('Mission completion counts:', {
-        totalProfiles,
+      console.log('Mission completion counts (excluding admins):', {
+        totalNonAdminProfiles,
         usersStarted,
         mission1Completed,
         mission2Completed,
@@ -139,24 +138,24 @@ const AdminDashboard = () => {
       
       setStats({
         mission1: {
-          total: totalProfiles,
+          total: totalNonAdminProfiles,
           completed: mission1Completed,
-          percentage: totalProfiles > 0 ? Math.round((mission1Completed / totalProfiles) * 100) : 0
+          percentage: totalNonAdminProfiles > 0 ? Math.round((mission1Completed / totalNonAdminProfiles) * 100) : 0
         },
         mission2: {
-          total: totalProfiles,
+          total: totalNonAdminProfiles,
           completed: mission2Completed,
-          percentage: totalProfiles > 0 ? Math.round((mission2Completed / totalProfiles) * 100) : 0
+          percentage: totalNonAdminProfiles > 0 ? Math.round((mission2Completed / totalNonAdminProfiles) * 100) : 0
         },
         mission3: {
-          total: totalProfiles,
+          total: totalNonAdminProfiles,
           completed: mission3Completed,
-          percentage: totalProfiles > 0 ? Math.round((mission3Completed / totalProfiles) * 100) : 0
+          percentage: totalNonAdminProfiles > 0 ? Math.round((mission3Completed / totalNonAdminProfiles) * 100) : 0
         },
         mission4: {
-          total: totalProfiles,
+          total: totalNonAdminProfiles,
           completed: mission4Completed,
-          percentage: totalProfiles > 0 ? Math.round((mission4Completed / totalProfiles) * 100) : 0
+          percentage: totalNonAdminProfiles > 0 ? Math.round((mission4Completed / totalNonAdminProfiles) * 100) : 0
         }
       });
       
