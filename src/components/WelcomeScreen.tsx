@@ -191,7 +191,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
               </div>
               <div className="text-center">
                 <div className="text-sm font-bold text-accent">{userProgress.completedMissionsCount}/4</div>
-                <div className="text-muted-foreground text-xs">Missões</div>
+                <div className="text-muted-foreground text-xs">Completadas</div>
               </div>
             </div>
           </div>
@@ -218,7 +218,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
           </div>
           <div className="text-center">
             <div className="text-sm font-bold text-accent">{userProgress.completedMissionsCount}/4</div>
-            <div className="text-muted-foreground text-xs">Missões</div>
+            <div className="text-muted-foreground text-xs">Completadas</div>
           </div>
         </div>
       </div>
