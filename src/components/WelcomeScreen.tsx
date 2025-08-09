@@ -358,6 +358,9 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                             )}
                             <div>
                               <div className="font-bold text-xs">{mission.title}</div>
+                              {isActive && (
+                                <div className="text-xs text-accent font-medium">ATIVADA</div>
+                              )}
                             </div>
                           </div>
                           <div className="text-xs">
