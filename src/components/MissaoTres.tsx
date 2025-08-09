@@ -136,22 +136,19 @@ export const MissaoTres = ({ onComplete }: MissaoTresProps) => {
       };
 
       // Insert response record for mission 3
-      const { error } = await supabase
-        .from('respostas')
+      const { error: responseError } = await supabase
+        .from('respostas_missao3')
         .insert({
           nome: currentUser.nome,
           email: currentUser.email,
-          respostas: JSON.stringify({
-            missao: 3,
-            data: responsesData
-          })
+          respostas: responsesData
         });
 
-      if (error) {
-        console.error('Error saving mission 3 responses:', error);
+      if (responseError) {
+        console.error('Error saving mission 3 response:', responseError);
         toast({
           title: "Erro ao salvar",
-          description: "Não foi possível salvar suas respostas. Tente novamente.",
+          description: "Não foi possível salvar sua resposta. Tente novamente.",
           variant: "destructive"
         });
         return;
@@ -159,6 +156,7 @@ export const MissaoTres = ({ onComplete }: MissaoTresProps) => {
 
       // Update user progress and add XP
       const { data: { user } } = await supabase.auth.getUser();
+      
       if (user) {
         const { data: existingProgress } = await supabase
           .from('user_progress')

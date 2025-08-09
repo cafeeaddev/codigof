@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from './ui/button';
-import { LogOut, User, Loader2 } from 'lucide-react';
+import { LogOut, User, Loader2, Shield } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 import { ScrollArea } from './ui/scroll-area';
+import { useUserRole } from '@/hooks/useUserRole';
 import { QuizDigital } from './QuizDigital';
 import { MissaoDois } from './MissaoDois';
 import { MissaoTres } from './MissaoTres';
@@ -21,6 +23,8 @@ interface WelcomeScreenProps {
 }
 
 export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeScreenProps) => {
+  const navigate = useNavigate();
+  const { isAdmin } = useUserRole();
   const [isLoading, setIsLoading] = useState(true);
   const [currentMission, setCurrentMission] = useState<1 | 2 | 3 | 4>(1);
   const [completedMissions, setCompletedMissions] = useState<Set<number>>(new Set());
@@ -192,7 +196,20 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
               <div className="text-center">
                 <div className="text-sm font-bold text-accent">{userProgress.completedMissionsCount}/4</div>
                 <div className="text-muted-foreground text-xs">Completadas</div>
-              </div>
+            </div>
+          
+          {/* Botão Admin (só aparece para admins) */}
+          {isAdmin && (
+            <Button
+              onClick={() => navigate('/admin')}
+              variant="outline"
+              size="sm"
+              className="bg-transparent border-accent text-accent hover:bg-accent hover:text-accent-foreground mr-2"
+            >
+              <Shield className="w-3 h-3 md:w-4 md:h-4 md:mr-2" />
+              <span className="hidden md:inline">ADMIN</span>
+            </Button>
+          )}
             </div>
           </div>
           
