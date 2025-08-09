@@ -85,6 +85,12 @@ const AdminDashboard = () => {
       if (progressData.error) console.error('Error loading progress:', progressData.error);
 
       // Transform the data to match the expected interface
+      // Criar mapa de email para dados do usuário (para as respostas)
+      const userProfilesByEmail = new Map((allProfiles.data || []).map(profile => [
+        profile.email, 
+        { nome: profile.nome || 'Usuário', email: profile.email || '' }
+      ]));
+
       setResponses1((res1.data || [])
         .filter(item => {
           // Filtrar apenas respostas da Missão 1 (sem campo "missao" ou com missao = 1)
@@ -103,13 +109,16 @@ const AdminDashboard = () => {
           }
           return true;
         })
-        .map(item => ({
-          id: item.id.toString(),
-          nome: item.nome,
-          email: item.email || '',
-          respostas: typeof item.respostas === 'string' ? JSON.parse(item.respostas) : item.respostas,
-          created_at: new Date().toISOString() // respostas table doesn't have created_at
-        })));
+        .map(item => {
+          const userProfile = userProfilesByEmail.get(item.email);
+          return {
+            id: item.id.toString(),
+            nome: userProfile?.nome || item.nome,
+            email: item.email || '',
+            respostas: typeof item.respostas === 'string' ? JSON.parse(item.respostas) : item.respostas,
+            created_at: new Date().toISOString()
+          };
+        }));
         
       setResponses2((res2.data || [])
         .filter(item => {
@@ -120,29 +129,38 @@ const AdminDashboard = () => {
           }
           return true;
         })
-        .map(item => ({
+        .map(item => {
+          const userProfile = userProfilesByEmail.get(item.email);
+          return {
+            id: item.id,
+            nome: userProfile?.nome || item.nome,
+            email: item.email,
+            respostas: item.respostas,
+            created_at: item.created_at
+          };
+        }));
+        
+      setResponses3((res3.data || []).map(item => {
+        const userProfile = userProfilesByEmail.get(item.email);
+        return {
           id: item.id,
-          nome: item.nome,
+          nome: userProfile?.nome || item.nome,
           email: item.email,
           respostas: item.respostas,
           created_at: item.created_at
-        })));
-        
-      setResponses3((res3.data || []).map(item => ({
-        id: item.id,
-        nome: item.nome,
-        email: item.email,
-        respostas: item.respostas,
-        created_at: item.created_at
-      })));
+        };
+      }));
       
-      setResponses4((res4.data || []).map(item => ({
-        id: item.id,
-        nome: item.nome,
-        email: item.email,
-        respostas: item.respostas,
-        created_at: item.created_at
-      })));
+      setResponses4((res4.data || []).map(item => {
+        const userProfile = userProfilesByEmail.get(item.email);
+        return {
+          id: item.id,
+          nome: userProfile?.nome || item.nome,
+          email: item.email,
+          respostas: item.respostas,
+          created_at: item.created_at
+        };
+      }));
 
       // Calcular estatísticas baseado na tabela user_progress (excluindo admins)
       const progress = progressData.data || [];
@@ -153,6 +171,8 @@ const AdminDashboard = () => {
         profile.user_id, 
         { nome: profile.nome || 'Usuário', email: profile.email || '' }
       ]));
+
+      console.log('User profiles by email loaded:', userProfilesByEmail);
       
       // Filtrar progresso excluindo admins
       const nonAdminProgress = progress.filter(p => !adminUserIds.has(p.user_id));
@@ -161,7 +181,7 @@ const AdminDashboard = () => {
       const usersStarted = nonAdminProgress.length; // Usuários não-admin que começaram o jogo
       
       // Salvar userProfiles no estado para usar na renderização
-      setProgressData({ ...progressData, userProfiles });
+      setProgressData({ ...progressData, userProfiles, userProfilesByEmail });
       
       console.log('Progress data loaded:', progress);
       console.log('User profiles loaded:', userProfiles);
@@ -206,7 +226,7 @@ const AdminDashboard = () => {
       
       
       setUsersStarted(usersStarted);
-      setProgressData({ ...progressData, userProfiles });
+      setProgressData({ ...progressData, userProfiles, userProfilesByEmail });
       setAdminUsers(adminUsers);
 
     } catch (error) {
