@@ -183,17 +183,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
               </p>
             </div>
             
-            {/* Estatísticas no Header - Apenas Desktop */}
-            <div className="hidden md:flex items-center gap-6 ml-20 mr-8">
-              <div className="text-center">
-                <div className="text-lg font-bold text-primary">{userProgress.total_xp}</div>
-                <div className="text-muted-foreground text-xs">Total XP</div>
-              </div>
-              <div className="text-center">
-                <div className="text-lg font-bold text-accent">{userProgress.completedMissionsCount}</div>
-                <div className="text-muted-foreground text-xs">Concluídas</div>
-              </div>
-            </div>
+            {/* Remover estatísticas do Header Desktop */}
           </div>
           
           <Button
@@ -209,19 +199,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
         </div>
       </div>
 
-      {/* Estatísticas Mobile - Abaixo do Header */}
-      <div className="block md:hidden bg-card/80 backdrop-blur-xl border-b border-secondary/30 px-4 py-3">
-        <div className="flex items-center justify-center gap-8 max-w-sm mx-auto">
-          <div className="text-center">
-            <div className="text-lg font-bold text-primary">{userProgress.total_xp}</div>
-            <div className="text-muted-foreground text-xs">XP Total</div>
-          </div>
-          <div className="text-center">
-            <div className="text-lg font-bold text-accent">{userProgress.completedMissionsCount}</div>
-            <div className="text-muted-foreground text-xs">Concluídas</div>
-          </div>
-        </div>
-      </div>
+      {/* Remover estatísticas Mobile */}
 
       <div className="h-[calc(100vh-4rem)] md:h-[calc(100vh-5rem)] overflow-hidden p-3 md:p-6 relative z-10">
         <div className="max-w-7xl mx-auto h-full">
@@ -307,11 +285,11 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
             </div>
           </div>
 
-          {/* Layout Desktop: Grid com sidebar de missões */}
+          {/* Layout Desktop: Grid otimizado para perguntas */}
           <div className="hidden md:block h-full">
-            <div className="grid grid-cols-5 gap-6 h-full">
-              {/* Missões Diárias - 2 colunas (menor) */}
-              <div className="col-span-2 h-full overflow-hidden">
+            <div className="grid grid-cols-6 gap-4 h-full">
+              {/* Missões - 1 coluna (menor) */}
+              <div className="col-span-1 h-full overflow-hidden">
                 <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-6 shadow-neon h-full overflow-hidden flex flex-col">
                   <div className="flex items-center gap-2 mb-6 p-3 bg-muted/50 rounded-lg">
                     <div className="w-3 h-3 bg-primary rounded-full"></div>
@@ -319,26 +297,26 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                   </div>
 
                   <ScrollArea className="flex-1">
-                    <div className="space-y-4 pr-4">
+                    <div className="space-y-3 pr-2">
                       {[
-                        { id: 1, title: "MISSÃO 1 – Como você encara o digital?", progress: completedMissions.has(1) ? 4 : 0, total: 4, xp: 25 },
-                        { id: 2, title: "MISSÃO 2 – O digital no seu dia a dia", progress: completedMissions.has(2) ? 3 : 0, total: 3, xp: 25 },
-                        { id: 3, title: "MISSÃO 3 – Quando o desafio é maior", progress: completedMissions.has(3) ? 1 : 0, total: 1, xp: 25 },
-                        { id: 4, title: "MISSÃO 4 - Seu Radar de Ferramentas", progress: completedMissions.has(4) ? 10 : 0, total: 10, xp: 25 }
+                        { id: 1, title: "MISSÃO 1", progress: completedMissions.has(1) ? 4 : 0, total: 4 },
+                        { id: 2, title: "MISSÃO 2", progress: completedMissions.has(2) ? 3 : 0, total: 3 },
+                        { id: 3, title: "MISSÃO 3", progress: completedMissions.has(3) ? 1 : 0, total: 1 },
+                        { id: 4, title: "MISSÃO 4", progress: completedMissions.has(4) ? 10 : 0, total: 10 }
                       ].map((mission) => {
                       const isCompleted = completedMissions.has(mission.id);
                       const isActive = mission.id === currentMission && !isCompleted;
                       return (
                         <div 
                           key={mission.id} 
-                          className={`bg-muted/30 rounded-lg p-4 border transition-all ${
+                          className={`bg-muted/30 rounded-lg p-3 border transition-all cursor-pointer ${
                             isCompleted
                               ? 'border-primary/50 bg-primary/5 opacity-80' 
                               : isActive 
-                                ? 'border-primary/50 bg-primary/10 cursor-pointer' 
+                                ? 'border-primary/50 bg-primary/10' 
                                 : 'border-secondary/30'
                           }`}
-                          onClick={() => isActive && setCurrentMission(mission.id as 1 | 2 | 3 | 4)}
+                          onClick={() => !isCompleted && setCurrentMission(mission.id as 1 | 2 | 3 | 4)}
                         >
                           <div className="flex items-center justify-between mb-2">
                             <div className="flex items-center gap-2">
@@ -349,16 +327,15 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                                   </svg>
                                 </div>
                               )}
-                              <h3 className={`font-medium text-sm ${
+                              <h3 className={`font-medium text-xs ${
                                 isCompleted ? 'text-primary line-through' : 'text-foreground'
                               }`}>{mission.title}</h3>
                             </div>
-                            <span className="text-accent text-xs font-bold">+{mission.xp} XP</span>
                           </div>
-                          <div className="flex items-center gap-3">
-                            <div className="flex-1 bg-secondary/20 rounded-full h-2">
+                          <div className="flex items-center gap-2">
+                            <div className="flex-1 bg-secondary/20 rounded-full h-1.5">
                               <div 
-                                className={`h-2 rounded-full transition-all duration-300 ${
+                                className={`h-1.5 rounded-full transition-all duration-300 ${
                                   isCompleted ? 'bg-primary' : isActive ? 'bg-primary' : 'bg-secondary'
                                 }`}
                                 style={{ width: `${(mission.progress / mission.total) * 100}%` }}
@@ -369,12 +346,12 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                             </span>
                           </div>
                           {isCompleted && (
-                            <div className="mt-2 text-xs text-primary font-medium">
-                              ✓ CONCLUÍDA
+                            <div className="mt-1 text-xs text-primary font-medium">
+                              ✓ OK
                             </div>
                           )}
                           {isActive && (
-                            <div className="mt-2 text-xs text-primary font-medium">
+                            <div className="mt-1 text-xs text-primary font-medium">
                               ● ATIVA
                             </div>
                           )}
@@ -386,13 +363,13 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                 </div>
               </div>
 
-              {/* Desafios Semanais - 3 colunas (maior para quiz) */}
-              <div className="col-span-3 h-full overflow-hidden">
+              {/* Área de Perguntas - 5 colunas (máximo espaço) */}
+              <div className="col-span-5 h-full overflow-hidden">
                 <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-6 shadow-neon h-full overflow-hidden flex flex-col">
-                  <div className="flex items-center gap-2 mb-6 p-3 bg-muted/50 rounded-lg">
+                  <div className="flex items-center gap-2 mb-4 p-3 bg-muted/50 rounded-lg">
                     <div className="w-3 h-3 bg-accent rounded-full"></div>
                     <span className="text-accent text-sm font-bold tracking-wider">
-                      MISSÃO {currentMission} ATIVADA
+                      MISSÃO {currentMission} EM ANDAMENTO
                     </span>
                   </div>
 
@@ -413,29 +390,17 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                             updateProgress(2);
                             setCompletedMissions(prev => new Set([...prev, 2]));
                             setCurrentMission(3);
-                            toast({
-                              title: "Missão 2 concluída! +25 XP",
-                              description: "Missão 3 desbloqueada! Continue evoluindo.",
-                            });
                           }} />
                       ) : currentMission === 3 && !completedMissions.has(3) ? (
                         <MissaoTres onComplete={() => {
                           updateProgress(3);
                           setCompletedMissions(prev => new Set([...prev, 3]));
                           setCurrentMission(4);
-                          toast({
-                            title: "Missão 3 concluída! +25 XP",
-                            description: "Missão 4 desbloqueada! Continue evoluindo.",
-                          });
                         }} />
                       ) : currentMission === 4 && !completedMissions.has(4) ? (
                         <MissaoQuatro onComplete={() => {
                           updateProgress(4);
                           setCompletedMissions(prev => new Set([...prev, 4]));
-                          toast({
-                            title: "Missão 4 concluída! +25 XP",
-                            description: "Parabéns! Todas as missões foram concluídas.",
-                          });
                         }} />
                       ) : (
                         <div className="h-full flex flex-col items-center justify-center space-y-4">
