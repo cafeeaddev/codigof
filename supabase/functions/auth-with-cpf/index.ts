@@ -89,8 +89,8 @@ serve(async (req) => {
     const storedCpf = String(profile.cpf || '').replace(/\D/g, '');
     const inputCpf = String(cpf || '').replace(/\D/g, '');
     
-    if (!storedCpf || !inputCpf || storedCpf.slice(-4) !== inputCpf) {
-      console.log('CPF incorreto. Esperado últimos 4 dígitos:', storedCpf.slice(-4), 'Recebido:', inputCpf);
+    if (!storedCpf || !inputCpf || storedCpf !== inputCpf) {
+      console.log('CPF incorreto. Esperado:', storedCpf, 'Recebido:', inputCpf);
       return new Response(
         JSON.stringify({ error: 'CPF incorreto' }),
         { 
@@ -100,10 +100,10 @@ serve(async (req) => {
       );
     }
 
-    // Usar o CPF completo (sem formatação) como senha
-    const password = storedCpf;
+    // Usar os 4 dígitos do CPF como senha (repetir para formar uma senha de 8 dígitos)
+    const password = storedCpf + storedCpf;
 
-    console.log('CPF validado. Senha será:', password.slice(0, 3) + '***' + password.slice(-3));
+    console.log('CPF validado. Senha será:', password.slice(0, 2) + '***' + password.slice(-2));
 
     // Verificar se já existe usuário no Auth com este email
     const { data: existingUsers, error: listError } = await supabaseAdmin.auth.admin.listUsers({
