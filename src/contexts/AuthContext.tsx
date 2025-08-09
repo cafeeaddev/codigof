@@ -265,121 +265,40 @@ setTimeout(() => {
 
   const signInWithCredentials = async (email: string, cpf: string): Promise<{ error?: string }> => {
     try {
-      console.log('[AuthContext] Starting login with email:', email);
-
-      // Validar que o usuário informou exatamente os 4 últimos dígitos
-      const inputClean = cpf.replace(/\D/g, '');
-      if (inputClean.length !== 4) {
-        return { error: 'Informe apenas os 4 últimos dígitos do CPF' };
-      }
-
-      // Buscar perfil ativo pelo email
-      const { data: profile, error: profileError } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('email', email)
-        .eq('situacao', 'ATIVO')
-        .limit(1)
-        .maybeSingle();
-
-      if (profileError) {
-        console.log('[AuthContext] Profile query error:', profileError);
-      }
-      if (!profile) {
-        console.log('[AuthContext] Profile not found for email');
-        return { error: 'Email ou CPF incorretos ou usuário inativo' };
-      }
-
-      console.log('[AuthContext] Found profile:', profile.nome, 'user_id:', profile.user_id);
-
-      // Validar últimos 4 dígitos do CPF cadastrado
-      const storedFullCpf = String(profile.cpf || '').replace(/\D/g, '');
-      if (!storedFullCpf || !storedFullCpf.endsWith(inputClean)) {
-        return { error: 'CPF incorreto' };
-      }
-
-      // Se já tem user_id, login direto com o CPF completo como senha
-      if (profile.user_id) {
-        console.log('[AuthContext] Profile has user_id, attempting direct sign in');
-        const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
-          email,
-          password: storedFullCpf,
-        });
-
-        if (signInError) {
-          console.error('[AuthContext] Direct sign in failed:', signInError);
-          return { error: 'Credenciais inválidas' };
-        }
-
-        console.log('[AuthContext] Direct sign in successful, user:', signInData.user?.id);
-        // Desbloqueia a UI rapidamente
-        // O fetchUserProfile complementará se necessário
-        return {};
-      }
-
-      // Rate limiting simples
-      const lastSignUpAttempt = localStorage.getItem('lastSignUpAttempt');
-      const now = Date.now();
-      if (lastSignUpAttempt) {
-        const timeSinceLastAttempt = now - parseInt(lastSignUpAttempt);
-        const cooldownTime = 60000; // 1 minuto
-        if (timeSinceLastAttempt < cooldownTime) {
-          const remainingTime = Math.ceil((cooldownTime - timeSinceLastAttempt) / 1000);
-          return { error: `Aguarde ${remainingTime} segundos antes de tentar novamente` };
-        }
-      }
-      localStorage.setItem('lastSignUpAttempt', now.toString());
-
-      // Criar conta no Supabase Auth usando o CPF completo como senha
-      console.log('[AuthContext] Creating new auth account for existing profile');
-      const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-        email,
-        password: storedFullCpf,
-        options: {
-          emailRedirectTo: `${window.location.origin}/`,
-          data: {
-            nome: profile.nome,
-            cpf: profile.cpf,
-            skip_profile_creation: true,
-          },
-        },
+      console.log('🔐 Validando credenciais...', { email, cpf: cpf.slice(0, 3) + '***' });
+      
+      // Chamar edge function para validar e criar/vincular usuário
+      const { data, error } = await supabase.functions.invoke('auth-with-cpf', {
+        body: { email, cpf }
       });
 
-      if (signUpError) {
-        console.error('[AuthContext] Sign up error:', signUpError);
-        return { error: 'Erro ao criar conta de acesso: ' + signUpError.message };
+      if (error) {
+        console.error('❌ Erro na validação:', error);
+        return { error: 'Erro interno. Tente novamente.' };
       }
 
-      if (!signUpData.user) {
-        console.error('[AuthContext] No user returned from signUp');
-        return { error: 'Erro ao criar usuário' };
+      if (!data.success) {
+        console.error('❌ Credenciais inválidas');
+        return { error: data.error || 'Credenciais inválidas' };
       }
 
-      console.log('[AuthContext] SignUp successful, user created:', signUpData.user.id);
+      console.log('✅ Credenciais validadas, fazendo login...');
 
-      // Agora fazer login para criar a sessão ativa
-      console.log('[AuthContext] Now signing in to create active session');
-      const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
-        email,
-        password: storedFullCpf,
+      // Fazer login com as credenciais validadas
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: data.email,
+        password: data.password
       });
 
       if (signInError) {
-        console.error('[AuthContext] Sign in after signup failed:', signInError);
-        return { error: 'Conta criada mas erro no login: ' + signInError.message };
+        console.error('❌ Erro no login:', signInError);
+        return { error: 'Erro ao fazer login. Tente novamente.' };
       }
 
-      console.log('[AuthContext] Sign in after signup successful:', signInData.user?.id);
-
-      // fetchUserProfile fará o vínculo user_id via política RLS após autenticação, se necessário
-      toast({
-        title: "Login realizado",
-        description: `Bem-vindo(a), ${profile.nome}!`,
-      });
-
+      console.log('✅ Login realizado com sucesso!');
       return {};
     } catch (error) {
-      console.error('Login error:', error);
+      console.error('❌ Erro no processo de login:', error);
       return { error: 'Erro de conexão. Tente novamente.' };
     }
   };
