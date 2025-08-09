@@ -6,6 +6,7 @@ import { ChevronLeft, ChevronRight, CheckCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 import { ScrollArea } from './ui/scroll-area';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface QuizQuestion {
   id: number;
@@ -80,6 +81,7 @@ interface MissaoTresProps {
 }
 
 export const MissaoTres = ({ onComplete }: MissaoTresProps) => {
+  const { profile, user } = useAuth();
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [isCompleted, setIsCompleted] = useState(false);
@@ -129,10 +131,10 @@ export const MissaoTres = ({ onComplete }: MissaoTresProps) => {
         };
       });
 
-      // Get user info from localStorage or context (since we're using profile-based auth)
+      // Get user info from auth context
       const currentUser = {
-        nome: 'Nawana De Oliveira Marques Dos Santos',
-        email: 'nawana.santos@forvismazars.com'
+        nome: profile?.nome || 'Usuário',
+        email: profile?.email || 'email@exemplo.com'
       };
 
       // Insert response record for mission 3
@@ -155,7 +157,6 @@ export const MissaoTres = ({ onComplete }: MissaoTresProps) => {
       }
 
       // Update user progress and add XP
-      const { data: { user } } = await supabase.auth.getUser();
       
       if (user) {
         const { data: existingProgress } = await supabase

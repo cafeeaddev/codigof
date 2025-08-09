@@ -72,7 +72,7 @@ interface QuizDigitalProps {
 }
 
 export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
-  const { user: authUser } = useAuth();
+  const { user: authUser, profile } = useAuth();
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [isCompleted, setIsCompleted] = useState(false);
@@ -191,10 +191,10 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
         };
       });
 
-      // Get user info from localStorage or context (since we're using profile-based auth)
+      // Get user info from auth context
       const currentUser = {
-        nome: 'Nawana De Oliveira Marques Dos Santos',
-        email: 'nawana.santos@forvismazars.com'
+        nome: profile?.nome || 'Usuário',
+        email: profile?.email || authUser?.email || 'email@exemplo.com'
       };
 
       // Insert response record

@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface MissaoQuatroProps {
   onComplete: () => void;
@@ -125,6 +126,7 @@ const questions = [
 ];
 
 export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
+  const { profile } = useAuth();
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -168,10 +170,10 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
         }
       });
 
-      // Get user info like the other missions do
+      // Get user info from auth context
       const currentUser = {
-        nome: 'Nawana De Oliveira Marques Dos Santos',
-        email: 'nawana.santos@forvismazars.com'
+        nome: profile?.nome || 'Usuário',
+        email: profile?.email || 'email@exemplo.com'
       };
 
       // Save responses to mission 4 table
