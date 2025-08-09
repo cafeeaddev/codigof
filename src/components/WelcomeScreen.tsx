@@ -396,64 +396,66 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                     </span>
                   </div>
 
-                  <div className="flex-1 overflow-hidden">
-                    {currentMission === 1 && !completedMissions.has(1) ? (
-                      <QuizDigital 
-                        userId={userId}
-                        onClose={() => {
-                          updateProgress(1);
-                          setCompletedMissions(prev => new Set([...prev, 1]));
-                          setCurrentMission(2);
-                        }} />
-                    ) : currentMission === 2 && !completedMissions.has(2) ? (
-                      <MissaoDois 
-                        userId={userId}
-                        onComplete={() => {
-                          updateProgress(2);
-                          setCompletedMissions(prev => new Set([...prev, 2]));
-                          setCurrentMission(3);
+                  <ScrollArea className="flex-1">
+                    <div className="pr-4">
+                      {currentMission === 1 && !completedMissions.has(1) ? (
+                        <QuizDigital 
+                          userId={userId}
+                          onClose={() => {
+                            updateProgress(1);
+                            setCompletedMissions(prev => new Set([...prev, 1]));
+                            setCurrentMission(2);
+                          }} />
+                      ) : currentMission === 2 && !completedMissions.has(2) ? (
+                        <MissaoDois 
+                          userId={userId}
+                          onComplete={() => {
+                            updateProgress(2);
+                            setCompletedMissions(prev => new Set([...prev, 2]));
+                            setCurrentMission(3);
+                            toast({
+                              title: "Missão 2 concluída! +25 XP",
+                              description: "Missão 3 desbloqueada! Continue evoluindo.",
+                            });
+                          }} />
+                      ) : currentMission === 3 && !completedMissions.has(3) ? (
+                        <MissaoTres onComplete={() => {
+                          updateProgress(3);
+                          setCompletedMissions(prev => new Set([...prev, 3]));
+                          setCurrentMission(4);
                           toast({
-                            title: "Missão 2 concluída! +25 XP",
-                            description: "Missão 3 desbloqueada! Continue evoluindo.",
+                            title: "Missão 3 concluída! +25 XP",
+                            description: "Missão 4 desbloqueada! Continue evoluindo.",
                           });
                         }} />
-                    ) : currentMission === 3 && !completedMissions.has(3) ? (
-                      <MissaoTres onComplete={() => {
-                        updateProgress(3);
-                        setCompletedMissions(prev => new Set([...prev, 3]));
-                        setCurrentMission(4);
-                        toast({
-                          title: "Missão 3 concluída! +25 XP",
-                          description: "Missão 4 desbloqueada! Continue evoluindo.",
-                        });
-                      }} />
-                    ) : currentMission === 4 && !completedMissions.has(4) ? (
-                      <MissaoQuatro onComplete={() => {
-                        updateProgress(4);
-                        setCompletedMissions(prev => new Set([...prev, 4]));
-                        toast({
-                          title: "Missão 4 concluída! +25 XP",
-                          description: "Parabéns! Todas as missões foram concluídas.",
-                        });
-                      }} />
-                    ) : (
-                      <div className="h-full flex flex-col items-center justify-center space-y-4">
-                        <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center">
-                          <svg className="w-8 h-8 text-primary" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                          </svg>
+                      ) : currentMission === 4 && !completedMissions.has(4) ? (
+                        <MissaoQuatro onComplete={() => {
+                          updateProgress(4);
+                          setCompletedMissions(prev => new Set([...prev, 4]));
+                          toast({
+                            title: "Missão 4 concluída! +25 XP",
+                            description: "Parabéns! Todas as missões foram concluídas.",
+                          });
+                        }} />
+                      ) : (
+                        <div className="h-full flex flex-col items-center justify-center space-y-4">
+                          <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center">
+                            <svg className="w-8 h-8 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                            </svg>
+                          </div>
+                          <div className="text-center">
+                            <h4 className="text-lg font-bold text-primary mb-1">
+                              Missões Completadas!
+                            </h4>
+                            <p className="text-sm text-muted-foreground">
+                              Aguarde novas missões em breve.
+                            </p>
+                          </div>
                         </div>
-                        <div className="text-center">
-                          <h4 className="text-lg font-bold text-primary mb-1">
-                            Missões Completadas!
-                          </h4>
-                          <p className="text-sm text-muted-foreground">
-                            Aguarde novas missões em breve.
-                          </p>
-                        </div>
-                      </div>
-                    )}
-                  </div>
+                      )}
+                    </div>
+                  </ScrollArea>
                 </div>
               </div>
             </div>
