@@ -324,11 +324,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                         { id: 1, title: "MISSÃO 1 – Como você encara o digital?", progress: completedMissions.has(1) ? 4 : 0, total: 4, xp: 25 },
                         { id: 2, title: "MISSÃO 2 – O digital no seu dia a dia", progress: completedMissions.has(2) ? 3 : 0, total: 3, xp: 25 },
                         { id: 3, title: "MISSÃO 3 – Quando o desafio é maior", progress: completedMissions.has(3) ? 1 : 0, total: 1, xp: 25 },
-                        { id: 4, title: "MISSÃO 4 - Seu Radar de Ferramentas", progress: completedMissions.has(4) ? 10 : 0, total: 10, xp: 25 },
-                        { id: 5, title: "MISSÃO 5 – Mapeando Oportunidades", progress: 0, total: 5, xp: 25 },
-                        { id: 6, title: "MISSÃO 6 – Estratégias Digitais", progress: 0, total: 8, xp: 25 },
-                        { id: 7, title: "MISSÃO 7 – Implementação Prática", progress: 0, total: 6, xp: 25 },
-                        { id: 8, title: "MISSÃO 8 – Medindo Resultados", progress: 0, total: 4, xp: 25 }
+                        { id: 4, title: "MISSÃO 4 - Seu Radar de Ferramentas", progress: completedMissions.has(4) ? 10 : 0, total: 10, xp: 25 }
                       ].map((mission) => {
                       const isCompleted = completedMissions.has(mission.id);
                       const isActive = mission.id === currentMission && !isCompleted;
