@@ -176,12 +176,13 @@ export const MissaoDois = ({ onComplete, userId }: MissaoDoisProps) => {
         email: profile?.email || authUser?.email || 'email@exemplo.com'
       };
 
-      // Insert response record for mission 2
+      // Insert response record for mission 2 with user_id
       const { error } = await supabase
         .from('respostas_missao2')
         .insert({
-          nome: currentUser.nome,
-          email: currentUser.email,
+          nome: profile?.nome || 'Usuário',
+          email: profile?.email || authUser?.email || 'email@exemplo.com',
+          user_id: authUser?.id,
           respostas: {
             missao: 2,
             data: responsesData

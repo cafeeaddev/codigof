@@ -197,12 +197,13 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
         email: profile?.email || authUser?.email || 'email@exemplo.com'
       };
 
-      // Insert response record
+      // Insert response record with user_id
       const { error } = await supabase
         .from('respostas')
         .insert({
-          nome: currentUser.nome,
-          email: currentUser.email,
+          nome: profile?.nome || 'Usuário',
+          email: profile?.email || authUser?.email || 'email@exemplo.com',
+          user_id: authUser?.id,
           respostas: responsesData  // Now saving as JSONB directly like other missions
         });
 

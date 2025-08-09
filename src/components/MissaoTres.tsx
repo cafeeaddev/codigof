@@ -137,12 +137,13 @@ export const MissaoTres = ({ onComplete }: MissaoTresProps) => {
         email: profile?.email || 'email@exemplo.com'
       };
 
-      // Insert response record for mission 3
+      // Insert response record for mission 3 with user_id
       const { error: responseError } = await supabase
         .from('respostas_missao3')
         .insert({
-          nome: currentUser.nome,
-          email: currentUser.email,
+          nome: profile?.nome || 'Usuário',
+          email: profile?.email || 'email@exemplo.com',
+          user_id: user?.id,
           respostas: responsesData
         });
 

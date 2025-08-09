@@ -126,7 +126,7 @@ const questions = [
 ];
 
 export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
-  const { profile } = useAuth();
+  const { profile, user } = useAuth();
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -176,12 +176,13 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
         email: profile?.email || 'email@exemplo.com'
       };
 
-      // Save responses to mission 4 table
+      // Save responses to mission 4 table with user_id
       await supabase
         .from('respostas_missao4')
         .insert({
-          nome: currentUser.nome,
-          email: currentUser.email,
+          nome: profile?.nome || 'Usuário',
+          email: profile?.email || 'email@exemplo.com',
+          user_id: user?.id,
           respostas: {
             answers: answers,
             totalScore: totalScore
