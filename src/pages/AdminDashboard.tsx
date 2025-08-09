@@ -65,10 +65,8 @@ const AdminDashboard = () => {
       
       // Carregar respostas de todas as missões e dados gerais
       const [res1, res2, res3, res4, progressData, profilesData, adminUsers] = await Promise.all([
-        // Filtrar apenas respostas reais da Missão 1 (excluir as migradas)
-        supabase.from('respostas').select('*')
-          .filter('respostas', 'not.like', '*"missao"*')  // Excluir respostas com campo "missao"
-          .order('id', { ascending: false }),
+        // Buscar todas as respostas da Missão 1 (tabela respostas original)
+        supabase.from('respostas').select('*').order('id', { ascending: false }),
         supabase.from('respostas_missao2').select('*').order('created_at', { ascending: false }),
         supabase.from('respostas_missao3').select('*').order('created_at', { ascending: false }),
         supabase.from('respostas_missao4').select('*').order('created_at', { ascending: false }),
@@ -85,20 +83,49 @@ const AdminDashboard = () => {
       if (progressData.error) console.error('Error loading progress:', progressData.error);
 
       // Transform the data to match the expected interface
-      setResponses1((res1.data || []).map(item => ({
-        id: item.id.toString(),
-        nome: item.nome,
-        email: item.email || '',
-        respostas: typeof item.respostas === 'string' ? JSON.parse(item.respostas) : item.respostas,
-        created_at: new Date().toISOString() // respostas table doesn't have created_at
-      })));
-      setResponses2((res2.data || []).map(item => ({
-        id: item.id,
-        nome: item.nome,
-        email: item.email,
-        respostas: item.respostas,
-        created_at: item.created_at
-      })));
+      setResponses1((res1.data || [])
+        .filter(item => {
+          // Filtrar apenas respostas da Missão 1 (sem campo "missao" ou com missao = 1)
+          if (typeof item.respostas === 'string') {
+            try {
+              const parsed = JSON.parse(item.respostas);
+              return !parsed.missao || parsed.missao === 1;
+            } catch {
+              return true; // Se não conseguir fazer parse, assume que é Missão 1
+            }
+          }
+          // Verificar se é um objeto e tem a propriedade missao
+          if (item.respostas && typeof item.respostas === 'object') {
+            const respostas = item.respostas as any;
+            return !respostas.missao || respostas.missao === 1;
+          }
+          return true;
+        })
+        .map(item => ({
+          id: item.id.toString(),
+          nome: item.nome,
+          email: item.email || '',
+          respostas: typeof item.respostas === 'string' ? JSON.parse(item.respostas) : item.respostas,
+          created_at: new Date().toISOString() // respostas table doesn't have created_at
+        })));
+        
+      setResponses2((res2.data || [])
+        .filter(item => {
+          // Filtrar apenas respostas da Missão 2
+          if (item.respostas && typeof item.respostas === 'object') {
+            const respostas = item.respostas as any;
+            return !respostas.missao || respostas.missao === 2;
+          }
+          return true;
+        })
+        .map(item => ({
+          id: item.id,
+          nome: item.nome,
+          email: item.email,
+          respostas: item.respostas,
+          created_at: item.created_at
+        })));
+        
       setResponses3((res3.data || []).map(item => ({
         id: item.id,
         nome: item.nome,
@@ -106,6 +133,7 @@ const AdminDashboard = () => {
         respostas: item.respostas,
         created_at: item.created_at
       })));
+      
       setResponses4((res4.data || []).map(item => ({
         id: item.id,
         nome: item.nome,
