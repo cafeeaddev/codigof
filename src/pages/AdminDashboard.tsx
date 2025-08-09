@@ -64,7 +64,7 @@ const AdminDashboard = () => {
       setIsLoading(true);
       
       // Carregar respostas de todas as missões e dados gerais
-      const [res1, res2, res3, res4, progressData, profilesData, adminUsers] = await Promise.all([
+      const [res1, res2, res3, res4, progressData, profilesData, adminUsers, allProfiles] = await Promise.all([
         // Buscar todas as respostas da Missão 1 (tabela respostas original)
         supabase.from('respostas').select('*').order('id', { ascending: false }),
         supabase.from('respostas_missao2').select('*').order('created_at', { ascending: false }),
@@ -73,7 +73,9 @@ const AdminDashboard = () => {
         supabase.from('user_progress').select('*'),
         supabase.from('profiles').select('id', { count: 'exact', head: true }),
         // Buscar IDs dos admins
-        supabase.from('user_roles').select('user_id').eq('role', 'admin')
+        supabase.from('user_roles').select('user_id').eq('role', 'admin'),
+        // Buscar todos os perfis para mapear user_id -> nome
+        supabase.from('profiles').select('user_id, nome, email')
       ]);
 
       if (res1.error) console.error('Error loading mission 1:', res1.error);
@@ -146,17 +148,25 @@ const AdminDashboard = () => {
       const progress = progressData.data || [];
       const adminUserIds = new Set((adminUsers.data || []).map(admin => admin.user_id));
       
+      // Criar mapa de user_id para dados do usuário
+      const userProfiles = new Map((allProfiles.data || []).map(profile => [
+        profile.user_id, 
+        { nome: profile.nome || 'Usuário', email: profile.email || '' }
+      ]));
+      
       // Filtrar progresso excluindo admins
       const nonAdminProgress = progress.filter(p => !adminUserIds.has(p.user_id));
-      
       const totalProfiles = profilesData.count || 0; // Total de usuários cadastrados
       const totalNonAdminProfiles = totalProfiles - adminUserIds.size; // Excluir admins do total
       const usersStarted = nonAdminProgress.length; // Usuários não-admin que começaram o jogo
       
+      // Salvar userProfiles no estado para usar na renderização
+      setProgressData({ ...progressData, userProfiles });
+      
       console.log('Progress data loaded:', progress);
+      console.log('User profiles loaded:', userProfiles);
       console.log('Admin users:', adminUserIds);
       console.log('Total profiles:', totalProfiles, 'Non-admin profiles:', totalNonAdminProfiles, 'Users started:', usersStarted);
-      
       const mission1Completed = nonAdminProgress.filter(p => p.missao_1_completed === true).length;
       const mission2Completed = nonAdminProgress.filter(p => p.missao_2_completed === true).length;
       const mission3Completed = nonAdminProgress.filter(p => p.missao_3_completed === true).length;
@@ -194,8 +204,9 @@ const AdminDashboard = () => {
         }
       });
       
+      
       setUsersStarted(usersStarted);
-      setProgressData(progressData);
+      setProgressData({ ...progressData, userProfiles });
       setAdminUsers(adminUsers);
 
     } catch (error) {
@@ -464,9 +475,8 @@ const AdminDashboard = () => {
                     
                     // Filtrar por busca
                     const filteredUsers = allUsers.filter(progress => {
-                      const userName = progress.user_id === '600d753e-641a-4b06-a430-bbc50cd654a2' ? 'Nawana De Oliveira Marques Dos Santos' :
-                                     progress.user_id === '90b52ea5-a137-45b2-90b1-6c895581c99f' ? 'Raniel De Oliveira Souza' : 
-                                     'Usuário';
+                      const userProfile = progressData.userProfiles?.get(progress.user_id);
+                      const userName = userProfile?.nome || 'Usuário';
                       return userName.toLowerCase().includes(searchTerm.toLowerCase());
                     });
 
@@ -479,9 +489,8 @@ const AdminDashboard = () => {
                     return (
                       <>
                         {paginatedUsers.map((progress) => {
-                          const userName = progress.user_id === '600d753e-641a-4b06-a430-bbc50cd654a2' ? 'Nawana De Oliveira Marques Dos Santos' :
-                                         progress.user_id === '90b52ea5-a137-45b2-90b1-6c895581c99f' ? 'Raniel De Oliveira Souza' : 
-                                         'Usuário';
+                          const userProfile = progressData.userProfiles?.get(progress.user_id);
+                          const userName = userProfile?.nome || 'Usuário';
                           
                           return (
                             <TableRow key={progress.user_id}>
@@ -548,9 +557,8 @@ const AdminDashboard = () => {
                 }) || [];
               
               const filteredUsers = allUsers.filter(progress => {
-                const userName = progress.user_id === '600d753e-641a-4b06-a430-bbc50cd654a2' ? 'Nawana De Oliveira Marques Dos Santos' :
-                               progress.user_id === '90b52ea5-a137-45b2-90b1-6c895581c99f' ? 'Raniel De Oliveira Souza' : 
-                               'Usuário';
+                const userProfile = progressData.userProfiles?.get(progress.user_id);
+                const userName = userProfile?.nome || 'Usuário';
                 return userName.toLowerCase().includes(searchTerm.toLowerCase());
               });
 
