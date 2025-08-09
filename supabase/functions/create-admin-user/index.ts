@@ -29,30 +29,42 @@ serve(async (req) => {
 
     console.log('Creating admin user:', { email, nome })
 
-    // Create user with admin privileges
-    const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
-      email: email,
-      password: password,
-      email_confirm: true, // Skip email confirmation
-      user_metadata: {
-        nome: nome,
-        cpf: cpf,
-        skip_profile_creation: true // Skip automatic profile creation
-      }
-    })
+    // Check if user already exists
+    const { data: existingUsers } = await supabaseAdmin.auth.admin.listUsers()
+    const existingUser = existingUsers.users.find(user => user.email === email)
 
-    if (authError) {
-      console.error('Auth error:', authError)
-      throw authError
+    let userId: string
+
+    if (existingUser) {
+      console.log('User already exists, using existing user:', existingUser.id)
+      userId = existingUser.id
+    } else {
+      // Create new user with admin privileges
+      const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
+        email: email,
+        password: password,
+        email_confirm: true, // Skip email confirmation
+        user_metadata: {
+          nome: nome,
+          cpf: cpf,
+          skip_profile_creation: true // Skip automatic profile creation
+        }
+      })
+
+      if (authError) {
+        console.error('Auth error:', authError)
+        throw authError
+      }
+
+      console.log('User created successfully:', authData.user?.id)
+      userId = authData.user?.id!
     }
 
-    console.log('User created successfully:', authData.user?.id)
-
-    // Create profile manually
+    // Create or update profile
     const { error: profileError } = await supabaseAdmin
       .from('profiles')
-      .insert({
-        user_id: authData.user?.id,
+      .upsert({
+        user_id: userId,
         nome: nome,
         email: email,
         cpf: cpf,
@@ -63,20 +75,32 @@ serve(async (req) => {
 
     if (profileError) {
       console.error('Profile error:', profileError)
-      // Don't throw here, user was created successfully
+      // Don't throw here, user was processed successfully
     }
 
-    // Grant admin role
-    const { error: roleError } = await supabaseAdmin
+    // Check if admin role already exists
+    const { data: existingRole } = await supabaseAdmin
       .from('user_roles')
-      .insert({
-        user_id: authData.user?.id,
-        role: 'admin'
-      })
+      .select('*')
+      .eq('user_id', userId)
+      .eq('role', 'admin')
+      .maybeSingle()
 
-    if (roleError) {
-      console.error('Role error:', roleError)
-      // Don't throw here, user was created successfully
+    if (!existingRole) {
+      // Grant admin role only if it doesn't exist
+      const { error: roleError } = await supabaseAdmin
+        .from('user_roles')
+        .insert({
+          user_id: userId,
+          role: 'admin'
+        })
+
+      if (roleError) {
+        console.error('Role error:', roleError)
+        // Don't throw here, user was processed successfully
+      }
+    } else {
+      console.log('User already has admin role')
     }
 
     console.log('Admin user setup complete')
@@ -84,8 +108,8 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({
         success: true,
-        message: 'Admin user created successfully',
-        user_id: authData.user?.id
+        message: existingUser ? 'Admin role granted to existing user' : 'Admin user created successfully',
+        user_id: userId
       }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
