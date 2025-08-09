@@ -178,14 +178,14 @@ export const MissaoDois = ({ onComplete, userId }: MissaoDoisProps) => {
 
       // Insert response record for mission 2
       const { error } = await supabase
-        .from('respostas')
+        .from('respostas_missao2')
         .insert({
           nome: currentUser.nome,
           email: currentUser.email,
-          respostas: JSON.stringify({
+          respostas: {
             missao: 2,
             data: responsesData
-          })
+          }
         });
 
       if (error) {
