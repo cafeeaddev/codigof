@@ -250,9 +250,6 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
                     {option.value.toUpperCase()})
                   </span>
                   {option.text}
-                  <span className="text-xs text-muted-foreground ml-1">
-                    ({option.points} pt{option.points !== 1 ? 's' : ''})
-                  </span>
                 </Label>
               </div>
             ))}
