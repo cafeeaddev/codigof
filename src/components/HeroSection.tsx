@@ -25,38 +25,36 @@ export const HeroSection = ({ onLoginClick, onContinueClick }: HeroSectionProps)
     <section className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20 lg:pt-24">
       <div className="max-w-6xl mx-auto text-center w-full">
         {/* Main content positioned above the terrain */}
-        <div className="mb-8 sm:mb-12 lg:mb-16 px-4">
-          <div className="mx-auto max-w-4xl bg-background/60 backdrop-blur-md rounded-2xl border border-border/40 px-6 sm:px-10 py-8 sm:py-10 shadow-xl">
-            {/* Chapter/Section indicator - like spaace.io */}
-            <div 
-              ref={titleReveal.elementRef}
-              style={titleReveal.style}
-              className="mb-6 sm:mb-8 lg:mb-12"
-            >
-              <p className="text-neon-pink text-xs sm:text-sm lg:text-base uppercase tracking-[0.15em] sm:tracking-[0.2em] font-medium mb-4 sm:mb-6">
-                CAPÍTULO 01: TRANSFORMAÇÃO DIGITAL
-              </p>
-              <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white leading-tight">
-                SUA JORNADA DIGITAL<br />
-                <span className="text-secondary">COMEÇA AQUI!</span>
-              </h1>
-            </div>
+        <div className="mb-8 sm:mb-12 lg:mb-16">
+          {/* Chapter/Section indicator - like spaace.io */}
+          <div 
+            ref={titleReveal.elementRef}
+            style={titleReveal.style}
+            className="mb-6 sm:mb-8 lg:mb-12"
+          >
+            <p className="text-neon-pink text-xs sm:text-sm lg:text-base uppercase tracking-[0.15em] sm:tracking-[0.2em] font-medium mb-4 sm:mb-6 px-4 drop-shadow-[0_2px_10px_hsl(var(--background)_/_0.9)]">
+              CAPÍTULO 01: TRANSFORMAÇÃO DIGITAL
+            </p>
+            <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white leading-tight px-4 drop-shadow-[0_2px_18px_hsl(var(--background)_/_0.85)]">
+              SUA JORNADA DIGITAL<br />
+              <span className="text-secondary">COMEÇA AQUI!</span>
+            </h1>
+          </div>
 
-            {/* CTA Button */}
-            <div 
-              ref={buttonsReveal.elementRef}
-              style={buttonsReveal.style}
-              className="flex justify-center"
+          {/* CTA Button */}
+          <div 
+            ref={buttonsReveal.elementRef}
+            style={buttonsReveal.style}
+            className="flex justify-center px-4"
+          >
+            <Button 
+              size="lg" 
+              className="bg-white/10 text-white hover:bg-white/20 px-4 sm:px-6 lg:px-8 py-4 sm:py-5 lg:py-6 text-sm sm:text-base lg:text-lg font-medium backdrop-blur-md rounded-xl shadow-lg border border-white/20 w-full sm:w-auto max-w-xs sm:max-w-none"
+              onClick={onLoginClick}
             >
-              <Button 
-                size="lg" 
-                className="bg-white/10 text-white hover:bg-white/20 px-4 sm:px-6 lg:px-8 py-4 sm:py-5 lg:py-6 text-sm sm:text-base lg:text-lg font-medium backdrop-blur-md rounded-xl shadow-lg border border-white/20 w-full sm:w-auto max-w-xs sm:max-w-none"
-                onClick={onLoginClick}
-              >
-                <span className="hidden sm:inline">Sistema de Diagnóstico Ativado</span>
-                <span className="sm:hidden">Diagnóstico Ativado</span>
-              </Button>
-            </div>
+              <span className="hidden sm:inline">Sistema de Diagnóstico Ativado</span>
+              <span className="sm:hidden">Diagnóstico Ativado</span>
+            </Button>
           </div>
         </div>
 
