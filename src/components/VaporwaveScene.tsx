@@ -45,9 +45,9 @@ export const VaporwaveScene = ({ cameraPosition, cameraFov }: VaporwaveSceneProp
         {/* Luzes coloridas removidas para manter cenário neutro */}
         
         
-        {/* Fundo azul suave atrás do terreno para preencher o “vazado” */}
-        <mesh position={[0, -10, -150]} rotation={[-Math.PI / 2, 0, 0]}>
-          <planeGeometry args={[220, 220]} />
+        {/* Large ground plane to ensure no "glass floor" */}
+        <mesh position={[0, -20, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+          <planeGeometry args={[2000, 2000]} />
           <meshBasicMaterial 
             color="#2b2b31" 
             transparent={false}
@@ -55,9 +55,9 @@ export const VaporwaveScene = ({ cameraPosition, cameraFov }: VaporwaveSceneProp
           />
         </mesh>
 
-        {/* Terrain background - dark plane behind the terrain */}
-        <mesh position={[0, -8, -60]} rotation={[-Math.PI / 2, 0, 0]}>
-          <planeGeometry args={[180, 150]} />
+        {/* Large vertical backdrop to cover far horizon */}
+        <mesh position={[0, 0, -300]}>
+          <planeGeometry args={[2000, 1000]} />
           <meshBasicMaterial 
             color="#2b2b31" 
             transparent={false}

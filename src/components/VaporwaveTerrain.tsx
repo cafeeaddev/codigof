@@ -12,7 +12,7 @@ interface VaporwaveTerrainProps {
 
 export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrainProps) => {
   const groupRefs = useRef<THREE.Group[]>([]);
-  const backgroundMaterialRef = useRef<THREE.MeshStandardMaterial>(null);
+  
   const scrollProgress = useScrollProgress();
   
   // Load the grid texture but we'll use it minimally
@@ -169,19 +169,11 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
             position={[0, -3.0, 0]}
             renderOrder={1}
           >
-            <meshStandardMaterial
-              ref={index === 0 ? backgroundMaterialRef : undefined}
+            <meshBasicMaterial
               color="#2b2b31"
-              emissive="#111111"
-              emissiveIntensity={0.15}
-              roughness={0.95}
-              metalness={0.05}
-              normalMap={normalTexture as unknown as THREE.Texture}
-              normalScale={new THREE.Vector2(0, 0)}
               transparent={false}
               opacity={1.0}
-              side={THREE.FrontSide}
-              wireframe={false}
+              side={THREE.DoubleSide}
               depthTest={true}
               depthWrite={true}
               polygonOffset={true}
