@@ -100,7 +100,7 @@ export const CustomStars = () => {
   // Stars are static; no animation or blinking
 
   return (
-    <points ref={pointsRef} renderOrder={-10}>
+    <points ref={pointsRef} renderOrder={10}>
       <bufferGeometry>
         <bufferAttribute
           attach="attributes-position"
