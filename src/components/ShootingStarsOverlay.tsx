@@ -27,10 +27,10 @@ type Shooting = {
 };
 
 export const ShootingStarsOverlay: React.FC<ShootingStarsOverlayProps> = ({
-  starDensity = 1.2, // reasonable default visually
-  maxStars = 600,
-  shootingStarRate = 0.2, // 0.2 per second
-  maxShooting = 3,
+  starDensity = 2.0, // denser stars across sky
+  maxStars = 1000,
+  shootingStarRate = 1.2, // ~1.2 per second
+  maxShooting = 6,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const starsRef = useRef<Star[]>([]);
@@ -55,10 +55,10 @@ export const ShootingStarsOverlay: React.FC<ShootingStarsOverlayProps> = ({
     const target = Math.min(maxStars, Math.floor(area * starDensity));
     const stars: Star[] = [];
     for (let i = 0; i < target; i++) {
-      const yBias = Math.random(); // slight bias to top
+      // Uniform distribution across entire sky
       stars.push({
         x: Math.random() * canvas.width,
-        y: Math.pow(yBias, 1.2) * canvas.height,
+        y: Math.random() * canvas.height,
         r: Math.random() * 1.6 + 0.4,
         baseA: 0.3 + Math.random() * 0.7,
         phase: Math.random() * Math.PI * 2,
@@ -72,11 +72,11 @@ export const ShootingStarsOverlay: React.FC<ShootingStarsOverlayProps> = ({
     const canvas = canvasRef.current;
     if (!canvas) return;
     if (shootingsRef.current.length >= maxShooting) return;
-    // Spawn near top-left area
-    const startY = Math.random() * (canvas.height * 0.4);
-    const startX = Math.random() * (canvas.width * 0.6);
+    // Spawn across wide area near top half of sky
+    const startX = -80 + Math.random() * (canvas.width + 160);
+    const startY = Math.random() * (canvas.height * 0.7);
     const speed = 700 + Math.random() * 900; // px/s
-    const angle = (-25 - Math.random() * 20) * (Math.PI / 180); // slight downward
+    const angle = (-15 - Math.random() * 30) * (Math.PI / 180); // from shallow to steeper downward
     const vx = Math.cos(angle) * speed;
     const vy = Math.sin(angle) * speed;
     shootingsRef.current.push({
@@ -86,7 +86,7 @@ export const ShootingStarsOverlay: React.FC<ShootingStarsOverlayProps> = ({
       vy,
       life: 0,
       maxLife: 0.8 + Math.random() * 0.6, // seconds
-      length: 90 + Math.random() * 120,
+      length: 120 + Math.random() * 140,
     });
   };
 
@@ -149,14 +149,26 @@ export const ShootingStarsOverlay: React.FC<ShootingStarsOverlayProps> = ({
         const tailY = sh.y - (sh.vy / Math.hypot(sh.vx, sh.vy)) * len;
 
         const grad = ctx.createLinearGradient(sh.x, sh.y, tailX, tailY);
-        grad.addColorStop(0, `rgba(255,255,255,${0.9 * lifeT})`);
+        grad.addColorStop(0, `rgba(255,255,255,${Math.max(0, 0.95 * lifeT)})`);
         grad.addColorStop(1, 'rgba(255,255,255,0)');
         ctx.strokeStyle = grad;
-        ctx.lineWidth = 2;
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        ctx.lineWidth = 2.5 * dpr;
+        ctx.lineCap = 'round';
         ctx.beginPath();
         ctx.moveTo(sh.x, sh.y);
         ctx.lineTo(tailX, tailY);
         ctx.stroke();
+
+        // Bright head glow
+        const headR = 4 * dpr;
+        const headGrad = ctx.createRadialGradient(sh.x, sh.y, 0, sh.x, sh.y, headR * 2.5);
+        headGrad.addColorStop(0, `rgba(255,255,255,${0.9 * lifeT})`);
+        headGrad.addColorStop(1, 'rgba(255,255,255,0)');
+        ctx.fillStyle = headGrad;
+        ctx.beginPath();
+        ctx.arc(sh.x, sh.y, headR * 2.5, 0, Math.PI * 2);
+        ctx.fill();
 
         if (sh.life >= sh.maxLife || sh.x > canvas.width + 100 || sh.y > canvas.height + 100) {
           shootings.splice(i, 1);

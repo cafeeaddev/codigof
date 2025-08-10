@@ -46,7 +46,7 @@ export const VaporwaveScene = ({ cameraPosition, cameraFov }: VaporwaveSceneProp
       </Canvas>
 
       {/* 2D canvas overlay with twinkling stars and shooting stars */}
-      <ShootingStarsOverlay />
+      <ShootingStarsOverlay starDensity={2.0} maxStars={1000} shootingStarRate={1.2} maxShooting={6} />
     </div>
   );
 };
