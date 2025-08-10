@@ -262,7 +262,7 @@ export const LinearLayout = () => {
             sectionIndex={5}
             registerSection={registerSection}
             unregisterSection={unregisterSection}
-            className="scroll-snap-start bg-transparent"
+            className="scroll-snap-start bg-transparent pb-28 sm:pb-48"
           >
             <Footer />
           </SectionContainer>
