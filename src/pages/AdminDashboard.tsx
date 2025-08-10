@@ -409,7 +409,7 @@ const AdminDashboard = () => {
               </div>
               <div>
                 <p className="text-2xl font-bold text-green-600">
-                  {Object.values(stats).reduce((acc, stat) => acc + stat.completed, 0)}
+                  {stats.general?.completed || 0}
                 </p>
                 <p className="text-sm text-muted-foreground">Missões Concluídas</p>
               </div>
