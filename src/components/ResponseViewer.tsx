@@ -37,7 +37,7 @@ const ResponseViewer = ({ respostas, missionType }: ResponseViewerProps) => {
                     </Badge>
                   )}
                 </div>
-                <p className="text-sm">{value as string}</p>
+                <p className="text-sm">{typeof value === 'object' ? JSON.stringify(value) : String(value || 'N/A')}</p>
               </CardContent>
             </Card>
           );
@@ -66,15 +66,15 @@ const ResponseViewer = ({ respostas, missionType }: ResponseViewerProps) => {
                 </span>
                 {resposta.pontos && (
                   <Badge variant="secondary">
-                    {resposta.pontos} {resposta.pontos === 1 ? 'ponto' : 'pontos'}
+                    {String(resposta.pontos)} {Number(resposta.pontos) === 1 ? 'ponto' : 'pontos'}
                   </Badge>
                 )}
               </div>
               <p className="text-sm mb-2">
-                <strong>Pergunta:</strong> {resposta.pergunta}
+                <strong>Pergunta:</strong> {typeof resposta.pergunta === 'object' ? JSON.stringify(resposta.pergunta) : String(resposta.pergunta || 'N/A')}
               </p>
               <p className="text-sm">
-                <strong>Resposta:</strong> {resposta.resposta}
+                <strong>Resposta:</strong> {typeof resposta.resposta === 'object' ? JSON.stringify(resposta.resposta) : String(resposta.resposta || 'N/A')}
               </p>
             </CardContent>
           </Card>
@@ -103,7 +103,7 @@ const ResponseViewer = ({ respostas, missionType }: ResponseViewerProps) => {
                       {questionNumber ? `Questão ${questionNumber}` : key}
                     </span>
                   </div>
-                  <p className="text-sm">{value as string}</p>
+                  <p className="text-sm">{typeof value === 'object' ? JSON.stringify(value) : String(value || 'N/A')}</p>
                 </CardContent>
               </Card>
             );
@@ -133,7 +133,7 @@ const ResponseViewer = ({ respostas, missionType }: ResponseViewerProps) => {
                   {JSON.stringify(value, null, 2)}
                 </pre>
               ) : (
-                <span>{value as string}</span>
+                <span>{typeof value === 'object' ? JSON.stringify(value) : String(value || 'N/A')}</span>
               )}
             </div>
           </div>
