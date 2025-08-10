@@ -16,43 +16,6 @@ const ResponseViewer = ({ respostas, missionType }: ResponseViewerProps) => {
     );
   }
 
-  // Para Missão 1 (quiz de múltipla escolha)
-  if (missionType === 'mission1' || (!missionType && typeof respostas === 'object' && respostas.pergunta1)) {
-    return (
-      <div className="space-y-3">
-        {Object.entries(respostas).map(([key, value]) => {
-          if (key === 'totalScore' || key === 'missao') return null;
-          
-          const questionNumber = key.replace('pergunta', '');
-          return (
-            <Card key={key} className="border-border/40">
-              <CardContent className="p-3">
-                <div className="flex justify-between items-start mb-2">
-                  <span className="text-sm font-medium text-muted-foreground">
-                    Pergunta {questionNumber}
-                  </span>
-                  {key === 'totalScore' && (
-                    <Badge variant="secondary">
-                      Score: {String(value)}
-                    </Badge>
-                  )}
-                </div>
-                <p className="text-sm">{typeof value === 'object' ? JSON.stringify(value) : String(value || 'N/A')}</p>
-              </CardContent>
-            </Card>
-          );
-        })}
-        {respostas.totalScore && (
-          <div className="flex justify-end">
-            <Badge variant="outline">
-              Score Total: {respostas.totalScore}
-            </Badge>
-          </div>
-        )}
-      </div>
-    );
-  }
-
   // Handle Mission 2 with nested data structure: {data: [...], missao: 2}
   if (missionType === 'mission2' && typeof respostas === 'object' && respostas.data && Array.isArray(respostas.data)) {
     return (
@@ -87,6 +50,7 @@ const ResponseViewer = ({ respostas, missionType }: ResponseViewerProps) => {
       </div>
     );
   }
+
 
   // Handle all missions with array format: [{pergunta, resposta, pontuacao}]
   if (Array.isArray(respostas)) {
@@ -141,6 +105,7 @@ const ResponseViewer = ({ respostas, missionType }: ResponseViewerProps) => {
     );
   }
 
+
   // Handle Mission 4 format: {answers: {1:"a", 2:"b"...}, totalScore: 24.4}
   if (missionType === 'mission4' && typeof respostas === 'object' && respostas.answers) {
     return (
@@ -149,6 +114,15 @@ const ResponseViewer = ({ respostas, missionType }: ResponseViewerProps) => {
           const question = getQuestionById('mission4', parseInt(questionId));
           const optionText = getOptionText('mission4', parseInt(questionId), String(answer).toUpperCase());
           
+          // Calculate individual points for this answer
+          let individualPoints = 0;
+          if (question && question.options) {
+            const answerKey = String(answer).toUpperCase() as keyof typeof question.options;
+            if (question.options[answerKey]) {
+              individualPoints = question.options[answerKey].points;
+            }
+          }
+          
           return (
             <Card key={questionId} className="border-border/40">
               <CardContent className="p-3">
@@ -156,6 +130,9 @@ const ResponseViewer = ({ respostas, missionType }: ResponseViewerProps) => {
                   <span className="text-sm font-medium text-muted-foreground">
                     Questão {questionId}
                   </span>
+                  <Badge variant="secondary">
+                    {individualPoints} {individualPoints === 1 ? 'ponto' : 'pontos'}
+                  </Badge>
                 </div>
                 <p className="text-sm mb-2">
                   <strong>Pergunta:</strong> {question?.question || `Pergunta ${questionId}`}
