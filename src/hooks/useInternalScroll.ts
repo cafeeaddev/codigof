@@ -16,7 +16,8 @@ export const useInternalScroll = () => {
     if (!containerRef.current || isScrolling) return;
     
     const container = containerRef.current;
-    const targetY = sectionIndex * window.innerHeight;
+    const section = sections[sectionIndex]?.element;
+    const targetY = section ? section.offsetTop : sectionIndex * container.clientHeight;
     
     setIsScrolling(true);
     
@@ -36,7 +37,7 @@ export const useInternalScroll = () => {
     }
     
     setCurrentSection(sectionIndex);
-  }, [isScrolling]);
+  }, [isScrolling, sections]);
 
   const nextSection = useCallback(() => {
     if (currentSection < sections.length - 1) {

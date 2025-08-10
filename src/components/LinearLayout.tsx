@@ -161,7 +161,7 @@ export const LinearLayout = () => {
           data-internal-scroll="true"
           style={{
             scrollBehavior: 'smooth',
-            scrollSnapType: 'y mandatory'
+            scrollSnapType: 'y proximity'
           }}
         >
           {/* Hero Section */}
