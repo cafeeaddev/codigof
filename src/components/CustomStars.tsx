@@ -13,25 +13,26 @@ export const CustomStars = () => {
     return wave1 + wave2 + wave3;
   };
 
-  // Generate star positions only in the sky area
+  // Generate star positions focused on visible sky area
   const { positions, colors } = useMemo(() => {
-    const starCount = 4000; // Aumentando número de estrelas
+    const starCount = 5000; // Mais estrelas
     const positions = new Float32Array(starCount * 3);
     const colors = new Float32Array(starCount * 3);
     
     let index = 0;
     
     for (let i = 0; i < starCount; i++) {
-      // Spherical distribution to cover the entire visible sky
-      const x = (Math.random() - 0.5) * 200; // Much wider X coverage (-100 to +100)
-      const z = (Math.random() - 0.3) * 150; // Z coverage from -105 to +45, more behind camera
+      // Focar no campo de visão da câmera (posição [0, 1, 5])
+      // Distribuir estrelas mais próximas da área visível
+      const x = (Math.random() - 0.5) * 80; // Área mais focada (-40 a +40)
+      const z = -20 + Math.random() * 60; // Z de -20 a +40, priorizando área visível
       
       // Calculate terrain height at this x,z position
       const terrainHeight = calculateHeightAtPoint(x, z);
       
-      // Only place stars well above the terrain (in the sky)
-      const minSkyHeight = Math.max(terrainHeight + 2, 2); 
-      const maxSkyHeight = 40; // Much higher sky coverage
+      // Colocar estrelas mais próximas e visíveis
+      const minSkyHeight = Math.max(terrainHeight + 1.5, 1.5); 
+      const maxSkyHeight = 25; // Altura mais baixa para ficarem visíveis
       const y = minSkyHeight + Math.random() * (maxSkyHeight - minSkyHeight);
       
       positions[index] = x;
@@ -89,13 +90,13 @@ export const CustomStars = () => {
         />
       </bufferGeometry>
       <pointsMaterial
-        size={0.08}           // Aumentando tamanho das estrelas
+        size={0.15}           // Estrelas maiores para melhor visibilidade
         sizeAttenuation={true}
         vertexColors={true}
         transparent={true}
-        opacity={1.0}         // Opacidade máxima
+        opacity={1.0}
         alphaTest={0.001}
-        blending={THREE.AdditiveBlending} // Adicionando brilho
+        blending={THREE.AdditiveBlending}
       />
     </points>
   );

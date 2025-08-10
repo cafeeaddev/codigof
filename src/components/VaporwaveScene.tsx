@@ -22,8 +22,8 @@ export const VaporwaveScene = ({ cameraPosition, cameraFov }: VaporwaveSceneProp
         gl={{ alpha: true }}
         className="w-full h-full"
         onCreated={({ scene }) => {
-          // Add dark fog for atmosphere
-          scene.fog = new THREE.Fog(0x0a0a0a, 15, 80);
+          // Fog mais suave para não esconder as estrelas
+          scene.fog = new THREE.Fog(0x0a0a0a, 25, 120);
         }}
       >
         {/* Background gradient and stars */}
