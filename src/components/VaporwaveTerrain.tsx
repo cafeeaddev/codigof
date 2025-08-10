@@ -165,21 +165,18 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
             geometry={backgroundGeometry}
             rotation={[-Math.PI * 0.5, 0, 0]}
             position={[0, -3.0, 0]}
+            renderOrder={1}
           >
             <meshStandardMaterial
               ref={index === 0 ? backgroundMaterialRef : undefined}
-              map={backgroundTexture}
-              normalMap={normalTexture}
-              displacementMap={wireframeTexture}
-              displacementScale={0.8}
-              color="#2d1b69"
-              emissive="#1a0a3e"
-              emissiveIntensity={0.8}
-              roughness={0.7}
-              metalness={0.3}
+              color="#201047"
+              emissive="#0b0830"
+              emissiveIntensity={0.3}
+              roughness={0.9}
+              metalness={0.1}
               transparent={false}
               opacity={1.0}
-              side={THREE.DoubleSide}
+              side={THREE.FrontSide}
               wireframe={false}
               depthTest={true}
               depthWrite={true}
@@ -191,13 +188,14 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
             geometry={backgroundGeometry}
             rotation={[-Math.PI * 0.5, 0, 0]}
             position={[0, -2.94, 0]}
+            renderOrder={2}
           >
             <meshBasicMaterial
               color="#00ffff"
               transparent={true}
               opacity={0.9}
               wireframe={true}
-              depthTest={true}
+              depthTest={false}
               depthWrite={false}
             />
           </mesh>
