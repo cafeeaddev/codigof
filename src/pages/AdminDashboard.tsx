@@ -44,6 +44,7 @@ const AdminDashboard = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [cargoFilter, setCargoFilter] = useState('');
   const [areaFilter, setAreaFilter] = useState('');
+  const [profileFilter, setProfileFilter] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
@@ -286,7 +287,19 @@ const AdminDashboard = () => {
 
     // Missão 4 não é incluída no cálculo de pontos
 
-    return totalScore.toFixed(1);
+    return totalScore;
+  };
+
+  // Função para classificar o perfil digital baseado na pontuação das missões 1, 2 e 3
+  const getDigitalProfile = (totalScore: number) => {
+    if (totalScore >= 57) return { profile: 'Ninja', sublevel: 'Ninja Raiz™ 😎' };
+    if (totalScore >= 52) return { profile: 'Ninja', sublevel: 'Consolidação' };
+    if (totalScore >= 42) return { profile: 'Pro-Player', sublevel: 'Transição → Ninja' };
+    if (totalScore >= 37) return { profile: 'Pro-Player', sublevel: 'Início/Consolidado' };
+    if (totalScore >= 31) return { profile: 'Explorer', sublevel: 'Transição → Pro-Player' };
+    if (totalScore >= 25) return { profile: 'Explorer', sublevel: 'Início' };
+    if (totalScore >= 18) return { profile: 'Beginner +', sublevel: 'Transição → Explorer' };
+    return { profile: 'Beginner', sublevel: 'Início' };
   };
 
   const exportToCSV = (data: ResponseData[], missionName: string) => {
@@ -430,7 +443,7 @@ const AdminDashboard = () => {
             </CardTitle>
           </CardHeader>
            <CardContent>
-            <div className="grid grid-cols-2 md:grid-cols-6 gap-4 text-center">
+            <div className="grid grid-cols-2 md:grid-cols-7 gap-4 text-center">
               <div>
                 <p className="text-2xl font-bold text-primary">{stats.mission1?.total || 0}</p>
                 <p className="text-sm text-muted-foreground">Total de Usuários</p>
@@ -459,7 +472,7 @@ const AdminDashboard = () => {
                     const nonAdminUsers = progressData.data.filter(p => !adminUserIds.has(p.user_id));
                     
                     const totalScore = nonAdminUsers.reduce((sum, progress) => {
-                      return sum + parseFloat(calculateUserTotalScore(progress.user_id) || '0');
+                      return sum + calculateUserTotalScore(progress.user_id);
                     }, 0);
                     
                     const avgScore = nonAdminUsers.length > 0 ? (totalScore / nonAdminUsers.length) : 0;
@@ -467,6 +480,29 @@ const AdminDashboard = () => {
                   })()}
                 </p>
                 <p className="text-sm text-muted-foreground">Pontuação Média</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-blue-600">
+                  {(() => {
+                    if (!progressData?.data) return '0';
+                    const adminUserIds = new Set((adminUsers.data || []).map(admin => admin.user_id));
+                    const nonAdminUsers = progressData.data.filter(p => !adminUserIds.has(p.user_id));
+                    
+                    const profileCounts = { 'Beginner': 0, 'Beginner +': 0, 'Explorer': 0, 'Pro-Player': 0, 'Ninja': 0 };
+                    
+                    nonAdminUsers.forEach(progress => {
+                      const totalScore = calculateUserTotalScore(progress.user_id);
+                      const profile = getDigitalProfile(totalScore);
+                      profileCounts[profile.profile as keyof typeof profileCounts]++;
+                    });
+                    
+                    const mostCommon = Object.entries(profileCounts)
+                      .sort(([,a], [,b]) => b - a)[0];
+                    
+                    return mostCommon ? mostCommon[0] : 'N/A';
+                  })()}
+                </p>
+                <p className="text-sm text-muted-foreground">Perfil Mais Comum</p>
               </div>
             </div>
           </CardContent>
@@ -599,6 +635,27 @@ const AdminDashboard = () => {
                   </SelectContent>
                 </Select>
               </div>
+              <div className="w-48">
+                <Select
+                  value={profileFilter}
+                  onValueChange={(value) => {
+                    setProfileFilter(value);
+                    setCurrentPage(1);
+                  }}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Filtrar por perfil" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="todos">Todos os perfis</SelectItem>
+                    <SelectItem value="Beginner">Beginner</SelectItem>
+                    <SelectItem value="Beginner +">Beginner +</SelectItem>
+                    <SelectItem value="Explorer">Explorer</SelectItem>
+                    <SelectItem value="Pro-Player">Pro-Player</SelectItem>
+                    <SelectItem value="Ninja">Ninja</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
               <Badge variant="secondary">
                 {(() => {
                   const allUsers = progressData.data?.filter(progress => {
@@ -606,27 +663,35 @@ const AdminDashboard = () => {
                     return !adminUserIds.has(progress.user_id);
                   }) || [];
                   
-                  const filtered = allUsers.filter(progress => {
-                    const userProfile = progressData.userProfiles?.get(progress.user_id);
-                    const userName = userProfile?.nome || 'Usuário';
-                    const matchesSearch = userName.toLowerCase().includes(searchTerm.toLowerCase());
-                    
-                    // Filtro por cargo
-                    let matchesCargo = true;
-                    if (cargoFilter && cargoFilter !== "todos") {
-                      const userCargo = userProfile?.cargo?.replace(/^\d+-/, '').trim() || '';
-                      matchesCargo = userCargo === cargoFilter;
-                    }
-                    
-                    // Filtro por área
-                    let matchesArea = true;
-                    if (areaFilter && areaFilter !== "todos") {
-                      const userArea = userProfile?.area || '';
-                      matchesArea = userArea === areaFilter;
-                    }
-                    
-                    return matchesSearch && matchesCargo && matchesArea;
-                  });
+                   const filtered = allUsers.filter(progress => {
+                     const userProfile = progressData.userProfiles?.get(progress.user_id);
+                     const userName = userProfile?.nome || 'Usuário';
+                     const matchesSearch = userName.toLowerCase().includes(searchTerm.toLowerCase());
+                     
+                     // Filtro por cargo
+                     let matchesCargo = true;
+                     if (cargoFilter && cargoFilter !== "todos") {
+                       const userCargo = userProfile?.cargo?.replace(/^\d+-/, '').trim() || '';
+                       matchesCargo = userCargo === cargoFilter;
+                     }
+                     
+                     // Filtro por área
+                     let matchesArea = true;
+                     if (areaFilter && areaFilter !== "todos") {
+                       const userArea = userProfile?.area || '';
+                       matchesArea = userArea === areaFilter;
+                     }
+                     
+                     // Filtro por perfil
+                     let matchesProfile = true;
+                     if (profileFilter && profileFilter !== "todos") {
+                       const totalScore = calculateUserTotalScore(progress.user_id);
+                       const digitalProfile = getDigitalProfile(totalScore);
+                       matchesProfile = digitalProfile.profile === profileFilter;
+                     }
+                     
+                     return matchesSearch && matchesCargo && matchesArea && matchesProfile;
+                   });
                   
                   return filtered.length;
                 })()} usuários encontrados
@@ -643,6 +708,7 @@ const AdminDashboard = () => {
                     <TableHead>Área</TableHead>
                     <TableHead>Data de Início</TableHead>
                     <TableHead>Pontuação Total</TableHead>
+                    <TableHead>Perfil Digital</TableHead>
                     <TableHead>XP Total</TableHead>
                     <TableHead>Tempo de Jogo</TableHead>
                     <TableHead>Missão 1</TableHead>
@@ -659,28 +725,36 @@ const AdminDashboard = () => {
                         return !adminUserIds.has(progress.user_id);
                       }) || [];
                     
-                    // Filtrar por busca, cargo e área
-                    const filteredUsers = allUsers.filter(progress => {
-                      const userProfile = progressData.userProfiles?.get(progress.user_id);
-                      const userName = userProfile?.nome || 'Usuário';
-                      const matchesSearch = userName.toLowerCase().includes(searchTerm.toLowerCase());
-                      
-                      // Filtro por cargo
-                      let matchesCargo = true;
-                      if (cargoFilter && cargoFilter !== "todos") {
-                        const userCargo = userProfile?.cargo?.replace(/^\d+-/, '').trim() || '';
-                        matchesCargo = userCargo === cargoFilter;
-                      }
-                      
-                      // Filtro por área
-                      let matchesArea = true;
-                      if (areaFilter && areaFilter !== "todos") {
-                        const userArea = userProfile?.area || '';
-                        matchesArea = userArea === areaFilter;
-                      }
-                      
-                      return matchesSearch && matchesCargo && matchesArea;
-                    });
+                     // Filtrar por busca, cargo, área e perfil
+                     const filteredUsers = allUsers.filter(progress => {
+                       const userProfile = progressData.userProfiles?.get(progress.user_id);
+                       const userName = userProfile?.nome || 'Usuário';
+                       const matchesSearch = userName.toLowerCase().includes(searchTerm.toLowerCase());
+                       
+                       // Filtro por cargo
+                       let matchesCargo = true;
+                       if (cargoFilter && cargoFilter !== "todos") {
+                         const userCargo = userProfile?.cargo?.replace(/^\d+-/, '').trim() || '';
+                         matchesCargo = userCargo === cargoFilter;
+                       }
+                       
+                       // Filtro por área
+                       let matchesArea = true;
+                       if (areaFilter && areaFilter !== "todos") {
+                         const userArea = userProfile?.area || '';
+                         matchesArea = userArea === areaFilter;
+                       }
+                       
+                       // Filtro por perfil
+                       let matchesProfile = true;
+                       if (profileFilter && profileFilter !== "todos") {
+                         const totalScore = calculateUserTotalScore(progress.user_id);
+                         const digitalProfile = getDigitalProfile(totalScore);
+                         matchesProfile = digitalProfile.profile === profileFilter;
+                       }
+                       
+                       return matchesSearch && matchesCargo && matchesArea && matchesProfile;
+                     });
 
                     // Paginação
                     const startIndex = (currentPage - 1) * itemsPerPage;
@@ -708,9 +782,21 @@ const AdminDashboard = () => {
                               <TableCell className="text-muted-foreground">
                                 {userProfile?.area || '-'}
                               </TableCell>
-                              <TableCell>{new Date(progress.created_at).toLocaleDateString('pt-BR')}</TableCell>
-                              <TableCell className="text-yellow-600 font-medium">{calculateUserTotalScore(progress.user_id)} pts</TableCell>
-                              <TableCell className="text-primary font-medium">{progress.total_xp || 0} XP</TableCell>
+                               <TableCell>{new Date(progress.created_at).toLocaleDateString('pt-BR')}</TableCell>
+                               <TableCell className="text-yellow-600 font-medium">{calculateUserTotalScore(progress.user_id)} pts</TableCell>
+                               <TableCell>
+                                 {(() => {
+                                   const totalScore = calculateUserTotalScore(progress.user_id);
+                                   const profile = getDigitalProfile(totalScore);
+                                   return (
+                                     <div className="flex flex-col">
+                                       <span className="font-medium text-primary">{profile.profile}</span>
+                                       <span className="text-xs text-muted-foreground">{profile.sublevel}</span>
+                                     </div>
+                                   );
+                                 })()}
+                               </TableCell>
+                               <TableCell className="text-primary font-medium">{progress.total_xp || 0} XP</TableCell>
                               <TableCell>{Math.floor((progress.total_play_time || 0) / 60)}min</TableCell>
                               <TableCell>
                                 <div className="flex items-center gap-1">
@@ -748,12 +834,12 @@ const AdminDashboard = () => {
                           );
                         })}
                         {paginatedUsers.length === 0 && (
-                          <TableRow>
-                            <TableCell colSpan={11} className="text-center py-8 text-muted-foreground">
-                              <Users className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                              <p>Nenhum usuário encontrado.</p>
-                            </TableCell>
-                          </TableRow>
+                           <TableRow>
+                             <TableCell colSpan={12} className="text-center py-8 text-muted-foreground">
+                               <Users className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                               <p>Nenhum usuário encontrado.</p>
+                             </TableCell>
+                           </TableRow>
                         )}
                       </>
                     );
@@ -770,27 +856,35 @@ const AdminDashboard = () => {
                   return !adminUserIds.has(progress.user_id);
                 }) || [];
               
-              const filteredUsers = allUsers.filter(progress => {
-                const userProfile = progressData.userProfiles?.get(progress.user_id);
-                const userName = userProfile?.nome || 'Usuário';
-                const matchesSearch = userName.toLowerCase().includes(searchTerm.toLowerCase());
-                
-                // Filtro por cargo
-                let matchesCargo = true;
-                if (cargoFilter && cargoFilter !== "todos") {
-                  const userCargo = userProfile?.cargo?.replace(/^\d+-/, '').trim() || '';
-                  matchesCargo = userCargo === cargoFilter;
-                }
-                
-                // Filtro por área
-                let matchesArea = true;
-                if (areaFilter && areaFilter !== "todos") {
-                  const userArea = userProfile?.area || '';
-                  matchesArea = userArea === areaFilter;
-                }
-                
-                return matchesSearch && matchesCargo && matchesArea;
-              });
+                 const filteredUsers = allUsers.filter(progress => {
+                   const userProfile = progressData.userProfiles?.get(progress.user_id);
+                   const userName = userProfile?.nome || 'Usuário';
+                   const matchesSearch = userName.toLowerCase().includes(searchTerm.toLowerCase());
+                   
+                   // Filtro por cargo
+                   let matchesCargo = true;
+                   if (cargoFilter && cargoFilter !== "todos") {
+                     const userCargo = userProfile?.cargo?.replace(/^\d+-/, '').trim() || '';
+                     matchesCargo = userCargo === cargoFilter;
+                   }
+                   
+                   // Filtro por área
+                   let matchesArea = true;
+                   if (areaFilter && areaFilter !== "todos") {
+                     const userArea = userProfile?.area || '';
+                     matchesArea = userArea === areaFilter;
+                   }
+                   
+                   // Filtro por perfil
+                   let matchesProfile = true;
+                   if (profileFilter && profileFilter !== "todos") {
+                     const totalScore = calculateUserTotalScore(progress.user_id);
+                     const digitalProfile = getDigitalProfile(totalScore);
+                     matchesProfile = digitalProfile.profile === profileFilter;
+                   }
+                   
+                   return matchesSearch && matchesCargo && matchesArea && matchesProfile;
+                 });
 
               const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
 
