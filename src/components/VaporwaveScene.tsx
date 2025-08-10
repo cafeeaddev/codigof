@@ -19,7 +19,7 @@ export const VaporwaveScene = ({ cameraPosition, cameraFov }: VaporwaveSceneProp
           near: 0.01,
           far: 300,
         }}
-        gl={{ alpha: true }}
+        gl={{ alpha: true, depth: true }}
         className="w-full h-full"
         onCreated={({ scene }) => {
           // Fog mais suave e mais distante para não interferir

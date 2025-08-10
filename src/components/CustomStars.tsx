@@ -116,7 +116,7 @@ export const CustomStars = () => {
   });
 
   return (
-    <points ref={pointsRef}>
+    <points ref={pointsRef} renderOrder={-10}>
       <bufferGeometry>
         <bufferAttribute
           attach="attributes-position"
