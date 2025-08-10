@@ -302,6 +302,18 @@ const AdminDashboard = () => {
     return { profile: 'Beginner', sublevel: 'Início' };
   };
 
+  // Função para obter a cor do perfil digital
+  const getProfileColor = (profile: string) => {
+    switch (profile) {
+      case 'Beginner': return 'hsl(var(--profile-beginner))';
+      case 'Beginner +': return 'hsl(var(--profile-beginner-plus))';
+      case 'Explorer': return 'hsl(var(--profile-explorer))';
+      case 'Pro-Player': return 'hsl(var(--profile-pro-player))';
+      case 'Ninja': return 'hsl(var(--profile-ninja))';
+      default: return 'hsl(var(--muted-foreground))';
+    }
+  };
+
   const exportToCSV = (data: ResponseData[], missionName: string) => {
     if (data.length === 0) {
       toast({
@@ -648,11 +660,36 @@ const AdminDashboard = () => {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="todos">Todos os perfis</SelectItem>
-                    <SelectItem value="Beginner">Beginner</SelectItem>
-                    <SelectItem value="Beginner +">Beginner +</SelectItem>
-                    <SelectItem value="Explorer">Explorer</SelectItem>
-                    <SelectItem value="Pro-Player">Pro-Player</SelectItem>
-                    <SelectItem value="Ninja">Ninja</SelectItem>
+                    <SelectItem value="Beginner">
+                      <span className="flex items-center gap-2">
+                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: 'hsl(var(--profile-beginner))' }}></div>
+                        Beginner
+                      </span>
+                    </SelectItem>
+                    <SelectItem value="Beginner +">
+                      <span className="flex items-center gap-2">
+                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: 'hsl(var(--profile-beginner-plus))' }}></div>
+                        Beginner +
+                      </span>
+                    </SelectItem>
+                    <SelectItem value="Explorer">
+                      <span className="flex items-center gap-2">
+                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: 'hsl(var(--profile-explorer))' }}></div>
+                        Explorer
+                      </span>
+                    </SelectItem>
+                    <SelectItem value="Pro-Player">
+                      <span className="flex items-center gap-2">
+                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: 'hsl(var(--profile-pro-player))' }}></div>
+                        Pro-Player
+                      </span>
+                    </SelectItem>
+                    <SelectItem value="Ninja">
+                      <span className="flex items-center gap-2">
+                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: 'hsl(var(--profile-ninja))' }}></div>
+                        Ninja
+                      </span>
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -788,10 +825,20 @@ const AdminDashboard = () => {
                                  {(() => {
                                    const totalScore = calculateUserTotalScore(progress.user_id);
                                    const profile = getDigitalProfile(totalScore);
+                                   const profileColor = getProfileColor(profile.profile);
                                    return (
                                      <div className="flex flex-col">
-                                       <span className="font-medium text-primary">{profile.profile}</span>
-                                       <span className="text-xs text-muted-foreground">{profile.sublevel}</span>
+                                       <span 
+                                         className="font-medium px-2 py-1 rounded text-xs"
+                                         style={{ 
+                                           backgroundColor: profileColor + '20', 
+                                           color: profileColor,
+                                           border: `1px solid ${profileColor}40`
+                                         }}
+                                       >
+                                         {profile.profile}
+                                       </span>
+                                       <span className="text-xs text-muted-foreground mt-1">{profile.sublevel}</span>
                                      </div>
                                    );
                                  })()}
