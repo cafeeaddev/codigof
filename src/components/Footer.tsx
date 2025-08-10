@@ -166,6 +166,7 @@ export const Footer = () => {
             </div>
           </div>
         </div>
+        <div aria-hidden className="h-24 sm:h-40" />
       </div>
     </footer>
   );
