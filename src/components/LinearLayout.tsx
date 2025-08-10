@@ -215,8 +215,8 @@ export const LinearLayout = () => {
           >
             <FeatureFold
               id="missions"
-              title="4 MISSÕES"
-              subtitle="Desafios interativos"
+              title="Missões"
+              subtitle="Prepare-se para 4 missões intensas onde cada decisão pode mudar o rumo da sua jornada. Encare desafios estratégicos e deixe suas escolhas guiarem o caminho."
               colorClass="bg-neon-cyan"
               Icon={Target}
             />
@@ -232,8 +232,8 @@ export const LinearLayout = () => {
           >
             <FeatureFold
               id="xp-levels"
-              title="XP & LEVELS"
-              subtitle="Pontuação e progresso"
+              title="XP & Levels"
+              subtitle="À medida que você avança nas missões, acumula pontos de experiência (XP) e sobe de nível. Acompanhe seu progresso, desbloqueie conquistas e acompanhe sua evolução."
               colorClass="bg-neon-purple"
               Icon={Trophy}
             />
@@ -249,8 +249,8 @@ export const LinearLayout = () => {
           >
             <FeatureFold
               id="medals"
-              title="MEDALHAS"
-              subtitle="Perfis de habilidade"
+              title="Medalhas"
+              subtitle="Conquiste medalhas exclusivas ao completar cada missão. São elas que provam sua trajetória dentro do jogo."
               colorClass="bg-neon-pink"
               Icon={Medal}
             />
