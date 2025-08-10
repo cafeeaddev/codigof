@@ -19,15 +19,9 @@ export const StatsCards = ({ adminStats, missionStats }: StatsCardsProps) => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-6 gap-4 text-center">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-center">
             <div className="hover-scale">
               <p className="text-2xl font-bold text-primary">{adminStats.totalUsers}</p>
-              <p className="text-sm text-muted-foreground">Total de Usuários</p>
-            </div>
-            <div className="hover-scale">
-              <p className="text-2xl font-bold" style={{ color: 'hsl(var(--profile-beginner-plus))' }}>
-                {adminStats.usersStarted}
-              </p>
               <p className="text-sm text-muted-foreground">Usuários que Começaram</p>
             </div>
             <div className="hover-scale">

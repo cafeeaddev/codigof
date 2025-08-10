@@ -137,7 +137,7 @@ export const useAdminDashboard = () => {
         }
       },
       adminStats: {
-        totalUsers: nonAdminUsers.length,
+        totalUsers: nonAdminUsers.length, // Apenas usuários que começaram o jogo
         usersStarted: nonAdminUsers.length,
         usersCompleted: gameCompleted,
         completionRate: nonAdminUsers.length > 0 ? parseFloat(((gameCompleted / nonAdminUsers.length) * 100).toFixed(2)) : 0,
