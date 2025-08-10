@@ -209,7 +209,8 @@ const AdminDashboard = () => {
         mission2Completed,
         mission3Completed,
         mission4Completed,
-        gameCompleted
+        gameCompleted,
+        completionPercentage: totalNonAdminProfiles > 0 ? ((gameCompleted / totalNonAdminProfiles) * 100).toFixed(2) : 0
       });
       
       setStats({
