@@ -287,7 +287,7 @@ const AdminDashboard = () => {
 
     // Missão 4 não é incluída no cálculo de pontos
 
-    return totalScore;
+    return parseFloat(totalScore.toFixed(2));
   };
 
   // Função para classificar o perfil digital baseado na pontuação das missões 1, 2 e 3
@@ -783,7 +783,7 @@ const AdminDashboard = () => {
                                 {userProfile?.area || '-'}
                               </TableCell>
                                <TableCell>{new Date(progress.created_at).toLocaleDateString('pt-BR')}</TableCell>
-                               <TableCell className="text-yellow-600 font-medium">{calculateUserTotalScore(progress.user_id)} pts</TableCell>
+                               <TableCell className="text-yellow-600 font-medium">{calculateUserTotalScore(progress.user_id).toFixed(2)} pts</TableCell>
                                <TableCell>
                                  {(() => {
                                    const totalScore = calculateUserTotalScore(progress.user_id);
