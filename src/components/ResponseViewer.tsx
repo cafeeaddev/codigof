@@ -77,7 +77,8 @@ const ResponseViewer = ({ respostas, missionType }: ResponseViewerProps) => {
   }
 
   // Para Missão 2 (quiz com pontuação) - estrutura com objetos {pergunta, resposta, pontuacao}
-  if (missionType === 'mission2' || (!missionType && Array.isArray(respostas))) {
+  if ((missionType === 'mission2' && Array.isArray(respostas)) || 
+      (!missionType && Array.isArray(respostas))) {
     return (
       <div className="space-y-3">
         {respostas.map((resposta: any, index: number) => {
@@ -127,6 +128,22 @@ const ResponseViewer = ({ respostas, missionType }: ResponseViewerProps) => {
           );
         })}
       </div>
+    );
+  }
+
+  // Missão 2 com dados em formato não-array (fallback)
+  if (missionType === 'mission2' && !Array.isArray(respostas) && typeof respostas === 'object') {
+    return (
+      <Card className="border-border/40">
+        <CardContent className="p-3">
+          <div className="text-xs text-muted-foreground mb-2">
+            Dados da Missão 2 (formato não esperado):
+          </div>
+          <pre className="text-xs whitespace-pre-wrap bg-muted/30 p-2 rounded overflow-auto max-h-40">
+            {JSON.stringify(respostas, null, 2)}
+          </pre>
+        </CardContent>
+      </Card>
     );
   }
 
