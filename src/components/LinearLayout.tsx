@@ -148,8 +148,8 @@ export const LinearLayout = () => {
           <Navigation />
         </div>
 
-        {/* Top-right label: CÓDIGO F */}
-        <div className="fixed top-3 right-4 z-40 pointer-events-none">
+        {/* Top-left label: CÓDIGO F */}
+        <div className="fixed top-3 left-4 z-40 pointer-events-none">
           <span className="text-secondary font-bold tracking-wide">CÓDIGO</span>{' '}
           <span className="text-neon-pink font-bold">F</span>
         </div>
