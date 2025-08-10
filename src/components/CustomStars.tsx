@@ -1,5 +1,5 @@
 import { useRef, useMemo } from 'react';
-import { useFrame } from '@react-three/fiber';
+
 import * as THREE from 'three';
 
 export const CustomStars = () => {
@@ -33,6 +33,10 @@ export const CustomStars = () => {
     
     const texture = new THREE.CanvasTexture(canvas);
     texture.generateMipmaps = false;
+    texture.minFilter = THREE.LinearFilter;
+    texture.magFilter = THREE.LinearFilter;
+    texture.colorSpace = THREE.SRGBColorSpace;
+    texture.needsUpdate = true;
     return texture;
   }, []);
 
@@ -112,15 +116,16 @@ export const CustomStars = () => {
         />
       </bufferGeometry>
       <pointsMaterial
-        size={0.2}           // Estrelas um pouco maiores para o efeito circular
+        size={1}
         sizeAttenuation={true}
         vertexColors={true}
         fog={false}
         transparent={true}
         opacity={0.9}
         alphaTest={0.001}
-        map={starTexture}    // Textura circular
+        map={starTexture}
         blending={THREE.AdditiveBlending}
+        toneMapped={false}
         depthTest={true}
         depthWrite={false}
       />
