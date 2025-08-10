@@ -193,13 +193,22 @@ const AdminDashboard = () => {
       const mission3Completed = nonAdminProgress.filter(p => p.missao_3_completed === true).length;
       const mission4Completed = nonAdminProgress.filter(p => p.missao_4_completed === true).length;
       
+      // Calculate users who completed all 4 missions (game completed)
+      const gameCompleted = nonAdminProgress.filter(p => 
+        p.missao_1_completed === true && 
+        p.missao_2_completed === true && 
+        p.missao_3_completed === true && 
+        p.missao_4_completed === true
+      ).length;
+      
       console.log('Mission completion counts (excluding admins):', {
         totalNonAdminProfiles,
         usersStarted,
         mission1Completed,
         mission2Completed,
         mission3Completed,
-        mission4Completed
+        mission4Completed,
+        gameCompleted
       });
       
       setStats({
@@ -222,9 +231,13 @@ const AdminDashboard = () => {
           total: totalNonAdminProfiles,
           completed: mission4Completed,
           percentage: totalNonAdminProfiles > 0 ? Math.round((mission4Completed / totalNonAdminProfiles) * 100) : 0
+        },
+        general: {
+          total: totalNonAdminProfiles,
+          completed: gameCompleted,
+          percentage: totalNonAdminProfiles > 0 ? Math.round((gameCompleted / totalNonAdminProfiles) * 100) : 0
         }
       });
-      
       
       setUsersStarted(usersStarted);
       setProgressData({ ...progressData, userProfiles, userProfilesByEmail });
@@ -404,7 +417,7 @@ const AdminDashboard = () => {
               </div>
               <div>
                 <p className="text-2xl font-bold text-purple-600">
-                  {stats.mission1?.total > 0 ? Math.round((Object.values(stats).reduce((acc, stat) => acc + stat.completed, 0) / (stats.mission1.total * 4)) * 100) : 0}%
+                  {stats.general?.percentage || 0}%
                 </p>
                 <p className="text-sm text-muted-foreground">Taxa de Conclusão Geral</p>
               </div>
@@ -414,7 +427,7 @@ const AdminDashboard = () => {
 
         {/* Estatísticas por Missão */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          {Object.entries(stats).map(([key, stat]) => (
+          {Object.entries(stats).filter(([key]) => key !== 'general').map(([key, stat]) => (
             <Card key={key}>
               <CardHeader className="pb-2">
                 <CardTitle className="text-base">
