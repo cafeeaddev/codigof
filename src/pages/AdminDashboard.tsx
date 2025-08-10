@@ -76,7 +76,7 @@ const AdminDashboard = () => {
         // Buscar IDs dos admins
         supabase.from('user_roles').select('user_id').eq('role', 'admin'),
         // Buscar todos os perfis para mapear user_id -> nome
-        supabase.from('profiles').select('user_id, nome, email')
+        supabase.from('profiles').select('user_id, nome, email, cargo')
       ]);
 
       if (res1.error) console.error('Error loading mission 1:', res1.error);
@@ -170,7 +170,7 @@ const AdminDashboard = () => {
       // Criar mapa de user_id para dados do usuário
       const userProfiles = new Map((allProfiles.data || []).map(profile => [
         profile.user_id, 
-        { nome: profile.nome || 'Usuário', email: profile.email || '' }
+        { nome: profile.nome || 'Usuário', email: profile.email || '', cargo: profile.cargo }
       ]));
 
       console.log('User profiles by email loaded:', userProfilesByEmail);
@@ -536,11 +536,6 @@ const AdminDashboard = () => {
                           };
                           const userCargo = formatCargo(userProfile?.cargo);
                           
-                          // Debug logs
-                          console.log('User Profile:', userProfile);
-                          console.log('User Cargo raw:', userProfile?.cargo);
-                          console.log('User Cargo formatted:', userCargo);
-                          
                           return (
                             <TableRow key={progress.user_id}>
                               <TableCell className="font-medium">
@@ -549,8 +544,6 @@ const AdminDashboard = () => {
                                   {userCargo && (
                                     <span className="text-xs text-muted-foreground">{userCargo}</span>
                                   )}
-                                  {/* Debug: sempre mostrar algo */}
-                                  <span className="text-xs text-red-500">Cargo debug: "{userProfile?.cargo || 'sem cargo'}"</span>
                                 </div>
                               </TableCell>
                               <TableCell>{new Date(progress.created_at).toLocaleDateString('pt-BR')}</TableCell>
