@@ -7,7 +7,7 @@ import { Footer } from './Footer';
 import { Navigation } from './Navigation';
 import { SectionContainer } from './SectionContainer';
 import { ScrollProgress } from './ScrollProgress';
-import { Button } from './ui/button';
+import { ChevronDown } from 'lucide-react';
 import { useInternalScroll } from '@/hooks/useInternalScroll';
 import { LoginScreen } from './LoginScreen';
 import { WelcomeScreen } from './WelcomeScreen';
@@ -208,9 +208,14 @@ export const LinearLayout = () => {
       {/* Floating Continue Button */}
       {totalSections > 0 && currentSection < totalSections - 1 && (
         <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40">
-          <Button size="lg" variant="secondary" onClick={() => nextSection()}>
-            CONTINUE
-          </Button>
+          <button
+            onClick={() => nextSection()}
+            aria-label="Rolar para a próxima seção"
+            className="flex flex-col items-center text-foreground/70 hover:text-foreground transition-colors duration-300"
+          >
+            <span className="text-xs sm:text-sm font-medium tracking-wider mb-1 sm:mb-2 uppercase">CONTINUE</span>
+            <ChevronDown className="w-5 h-5 sm:w-6 sm:h-6 animate-bounce" />
+          </button>
         </div>
       )}
 
