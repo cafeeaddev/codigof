@@ -40,67 +40,52 @@ export const CustomStars = () => {
     return texture;
   }, []);
 
-  // Generate star positions focused on visible sky area
+  // Generate star positions with a strong horizon focus
   const { positions, colors, blinkPhases } = useMemo(() => {
-    const starCount = 5000; // Mais estrelas
+    const starCount = 3500;
     const positions = new Float32Array(starCount * 3);
     const colors = new Float32Array(starCount * 3);
-    const blinkPhases = new Float32Array(starCount); // Para animação de piscada
-    
+    const blinkPhases = new Float32Array(starCount);
+
     let index = 0;
-    
+
     for (let i = 0; i < starCount; i++) {
-      // Focar no campo de visão da câmera (posição [0, 1, 5])
-      // Distribuir estrelas mais próximas da área visível
-      const x = (Math.random() - 0.5) * 140; // Área mais ampla
-      const z = -80 - Math.random() * 200; // Sempre atrás do terreno (-80 a -280)
-      
-      // Calculate terrain height at this x,z position
-      const terrainHeight = calculateHeightAtPoint(x, z);
-      
-      // Colocar estrelas bem acima do terreno para evitar vazamento
-      const minSkyHeight = Math.max(terrainHeight + 4, 4); // Margem maior
-      const maxSkyHeight = 30; // Altura um pouco maior
-      const y = minSkyHeight + Math.random() * (maxSkyHeight - minSkyHeight);
-      
+      // Concentrate stars near the horizon line of the terrain
+      const x = (Math.random() - 0.5) * 240; // Wider lateral spread (-120 .. 120)
+      const z = -110 + (Math.random() - 0.5) * 60; // Horizon band (-140 .. -80)
+      const y = 10 + Math.random() * 18; // Always well above mountains
+
       positions[index] = x;
       positions[index + 1] = y;
       positions[index + 2] = z;
-      
-      // Cores muito mais brilhantes para melhor visibilidade
-      const brightness = 1.0; // Brilho máximo
+
+      // Bright star colors for visibility
       const colorVariation = Math.random();
-      
       if (colorVariation < 0.6) {
-        // Estrelas brancas muito brilhantes
         colors[index] = 1.0;     // R
-        colors[index + 1] = 1.0; // G  
+        colors[index + 1] = 1.0; // G
         colors[index + 2] = 1.0; // B
       } else if (colorVariation < 0.8) {
-        // Estrelas amarelo-brancas brilhantes
         colors[index] = 1.0;     // R
-        colors[index + 1] = 1.0; // G  
+        colors[index + 1] = 1.0; // G
         colors[index + 2] = 0.8; // B
       } else {
-        // Estrelas azul-brancas brilhantes
         colors[index] = 0.9;     // R
-        colors[index + 1] = 0.95; // G  
+        colors[index + 1] = 0.95; // G
         colors[index + 2] = 1.0; // B
       }
-      
-      // Fase de piscada única para cada estrela
+
       blinkPhases[i] = Math.random() * Math.PI * 2;
-      
       index += 3;
     }
-    
+
     return { positions, colors, blinkPhases };
   }, []);
 
   // Stars are static; no animation or blinking
 
   return (
-    <points ref={pointsRef} renderOrder={10}>
+    <points ref={pointsRef} renderOrder={10} frustumCulled={false}>
       <bufferGeometry>
         <bufferAttribute
           attach="attributes-position"
@@ -116,8 +101,8 @@ export const CustomStars = () => {
         />
       </bufferGeometry>
       <pointsMaterial
-        size={1}
-        sizeAttenuation={true}
+        size={1.8}
+        sizeAttenuation={false}
         vertexColors={true}
         fog={false}
         transparent={true}

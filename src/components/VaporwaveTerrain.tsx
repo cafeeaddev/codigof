@@ -128,10 +128,12 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
     const pulseIntensity = 2.0 + Math.sin(state.clock.elapsedTime * 2) * 0.5;
     
     // Move cada grupo de terreno individualmente
-    groupRefs.current.forEach((group, index) => {
+    groupRefs.current.forEach((group) => {
       if (group) {
+        // Usa zIndex salvo no userData para mover por "faixa" de Z, independente do tile lateral
+        const zIndex = (group as any).userData?.zIndex ?? 0;
         // Calcula posição com loop infinito, ajustando pela câmera - MOVIMENTO PARA FRENTE
-        const basePosition = -20 + (index * -80);
+        const basePosition = -20 + (zIndex * -80);
         group.position.z = basePosition + (totalMovement % 240);
         
         // Reset position quando passa muito longe para criar loop infinito
@@ -139,12 +141,15 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
           group.position.z += 240;
         }
         
-         // Apply pulsating effect to wireframe line material
-         const wireframeLines = group.children[1] as THREE.LineSegments;
-         if (wireframeLines && (wireframeLines as any).material) {
-           const material = wireframeLines.material as THREE.LineBasicMaterial;
-           material.opacity = 0.7 + Math.sin(state.clock.elapsedTime * 1.5) * 0.2;
-         }
+         // Apply pulsating effect to all wireframe line materials in this tile (center + sides)
+         group.children.forEach((child) => {
+           if ((child as any).type === 'LineSegments') {
+             const material = (child as THREE.LineSegments).material as THREE.LineBasicMaterial;
+             if (material) {
+               material.opacity = 0.7 + Math.sin(state.clock.elapsedTime * 1.5) * 0.2;
+             }
+           }
+         });
       }
     });
   });
@@ -158,6 +163,7 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
           ref={(el) => {
             if (el) {
               groupRefs.current[index] = el;
+              (el as any).userData = { ...(el as any).userData, zIndex: index };
             }
           }}
           position={[0, 0, -25 + (index * -60)]}
@@ -199,6 +205,82 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
               polygonOffsetUnits={-2}
             />
           </lineSegments>
+
+          {/* Left tile (extend sideways) */}
+          <group position={[-100, 0, 0]}>
+            <mesh
+              geometry={backgroundGeometry}
+              rotation={[-Math.PI * 0.5, 0, 0]}
+              position={[0, -3.0, 0]}
+              renderOrder={1}
+            >
+              <meshBasicMaterial
+                color="#2b2b31"
+                transparent={false}
+                opacity={1.0}
+                side={THREE.DoubleSide}
+                depthTest={true}
+                depthWrite={true}
+                polygonOffset={true}
+                polygonOffsetFactor={1}
+                polygonOffsetUnits={1}
+              />
+            </mesh>
+            <lineSegments
+              rotation={[-Math.PI * 0.5, 0, 0]}
+              position={[0, -2.91, 0]}
+              renderOrder={2}
+            >
+              <primitive attach="geometry" object={wireframeGeometry} />
+              <lineBasicMaterial
+                color="#00ffff"
+                transparent={true}
+                depthTest={true}
+                depthWrite={false}
+                polygonOffset={true}
+                polygonOffsetFactor={-2}
+                polygonOffsetUnits={-2}
+              />
+            </lineSegments>
+          </group>
+
+          {/* Right tile (extend sideways) */}
+          <group position={[100, 0, 0]}>
+            <mesh
+              geometry={backgroundGeometry}
+              rotation={[-Math.PI * 0.5, 0, 0]}
+              position={[0, -3.0, 0]}
+              renderOrder={1}
+            >
+              <meshBasicMaterial
+                color="#2b2b31"
+                transparent={false}
+                opacity={1.0}
+                side={THREE.DoubleSide}
+                depthTest={true}
+                depthWrite={true}
+                polygonOffset={true}
+                polygonOffsetFactor={1}
+                polygonOffsetUnits={1}
+              />
+            </mesh>
+            <lineSegments
+              rotation={[-Math.PI * 0.5, 0, 0]}
+              position={[0, -2.91, 0]}
+              renderOrder={2}
+            >
+              <primitive attach="geometry" object={wireframeGeometry} />
+              <lineBasicMaterial
+                color="#00ffff"
+                transparent={true}
+                depthTest={true}
+                depthWrite={false}
+                polygonOffset={true}
+                polygonOffsetFactor={-2}
+                polygonOffsetUnits={-2}
+              />
+            </lineSegments>
+          </group>
         </group>
       ))}
     </group>
