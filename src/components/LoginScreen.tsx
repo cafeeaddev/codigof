@@ -66,7 +66,7 @@ export const LoginScreen = () => {
             <Wifi className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
           </div>
           <h1 className="text-xl sm:text-2xl font-bold text-primary mb-2">ACESSO SEGURO</h1>
-          <p className="text-muted-foreground text-xs sm:text-sm">Acesse com seu usuário da UM</p>
+          
         </div>
 
         {/* Form */}
