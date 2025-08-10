@@ -22,9 +22,9 @@ export const VaporwaveScene = ({ cameraPosition, cameraFov }: VaporwaveSceneProp
         gl={{ alpha: false, depth: true }}
         className="w-full h-full"
         onCreated={({ scene, gl }) => {
-          // Fundo sólido cinza-chumbo e fog neutro
-          gl.setClearColor('#2b2b31', 1);
-          scene.fog = new THREE.Fog(0x2b2b31, 80, 200);
+          // Céu preto sólido e neblina preta para combinar
+          gl.setClearColor('#000000', 1);
+          scene.fog = new THREE.Fog(0x000000, 80, 200);
         }}
       >
         {/* Fundo sólido via clearColor - sem gradiente */}
@@ -55,15 +55,6 @@ export const VaporwaveScene = ({ cameraPosition, cameraFov }: VaporwaveSceneProp
           />
         </mesh>
 
-        {/* Large vertical backdrop to cover far horizon */}
-        <mesh position={[0, 0, -300]}>
-          <planeGeometry args={[2000, 1000]} />
-          <meshBasicMaterial 
-            color="#2b2b31" 
-            transparent={false}
-            side={THREE.DoubleSide}
-          />
-        </mesh>
         
         {/* Main terrain */}
         <VaporwaveTerrain cameraPosition={cameraPosition} />
