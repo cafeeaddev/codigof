@@ -530,10 +530,22 @@ const AdminDashboard = () => {
                         {paginatedUsers.map((progress) => {
                           const userProfile = progressData.userProfiles?.get(progress.user_id);
                           const userName = userProfile?.nome || 'Usuário';
+                          const formatCargo = (cargo: string | null | undefined) => {
+                            if (!cargo) return '';
+                            return cargo.replace(/^\d+-/, '').trim();
+                          };
+                          const userCargo = formatCargo(userProfile?.cargo);
                           
                           return (
                             <TableRow key={progress.user_id}>
-                              <TableCell className="font-medium">{userName}</TableCell>
+                              <TableCell className="font-medium">
+                                <div className="flex flex-col">
+                                  <span>{userName}</span>
+                                  {userCargo && (
+                                    <span className="text-xs text-muted-foreground">{userCargo}</span>
+                                  )}
+                                </div>
+                              </TableCell>
                               <TableCell>{new Date(progress.created_at).toLocaleDateString('pt-BR')}</TableCell>
                               <TableCell className="text-primary font-medium">{progress.total_xp || 0} XP</TableCell>
                               <TableCell>{Math.floor((progress.total_play_time || 0) / 60)}min</TableCell>
