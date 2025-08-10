@@ -384,7 +384,7 @@ const AdminDashboard = () => {
             Voltar
           </Button>
           <div>
-            <h1 className="text-3xl font-bold">Dashboard Administrativo</h1>
+            <h1 className="text-3xl font-bold">Dashboard Administrativo do Código F</h1>
             <p className="text-muted-foreground">Visualize e exporte as respostas das missões</p>
           </div>
         </div>
