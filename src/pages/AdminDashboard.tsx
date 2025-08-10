@@ -411,7 +411,7 @@ const AdminDashboard = () => {
                 <p className="text-2xl font-bold text-green-600">
                   {stats.general?.completed || 0}
                 </p>
-                <p className="text-sm text-muted-foreground">Missões Concluídas</p>
+                <p className="text-sm text-muted-foreground">Usuários que Finalizaram</p>
               </div>
               <div>
                 <p className="text-2xl font-bold text-blue-600">{responses1.length + responses2.length + responses3.length + responses4.length}</p>
