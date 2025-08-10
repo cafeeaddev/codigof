@@ -32,7 +32,7 @@ export const HeroSection = ({ onLoginClick, onContinueClick }: HeroSectionProps)
             style={titleReveal.style}
             className="mb-6 sm:mb-8 lg:mb-12"
           >
-            <p className="text-white/70 text-xs sm:text-sm lg:text-base uppercase tracking-[0.15em] sm:tracking-[0.2em] font-medium mb-4 sm:mb-6 px-4">
+            <p className="text-neon-pink text-xs sm:text-sm lg:text-base uppercase tracking-[0.15em] sm:tracking-[0.2em] font-medium mb-4 sm:mb-6 px-4">
               CAPÍTULO 01: TRANSFORMAÇÃO DIGITAL
             </p>
             <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white leading-tight px-4">
