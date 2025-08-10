@@ -7,7 +7,7 @@ import { Footer } from './Footer';
 import { Navigation } from './Navigation';
 import { SectionContainer } from './SectionContainer';
 import { ScrollProgress } from './ScrollProgress';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, MessageCircle } from 'lucide-react';
 import { useInternalScroll } from '@/hooks/useInternalScroll';
 import { LoginScreen } from './LoginScreen';
 import { WelcomeScreen } from './WelcomeScreen';
@@ -156,6 +156,17 @@ export const LinearLayout = () => {
           <span className="text-secondary font-bold tracking-wide">CÓDIGO</span>{' '}
           <span className="text-neon-pink font-bold">F</span>
         </div>
+        {/* Top-right secret label */}
+        {currentSection >= 1 && (
+          <button
+            className="fixed top-3 right-4 z-40 pointer-events-auto flex items-center gap-2 text-secondary bg-card/60 backdrop-blur px-3 py-1.5 rounded-full border border-border/50 hover-scale"
+            aria-label="Segredo"
+          >
+            <MessageCircle className="w-4 h-4" />
+            <span className="font-medium">Posso te contar um segredo?</span>
+            <span className="text-xs">🤫</span>
+          </button>
+        )}
         
         {/* Internal scroll container */}
         <div 
@@ -189,6 +200,7 @@ export const LinearLayout = () => {
             <FeatureSection
               {...features[0]}
               index={0}
+              hideInlineSecret={currentSection >= 1}
             />
           </SectionContainer>
 
