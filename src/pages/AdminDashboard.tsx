@@ -1,318 +1,71 @@
-import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '@/integrations/supabase/client';
 import { useUserRole } from '@/hooks/useUserRole';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { ArrowLeft, Users, FileText, Calendar, Download, Search, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowLeft, FileText, Calendar } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import ResponseViewer from '@/components/ResponseViewer';
-
-interface ResponseData {
-  id: string;
-  nome: string;
-  email: string;
-  respostas: any;
-  created_at: string;
-  updated_at?: string;
-}
-
-interface MissionStats {
-  total: number;
-  completed: number;
-  percentage: number;
-}
+import { StatsCards } from '@/components/admin/StatsCards';
+import { ProfileChart } from '@/components/admin/ProfileChart';
+import { UserTable } from '@/components/admin/UserTable';
+import { ExportDialog } from '@/components/admin/ExportDialog';
+import { useAdminDashboard } from '@/hooks/useAdminDashboard';
+import { useFilters } from '@/hooks/useFilters';
+import { ResponseData } from '@/types/admin';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const { isAdmin, isLoading: roleLoading } = useUserRole();
-  const [responses1, setResponses1] = useState<ResponseData[]>([]);
-  const [responses2, setResponses2] = useState<ResponseData[]>([]);
-  const [responses3, setResponses3] = useState<ResponseData[]>([]);
-  const [responses4, setResponses4] = useState<ResponseData[]>([]);
-  const [stats, setStats] = useState<Record<string, MissionStats>>({});
-  const [usersStarted, setUsersStarted] = useState(0);
-  const [progressData, setProgressData] = useState<any>(null);
-  const [adminUsers, setAdminUsers] = useState<any>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [cargoFilter, setCargoFilter] = useState('');
-  const [areaFilter, setAreaFilter] = useState('');
-  const [profileFilter, setProfileFilter] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  
+  const {
+    responses1,
+    responses2,
+    responses3,
+    responses4,
+    progressData,
+    adminUsers,
+    isLoading,
+    stats,
+    calculateUserTotalScore,
+    getDigitalProfile,
+    getProfileColor
+  } = useAdminDashboard();
 
-  useEffect(() => {
-    if (roleLoading) return;
-    
-    if (!isAdmin) {
-      navigate('/');
-      toast({
-        title: "Acesso negado",
-        description: "Você não tem permissão para acessar esta página.",
-        variant: "destructive"
-      });
-      return;
-    }
+  const {
+    filters,
+    updateFilter,
+    filteredUsers,
+    filterOptions
+  } = useFilters({
+    progressData,
+    adminUsers,
+    calculateUserTotalScore,
+    getDigitalProfile
+  });
 
-    loadAllResponses();
-  }, [isAdmin, roleLoading, navigate]);
+  // Redirect if not admin
+  if (roleLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-2 text-muted-foreground">Carregando dashboard...</p>
+        </div>
+      </div>
+    );
+  }
 
-  const loadAllResponses = async () => {
-    try {
-      setIsLoading(true);
-      
-      // Carregar respostas de todas as missões e dados gerais
-      const [res1, res2, res3, res4, progressData, profilesData, adminUsers, allProfiles] = await Promise.all([
-        // Buscar todas as respostas da Missão 1 (tabela respostas original)
-        supabase.from('respostas').select('*').order('id', { ascending: false }),
-        supabase.from('respostas_missao2').select('*').order('created_at', { ascending: false }),
-        supabase.from('respostas_missao3').select('*').order('created_at', { ascending: false }),
-        supabase.from('respostas_missao4').select('*').order('created_at', { ascending: false }),
-        supabase.from('user_progress').select('*'),
-        supabase.from('profiles').select('id', { count: 'exact', head: true }),
-        // Buscar IDs dos admins
-        supabase.from('user_roles').select('user_id').eq('role', 'admin'),
-        // Buscar todos os perfis para mapear user_id -> nome
-        supabase.from('profiles').select('user_id, nome, email, cargo, area')
-      ]);
-
-      if (res1.error) console.error('Error loading mission 1:', res1.error);
-      if (res2.error) console.error('Error loading mission 2:', res2.error);
-      if (res3.error) console.error('Error loading mission 3:', res3.error);
-      if (res4.error) console.error('Error loading mission 4:', res4.error);
-      if (progressData.error) console.error('Error loading progress:', progressData.error);
-
-      // Transform the data to match the expected interface
-      // Criar mapa de email para dados do usuário (para as respostas)
-      const userProfilesByEmail = new Map((allProfiles.data || []).map(profile => [
-        profile.email, 
-        { nome: profile.nome || 'Usuário', email: profile.email || '' }
-      ]));
-
-      setResponses1((res1.data || [])
-        .filter(item => {
-          // Filtrar apenas respostas da Missão 1 (sem campo "missao" ou com missao = 1)
-          if (typeof item.respostas === 'string') {
-            try {
-              const parsed = JSON.parse(item.respostas);
-              return !parsed.missao || parsed.missao === 1;
-            } catch {
-              return true; // Se não conseguir fazer parse, assume que é Missão 1
-            }
-          }
-          // Verificar se é um objeto e tem a propriedade missao
-          if (item.respostas && typeof item.respostas === 'object') {
-            const respostas = item.respostas as any;
-            return !respostas.missao || respostas.missao === 1;
-          }
-          return true;
-        })
-        .map(item => {
-          const userProfile = userProfilesByEmail.get(item.email);
-          return {
-            id: item.id.toString(),
-            nome: userProfile?.nome || item.nome,
-            email: item.email || '',
-            respostas: typeof item.respostas === 'string' ? JSON.parse(item.respostas) : item.respostas,
-            created_at: new Date().toISOString()
-          };
-        }));
-        
-      setResponses2((res2.data || [])
-        .filter(item => {
-          // Filtrar apenas respostas da Missão 2
-          if (item.respostas && typeof item.respostas === 'object') {
-            const respostas = item.respostas as any;
-            return !respostas.missao || respostas.missao === 2;
-          }
-          return true;
-        })
-        .map(item => {
-          const userProfile = userProfilesByEmail.get(item.email);
-          return {
-            id: item.id,
-            nome: userProfile?.nome || item.nome,
-            email: item.email,
-            respostas: item.respostas,
-            created_at: item.created_at
-          };
-        }));
-        
-      setResponses3((res3.data || []).map(item => {
-        const userProfile = userProfilesByEmail.get(item.email);
-        return {
-          id: item.id,
-          nome: userProfile?.nome || item.nome,
-          email: item.email,
-          respostas: item.respostas,
-          created_at: item.created_at
-        };
-      }));
-      
-      setResponses4((res4.data || []).map(item => {
-        const userProfile = userProfilesByEmail.get(item.email);
-        return {
-          id: item.id,
-          nome: userProfile?.nome || item.nome,
-          email: item.email,
-          respostas: item.respostas,
-          created_at: item.created_at
-        };
-      }));
-
-      // Calcular estatísticas baseado na tabela user_progress (excluindo admins)
-      const progress = progressData.data || [];
-      const adminUserIds = new Set((adminUsers.data || []).map(admin => admin.user_id));
-      
-      // Criar mapa de user_id para dados do usuário
-      const userProfiles = new Map((allProfiles.data || []).map(profile => [
-        profile.user_id, 
-        { nome: profile.nome || 'Usuário', email: profile.email || '', cargo: profile.cargo, area: profile.area }
-      ]));
-
-      console.log('User profiles by email loaded:', userProfilesByEmail);
-      
-      // Filtrar progresso excluindo admins
-      const nonAdminProgress = progress.filter(p => !adminUserIds.has(p.user_id));
-      const totalProfiles = profilesData.count || 0; // Total de usuários cadastrados
-      const totalNonAdminProfiles = totalProfiles - adminUserIds.size; // Excluir admins do total
-      const usersStarted = nonAdminProgress.length; // Usuários não-admin que começaram o jogo
-      
-      // Salvar userProfiles no estado para usar na renderização
-      setProgressData({ ...progressData, userProfiles, userProfilesByEmail });
-      
-      console.log('Progress data loaded:', progress);
-      console.log('User profiles loaded:', userProfiles);
-      console.log('Admin users:', adminUserIds);
-      console.log('Total profiles:', totalProfiles, 'Non-admin profiles:', totalNonAdminProfiles, 'Users started:', usersStarted);
-      const mission1Completed = nonAdminProgress.filter(p => p.missao_1_completed === true).length;
-      const mission2Completed = nonAdminProgress.filter(p => p.missao_2_completed === true).length;
-      const mission3Completed = nonAdminProgress.filter(p => p.missao_3_completed === true).length;
-      const mission4Completed = nonAdminProgress.filter(p => p.missao_4_completed === true).length;
-      
-      // Calculate users who completed all 4 missions (game completed)
-      const gameCompleted = nonAdminProgress.filter(p => 
-        p.missao_1_completed === true && 
-        p.missao_2_completed === true && 
-        p.missao_3_completed === true && 
-        p.missao_4_completed === true
-      ).length;
-      
-      
-      console.log('Mission completion counts (excluding admins):', {
-        totalNonAdminProfiles,
-        usersStarted,
-        mission1Completed,
-        mission2Completed,
-        mission3Completed,
-        mission4Completed,
-        gameCompleted,
-        completionPercentage: totalNonAdminProfiles > 0 ? ((gameCompleted / totalNonAdminProfiles) * 100).toFixed(2) : 0
-      });
-      
-      setStats({
-        mission1: {
-          total: totalNonAdminProfiles,
-          completed: mission1Completed,
-          percentage: totalNonAdminProfiles > 0 ? Math.round((mission1Completed / totalNonAdminProfiles) * 100) : 0
-        },
-        mission2: {
-          total: totalNonAdminProfiles,
-          completed: mission2Completed,
-          percentage: totalNonAdminProfiles > 0 ? Math.round((mission2Completed / totalNonAdminProfiles) * 100) : 0
-        },
-        mission3: {
-          total: totalNonAdminProfiles,
-          completed: mission3Completed,
-          percentage: totalNonAdminProfiles > 0 ? Math.round((mission3Completed / totalNonAdminProfiles) * 100) : 0
-        },
-        mission4: {
-          total: totalNonAdminProfiles,
-          completed: mission4Completed,
-          percentage: totalNonAdminProfiles > 0 ? Math.round((mission4Completed / totalNonAdminProfiles) * 100) : 0
-        },
-        general: {
-          total: totalNonAdminProfiles,
-          completed: gameCompleted,
-          percentage: totalNonAdminProfiles > 0 ? parseFloat(((gameCompleted / totalNonAdminProfiles) * 100).toFixed(2)) : 0
-        }
-      });
-      
-      setUsersStarted(usersStarted);
-      setProgressData({ ...progressData, userProfiles, userProfilesByEmail });
-      setAdminUsers(adminUsers);
-
-    } catch (error) {
-      console.error('Error loading responses:', error);
-      toast({
-        title: "Erro",
-        description: "Erro ao carregar as respostas.",
-        variant: "destructive"
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Função para calcular pontuação total de um usuário (apenas missões 1, 2 e 3)
-  const calculateUserTotalScore = (userId: string) => {
-    let totalScore = 0;
-
-    // Pontuação da Missão 1
-    const mission1Response = responses1.find(r => r.email === (progressData.userProfiles?.get(userId)?.email));
-    if (mission1Response && Array.isArray(mission1Response.respostas)) {
-      totalScore += mission1Response.respostas.reduce((sum: number, resp: any) => sum + (resp.pontuacao || 0), 0);
-    }
-
-    // Pontuação da Missão 2
-    const mission2Response = responses2.find(r => r.email === (progressData.userProfiles?.get(userId)?.email));
-    if (mission2Response) {
-      if (mission2Response.respostas?.data && Array.isArray(mission2Response.respostas.data)) {
-        totalScore += mission2Response.respostas.data.reduce((sum: number, resp: any) => sum + (resp.pontuacao || 0), 0);
-      }
-    }
-
-    // Pontuação da Missão 3
-    const mission3Response = responses3.find(r => r.email === (progressData.userProfiles?.get(userId)?.email));
-    if (mission3Response && Array.isArray(mission3Response.respostas)) {
-      totalScore += mission3Response.respostas.reduce((sum: number, resp: any) => sum + (resp.pontuacao || 0), 0);
-    }
-
-    // Missão 4 não é incluída no cálculo de pontos
-
-    return parseFloat(totalScore.toFixed(2));
-  };
-
-  // Função para classificar o perfil digital baseado na pontuação das missões 1, 2 e 3
-  const getDigitalProfile = (totalScore: number) => {
-    if (totalScore >= 57) return { profile: 'Ninja', sublevel: 'Ninja Raiz™ 😎' };
-    if (totalScore >= 52) return { profile: 'Ninja', sublevel: 'Consolidação' };
-    if (totalScore >= 42) return { profile: 'Pro-Player', sublevel: 'Transição → Ninja' };
-    if (totalScore >= 37) return { profile: 'Pro-Player', sublevel: 'Início/Consolidado' };
-    if (totalScore >= 31) return { profile: 'Explorer', sublevel: 'Transição → Pro-Player' };
-    if (totalScore >= 25) return { profile: 'Explorer', sublevel: 'Início' };
-    if (totalScore >= 18) return { profile: 'Beginner +', sublevel: 'Transição → Explorer' };
-    return { profile: 'Beginner', sublevel: 'Início' };
-  };
-
-  // Função para obter a cor do perfil digital
-  const getProfileColor = (profile: string) => {
-    switch (profile) {
-      case 'Beginner': return 'hsl(var(--profile-beginner))';
-      case 'Beginner +': return 'hsl(var(--profile-beginner-plus))';
-      case 'Explorer': return 'hsl(var(--profile-explorer))';
-      case 'Pro-Player': return 'hsl(var(--profile-pro-player))';
-      case 'Ninja': return 'hsl(var(--profile-ninja))';
-      default: return 'hsl(var(--muted-foreground))';
-    }
-  };
+  if (!isAdmin) {
+    navigate('/');
+    toast({
+      title: "Acesso negado",
+      description: "Você não tem permissão para acessar esta página.",
+      variant: "destructive"
+    });
+    return null;
+  }
 
   const exportToCSV = (data: ResponseData[], missionName: string) => {
     if (data.length === 0) {
@@ -347,21 +100,22 @@ const AdminDashboard = () => {
   };
 
   const renderResponses = (data: ResponseData[], missionName: string) => (
-    <div className="space-y-4">
+    <div className="space-y-4 animate-fade-in">
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-4">
           <h3 className="text-lg font-semibold">{missionName}</h3>
-          <Badge variant="secondary">
+          <span className="px-2 py-1 text-xs rounded-full bg-primary/10 text-primary">
             {data.length} {data.length === 1 ? 'resposta' : 'respostas'}
-          </Badge>
+          </span>
         </div>
         <Button
           onClick={() => exportToCSV(data, missionName.toLowerCase().replace(/\s+/g, '_'))}
           variant="outline"
           size="sm"
           disabled={data.length === 0}
+          className="hover-scale"
         >
-          <Download className="w-4 h-4 mr-2" />
+          <FileText className="w-4 h-4 mr-2" />
           Exportar CSV
         </Button>
       </div>
@@ -369,7 +123,7 @@ const AdminDashboard = () => {
       <ScrollArea className="h-[400px]">
         <div className="space-y-3">
           {data.map((response) => (
-            <Card key={response.id} className="border-secondary/20">
+            <Card key={response.id} className="border-secondary/20 hover:border-primary/30 transition-colors">
               <CardHeader className="pb-3">
                 <div className="flex justify-between items-start">
                   <div>
@@ -385,23 +139,23 @@ const AdminDashboard = () => {
                 </div>
               </CardHeader>
               <CardContent className="pt-0">
-                  <details className="group">
-                    <summary className="cursor-pointer text-sm font-medium text-primary hover:text-primary/80">
-                      Ver respostas
-                    </summary>
-                    <div className="mt-2">
-                      <ResponseViewer 
-                        respostas={response.respostas}
-                        missionType={
-                          missionName.includes('Missão 1') ? 'mission1' :
-                          missionName.includes('Missão 2') ? 'mission2' :
-                          missionName.includes('Missão 3') ? 'mission3' :
-                          missionName.includes('Missão 4') ? 'mission4' :
-                          undefined
-                        }
-                      />
-                    </div>
-                  </details>
+                <details className="group">
+                  <summary className="cursor-pointer text-sm font-medium text-primary hover:text-primary/80 transition-colors">
+                    Ver respostas detalhadas
+                  </summary>
+                  <div className="mt-2 animate-accordion-down">
+                    <ResponseViewer 
+                      respostas={response.respostas}
+                      missionType={
+                        missionName.includes('Missão 1') ? 'mission1' :
+                        missionName.includes('Missão 2') ? 'mission2' :
+                        missionName.includes('Missão 3') ? 'mission3' :
+                        missionName.includes('Missão 4') ? 'mission4' :
+                        undefined
+                      }
+                    />
+                  </div>
+                </details>
               </CardContent>
             </Card>
           ))}
@@ -416,12 +170,12 @@ const AdminDashboard = () => {
     </div>
   );
 
-  if (roleLoading || isLoading) {
+  if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-2 text-muted-foreground">Carregando dashboard...</p>
+          <p className="mt-2 text-muted-foreground">Carregando dados do dashboard...</p>
         </div>
       </div>
     );
@@ -431,582 +185,111 @@ const AdminDashboard = () => {
     <div className="min-h-screen bg-background p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="flex items-center gap-4 mb-8">
-          <Button
-            onClick={() => navigate('/')}
-            variant="outline"
-            size="sm"
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Voltar
-          </Button>
-          <div>
-            <h1 className="text-3xl font-bold">Dashboard Administrativo do Código F</h1>
-            <p className="text-muted-foreground">Visualize e exporte as respostas das missões</p>
-          </div>
-        </div>
-
-        {/* Resumo Geral */}
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Users className="w-5 h-5" />
-              Resumo Geral
-            </CardTitle>
-          </CardHeader>
-           <CardContent>
-            <div className="grid grid-cols-2 md:grid-cols-7 gap-4 text-center">
-              <div>
-                <p className="text-2xl font-bold text-primary">{stats.mission1?.total || 0}</p>
-                <p className="text-sm text-muted-foreground">Total de Usuários</p>
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-orange-600">{usersStarted}</p>
-                <p className="text-sm text-muted-foreground">Usuários que Começaram</p>
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-green-600">
-                  {stats.general?.completed || 0}
-                </p>
-                <p className="text-sm text-muted-foreground">Usuários que Finalizaram</p>
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-purple-600">
-                  {stats.general?.percentage || 0}%
-                </p>
-                <p className="text-sm text-muted-foreground">Taxa de Conclusão Geral</p>
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-yellow-600">
-                  {(() => {
-                    if (!progressData?.data) return '0.0';
-                    const adminUserIds = new Set((adminUsers.data || []).map(admin => admin.user_id));
-                    const nonAdminUsers = progressData.data.filter(p => !adminUserIds.has(p.user_id));
-                    
-                    const totalScore = nonAdminUsers.reduce((sum, progress) => {
-                      return sum + calculateUserTotalScore(progress.user_id);
-                    }, 0);
-                    
-                    const avgScore = nonAdminUsers.length > 0 ? (totalScore / nonAdminUsers.length) : 0;
-                    return avgScore.toFixed(1);
-                  })()}
-                </p>
-                <p className="text-sm text-muted-foreground">Pontuação Média</p>
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-blue-600">
-                  {(() => {
-                    if (!progressData?.data) return '0';
-                    const adminUserIds = new Set((adminUsers.data || []).map(admin => admin.user_id));
-                    const nonAdminUsers = progressData.data.filter(p => !adminUserIds.has(p.user_id));
-                    
-                    const profileCounts = { 'Beginner': 0, 'Beginner +': 0, 'Explorer': 0, 'Pro-Player': 0, 'Ninja': 0 };
-                    
-                    nonAdminUsers.forEach(progress => {
-                      const totalScore = calculateUserTotalScore(progress.user_id);
-                      const profile = getDigitalProfile(totalScore);
-                      profileCounts[profile.profile as keyof typeof profileCounts]++;
-                    });
-                    
-                    const mostCommon = Object.entries(profileCounts)
-                      .sort(([,a], [,b]) => b - a)[0];
-                    
-                    return mostCommon ? mostCommon[0] : 'N/A';
-                  })()}
-                </p>
-                <p className="text-sm text-muted-foreground">Perfil Mais Comum</p>
-              </div>
+        <div className="flex items-center justify-between mb-8 animate-fade-in">
+          <div className="flex items-center gap-4">
+            <Button
+              onClick={() => navigate('/')}
+              variant="outline"
+              size="sm"
+              className="hover-scale"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Voltar
+            </Button>
+            <div>
+              <h1 className="text-3xl font-bold bg-gradient-neon bg-clip-text text-transparent">
+                Dashboard Administrativo do Código F
+              </h1>
+              <p className="text-muted-foreground">
+                Visualize métricas, analise perfis e exporte dados das missões
+              </p>
             </div>
-          </CardContent>
-        </Card>
-
-        {/* Estatísticas por Missão */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          {Object.entries(stats).filter(([key]) => key !== 'general').map(([key, stat]) => (
-            <Card key={key}>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-base">
-                  {key === 'mission1' && 'Missão 1'}
-                  {key === 'mission2' && 'Missão 2'}
-                  {key === 'mission3' && 'Missão 3'}
-                  {key === 'mission4' && 'Missão 4'}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center gap-2">
-                  <Users className="w-4 h-4 text-primary" />
-                  <span className="text-2xl font-bold">{stat.completed}</span>
-                  <span className="text-sm text-muted-foreground">concluíram</span>
-                </div>
-                <div className="mt-2 w-full bg-secondary/20 rounded-full h-2">
-                  <div
-                    className="bg-primary h-2 rounded-full transition-all"
-                    style={{ width: `${stat.percentage}%` }}
-                  />
-                </div>
-                <p className="text-xs text-muted-foreground mt-1">
-                  {stat.completed} de {stat.total} usuários ({stat.percentage}%)
-                </p>
-              </CardContent>
-            </Card>
-          ))}
+          </div>
+          
+          {progressData && (
+            <ExportDialog
+              responses1={responses1}
+              responses2={responses2}
+              responses3={responses3}
+              responses4={responses4}
+              filteredUsers={filteredUsers}
+              progressData={progressData}
+              calculateUserTotalScore={calculateUserTotalScore}
+              getDigitalProfile={getDigitalProfile}
+            />
+          )}
         </div>
 
-        {/* Seção: Usuários que Iniciaram o Sistema */}
-        <Card className="mb-8">
+        {/* Stats Cards */}
+        <StatsCards 
+          adminStats={stats.adminStats}
+          missionStats={stats.missionStats}
+        />
+
+        {/* Profile Charts */}
+        <ProfileChart adminStats={stats.adminStats} />
+
+        {/* Progresso Detalhado dos Usuários */}
+        <Card className="mb-8 animate-fade-in">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Users className="w-5 h-5" />
-              Usuários que Iniciaram o Sistema
-            </CardTitle>
-            <p className="text-sm text-muted-foreground">
-              Usuários que começaram a usar o sistema e status de suas missões
-            </p>
+            <CardTitle>Progresso Detalhado dos Usuários</CardTitle>
           </CardHeader>
           <CardContent>
-            {/* Busca e Filtros */}
-            <div className="flex items-center gap-4 mb-4">
-              <div className="relative flex-1 max-w-sm">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-                <Input
-                  placeholder="Buscar por nome..."
-                  value={searchTerm}
-                  onChange={(e) => {
-                    setSearchTerm(e.target.value);
-                    setCurrentPage(1);
-                  }}
-                  className="pl-10"
-                />
-              </div>
-              <div className="w-48">
-                <Select
-                  value={cargoFilter}
-                  onValueChange={(value) => {
-                    setCargoFilter(value);
-                    setCurrentPage(1);
-                  }}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Filtrar por cargo" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="todos">Todos os cargos</SelectItem>
-                    {(() => {
-                      const allUsers = progressData.data?.filter(progress => {
-                        const adminUserIds = new Set((adminUsers.data || []).map(admin => admin.user_id));
-                        return !adminUserIds.has(progress.user_id);
-                      }) || [];
-                      
-                      const cargos = new Set();
-                      allUsers.forEach(progress => {
-                        const userProfile = progressData.userProfiles?.get(progress.user_id);
-                        if (userProfile?.cargo) {
-                          const formattedCargo = userProfile.cargo.replace(/^\d+-/, '').trim();
-                          if (formattedCargo) cargos.add(formattedCargo);
-                        }
-                      });
-                      
-                      return Array.from(cargos).sort().map((cargo: any) => (
-                        <SelectItem key={cargo} value={cargo}>{cargo}</SelectItem>
-                      ));
-                    })()}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="w-48">
-                <Select
-                  value={areaFilter}
-                  onValueChange={(value) => {
-                    setAreaFilter(value);
-                    setCurrentPage(1);
-                  }}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Filtrar por área" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="todos">Todas as áreas</SelectItem>
-                    {(() => {
-                      const allUsers = progressData.data?.filter(progress => {
-                        const adminUserIds = new Set((adminUsers.data || []).map(admin => admin.user_id));
-                        return !adminUserIds.has(progress.user_id);
-                      }) || [];
-                      
-                      const areas = new Set();
-                      allUsers.forEach(progress => {
-                        const userProfile = progressData.userProfiles?.get(progress.user_id);
-                        if (userProfile?.area) {
-                          areas.add(userProfile.area);
-                        }
-                      });
-                      
-                      return Array.from(areas).sort().map((area: any) => (
-                        <SelectItem key={area} value={area}>{area}</SelectItem>
-                      ));
-                    })()}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="w-48">
-                <Select
-                  value={profileFilter}
-                  onValueChange={(value) => {
-                    setProfileFilter(value);
-                    setCurrentPage(1);
-                  }}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Filtrar por perfil" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="todos">Todos os perfis</SelectItem>
-                    <SelectItem value="Beginner">
-                      <span className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: 'hsl(var(--profile-beginner))' }}></div>
-                        Beginner
-                      </span>
-                    </SelectItem>
-                    <SelectItem value="Beginner +">
-                      <span className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: 'hsl(var(--profile-beginner-plus))' }}></div>
-                        Beginner +
-                      </span>
-                    </SelectItem>
-                    <SelectItem value="Explorer">
-                      <span className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: 'hsl(var(--profile-explorer))' }}></div>
-                        Explorer
-                      </span>
-                    </SelectItem>
-                    <SelectItem value="Pro-Player">
-                      <span className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: 'hsl(var(--profile-pro-player))' }}></div>
-                        Pro-Player
-                      </span>
-                    </SelectItem>
-                    <SelectItem value="Ninja">
-                      <span className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: 'hsl(var(--profile-ninja))' }}></div>
-                        Ninja
-                      </span>
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <Badge variant="secondary">
-                {(() => {
-                  const allUsers = progressData.data?.filter(progress => {
-                    const adminUserIds = new Set((adminUsers.data || []).map(admin => admin.user_id));
-                    return !adminUserIds.has(progress.user_id);
-                  }) || [];
-                  
-                   const filtered = allUsers.filter(progress => {
-                     const userProfile = progressData.userProfiles?.get(progress.user_id);
-                     const userName = userProfile?.nome || 'Usuário';
-                     const matchesSearch = userName.toLowerCase().includes(searchTerm.toLowerCase());
-                     
-                     // Filtro por cargo
-                     let matchesCargo = true;
-                     if (cargoFilter && cargoFilter !== "todos") {
-                       const userCargo = userProfile?.cargo?.replace(/^\d+-/, '').trim() || '';
-                       matchesCargo = userCargo === cargoFilter;
-                     }
-                     
-                     // Filtro por área
-                     let matchesArea = true;
-                     if (areaFilter && areaFilter !== "todos") {
-                       const userArea = userProfile?.area || '';
-                       matchesArea = userArea === areaFilter;
-                     }
-                     
-                     // Filtro por perfil
-                     let matchesProfile = true;
-                     if (profileFilter && profileFilter !== "todos") {
-                       const totalScore = calculateUserTotalScore(progress.user_id);
-                       const digitalProfile = getDigitalProfile(totalScore);
-                       matchesProfile = digitalProfile.profile === profileFilter;
-                     }
-                     
-                     return matchesSearch && matchesCargo && matchesArea && matchesProfile;
-                   });
-                  
-                  return filtered.length;
-                })()} usuários encontrados
-              </Badge>
-            </div>
-
-            {/* Tabela */}
-            <div className="border rounded-lg">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Usuário</TableHead>
-                    <TableHead>Cargo</TableHead>
-                    <TableHead>Área</TableHead>
-                    <TableHead>Data de Início</TableHead>
-                    <TableHead>Pontuação Total</TableHead>
-                    <TableHead>Perfil Digital</TableHead>
-                    <TableHead>XP Total</TableHead>
-                    <TableHead>Tempo de Jogo</TableHead>
-                    <TableHead>Missão 1</TableHead>
-                    <TableHead>Missão 2</TableHead>
-                    <TableHead>Missão 3</TableHead>
-                    <TableHead>Missão 4</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {(() => {
-                    const allUsers = progressData.data
-                      ?.filter(progress => {
-                        const adminUserIds = new Set((adminUsers.data || []).map(admin => admin.user_id));
-                        return !adminUserIds.has(progress.user_id);
-                      }) || [];
-                    
-                     // Filtrar por busca, cargo, área e perfil
-                     const filteredUsers = allUsers.filter(progress => {
-                       const userProfile = progressData.userProfiles?.get(progress.user_id);
-                       const userName = userProfile?.nome || 'Usuário';
-                       const matchesSearch = userName.toLowerCase().includes(searchTerm.toLowerCase());
-                       
-                       // Filtro por cargo
-                       let matchesCargo = true;
-                       if (cargoFilter && cargoFilter !== "todos") {
-                         const userCargo = userProfile?.cargo?.replace(/^\d+-/, '').trim() || '';
-                         matchesCargo = userCargo === cargoFilter;
-                       }
-                       
-                       // Filtro por área
-                       let matchesArea = true;
-                       if (areaFilter && areaFilter !== "todos") {
-                         const userArea = userProfile?.area || '';
-                         matchesArea = userArea === areaFilter;
-                       }
-                       
-                       // Filtro por perfil
-                       let matchesProfile = true;
-                       if (profileFilter && profileFilter !== "todos") {
-                         const totalScore = calculateUserTotalScore(progress.user_id);
-                         const digitalProfile = getDigitalProfile(totalScore);
-                         matchesProfile = digitalProfile.profile === profileFilter;
-                       }
-                       
-                       return matchesSearch && matchesCargo && matchesArea && matchesProfile;
-                     });
-
-                    // Paginação
-                    const startIndex = (currentPage - 1) * itemsPerPage;
-                    const endIndex = startIndex + itemsPerPage;
-                    const paginatedUsers = filteredUsers.slice(startIndex, endIndex);
-                    const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
-
-                    return (
-                      <>
-                        {paginatedUsers.map((progress) => {
-                          const userProfile = progressData.userProfiles?.get(progress.user_id);
-                          const userName = userProfile?.nome || 'Usuário';
-                          const formatCargo = (cargo: string | null | undefined) => {
-                            if (!cargo) return '';
-                            return cargo.replace(/^\d+-/, '').trim();
-                          };
-                          const userCargo = formatCargo(userProfile?.cargo);
-                          
-                          return (
-                            <TableRow key={progress.user_id}>
-                              <TableCell className="font-medium">{userName}</TableCell>
-                              <TableCell className="text-muted-foreground">
-                                {userCargo || '-'}
-                              </TableCell>
-                              <TableCell className="text-muted-foreground">
-                                {userProfile?.area || '-'}
-                              </TableCell>
-                               <TableCell>{new Date(progress.created_at).toLocaleDateString('pt-BR')}</TableCell>
-                               <TableCell className="text-yellow-600 font-medium">{calculateUserTotalScore(progress.user_id).toFixed(2)} pts</TableCell>
-                               <TableCell>
-                                 {(() => {
-                                   const totalScore = calculateUserTotalScore(progress.user_id);
-                                   const profile = getDigitalProfile(totalScore);
-                                   const profileColor = getProfileColor(profile.profile);
-                                   return (
-                                     <div className="flex flex-col">
-                                       <span 
-                                         className="font-medium px-2 py-1 rounded text-xs"
-                                         style={{ 
-                                           backgroundColor: profileColor + '20', 
-                                           color: profileColor,
-                                           border: `1px solid ${profileColor}40`
-                                         }}
-                                       >
-                                         {profile.profile}
-                                       </span>
-                                       <span className="text-xs text-muted-foreground mt-1">{profile.sublevel}</span>
-                                     </div>
-                                   );
-                                 })()}
-                               </TableCell>
-                               <TableCell className="text-primary font-medium">{progress.total_xp || 0} XP</TableCell>
-                              <TableCell>{Math.floor((progress.total_play_time || 0) / 60)}min</TableCell>
-                              <TableCell>
-                                <div className="flex items-center gap-1">
-                                  {progress.missao_1_completed ? '✅' : '⏳'}
-                                  <span className="text-xs text-muted-foreground ml-1">
-                                    {progress.missao_1_completed ? 'Concluída' : `${progress.missao_1_current_question}/4`}
-                                  </span>
-                                </div>
-                              </TableCell>
-                              <TableCell>
-                                <div className="flex items-center gap-1">
-                                  {progress.missao_2_completed ? '✅' : '⏳'}
-                                  <span className="text-xs text-muted-foreground ml-1">
-                                    {progress.missao_2_completed ? 'Concluída' : `${progress.missao_2_current_question}/5`}
-                                  </span>
-                                </div>
-                              </TableCell>
-                              <TableCell>
-                                <div className="flex items-center gap-1">
-                                  {progress.missao_3_completed ? '✅' : '⏳'}
-                                  <span className="text-xs text-muted-foreground ml-1">
-                                    {progress.missao_3_completed ? 'Concluída' : `${progress.missao_3_current_question}/3`}
-                                  </span>
-                                </div>
-                              </TableCell>
-                              <TableCell>
-                                <div className="flex items-center gap-1">
-                                  {progress.missao_4_completed ? '✅' : '⏳'}
-                                  <span className="text-xs text-muted-foreground ml-1">
-                                    {progress.missao_4_completed ? 'Concluída' : `${progress.missao_4_current_question}/3`}
-                                  </span>
-                                </div>
-                              </TableCell>
-                            </TableRow>
-                          );
-                        })}
-                        {paginatedUsers.length === 0 && (
-                           <TableRow>
-                             <TableCell colSpan={12} className="text-center py-8 text-muted-foreground">
-                               <Users className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                               <p>Nenhum usuário encontrado.</p>
-                             </TableCell>
-                           </TableRow>
-                        )}
-                      </>
-                    );
-                  })()}
-                </TableBody>
-              </Table>
-            </div>
-
-            {/* Paginação */}
-            {(() => {
-              const allUsers = progressData.data
-                ?.filter(progress => {
-                  const adminUserIds = new Set((adminUsers.data || []).map(admin => admin.user_id));
-                  return !adminUserIds.has(progress.user_id);
-                }) || [];
-              
-                 const filteredUsers = allUsers.filter(progress => {
-                   const userProfile = progressData.userProfiles?.get(progress.user_id);
-                   const userName = userProfile?.nome || 'Usuário';
-                   const matchesSearch = userName.toLowerCase().includes(searchTerm.toLowerCase());
-                   
-                   // Filtro por cargo
-                   let matchesCargo = true;
-                   if (cargoFilter && cargoFilter !== "todos") {
-                     const userCargo = userProfile?.cargo?.replace(/^\d+-/, '').trim() || '';
-                     matchesCargo = userCargo === cargoFilter;
-                   }
-                   
-                   // Filtro por área
-                   let matchesArea = true;
-                   if (areaFilter && areaFilter !== "todos") {
-                     const userArea = userProfile?.area || '';
-                     matchesArea = userArea === areaFilter;
-                   }
-                   
-                   // Filtro por perfil
-                   let matchesProfile = true;
-                   if (profileFilter && profileFilter !== "todos") {
-                     const totalScore = calculateUserTotalScore(progress.user_id);
-                     const digitalProfile = getDigitalProfile(totalScore);
-                     matchesProfile = digitalProfile.profile === profileFilter;
-                   }
-                   
-                   return matchesSearch && matchesCargo && matchesArea && matchesProfile;
-                 });
-
-              const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
-
-              return totalPages > 1 && (
-                <div className="flex items-center justify-between mt-4">
-                  <p className="text-sm text-muted-foreground">
-                    Página {currentPage} de {totalPages} ({filteredUsers.length} usuários)
-                  </p>
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                      disabled={currentPage === 1}
-                    >
-                      <ChevronLeft className="w-4 h-4" />
-                      Anterior
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-                      disabled={currentPage === totalPages}
-                    >
-                      Próxima
-                      <ChevronRight className="w-4 h-4" />
-                    </Button>
-                  </div>
-                </div>
-              );
-            })()}
+            {progressData && (
+              <UserTable
+                filteredUsers={filteredUsers}
+                progressData={progressData}
+                filters={filters}
+                updateFilter={updateFilter}
+                filterOptions={filterOptions}
+                calculateUserTotalScore={calculateUserTotalScore}
+                getDigitalProfile={getDigitalProfile}
+                getProfileColor={getProfileColor}
+              />
+            )}
           </CardContent>
         </Card>
 
-        {/* Tabs com Respostas */}
-        <Tabs defaultValue="mission1" className="space-y-4">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="mission1">Missão 1</TabsTrigger>
-            <TabsTrigger value="mission2">Missão 2</TabsTrigger>
-            <TabsTrigger value="mission3">Missão 3</TabsTrigger>
-            <TabsTrigger value="mission4">Missão 4</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="mission1">
-            <Card>
-              <CardContent className="p-6">
-                {renderResponses(responses1 || [], "Missão 1 - Como você encara o digital?")}
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="mission2">
-            <Card>
-              <CardContent className="p-6">
-                {renderResponses(responses2 || [], "Missão 2 - O digital no seu dia a dia")}
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="mission3">
-            <Card>
-              <CardContent className="p-6">
-                {renderResponses(responses3 || [], "Missão 3 - Quando o desafio é maior")}
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="mission4">
-            <Card>
-              <CardContent className="p-6">
-                {renderResponses(responses4 || [], "Missão 4 - Seu Radar de Ferramentas")}
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+        {/* Respostas por Missão */}
+        <Card className="animate-fade-in">
+          <CardHeader>
+            <CardTitle>Respostas Detalhadas por Missão</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Tabs defaultValue="mission1" className="w-full">
+              <TabsList className="grid w-full grid-cols-4">
+                <TabsTrigger value="mission1" className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full" style={{ backgroundColor: 'hsl(var(--profile-beginner))' }}></span>
+                  Missão 1
+                </TabsTrigger>
+                <TabsTrigger value="mission2" className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full" style={{ backgroundColor: 'hsl(var(--profile-explorer))' }}></span>
+                  Missão 2
+                </TabsTrigger>
+                <TabsTrigger value="mission3" className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full" style={{ backgroundColor: 'hsl(var(--profile-pro-player))' }}></span>
+                  Missão 3
+                </TabsTrigger>
+                <TabsTrigger value="mission4" className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full" style={{ backgroundColor: 'hsl(var(--profile-ninja))' }}></span>
+                  Missão 4
+                </TabsTrigger>
+              </TabsList>
+              <TabsContent value="mission1" className="mt-6">
+                {renderResponses(responses1, 'Missão 1 - Quiz Digital')}
+              </TabsContent>
+              <TabsContent value="mission2" className="mt-6">
+                {renderResponses(responses2, 'Missão 2 - Práticas Digitais')}
+              </TabsContent>
+              <TabsContent value="mission3" className="mt-6">
+                {renderResponses(responses3, 'Missão 3 - Desafios e Inovação')}
+              </TabsContent>
+              <TabsContent value="mission4" className="mt-6">
+                {renderResponses(responses4, 'Missão 4 - Ferramentas Digitais')}
+              </TabsContent>
+            </Tabs>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
