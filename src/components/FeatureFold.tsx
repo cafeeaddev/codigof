@@ -22,7 +22,7 @@ export const FeatureFold = ({ id, title, subtitle, colorClass, Icon }: FeatureFo
             <p className="text-xl sm:text-2xl leading-relaxed max-w-3xl text-neon-pink/80">{subtitle}</p>
           </div>
 
-          <div ref={circleReveal.elementRef} style={circleReveal.style} className="flex justify-center md:justify-end">
+          <div ref={circleReveal.elementRef} style={circleReveal.style} className="flex justify-center md:justify-end md:pr-10 lg:pr-24 xl:pr-36 2xl:pr-48">
             <div className="relative">
               {/* Glowing ring */}
               <div className="w-56 h-56 sm:w-64 sm:h-64 lg:w-72 lg:h-72 rounded-full bg-gradient-to-r from-neon-pink via-neon-purple to-neon-cyan p-1 shadow-glow">
