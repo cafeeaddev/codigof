@@ -172,9 +172,9 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
               normalMap={normalTexture}
               displacementMap={wireframeTexture}
               displacementScale={0.8}
-              color="#0a0a1a"
-              emissive="#050a1a"
-              emissiveIntensity={0.4}
+              color="#2d1b69"
+              emissive="#1a0a3e"
+              emissiveIntensity={0.6}
               roughness={0.7}
               metalness={0.3}
               transparent={true}
