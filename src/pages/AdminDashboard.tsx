@@ -260,6 +260,39 @@ const AdminDashboard = () => {
     }
   };
 
+  // Função para calcular pontuação total de um usuário
+  const calculateUserTotalScore = (userId: string) => {
+    let totalScore = 0;
+
+    // Pontuação da Missão 1
+    const mission1Response = responses1.find(r => r.email === (progressData.userProfiles?.get(userId)?.email));
+    if (mission1Response && Array.isArray(mission1Response.respostas)) {
+      totalScore += mission1Response.respostas.reduce((sum: number, resp: any) => sum + (resp.pontuacao || 0), 0);
+    }
+
+    // Pontuação da Missão 2
+    const mission2Response = responses2.find(r => r.email === (progressData.userProfiles?.get(userId)?.email));
+    if (mission2Response) {
+      if (mission2Response.respostas?.data && Array.isArray(mission2Response.respostas.data)) {
+        totalScore += mission2Response.respostas.data.reduce((sum: number, resp: any) => sum + (resp.pontuacao || 0), 0);
+      }
+    }
+
+    // Pontuação da Missão 3
+    const mission3Response = responses3.find(r => r.email === (progressData.userProfiles?.get(userId)?.email));
+    if (mission3Response && Array.isArray(mission3Response.respostas)) {
+      totalScore += mission3Response.respostas.reduce((sum: number, resp: any) => sum + (resp.pontuacao || 0), 0);
+    }
+
+    // Pontuação da Missão 4
+    const mission4Response = responses4.find(r => r.email === (progressData.userProfiles?.get(userId)?.email));
+    if (mission4Response && mission4Response.respostas?.totalScore) {
+      totalScore += mission4Response.respostas.totalScore;
+    }
+
+    return totalScore.toFixed(1);
+  };
+
   const exportToCSV = (data: ResponseData[], missionName: string) => {
     if (data.length === 0) {
       toast({
@@ -400,8 +433,8 @@ const AdminDashboard = () => {
               Resumo Geral
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-center">
+           <CardContent>
+            <div className="grid grid-cols-2 md:grid-cols-6 gap-4 text-center">
               <div>
                 <p className="text-2xl font-bold text-primary">{stats.mission1?.total || 0}</p>
                 <p className="text-sm text-muted-foreground">Total de Usuários</p>
@@ -421,6 +454,23 @@ const AdminDashboard = () => {
                   {stats.general?.percentage || 0}%
                 </p>
                 <p className="text-sm text-muted-foreground">Taxa de Conclusão Geral</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-yellow-600">
+                  {(() => {
+                    if (!progressData?.data) return '0.0';
+                    const adminUserIds = new Set((adminUsers.data || []).map(admin => admin.user_id));
+                    const nonAdminUsers = progressData.data.filter(p => !adminUserIds.has(p.user_id));
+                    
+                    const totalScore = nonAdminUsers.reduce((sum, progress) => {
+                      return sum + parseFloat(calculateUserTotalScore(progress.user_id) || '0');
+                    }, 0);
+                    
+                    const avgScore = nonAdminUsers.length > 0 ? (totalScore / nonAdminUsers.length) : 0;
+                    return avgScore.toFixed(1);
+                  })()}
+                </p>
+                <p className="text-sm text-muted-foreground">Pontuação Média</p>
               </div>
             </div>
           </CardContent>
@@ -596,6 +646,7 @@ const AdminDashboard = () => {
                     <TableHead>Cargo</TableHead>
                     <TableHead>Área</TableHead>
                     <TableHead>Data de Início</TableHead>
+                    <TableHead>Pontuação Total</TableHead>
                     <TableHead>XP Total</TableHead>
                     <TableHead>Tempo de Jogo</TableHead>
                     <TableHead>Missão 1</TableHead>
@@ -662,6 +713,7 @@ const AdminDashboard = () => {
                                 {userProfile?.area || '-'}
                               </TableCell>
                               <TableCell>{new Date(progress.created_at).toLocaleDateString('pt-BR')}</TableCell>
+                              <TableCell className="text-yellow-600 font-medium">{calculateUserTotalScore(progress.user_id)} pts</TableCell>
                               <TableCell className="text-primary font-medium">{progress.total_xp || 0} XP</TableCell>
                               <TableCell>{Math.floor((progress.total_play_time || 0) / 60)}min</TableCell>
                               <TableCell>
@@ -701,7 +753,7 @@ const AdminDashboard = () => {
                         })}
                         {paginatedUsers.length === 0 && (
                           <TableRow>
-                            <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
+                            <TableCell colSpan={11} className="text-center py-8 text-muted-foreground">
                               <Users className="w-12 h-12 mx-auto mb-4 opacity-50" />
                               <p>Nenhum usuário encontrado.</p>
                             </TableCell>
