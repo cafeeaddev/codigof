@@ -7,6 +7,7 @@ import { Footer } from './Footer';
 import { Navigation } from './Navigation';
 import { SectionContainer } from './SectionContainer';
 import { ScrollProgress } from './ScrollProgress';
+import { Button } from './ui/button';
 import { useInternalScroll } from '@/hooks/useInternalScroll';
 import { LoginScreen } from './LoginScreen';
 import { WelcomeScreen } from './WelcomeScreen';
@@ -61,6 +62,7 @@ export const LinearLayout = () => {
     containerRef,
     currentSection,
     totalSections,
+    isScrolling,
     scrollToSection,
     nextSection,
     registerSection,
@@ -202,6 +204,15 @@ export const LinearLayout = () => {
           </SectionContainer>
         </div>
       </div>
+
+      {/* Floating Continue Button */}
+      {totalSections > 0 && currentSection < totalSections - 1 && (
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40">
+          <Button size="lg" variant="secondary" onClick={() => nextSection()}>
+            CONTINUE
+          </Button>
+        </div>
+      )}
 
       {/* Scroll Progress Indicator */}
       <ScrollProgress
