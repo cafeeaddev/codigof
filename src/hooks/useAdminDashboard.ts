@@ -87,6 +87,9 @@ export const useAdminDashboard = () => {
     const adminUserIds = new Set(adminUsers.data.map(admin => admin.user_id));
     const nonAdminUsers = progressData.data.filter(p => !adminUserIds.has(p.user_id));
     
+    // Total de colaboradores da empresa (850) - excluindo admins
+    const totalCollaborators = 850 - adminUserIds.size;
+    
     const mission1Completed = nonAdminUsers.filter(p => p.missao_1_completed === true).length;
     const mission2Completed = nonAdminUsers.filter(p => p.missao_2_completed === true).length;
     const mission3Completed = nonAdminUsers.filter(p => p.missao_3_completed === true).length;
@@ -111,37 +114,37 @@ export const useAdminDashboard = () => {
     return {
       missionStats: {
         mission1: {
-          total: nonAdminUsers.length,
+          total: totalCollaborators, // Base nos 850 colaboradores
           completed: mission1Completed,
-          percentage: nonAdminUsers.length > 0 ? Math.round((mission1Completed / nonAdminUsers.length) * 100) : 0
+          percentage: totalCollaborators > 0 ? Math.round((mission1Completed / totalCollaborators) * 100) : 0
         },
         mission2: {
-          total: nonAdminUsers.length,
+          total: totalCollaborators,
           completed: mission2Completed,
-          percentage: nonAdminUsers.length > 0 ? Math.round((mission2Completed / nonAdminUsers.length) * 100) : 0
+          percentage: totalCollaborators > 0 ? Math.round((mission2Completed / totalCollaborators) * 100) : 0
         },
         mission3: {
-          total: nonAdminUsers.length,
+          total: totalCollaborators,
           completed: mission3Completed,
-          percentage: nonAdminUsers.length > 0 ? Math.round((mission3Completed / nonAdminUsers.length) * 100) : 0
+          percentage: totalCollaborators > 0 ? Math.round((mission3Completed / totalCollaborators) * 100) : 0
         },
         mission4: {
-          total: nonAdminUsers.length,
+          total: totalCollaborators,
           completed: mission4Completed,
-          percentage: nonAdminUsers.length > 0 ? Math.round((mission4Completed / nonAdminUsers.length) * 100) : 0
+          percentage: totalCollaborators > 0 ? Math.round((mission4Completed / totalCollaborators) * 100) : 0
         },
         general: {
-          total: nonAdminUsers.length,
+          total: totalCollaborators,
           completed: gameCompleted,
-          percentage: nonAdminUsers.length > 0 ? parseFloat(((gameCompleted / nonAdminUsers.length) * 100).toFixed(2)) : 0
+          percentage: totalCollaborators > 0 ? parseFloat(((gameCompleted / totalCollaborators) * 100).toFixed(2)) : 0
         }
       },
       adminStats: {
-        totalUsers: nonAdminUsers.length, // Apenas usuários que começaram o jogo
-        usersStarted: nonAdminUsers.length,
-        usersCompleted: gameCompleted,
-        completionRate: nonAdminUsers.length > 0 ? parseFloat(((gameCompleted / nonAdminUsers.length) * 100).toFixed(2)) : 0,
-        averageScore: parseFloat(averageScore.toFixed(2)),
+        totalUsers: totalCollaborators, // 850 colaboradores (menos admins)
+        usersStarted: nonAdminUsers.length, // Quantos começaram de fato
+        usersCompleted: gameCompleted, // Quantos finalizaram
+        completionRate: totalCollaborators > 0 ? parseFloat(((gameCompleted / totalCollaborators) * 100).toFixed(2)) : 0, // Taxa baseada no total
+        averageScore: parseFloat(averageScore.toFixed(2)), // Média apenas dos participantes
         mostCommonProfile,
         profileDistribution: profileCounts
       }

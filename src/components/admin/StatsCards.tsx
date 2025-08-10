@@ -22,6 +22,12 @@ export const StatsCards = ({ adminStats, missionStats }: StatsCardsProps) => {
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-center">
             <div className="hover-scale">
               <p className="text-2xl font-bold text-primary">{adminStats.totalUsers}</p>
+              <p className="text-sm text-muted-foreground">Total de Colaboradores</p>
+            </div>
+            <div className="hover-scale">
+              <p className="text-2xl font-bold" style={{ color: 'hsl(var(--profile-beginner-plus))' }}>
+                {adminStats.usersStarted}
+              </p>
               <p className="text-sm text-muted-foreground">Usuários que Começaram</p>
             </div>
             <div className="hover-scale">
@@ -34,19 +40,13 @@ export const StatsCards = ({ adminStats, missionStats }: StatsCardsProps) => {
               <p className="text-2xl font-bold" style={{ color: 'hsl(var(--profile-pro-player))' }}>
                 {adminStats.completionRate}%
               </p>
-              <p className="text-sm text-muted-foreground">Taxa de Conclusão</p>
+              <p className="text-sm text-muted-foreground">Taxa de Conclusão Geral</p>
             </div>
             <div className="hover-scale">
               <p className="text-2xl font-bold" style={{ color: 'hsl(var(--profile-ninja))' }}>
                 {adminStats.averageScore}
               </p>
-              <p className="text-sm text-muted-foreground">Pontuação Média</p>
-            </div>
-            <div className="hover-scale">
-              <p className="text-2xl font-bold text-accent">
-                {adminStats.mostCommonProfile}
-              </p>
-              <p className="text-sm text-muted-foreground">Perfil Mais Comum</p>
+              <p className="text-sm text-muted-foreground">Pontuação Média dos Participantes</p>
             </div>
           </div>
         </CardContent>
