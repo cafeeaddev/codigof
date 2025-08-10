@@ -43,6 +43,7 @@ const AdminDashboard = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [cargoFilter, setCargoFilter] = useState('');
+  const [areaFilter, setAreaFilter] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
@@ -78,7 +79,7 @@ const AdminDashboard = () => {
         // Buscar IDs dos admins
         supabase.from('user_roles').select('user_id').eq('role', 'admin'),
         // Buscar todos os perfis para mapear user_id -> nome
-        supabase.from('profiles').select('user_id, nome, email, cargo')
+        supabase.from('profiles').select('user_id, nome, email, cargo, area')
       ]);
 
       if (res1.error) console.error('Error loading mission 1:', res1.error);
@@ -172,7 +173,7 @@ const AdminDashboard = () => {
       // Criar mapa de user_id para dados do usuário
       const userProfiles = new Map((allProfiles.data || []).map(profile => [
         profile.user_id, 
-        { nome: profile.nome || 'Usuário', email: profile.email || '', cargo: profile.cargo }
+        { nome: profile.nome || 'Usuário', email: profile.email || '', cargo: profile.cargo, area: profile.area }
       ]));
 
       console.log('User profiles by email loaded:', userProfilesByEmail);
@@ -518,6 +519,40 @@ const AdminDashboard = () => {
                   </SelectContent>
                 </Select>
               </div>
+              <div className="w-48">
+                <Select
+                  value={areaFilter}
+                  onValueChange={(value) => {
+                    setAreaFilter(value);
+                    setCurrentPage(1);
+                  }}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Filtrar por área" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="todos">Todas as áreas</SelectItem>
+                    {(() => {
+                      const allUsers = progressData.data?.filter(progress => {
+                        const adminUserIds = new Set((adminUsers.data || []).map(admin => admin.user_id));
+                        return !adminUserIds.has(progress.user_id);
+                      }) || [];
+                      
+                      const areas = new Set();
+                      allUsers.forEach(progress => {
+                        const userProfile = progressData.userProfiles?.get(progress.user_id);
+                        if (userProfile?.area) {
+                          areas.add(userProfile.area);
+                        }
+                      });
+                      
+                      return Array.from(areas).sort().map((area: any) => (
+                        <SelectItem key={area} value={area}>{area}</SelectItem>
+                      ));
+                    })()}
+                  </SelectContent>
+                </Select>
+              </div>
               <Badge variant="secondary">
                 {(() => {
                   const allUsers = progressData.data?.filter(progress => {
@@ -530,12 +565,21 @@ const AdminDashboard = () => {
                     const userName = userProfile?.nome || 'Usuário';
                     const matchesSearch = userName.toLowerCase().includes(searchTerm.toLowerCase());
                     
-                    if (!cargoFilter || cargoFilter === "todos") return matchesSearch;
+                    // Filtro por cargo
+                    let matchesCargo = true;
+                    if (cargoFilter && cargoFilter !== "todos") {
+                      const userCargo = userProfile?.cargo?.replace(/^\d+-/, '').trim() || '';
+                      matchesCargo = userCargo === cargoFilter;
+                    }
                     
-                    const userCargo = userProfile?.cargo?.replace(/^\d+-/, '').trim() || '';
-                    const matchesCargo = userCargo === cargoFilter;
+                    // Filtro por área
+                    let matchesArea = true;
+                    if (areaFilter && areaFilter !== "todos") {
+                      const userArea = userProfile?.area || '';
+                      matchesArea = userArea === areaFilter;
+                    }
                     
-                    return matchesSearch && matchesCargo;
+                    return matchesSearch && matchesCargo && matchesArea;
                   });
                   
                   return filtered.length;
@@ -550,6 +594,7 @@ const AdminDashboard = () => {
                   <TableRow>
                     <TableHead>Usuário</TableHead>
                     <TableHead>Cargo</TableHead>
+                    <TableHead>Área</TableHead>
                     <TableHead>Data de Início</TableHead>
                     <TableHead>XP Total</TableHead>
                     <TableHead>Tempo de Jogo</TableHead>
@@ -567,18 +612,27 @@ const AdminDashboard = () => {
                         return !adminUserIds.has(progress.user_id);
                       }) || [];
                     
-                    // Filtrar por busca e cargo
+                    // Filtrar por busca, cargo e área
                     const filteredUsers = allUsers.filter(progress => {
                       const userProfile = progressData.userProfiles?.get(progress.user_id);
                       const userName = userProfile?.nome || 'Usuário';
                       const matchesSearch = userName.toLowerCase().includes(searchTerm.toLowerCase());
                       
-                      if (!cargoFilter || cargoFilter === "todos") return matchesSearch;
+                      // Filtro por cargo
+                      let matchesCargo = true;
+                      if (cargoFilter && cargoFilter !== "todos") {
+                        const userCargo = userProfile?.cargo?.replace(/^\d+-/, '').trim() || '';
+                        matchesCargo = userCargo === cargoFilter;
+                      }
                       
-                      const userCargo = userProfile?.cargo?.replace(/^\d+-/, '').trim() || '';
-                      const matchesCargo = userCargo === cargoFilter;
+                      // Filtro por área
+                      let matchesArea = true;
+                      if (areaFilter && areaFilter !== "todos") {
+                        const userArea = userProfile?.area || '';
+                        matchesArea = userArea === areaFilter;
+                      }
                       
-                      return matchesSearch && matchesCargo;
+                      return matchesSearch && matchesCargo && matchesArea;
                     });
 
                     // Paginação
@@ -603,6 +657,9 @@ const AdminDashboard = () => {
                               <TableCell className="font-medium">{userName}</TableCell>
                               <TableCell className="text-muted-foreground">
                                 {userCargo || '-'}
+                              </TableCell>
+                              <TableCell className="text-muted-foreground">
+                                {userProfile?.area || '-'}
                               </TableCell>
                               <TableCell>{new Date(progress.created_at).toLocaleDateString('pt-BR')}</TableCell>
                               <TableCell className="text-primary font-medium">{progress.total_xp || 0} XP</TableCell>
@@ -670,12 +727,21 @@ const AdminDashboard = () => {
                 const userName = userProfile?.nome || 'Usuário';
                 const matchesSearch = userName.toLowerCase().includes(searchTerm.toLowerCase());
                 
-                if (!cargoFilter || cargoFilter === "todos") return matchesSearch;
+                // Filtro por cargo
+                let matchesCargo = true;
+                if (cargoFilter && cargoFilter !== "todos") {
+                  const userCargo = userProfile?.cargo?.replace(/^\d+-/, '').trim() || '';
+                  matchesCargo = userCargo === cargoFilter;
+                }
                 
-                const userCargo = userProfile?.cargo?.replace(/^\d+-/, '').trim() || '';
-                const matchesCargo = userCargo === cargoFilter;
+                // Filtro por área
+                let matchesArea = true;
+                if (areaFilter && areaFilter !== "todos") {
+                  const userArea = userProfile?.area || '';
+                  matchesArea = userArea === areaFilter;
+                }
                 
-                return matchesSearch && matchesCargo;
+                return matchesSearch && matchesCargo && matchesArea;
               });
 
               const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
