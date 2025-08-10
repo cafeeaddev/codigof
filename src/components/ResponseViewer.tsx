@@ -1,34 +1,11 @@
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
+import { getQuestionById, getOptionText } from '@/data/questions';
 
 interface ResponseViewerProps {
   respostas: any;
   missionType?: 'mission1' | 'mission2' | 'mission3' | 'mission4';
 }
-
-// Perguntas da Missão 2 para referência
-const mission2Questions = [
-  "Quando percebe uma tarefa repetitiva no trabalho...",
-  "Ao lidar com dados e relatórios:",
-  "Diante de um curso online novo que amplie seu conhecimento técnico ou tecnologia:",
-  "Quando um colega pede ajuda com uma ferramenta digital que você domina:",
-  "Se surge uma oportunidade de liderar um projeto que envolve inovação tecnológica:",
-  "Frente a uma mudança de sistema ou processo no trabalho:",
-  "Quando um novo aplicativo ou ferramenta digital é introduzido:",
-  "Ao buscar soluções para um problema complexo:",
-  "Para se manter atualizado com tendências tecnológicas:",
-  "Quando surge a chance de implementar uma melhoria digital em seu setor:"
-];
-
-// Opções da Missão 2 para referência
-const mission2Options = {
-  A: { text: "Costuma repetir manualmente, já que é algo rápido e está habituado a fazer assim.", points: 0.0 },
-  B: { text: "Mantém como está, se for algo simples de repetir.", points: 1.0 },
-  C: { text: "Usa fórmulas ou modelos prontos para agilizar.", points: 2.5 },
-  D: { text: "Cria uma automação básica para facilitar o processo.", points: 3.7 },
-  E: { text: "Estrutura soluções reutilizáveis que outros também possam aplicar.", points: 5.0 }
-};
 
 const ResponseViewer = ({ respostas, missionType }: ResponseViewerProps) => {
   if (!respostas) {
@@ -76,16 +53,49 @@ const ResponseViewer = ({ respostas, missionType }: ResponseViewerProps) => {
     );
   }
 
-  // Para Missão 2 (quiz com pontuação) - estrutura com objetos {pergunta, resposta, pontuacao}
-  if ((missionType === 'mission2' && Array.isArray(respostas)) || 
-      (!missionType && Array.isArray(respostas))) {
+  // Handle Mission 2 with nested data structure: {data: [...], missao: 2}
+  if (missionType === 'mission2' && typeof respostas === 'object' && respostas.data && Array.isArray(respostas.data)) {
+    return (
+      <div className="space-y-3">
+        {respostas.data.map((resposta: any, index: number) => {
+          const question = getQuestionById('mission2', resposta.pergunta);
+          const optionText = getOptionText('mission2', resposta.pergunta, resposta.resposta);
+          
+          return (
+            <Card key={index} className="border-border/40">
+              <CardContent className="p-3">
+                <div className="flex justify-between items-start mb-2">
+                  <span className="text-sm font-medium text-muted-foreground">
+                    Questão {resposta.pergunta}
+                  </span>
+                  {resposta.pontuacao !== undefined && (
+                    <Badge variant="secondary">
+                      {Number(resposta.pontuacao)} {Number(resposta.pontuacao) === 1 ? 'ponto' : 'pontos'}
+                    </Badge>
+                  )}
+                </div>
+                <p className="text-sm mb-2">
+                  <strong>Pergunta:</strong> {question?.question || `Pergunta ${resposta.pergunta}`}
+                </p>
+                <p className="text-sm">
+                  <strong>Resposta {resposta.resposta}:</strong> {optionText}
+                </p>
+              </CardContent>
+            </Card>
+          );
+        })}
+      </div>
+    );
+  }
+
+  // Handle all missions with array format: [{pergunta, resposta, pontuacao}]
+  if (Array.isArray(respostas)) {
     return (
       <div className="space-y-3">
         {respostas.map((resposta: any, index: number) => {
-          // Se a resposta tem a estrutura {pergunta, resposta, pontuacao}
           if (typeof resposta === 'object' && resposta.pergunta !== undefined) {
-            const questionText = mission2Questions[resposta.pergunta - 1] || `Pergunta ${resposta.pergunta}`;
-            const optionLetter = resposta.resposta;
+            const question = getQuestionById(missionType || 'mission1', resposta.pergunta);
+            const optionText = getOptionText(missionType || 'mission1', resposta.pergunta, resposta.resposta);
             
             return (
               <Card key={index} className="border-border/40">
@@ -101,17 +111,17 @@ const ResponseViewer = ({ respostas, missionType }: ResponseViewerProps) => {
                     )}
                   </div>
                   <p className="text-sm mb-2">
-                    <strong>Pergunta:</strong> {questionText}
+                    <strong>Pergunta:</strong> {question?.question || `Pergunta ${resposta.pergunta}`}
                   </p>
                   <p className="text-sm">
-                    <strong>Resposta:</strong> Opção {optionLetter} ({Number(resposta.pontuacao || 0)} pontos)
+                    <strong>Resposta {resposta.resposta}:</strong> {optionText}
                   </p>
                 </CardContent>
               </Card>
             );
           }
           
-          // Fallback para outras estruturas
+          // Fallback for other structures
           return (
             <Card key={index} className="border-border/40">
               <CardContent className="p-3">
@@ -131,34 +141,78 @@ const ResponseViewer = ({ respostas, missionType }: ResponseViewerProps) => {
     );
   }
 
-  // Missão 2 com dados em formato não-array (fallback)
-  if (missionType === 'mission2' && !Array.isArray(respostas) && typeof respostas === 'object') {
+  // Handle Mission 4 format: {answers: {1:"a", 2:"b"...}, totalScore: 24.4}
+  if (missionType === 'mission4' && typeof respostas === 'object' && respostas.answers) {
     return (
-      <Card className="border-border/40">
-        <CardContent className="p-3">
-          <div className="text-xs text-muted-foreground mb-2">
-            Dados da Missão 2 (formato não esperado):
+      <div className="space-y-3">
+        {Object.entries(respostas.answers).map(([questionId, answer]) => {
+          const question = getQuestionById('mission4', parseInt(questionId));
+          const optionText = getOptionText('mission4', parseInt(questionId), String(answer).toUpperCase());
+          
+          return (
+            <Card key={questionId} className="border-border/40">
+              <CardContent className="p-3">
+                <div className="flex justify-between items-start mb-2">
+                  <span className="text-sm font-medium text-muted-foreground">
+                    Questão {questionId}
+                  </span>
+                </div>
+                <p className="text-sm mb-2">
+                  <strong>Pergunta:</strong> {question?.question || `Pergunta ${questionId}`}
+                </p>
+                <p className="text-sm">
+                  <strong>Resposta {String(answer).toUpperCase()}:</strong> {optionText}
+                </p>
+              </CardContent>
+            </Card>
+          );
+        })}
+        {respostas.totalScore && (
+          <div className="flex justify-end">
+            <Badge variant="outline">
+              Score Total: {respostas.totalScore}
+            </Badge>
           </div>
-          <pre className="text-xs whitespace-pre-wrap bg-muted/30 p-2 rounded overflow-auto max-h-40">
-            {JSON.stringify(respostas, null, 2)}
-          </pre>
-        </CardContent>
-      </Card>
+        )}
+      </div>
     );
   }
 
-  // Para Missão 3 e 4 (estrutura similar)
-  if (missionType === 'mission3' || missionType === 'mission4' || 
-      (!missionType && typeof respostas === 'object' && !Array.isArray(respostas))) {
-    
-    // Se é um objeto com perguntas numeradas
-    if (Object.keys(respostas).some(key => key.includes('pergunta') || key.includes('questao'))) {
+  // Handle legacy object formats (Mission 1, 3, 4 with different structures)
+  if (typeof respostas === 'object' && !Array.isArray(respostas)) {
+    // Check if it's a Mission 1 format (pergunta1, pergunta2, etc.)
+    if (Object.keys(respostas).some(key => key.includes('pergunta'))) {
       return (
         <div className="space-y-3">
           {Object.entries(respostas).map(([key, value]) => {
             if (key === 'totalScore' || key === 'missao' || key === 'pontuacaoTotal') return null;
             
-            const questionNumber = key.replace(/pergunta|questao/, '').replace(/[^0-9]/g, '');
+            const questionNumber = key.replace(/pergunta/, '').replace(/[^0-9]/g, '');
+            const questionId = parseInt(questionNumber);
+            
+            if (questionId && missionType) {
+              const question = getQuestionById(missionType, questionId);
+              const optionText = getOptionText(missionType, questionId, String(value));
+              
+              return (
+                <Card key={key} className="border-border/40">
+                  <CardContent className="p-3">
+                    <div className="flex justify-between items-start mb-2">
+                      <span className="text-sm font-medium text-muted-foreground">
+                        Questão {questionId}
+                      </span>
+                    </div>
+                    <p className="text-sm mb-2">
+                      <strong>Pergunta:</strong> {question?.question || `Pergunta ${questionId}`}
+                    </p>
+                    <p className="text-sm">
+                      <strong>Resposta {String(value)}:</strong> {optionText}
+                    </p>
+                  </CardContent>
+                </Card>
+              );
+            }
+            
             return (
               <Card key={key} className="border-border/40">
                 <CardContent className="p-3">
@@ -183,7 +237,7 @@ const ResponseViewer = ({ respostas, missionType }: ResponseViewerProps) => {
       );
     }
 
-    // Para outros tipos de objeto estruturado
+    // Generic object handler
     return (
       <div className="space-y-2">
         {Object.entries(respostas).map(([key, value]) => (
