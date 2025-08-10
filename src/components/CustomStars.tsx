@@ -48,8 +48,8 @@ export const CustomStars = () => {
     for (let i = 0; i < starCount; i++) {
       // Focar no campo de visão da câmera (posição [0, 1, 5])
       // Distribuir estrelas mais próximas da área visível
-      const x = (Math.random() - 0.5) * 80; // Área mais focada (-40 a +40)
-      const z = -20 + Math.random() * 60; // Z de -20 a +40, priorizando área visível
+      const x = (Math.random() - 0.5) * 140; // Área mais ampla
+      const z = -80 - Math.random() * 200; // Sempre atrás do terreno (-80 a -280)
       
       // Calculate terrain height at this x,z position
       const terrainHeight = calculateHeightAtPoint(x, z);
@@ -140,6 +140,8 @@ export const CustomStars = () => {
         alphaTest={0.001}
         map={starTexture}    // Textura circular
         blending={THREE.AdditiveBlending}
+        depthTest={true}
+        depthWrite={false}
       />
     </points>
   );
