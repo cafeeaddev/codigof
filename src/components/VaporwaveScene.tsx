@@ -2,7 +2,7 @@ import { Canvas } from '@react-three/fiber';
 import { VaporwaveTerrain } from './VaporwaveTerrain';
 
 import { CustomStars } from './CustomStars';
-import { GalaxyBackground } from './GalaxyBackground';
+import { GalaxySky } from './GalaxySky';
 import * as THREE from 'three';
 
 interface VaporwaveSceneProps {
@@ -31,7 +31,7 @@ export const VaporwaveScene = ({ cameraPosition, cameraFov }: VaporwaveSceneProp
         {/* Fundo sólido via clearColor - sem gradiente */}
 
         {/* Galaxy background + horizon stars */}
-        <GalaxyBackground />
+        <GalaxySky />
         <CustomStars />
         
         <ambientLight intensity={0.4} color="#ffffff" />

@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import * as THREE from 'three';
 
 // Large, static galaxy starfield rendered behind everything
-export const GalaxyBackground = () => {
+export const GalaxySky = () => {
   
 
   // Create circular star sprite texture (crisp, soft edges)
