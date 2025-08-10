@@ -201,6 +201,11 @@ const AdminDashboard = () => {
         p.missao_4_completed === true
       ).length;
       
+      console.log('🔍 DEBUGGING COMPLETION RATE:');
+      console.log('Non-admin progress sample:', nonAdminProgress.slice(0, 3));
+      console.log('Game completed count:', gameCompleted);
+      console.log('Calculation:', gameCompleted, '/', totalNonAdminProfiles, '=', totalNonAdminProfiles > 0 ? Math.round((gameCompleted / totalNonAdminProfiles) * 100) : 0, '%');
+      
       console.log('Mission completion counts (excluding admins):', {
         totalNonAdminProfiles,
         usersStarted,
