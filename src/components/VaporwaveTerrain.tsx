@@ -99,6 +99,8 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
     return { backgroundGeometry: bgGeo, maxHeight };
   }, []);
   
+  // Wireframe geometry for line rendering (shared)
+  const wireframeGeometry = useMemo(() => new THREE.WireframeGeometry(backgroundGeometry), [backgroundGeometry]);
   
   // Enhanced color calculation with cyan/blue neon
   const getEnhancedColor = (progress: number): string => {
@@ -137,12 +139,12 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
           group.position.z += 240;
         }
         
-        // Apply pulsating effect to wireframe materials
-        const wireframeMesh = group.children[1] as THREE.Mesh;
-        if (wireframeMesh && wireframeMesh.material) {
-          const material = wireframeMesh.material as THREE.MeshBasicMaterial;
-          material.opacity = 0.7 + Math.sin(state.clock.elapsedTime * 1.5) * 0.2;
-        }
+         // Apply pulsating effect to wireframe line material
+         const wireframeLines = group.children[1] as THREE.LineSegments;
+         if (wireframeLines && (wireframeLines as any).material) {
+           const material = wireframeLines.material as THREE.LineBasicMaterial;
+           material.opacity = 0.7 + Math.sin(state.clock.elapsedTime * 1.5) * 0.2;
+         }
       }
     });
   });
@@ -180,28 +182,29 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
               wireframe={false}
               depthTest={true}
               depthWrite={true}
+              polygonOffset={true}
+              polygonOffsetFactor={1}
+              polygonOffsetUnits={1}
             />
           </mesh>
           
-          {/* Cyan/blue neon wireframe overlay */}
-          <mesh
-            geometry={backgroundGeometry}
+          {/* Cyan/blue neon wireframe overlay as line segments to avoid z-fighting */}
+          <lineSegments
             rotation={[-Math.PI * 0.5, 0, 0]}
-            position={[0, -2.94, 0]}
+            position={[0, -2.91, 0]}
             renderOrder={2}
           >
-            <meshBasicMaterial
+            <primitive attach="geometry" object={wireframeGeometry} />
+            <lineBasicMaterial
               color="#00ffff"
-              transparent={false}
-              opacity={1}
-              wireframe={true}
+              transparent={true}
               depthTest={true}
               depthWrite={false}
               polygonOffset={true}
-              polygonOffsetFactor={-1}
-              polygonOffsetUnits={-1}
+              polygonOffsetFactor={-2}
+              polygonOffsetUnits={-2}
             />
-          </mesh>
+          </lineSegments>
         </group>
       ))}
     </group>
