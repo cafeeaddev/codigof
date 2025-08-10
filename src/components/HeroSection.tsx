@@ -36,9 +36,7 @@ export const HeroSection = ({ onLoginClick }: HeroSectionProps) => {
             </p>
             <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white leading-tight px-4">
               SUA JORNADA DIGITAL<br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-500 drop-shadow-[0_0_20px_rgba(0,128,255,0.8)]">
-                COMEÇA AQUI!
-              </span>
+              <span className="text-secondary">COMEÇA AQUI!</span>
             </h1>
           </div>
 
