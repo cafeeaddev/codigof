@@ -93,27 +93,7 @@ export const CustomStars = () => {
     return { positions, colors, blinkPhases };
   }, []);
 
-  // Animation with blinking effect
-  useFrame((state) => {
-    if (pointsRef.current) {
-      pointsRef.current.rotation.y += 0.0001;
-      
-      // Update star opacity for blinking effect
-      const material = pointsRef.current.material as THREE.PointsMaterial;
-      const time = state.clock.elapsedTime;
-      
-      // Create subtle blinking effect
-      const baseOpacity = 0.9;
-      const blinkIntensity = 0.3;
-      
-      // Simulate individual star blinking by varying opacity
-      const blinkFactor = Math.sin(time * 0.5) * 0.1 + 
-                         Math.sin(time * 0.7) * 0.05 + 
-                         Math.sin(time * 1.2) * 0.03;
-      
-      material.opacity = baseOpacity + (blinkFactor * blinkIntensity);
-    }
-  });
+  // Stars are static; no animation or blinking
 
   return (
     <points ref={pointsRef} renderOrder={-10}>
@@ -135,6 +115,7 @@ export const CustomStars = () => {
         size={0.2}           // Estrelas um pouco maiores para o efeito circular
         sizeAttenuation={true}
         vertexColors={true}
+        fog={false}
         transparent={true}
         opacity={0.9}
         alphaTest={0.001}
