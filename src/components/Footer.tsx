@@ -61,7 +61,7 @@ export const Footer = () => {
   }
 
   return (
-    <footer className="relative py-16 px-4 sm:px-6 lg:px-8">
+    <footer className="relative py-16 px-4 sm:px-6 lg:px-8 mb-24 sm:mb-40">
       <div className="max-w-md mx-auto">
         <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-8 shadow-neon">
           {/* Terminal header */}
