@@ -260,7 +260,7 @@ const AdminDashboard = () => {
     }
   };
 
-  // Função para calcular pontuação total de um usuário
+  // Função para calcular pontuação total de um usuário (apenas missões 1, 2 e 3)
   const calculateUserTotalScore = (userId: string) => {
     let totalScore = 0;
 
@@ -284,11 +284,7 @@ const AdminDashboard = () => {
       totalScore += mission3Response.respostas.reduce((sum: number, resp: any) => sum + (resp.pontuacao || 0), 0);
     }
 
-    // Pontuação da Missão 4
-    const mission4Response = responses4.find(r => r.email === (progressData.userProfiles?.get(userId)?.email));
-    if (mission4Response && mission4Response.respostas?.totalScore) {
-      totalScore += mission4Response.respostas.totalScore;
-    }
+    // Missão 4 não é incluída no cálculo de pontos
 
     return totalScore.toFixed(1);
   };
