@@ -13,11 +13,35 @@ export const CustomStars = () => {
     return wave1 + wave2 + wave3;
   };
 
+  // Create circular star texture
+  const starTexture = useMemo(() => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 64;
+    canvas.height = 64;
+    const ctx = canvas.getContext('2d')!;
+    
+    // Create radial gradient for circular star
+    const gradient = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+    gradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
+    gradient.addColorStop(0.2, 'rgba(255, 255, 255, 0.8)');
+    gradient.addColorStop(0.4, 'rgba(255, 255, 255, 0.4)');
+    gradient.addColorStop(0.7, 'rgba(255, 255, 255, 0.1)');
+    gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+    
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, 64, 64);
+    
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.generateMipmaps = false;
+    return texture;
+  }, []);
+
   // Generate star positions focused on visible sky area
-  const { positions, colors } = useMemo(() => {
+  const { positions, colors, blinkPhases } = useMemo(() => {
     const starCount = 5000; // Mais estrelas
     const positions = new Float32Array(starCount * 3);
     const colors = new Float32Array(starCount * 3);
+    const blinkPhases = new Float32Array(starCount); // Para animação de piscada
     
     let index = 0;
     
@@ -60,16 +84,34 @@ export const CustomStars = () => {
         colors[index + 2] = 1.0; // B
       }
       
+      // Fase de piscada única para cada estrela
+      blinkPhases[i] = Math.random() * Math.PI * 2;
+      
       index += 3;
     }
     
-    return { positions, colors };
+    return { positions, colors, blinkPhases };
   }, []);
 
-  // Subtle animation
+  // Animation with blinking effect
   useFrame((state) => {
     if (pointsRef.current) {
       pointsRef.current.rotation.y += 0.0001;
+      
+      // Update star opacity for blinking effect
+      const material = pointsRef.current.material as THREE.PointsMaterial;
+      const time = state.clock.elapsedTime;
+      
+      // Create subtle blinking effect
+      const baseOpacity = 0.9;
+      const blinkIntensity = 0.3;
+      
+      // Simulate individual star blinking by varying opacity
+      const blinkFactor = Math.sin(time * 0.5) * 0.1 + 
+                         Math.sin(time * 0.7) * 0.05 + 
+                         Math.sin(time * 1.2) * 0.03;
+      
+      material.opacity = baseOpacity + (blinkFactor * blinkIntensity);
     }
   });
 
@@ -90,12 +132,13 @@ export const CustomStars = () => {
         />
       </bufferGeometry>
       <pointsMaterial
-        size={0.15}           // Estrelas maiores para melhor visibilidade
+        size={0.2}           // Estrelas um pouco maiores para o efeito circular
         sizeAttenuation={true}
         vertexColors={true}
         transparent={true}
-        opacity={1.0}
+        opacity={0.9}
         alphaTest={0.001}
+        map={starTexture}    // Textura circular
         blending={THREE.AdditiveBlending}
       />
     </points>
