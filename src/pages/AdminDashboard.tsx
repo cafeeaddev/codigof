@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ArrowLeft, Users, FileText, Calendar, Download, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
@@ -41,6 +42,7 @@ const AdminDashboard = () => {
   const [adminUsers, setAdminUsers] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [cargoFilter, setCargoFilter] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
@@ -467,7 +469,7 @@ const AdminDashboard = () => {
             </p>
           </CardHeader>
           <CardContent>
-            {/* Busca */}
+            {/* Busca e Filtros */}
             <div className="flex items-center gap-4 mb-4">
               <div className="relative flex-1 max-w-sm">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
@@ -481,11 +483,63 @@ const AdminDashboard = () => {
                   className="pl-10"
                 />
               </div>
+              <div className="w-48">
+                <Select
+                  value={cargoFilter}
+                  onValueChange={(value) => {
+                    setCargoFilter(value);
+                    setCurrentPage(1);
+                  }}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Filtrar por cargo" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">Todos os cargos</SelectItem>
+                    {(() => {
+                      const allUsers = progressData.data?.filter(progress => {
+                        const adminUserIds = new Set((adminUsers.data || []).map(admin => admin.user_id));
+                        return !adminUserIds.has(progress.user_id);
+                      }) || [];
+                      
+                      const cargos = new Set();
+                      allUsers.forEach(progress => {
+                        const userProfile = progressData.userProfiles?.get(progress.user_id);
+                        if (userProfile?.cargo) {
+                          const formattedCargo = userProfile.cargo.replace(/^\d+-/, '').trim();
+                          if (formattedCargo) cargos.add(formattedCargo);
+                        }
+                      });
+                      
+                      return Array.from(cargos).sort().map((cargo: any) => (
+                        <SelectItem key={cargo} value={cargo}>{cargo}</SelectItem>
+                      ));
+                    })()}
+                  </SelectContent>
+                </Select>
+              </div>
               <Badge variant="secondary">
-                {progressData.data?.filter(progress => {
-                  const adminUserIds = new Set((adminUsers.data || []).map(admin => admin.user_id));
-                  return !adminUserIds.has(progress.user_id);
-                }).length || 0} usuários encontrados
+                {(() => {
+                  const allUsers = progressData.data?.filter(progress => {
+                    const adminUserIds = new Set((adminUsers.data || []).map(admin => admin.user_id));
+                    return !adminUserIds.has(progress.user_id);
+                  }) || [];
+                  
+                  const filtered = allUsers.filter(progress => {
+                    const userProfile = progressData.userProfiles?.get(progress.user_id);
+                    const userName = userProfile?.nome || 'Usuário';
+                    const matchesSearch = userName.toLowerCase().includes(searchTerm.toLowerCase());
+                    
+                    if (!cargoFilter) return matchesSearch;
+                    
+                    const userCargo = userProfile?.cargo?.replace(/^\d+-/, '').trim() || '';
+                    const matchesCargo = userCargo === cargoFilter;
+                    
+                    return matchesSearch && matchesCargo;
+                  });
+                  
+                  return filtered.length;
+                })()} usuários encontrados
               </Badge>
             </div>
 
@@ -495,6 +549,7 @@ const AdminDashboard = () => {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Usuário</TableHead>
+                    <TableHead>Cargo</TableHead>
                     <TableHead>Data de Início</TableHead>
                     <TableHead>XP Total</TableHead>
                     <TableHead>Tempo de Jogo</TableHead>
@@ -512,11 +567,18 @@ const AdminDashboard = () => {
                         return !adminUserIds.has(progress.user_id);
                       }) || [];
                     
-                    // Filtrar por busca
+                    // Filtrar por busca e cargo
                     const filteredUsers = allUsers.filter(progress => {
                       const userProfile = progressData.userProfiles?.get(progress.user_id);
                       const userName = userProfile?.nome || 'Usuário';
-                      return userName.toLowerCase().includes(searchTerm.toLowerCase());
+                      const matchesSearch = userName.toLowerCase().includes(searchTerm.toLowerCase());
+                      
+                      if (!cargoFilter) return matchesSearch;
+                      
+                      const userCargo = userProfile?.cargo?.replace(/^\d+-/, '').trim() || '';
+                      const matchesCargo = userCargo === cargoFilter;
+                      
+                      return matchesSearch && matchesCargo;
                     });
 
                     // Paginação
@@ -538,13 +600,9 @@ const AdminDashboard = () => {
                           
                           return (
                             <TableRow key={progress.user_id}>
-                              <TableCell className="font-medium">
-                                <div className="flex flex-col">
-                                  <span>{userName}</span>
-                                  {userCargo && (
-                                    <span className="text-xs text-muted-foreground">{userCargo}</span>
-                                  )}
-                                </div>
+                              <TableCell className="font-medium">{userName}</TableCell>
+                              <TableCell className="text-muted-foreground">
+                                {userCargo || '-'}
                               </TableCell>
                               <TableCell>{new Date(progress.created_at).toLocaleDateString('pt-BR')}</TableCell>
                               <TableCell className="text-primary font-medium">{progress.total_xp || 0} XP</TableCell>
@@ -610,7 +668,14 @@ const AdminDashboard = () => {
               const filteredUsers = allUsers.filter(progress => {
                 const userProfile = progressData.userProfiles?.get(progress.user_id);
                 const userName = userProfile?.nome || 'Usuário';
-                return userName.toLowerCase().includes(searchTerm.toLowerCase());
+                const matchesSearch = userName.toLowerCase().includes(searchTerm.toLowerCase());
+                
+                if (!cargoFilter) return matchesSearch;
+                
+                const userCargo = userProfile?.cargo?.replace(/^\d+-/, '').trim() || '';
+                const matchesCargo = userCargo === cargoFilter;
+                
+                return matchesSearch && matchesCargo;
               });
 
               const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
