@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Button } from './ui/button';
-import { ArrowRight, Trophy, Medal, Target } from 'lucide-react';
+
 import { useScrollReveal } from '@/hooks/useScrollReveal';
 
 interface FeatureSectionProps {
@@ -42,27 +42,7 @@ export const FeatureSection = ({
   // Only show the first feature section as our missions/xp/medals section
   if (index !== 0) return null;
 
-  const features = [
-    {
-      icon: Target,
-      customIcon: null,
-      title: "4 MISSÕES",
-      subtitle: "Desafios interativos",
-      color: "bg-neon-cyan"
-    },
-    {
-      icon: Trophy,
-      title: "XP & LEVELS", 
-      subtitle: "Pontuação e progresso",
-      color: "bg-neon-purple"
-    },
-    {
-      icon: Medal,
-      title: "MEDALHAS",
-      subtitle: "Perfis de habilidade", 
-      color: "bg-neon-pink"
-    }
-  ];
+ 
 
   return (
     <section 
@@ -132,38 +112,7 @@ export const FeatureSection = ({
           </div>
         </div>
 
-        {/* Feature cards row */}
-        <div 
-          ref={cardsReveal.elementRef}
-          style={cardsReveal.style}
-          className="grid grid-cols-1 md:grid-cols-3 gap-4"
-        >
-          {features.map((feature, idx) => (
-            <div 
-              key={feature.title}
-              className="bg-card/60 backdrop-blur-sm rounded-xl border border-border/30 p-6 text-center hover:bg-card/80 transition-all duration-300"
-              style={{
-                transitionDelay: `${idx * 100}ms`
-              }}
-            >
-              <div className={`w-16 h-16 mx-auto mb-4 ${feature.color} rounded-full flex items-center justify-center`}>
-                {feature.customIcon ? (
-                  <img src={feature.customIcon} alt={feature.title} className="w-8 h-8" />
-                ) : (
-                  <feature.icon className="w-8 h-8 text-background" />
-                )}
-              </div>
-              
-              <h4 className="text-foreground font-bold text-lg mb-2">
-                {feature.title}
-              </h4>
-              
-              <p className="text-muted-foreground text-sm">
-                {feature.subtitle}
-              </p>
-            </div>
-          ))}
-        </div>
+{/* Cards removidos conforme solicitação */}
       </div>
     </section>
   );
