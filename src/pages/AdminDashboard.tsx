@@ -495,7 +495,7 @@ const AdminDashboard = () => {
                     <SelectValue placeholder="Filtrar por cargo" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Todos os cargos</SelectItem>
+                    <SelectItem value="todos">Todos os cargos</SelectItem>
                     {(() => {
                       const allUsers = progressData.data?.filter(progress => {
                         const adminUserIds = new Set((adminUsers.data || []).map(admin => admin.user_id));
@@ -530,7 +530,7 @@ const AdminDashboard = () => {
                     const userName = userProfile?.nome || 'Usuário';
                     const matchesSearch = userName.toLowerCase().includes(searchTerm.toLowerCase());
                     
-                    if (!cargoFilter) return matchesSearch;
+                    if (!cargoFilter || cargoFilter === "todos") return matchesSearch;
                     
                     const userCargo = userProfile?.cargo?.replace(/^\d+-/, '').trim() || '';
                     const matchesCargo = userCargo === cargoFilter;
@@ -573,7 +573,7 @@ const AdminDashboard = () => {
                       const userName = userProfile?.nome || 'Usuário';
                       const matchesSearch = userName.toLowerCase().includes(searchTerm.toLowerCase());
                       
-                      if (!cargoFilter) return matchesSearch;
+                      if (!cargoFilter || cargoFilter === "todos") return matchesSearch;
                       
                       const userCargo = userProfile?.cargo?.replace(/^\d+-/, '').trim() || '';
                       const matchesCargo = userCargo === cargoFilter;
@@ -670,7 +670,7 @@ const AdminDashboard = () => {
                 const userName = userProfile?.nome || 'Usuário';
                 const matchesSearch = userName.toLowerCase().includes(searchTerm.toLowerCase());
                 
-                if (!cargoFilter) return matchesSearch;
+                if (!cargoFilter || cargoFilter === "todos") return matchesSearch;
                 
                 const userCargo = userProfile?.cargo?.replace(/^\d+-/, '').trim() || '';
                 const matchesCargo = userCargo === cargoFilter;
