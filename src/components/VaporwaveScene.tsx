@@ -80,12 +80,13 @@ export const VaporwaveScene = ({ cameraPosition, cameraFov }: VaporwaveSceneProp
         />
         
         
-        {/* FUNDO AMARELO PARA DEBUG - posição bem atrás */}
+        {/* Fundo azul suave atrás do terreno para preencher o “vazado” */}
         <mesh position={[0, -10, -150]} rotation={[-Math.PI / 2, 0, 0]}>
-          <planeGeometry args={[200, 200]} />
+          <planeGeometry args={[220, 220]} />
           <meshBasicMaterial 
-            color="#ffff00" 
-            transparent={false}
+            color="#001a66" 
+            transparent
+            opacity={0.6}
             side={THREE.DoubleSide}
           />
         </mesh>
