@@ -1,10 +1,8 @@
 import { Canvas } from '@react-three/fiber';
 import { VaporwaveTerrain } from './VaporwaveTerrain';
-
-import { CustomStars } from './CustomStars';
-import { GalaxySky } from './GalaxySky';
-import { Meteors } from './Meteors';
 import * as THREE from 'three';
+import { SkyGradient } from './SkyGradient';
+import { ShootingStarsOverlay } from './ShootingStarsOverlay';
 
 interface VaporwaveSceneProps {
   cameraPosition: [number, number, number];
@@ -29,47 +27,26 @@ export const VaporwaveScene = ({ cameraPosition, cameraFov }: VaporwaveSceneProp
           scene.fog = new THREE.Fog(0x000000, 80, 200);
         }}
       >
-        {/* Fundo sólido via clearColor - sem gradiente */}
+        {/* Background sky gradient */}
+        <SkyGradient />
 
-        {/* Galaxy background + horizon stars */}
-        <GalaxySky />
-        <CustomStars />
-        <Meteors
-          count={250}
-          spawnRate={6}
-          area={{ x: [-140, 140], y: [15, 90], z: [20, 140] }}
-          speedRange={[12, 28]}
-          lengthRange={[6, 14]}
-          thickness={0.18}
-        />
-        
         <ambientLight intensity={0.4} color="#ffffff" />
-        
+
         {/* Main directional light */}
-        <directionalLight
-          position={[0, 5, 3]}
-          intensity={0.4}
-          color="#ffffff"
-        />
-        
-        {/* Luzes coloridas removidas para manter cenário neutro */}
-        
-        
+        <directionalLight position={[0, 5, 3]} intensity={0.4} color="#ffffff" />
+
         {/* Large ground plane to ensure no "glass floor" */}
         <mesh position={[0, -20, 0]} rotation={[-Math.PI / 2, 0, 0]}>
           <planeGeometry args={[2000, 2000]} />
-          <meshBasicMaterial 
-            color="#2b2b31" 
-            transparent={false}
-            side={THREE.DoubleSide}
-          />
+          <meshBasicMaterial color="#2b2b31" transparent={false} side={THREE.DoubleSide} />
         </mesh>
 
-        
         {/* Main terrain */}
         <VaporwaveTerrain cameraPosition={cameraPosition} />
-        
       </Canvas>
+
+      {/* 2D canvas overlay with twinkling stars and shooting stars */}
+      <ShootingStarsOverlay />
     </div>
   );
 };
