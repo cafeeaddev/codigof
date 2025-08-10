@@ -14,12 +14,12 @@ export const FeatureFold = ({ id, title, subtitle, colorClass, Icon }: FeatureFo
   const circleReveal = useScrollReveal({ direction: 'up', delay: 150, distance: 60 });
 
   return (
-    <section id={id} className="min-h-screen flex items-center px-4 sm:px-6 lg:px-8 py-16">
+    <section id={id} className="min-h-screen flex items-center px-4 sm:px-6 lg:px-8 pr-6 sm:pr-12 lg:pr-24 py-16">
       <div className="max-w-6xl mx-auto w-full">
         <div className="grid items-center gap-10 md:gap-12 lg:gap-16 md:grid-cols-2">
           <div ref={titleReveal.elementRef} style={titleReveal.style}>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-6">{title}</h2>
-            <p className="text-xl sm:text-2xl text-muted-foreground leading-relaxed max-w-3xl">{subtitle}</p>
+            <h2 className="text-3xl sm:text-4xl lg:text-6xl font-extrabold tracking-tight mb-6 bg-gradient-to-r from-neon-pink to-neon-cyan bg-clip-text text-transparent">{title}</h2>
+            <p className="text-xl sm:text-2xl leading-relaxed max-w-3xl text-neon-pink/80">{subtitle}</p>
           </div>
 
           <div ref={circleReveal.elementRef} style={circleReveal.style} className="flex justify-center md:justify-end">
