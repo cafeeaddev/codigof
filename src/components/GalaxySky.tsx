@@ -1,4 +1,5 @@
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
+import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
 // Large, static galaxy starfield rendered behind everything
@@ -34,6 +35,8 @@ export const GalaxySky = () => {
   const generateLayer = (count: number, minR: number, maxR: number) => {
     const positions = new Float32Array(count * 3);
     const colors = new Float32Array(count * 3);
+    const blinkPhases = new Float32Array(count);
+    const blinkSpeeds = new Float32Array(count);
 
     let i3 = 0;
     for (let i = 0; i < count; i++) {
@@ -67,22 +70,53 @@ export const GalaxySky = () => {
       colors[i3 + 1] = gCol;
       colors[i3 + 2] = bCol;
 
+      blinkPhases[i] = Math.random() * Math.PI * 2;
+      blinkSpeeds[i] = 0.6 + Math.random() * 1.0;
+
       i3 += 3;
     }
 
-    return { positions, colors };
+    const baseColors = colors.slice();
+    return { positions, colors, blinkPhases, blinkSpeeds, baseColors };
   };
 
   // Keep inside camera far (300) to avoid clipping
-  const small = useMemo(() => generateLayer(9000, 140, 260), []);
-  const medium = useMemo(() => generateLayer(3500, 150, 240), []);
-  const large = useMemo(() => generateLayer(1200, 160, 220), []);
+  const small = useMemo(() => generateLayer(14000, 140, 260), []);
+  const medium = useMemo(() => generateLayer(5000, 150, 240), []);
+  const large = useMemo(() => generateLayer(1800, 160, 220), []);
+  // Refs to update star colors each frame
+  const smallRef = useRef<THREE.Points>(null);
+  const mediumRef = useRef<THREE.Points>(null);
+  const largeRef = useRef<THREE.Points>(null);
 
+  // Twinkle animation
+  useFrame((state) => {
+    const t = state.clock.getElapsedTime();
+    const updateLayer = (ref: any, layer: any) => {
+      const pts = ref.current as THREE.Points | null;
+      if (!pts) return;
+      const colorAttr = pts.geometry.getAttribute('color') as THREE.BufferAttribute;
+      const arr = colorAttr.array as Float32Array;
+      const base = layer.baseColors as Float32Array;
+      const phases = layer.blinkPhases as Float32Array;
+      const speeds = layer.blinkSpeeds as Float32Array;
+      for (let i = 0, j = 0; i < phases.length; i++, j += 3) {
+        const f = 0.72 + 0.28 * Math.sin(t * speeds[i] + phases[i]);
+        arr[j] = base[j] * f;
+        arr[j + 1] = base[j + 1] * f;
+        arr[j + 2] = base[j + 2] * f;
+      }
+      colorAttr.needsUpdate = true;
+    };
+    updateLayer(smallRef, small);
+    updateLayer(mediumRef, medium);
+    updateLayer(largeRef, large);
+  });
 
   return (
     <>
       {/* Small star layer - wide and faint */}
-      <points renderOrder={0} frustumCulled={false}>
+      <points ref={smallRef} renderOrder={0} frustumCulled={false}>
         <bufferGeometry>
           <bufferAttribute
             attach="attributes-position"
@@ -114,7 +148,7 @@ export const GalaxySky = () => {
       </points>
 
       {/* Medium star layer */}
-      <points renderOrder={1} frustumCulled={false}>
+      <points ref={mediumRef} renderOrder={1} frustumCulled={false}>
         <bufferGeometry>
           <bufferAttribute
             attach="attributes-position"
@@ -146,7 +180,7 @@ export const GalaxySky = () => {
       </points>
 
       {/* Large, bright stars */}
-      <points renderOrder={2} frustumCulled={false}>
+      <points ref={largeRef} renderOrder={2} frustumCulled={false}>
         <bufferGeometry>
           <bufferAttribute
             attach="attributes-position"

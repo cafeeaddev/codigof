@@ -1,9 +1,12 @@
-import { useRef, useMemo } from 'react';
+import { useRef, useMemo, useEffect } from 'react';
+import { useFrame } from '@react-three/fiber';
 
 import * as THREE from 'three';
 
 export const CustomStars = () => {
   const pointsRef = useRef<THREE.Points>(null);
+  const baseColorsRef = useRef<Float32Array | null>(null);
+  const blinkSpeedsRef = useRef<Float32Array | null>(null);
   
   // Helper function to calculate terrain height (matches VaporwaveTerrain)
   const calculateHeightAtPoint = (x: number, z: number) => {
@@ -82,7 +85,40 @@ export const CustomStars = () => {
     return { positions, colors, blinkPhases };
   }, []);
 
-  // Stars are static; no animation or blinking
+  // Initialize base colors and blinking speeds
+  useEffect(() => {
+    if (!baseColorsRef.current) {
+      baseColorsRef.current = colors.slice();
+    }
+    if (!blinkSpeedsRef.current) {
+      const n = blinkPhases.length;
+      const speeds = new Float32Array(n);
+      for (let i = 0; i < n; i++) {
+        speeds[i] = 0.6 + Math.random() * 1.0;
+      }
+      blinkSpeedsRef.current = speeds;
+    }
+  }, [colors, blinkPhases]);
+
+  // Animate twinkling by modulating star brightness
+  useFrame((state) => {
+    const points = pointsRef.current;
+    if (!points) return;
+    const colorAttr = points.geometry.getAttribute('color') as THREE.BufferAttribute;
+    const arr = colorAttr.array as Float32Array;
+    const base = baseColorsRef.current;
+    const speeds = blinkSpeedsRef.current;
+    if (!base || !speeds) return;
+
+    const t = state.clock.getElapsedTime();
+    for (let i = 0, j = 0; i < blinkPhases.length; i++, j += 3) {
+      const f = 0.72 + 0.28 * Math.sin(t * speeds[i] + blinkPhases[i]);
+      arr[j] = base[j] * f;
+      arr[j + 1] = base[j + 1] * f;
+      arr[j + 2] = base[j + 2] * f;
+    }
+    colorAttr.needsUpdate = true;
+  });
 
   return (
     <points ref={pointsRef} renderOrder={10} frustumCulled={false}>
