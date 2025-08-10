@@ -206,7 +206,7 @@ export const LinearLayout = () => {
       </div>
 
       {/* Floating Continue Button */}
-      {totalSections > 0 && currentSection < totalSections - 1 && (
+      {totalSections > 0 && currentSection > 0 && currentSection < totalSections - 1 && (
         <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40">
           <button
             onClick={() => nextSection()}
