@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ArrowLeft, Users, FileText, Calendar, Download, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import ResponseViewer from '@/components/ResponseViewer';
 
 interface ResponseData {
   id: string;
@@ -312,16 +313,23 @@ const AdminDashboard = () => {
                 </div>
               </CardHeader>
               <CardContent className="pt-0">
-                <details className="group">
-                  <summary className="cursor-pointer text-sm font-medium text-primary hover:text-primary/80">
-                    Ver respostas
-                  </summary>
-                  <div className="mt-2 p-3 bg-muted/50 rounded-lg">
-                    <pre className="text-xs whitespace-pre-wrap overflow-auto">
-                      {JSON.stringify(response.respostas, null, 2)}
-                    </pre>
-                  </div>
-                </details>
+                  <details className="group">
+                    <summary className="cursor-pointer text-sm font-medium text-primary hover:text-primary/80">
+                      Ver respostas
+                    </summary>
+                    <div className="mt-2">
+                      <ResponseViewer 
+                        respostas={response.respostas}
+                        missionType={
+                          missionName.includes('Missão 1') ? 'mission1' :
+                          missionName.includes('Missão 2') ? 'mission2' :
+                          missionName.includes('Missão 3') ? 'mission3' :
+                          missionName.includes('Missão 4') ? 'mission4' :
+                          undefined
+                        }
+                      />
+                    </div>
+                  </details>
               </CardContent>
             </Card>
           ))}
