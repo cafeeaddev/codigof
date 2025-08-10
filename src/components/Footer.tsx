@@ -78,7 +78,7 @@ export const Footer = () => {
               <Wifi className="w-8 h-8 text-secondary" />
             </div>
             <h2 className="text-secondary text-xl font-bold mb-2">ACESSO SEGURO</h2>
-            <p className="text-muted-foreground text-sm">Acesse com seu usuário da UM</p>
+            
           </div>
 
           {/* Login form */}
