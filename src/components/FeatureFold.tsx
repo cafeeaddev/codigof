@@ -10,25 +10,28 @@ interface FeatureFoldProps {
 }
 
 export const FeatureFold = ({ id, title, subtitle, colorClass, Icon }: FeatureFoldProps) => {
-  const titleReveal = useScrollReveal({ direction: 'up', delay: 0, distance: 60 });
-  const circleReveal = useScrollReveal({ direction: 'up', delay: 150, distance: 60 });
+  const titleReveal = useScrollReveal({ direction: 'left', delay: 0, distance: 100 });
+  const circleReveal = useScrollReveal({ direction: 'right', delay: 200, distance: 100 });
 
   return (
     <section id={id} className="min-h-screen flex items-center px-4 sm:px-6 lg:px-8 pr-6 sm:pr-12 lg:pr-24 py-16">
       <div className="max-w-6xl mx-auto w-full">
-        <div className="grid items-center gap-10 md:gap-12 lg:gap-16 md:grid-cols-2">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-10 md:gap-12 lg:gap-16">
           <div ref={titleReveal.elementRef} style={titleReveal.style}>
-            <h2 className="text-3xl sm:text-4xl lg:text-6xl font-extrabold tracking-tight mb-6 bg-gradient-to-r from-neon-pink to-neon-cyan bg-clip-text text-transparent">{title}</h2>
-            <p className="text-xl sm:text-2xl leading-relaxed max-w-3xl text-neon-pink/80">{subtitle}</p>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-6 text-foreground drop-shadow-[0_2px_18px_hsl(var(--background)_/_0.5)]">{title}</h2>
+            <div className="flex items-start gap-3">
+              <span aria-hidden className="mt-2 w-2 h-2 rounded-full bg-primary shadow-[0_0_20px_hsl(var(--primary)_/_0.6)]"></span>
+              <p className="text-lg sm:text-xl leading-relaxed max-w-3xl text-muted-foreground">{subtitle}</p>
+            </div>
           </div>
 
           <div ref={circleReveal.elementRef} style={circleReveal.style} className="flex justify-center md:justify-end md:pr-10 lg:pr-24 xl:pr-36 2xl:pr-48">
             <div className="relative">
               {/* Glowing ring */}
-              <div className="w-56 h-56 sm:w-64 sm:h-64 lg:w-72 lg:h-72 rounded-full bg-gradient-to-r from-neon-pink via-neon-purple to-neon-cyan p-1 shadow-glow">
+              <div className="w-64 h-64 sm:w-72 sm:h-72 lg:w-80 lg:h-80 rounded-full bg-gradient-to-r from-neon-pink via-neon-purple to-neon-cyan p-1 shadow-glow">
                 <div className="w-full h-full rounded-full bg-background/90 backdrop-blur-xl flex items-center justify-center">
-                  <div className={`w-24 h-24 sm:w-28 sm:h-28 rounded-full ${colorClass} flex items-center justify-center shadow-lg`}>
-                    <Icon className="w-12 h-12 text-background" />
+                  <div className={`w-28 h-28 sm:w-32 sm:h-32 lg:w-36 lg:h-36 rounded-full ${colorClass} flex items-center justify-center shadow-lg`}>
+                    <Icon className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 text-background" />
                   </div>
                 </div>
               </div>
