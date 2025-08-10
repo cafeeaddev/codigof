@@ -22,8 +22,8 @@ export const VaporwaveScene = ({ cameraPosition, cameraFov }: VaporwaveSceneProp
         gl={{ alpha: true }}
         className="w-full h-full"
         onCreated={({ scene }) => {
-          // Fog mais suave para não esconder as estrelas
-          scene.fog = new THREE.Fog(0x0a0a0a, 25, 120);
+          // Fog mais suave e mais distante para não interferir
+          scene.fog = new THREE.Fog(0x0a0a0a, 80, 200);
         }}
       >
         {/* Background gradient */}
@@ -80,13 +80,24 @@ export const VaporwaveScene = ({ cameraPosition, cameraFov }: VaporwaveSceneProp
         />
         
         
+        {/* FUNDO AMARELO PARA DEBUG - posição bem atrás */}
+        <mesh position={[0, -10, -150]} rotation={[-Math.PI / 2, 0, 0]}>
+          <planeGeometry args={[200, 200]} />
+          <meshBasicMaterial 
+            color="#ffff00" 
+            transparent={false}
+            side={THREE.DoubleSide}
+          />
+        </mesh>
+
         {/* Terrain background - dark plane behind the terrain */}
-        <mesh position={[0, -2, -30]} rotation={[-Math.PI / 2, 0, 0]}>
-          <planeGeometry args={[120, 100]} />
+        <mesh position={[0, -8, -60]} rotation={[-Math.PI / 2, 0, 0]}>
+          <planeGeometry args={[180, 150]} />
           <meshBasicMaterial 
             color="#1a0a2e" 
             transparent 
-            opacity={0.9}
+            opacity={0.8}
+            side={THREE.DoubleSide}
           />
         </mesh>
         
