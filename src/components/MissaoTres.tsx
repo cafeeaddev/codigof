@@ -138,12 +138,21 @@ export const MissaoTres = ({ onComplete }: MissaoTresProps) => {
       };
 
       // Insert response record for mission 3 with user_id
+      if (!user?.id) {
+        toast({
+          title: "Erro de autenticação",
+          description: "Não foi possível identificar o usuário. Faça login novamente.",
+          variant: "destructive"
+        });
+        return;
+      }
+
       const { error: responseError } = await supabase
         .from('respostas_missao3')
         .insert({
           nome: profile?.nome || 'Usuário',
           email: profile?.email || 'email@exemplo.com',
-          user_id: user?.id,
+          user_id: user.id,
           respostas: responsesData
         });
 

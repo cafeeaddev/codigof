@@ -198,13 +198,23 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
       };
 
       // Insert response record with user_id
+      const currentUserId = authUser?.id || userId;
+      if (!currentUserId) {
+        toast({
+          title: "Erro de autenticação",
+          description: "Não foi possível identificar o usuário. Faça login novamente.",
+          variant: "destructive"
+        });
+        return;
+      }
+
       const { error } = await supabase
         .from('respostas')
         .insert({
           nome: profile?.nome || 'Usuário',
           email: profile?.email || authUser?.email || 'email@exemplo.com',
-          user_id: authUser?.id,
-          respostas: responsesData  // Now saving as JSONB directly like other missions
+          user_id: currentUserId,
+          respostas: responsesData
         });
 
       if (error) {
@@ -218,7 +228,6 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
       }
 
       // Update user progress and add XP
-      const currentUserId = authUser?.id || userId;
       if (currentUserId) {
         const { data: existingProgress } = await supabase
           .from('user_progress')

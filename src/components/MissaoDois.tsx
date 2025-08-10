@@ -177,12 +177,22 @@ export const MissaoDois = ({ onComplete, userId }: MissaoDoisProps) => {
       };
 
       // Insert response record for mission 2 with user_id
+      const currentUserId = authUser?.id || userId;
+      if (!currentUserId) {
+        toast({
+          title: "Erro de autenticação",
+          description: "Não foi possível identificar o usuário. Faça login novamente.",
+          variant: "destructive"
+        });
+        return;
+      }
+
       const { error } = await supabase
         .from('respostas_missao2')
         .insert({
           nome: profile?.nome || 'Usuário',
           email: profile?.email || authUser?.email || 'email@exemplo.com',
-          user_id: authUser?.id,
+          user_id: currentUserId,
           respostas: {
             missao: 2,
             data: responsesData
@@ -200,7 +210,6 @@ export const MissaoDois = ({ onComplete, userId }: MissaoDoisProps) => {
       }
 
       // Update user progress and add XP
-      const currentUserId = authUser?.id || userId;
       if (currentUserId) {
         const { data: existingProgress } = await supabase
           .from('user_progress')
