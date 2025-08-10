@@ -1,9 +1,9 @@
-import { useMemo, useRef } from 'react';
+import { useMemo } from 'react';
 import * as THREE from 'three';
 
 // Large, static galaxy starfield rendered behind everything
 export const GalaxyBackground = () => {
-  const pointsRef = useRef<THREE.Points>(null);
+  
 
   // Create circular star sprite texture (crisp, soft edges)
   const starTexture = useMemo(() => {
@@ -30,42 +30,39 @@ export const GalaxyBackground = () => {
     return texture;
   }, []);
 
-  // Generate stars distributed in a distant spherical shell around origin
-  const { positions, colors } = useMemo(() => {
-    const count = 9000;
+  // Helper to generate a hemisphere of stars behind the camera (z < 0, y > 0)
+  const generateLayer = (count: number, minR: number, maxR: number) => {
     const positions = new Float32Array(count * 3);
     const colors = new Float32Array(count * 3);
 
-    // Shell parameters: radius ~ 380-500 to sit far behind the scene
-    const minR = 380;
-    const maxR = 500;
-
     let i3 = 0;
     for (let i = 0; i < count; i++) {
-      // Uniform sampling on a sphere
-      const u = Math.random();
-      const v = Math.random();
-      const theta = 2 * Math.PI * u;
-      const phi = Math.acos(2 * v - 1);
-      const r = minR + Math.random() * (maxR - minR);
-
-      const sinPhi = Math.sin(phi);
-      const x = r * sinPhi * Math.cos(theta);
-      const y = r * Math.cos(phi);
-      const z = r * sinPhi * Math.sin(theta);
+      let x = 0, y = 0, z = 0;
+      let tries = 0;
+      do {
+        // sample direction uniformly on sphere
+        const u = Math.random();
+        const v = Math.random();
+        const theta = 2 * Math.PI * u;
+        const phi = Math.acos(2 * v - 1);
+        const r = minR + Math.random() * (maxR - minR);
+        const sinPhi = Math.sin(phi);
+        x = r * sinPhi * Math.cos(theta);
+        y = r * Math.cos(phi);
+        z = r * sinPhi * Math.sin(theta);
+        tries++;
+      } while ((y <= 0 || z >= 0) && tries < 10); // keep above horizon and behind scene
 
       positions[i3] = x;
       positions[i3 + 1] = y;
       positions[i3 + 2] = z;
 
-      // Mostly white with subtle cool tint variations for depth
+      // Mostly white with subtle tint
       const tint = Math.random();
       let rCol = 1.0, gCol = 1.0, bCol = 1.0;
-      if (tint < 0.15) {
-        gCol = 0.96; bCol = 0.98; // slightly warmer
-      } else if (tint > 0.85) {
-        gCol = 1.0; bCol = 0.94; // slight blue tint
-      }
+      if (tint < 0.2) { gCol = 0.96; bCol = 0.98; }
+      else if (tint > 0.85) { gCol = 1.0; bCol = 0.94; }
+
       colors[i3] = rCol;
       colors[i3 + 1] = gCol;
       colors[i3 + 2] = bCol;
@@ -74,38 +71,111 @@ export const GalaxyBackground = () => {
     }
 
     return { positions, colors };
-  }, []);
+  };
+
+  // Keep inside camera far (300) to avoid clipping
+  const small = useMemo(() => generateLayer(9000, 140, 260), []);
+  const medium = useMemo(() => generateLayer(3500, 150, 240), []);
+  const large = useMemo(() => generateLayer(1200, 160, 220), []);
+
 
   return (
-    <points ref={pointsRef} renderOrder={0} frustumCulled={false}>
-      <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          count={positions.length / 3}
-          array={positions}
-          itemSize={3}
+    <>
+      {/* Small star layer - wide and faint */}
+      <points renderOrder={0} frustumCulled={false}>
+        <bufferGeometry>
+          <bufferAttribute
+            attach="attributes-position"
+            count={small.positions.length / 3}
+            array={small.positions}
+            itemSize={3}
+          />
+          <bufferAttribute
+            attach="attributes-color"
+            count={small.colors.length / 3}
+            array={small.colors}
+            itemSize={3}
+          />
+        </bufferGeometry>
+        <pointsMaterial
+          size={1.1}
+          sizeAttenuation={false}
+          vertexColors={true}
+          fog={false}
+          transparent={true}
+          opacity={0.7}
+          alphaTest={0.001}
+          map={starTexture}
+          blending={THREE.AdditiveBlending}
+          toneMapped={false}
+          depthTest={false}
+          depthWrite={false}
         />
-        <bufferAttribute
-          attach="attributes-color"
-          count={colors.length / 3}
-          array={colors}
-          itemSize={3}
+      </points>
+
+      {/* Medium star layer */}
+      <points renderOrder={1} frustumCulled={false}>
+        <bufferGeometry>
+          <bufferAttribute
+            attach="attributes-position"
+            count={medium.positions.length / 3}
+            array={medium.positions}
+            itemSize={3}
+          />
+          <bufferAttribute
+            attach="attributes-color"
+            count={medium.colors.length / 3}
+            array={medium.colors}
+            itemSize={3}
+          />
+        </bufferGeometry>
+        <pointsMaterial
+          size={1.8}
+          sizeAttenuation={false}
+          vertexColors={true}
+          fog={false}
+          transparent={true}
+          opacity={0.85}
+          alphaTest={0.001}
+          map={starTexture}
+          blending={THREE.AdditiveBlending}
+          toneMapped={false}
+          depthTest={false}
+          depthWrite={false}
         />
-      </bufferGeometry>
-      <pointsMaterial
-        size={1.6}
-        sizeAttenuation={false}
-        vertexColors={true}
-        fog={false}
-        transparent={true}
-        opacity={0.9}
-        alphaTest={0.001}
-        map={starTexture}
-        blending={THREE.AdditiveBlending}
-        toneMapped={false}
-        depthTest={false}
-        depthWrite={false}
-      />
-    </points>
+      </points>
+
+      {/* Large, bright stars */}
+      <points renderOrder={2} frustumCulled={false}>
+        <bufferGeometry>
+          <bufferAttribute
+            attach="attributes-position"
+            count={large.positions.length / 3}
+            array={large.positions}
+            itemSize={3}
+          />
+          <bufferAttribute
+            attach="attributes-color"
+            count={large.colors.length / 3}
+            array={large.colors}
+            itemSize={3}
+          />
+        </bufferGeometry>
+        <pointsMaterial
+          size={2.6}
+          sizeAttenuation={false}
+          vertexColors={true}
+          fog={false}
+          transparent={true}
+          opacity={1}
+          alphaTest={0.001}
+          map={starTexture}
+          blending={THREE.AdditiveBlending}
+          toneMapped={false}
+          depthTest={false}
+          depthWrite={false}
+        />
+      </points>
+    </>
   );
 };
