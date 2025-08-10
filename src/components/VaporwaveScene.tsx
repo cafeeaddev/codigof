@@ -81,12 +81,12 @@ export const VaporwaveScene = ({ cameraPosition, cameraFov }: VaporwaveSceneProp
         
         
         {/* Terrain background - dark plane behind the terrain */}
-        <mesh position={[0, -2, -25]} rotation={[-Math.PI / 2, 0, 0]}>
-          <planeGeometry args={[100, 80]} />
+        <mesh position={[0, -2, -30]} rotation={[-Math.PI / 2, 0, 0]}>
+          <planeGeometry args={[120, 100]} />
           <meshBasicMaterial 
             color="#0a0a1a" 
             transparent 
-            opacity={0.8}
+            opacity={0.9}
           />
         </mesh>
         

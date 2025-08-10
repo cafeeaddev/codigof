@@ -62,7 +62,7 @@ export const VaporwaveBackground = () => {
   });
   
   return (
-    <mesh ref={backgroundRef} material={material} geometry={geometry} position={[0, 0, -25]} scale={[1, 1, 1]}>
+    <mesh ref={backgroundRef} material={material} geometry={geometry} position={[0, 0, -50]} scale={[1, 1, 1]}>
     </mesh>
   );
 };
