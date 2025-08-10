@@ -71,7 +71,7 @@ export const GalaxySky = () => {
       colors[i3 + 2] = bCol;
 
       blinkPhases[i] = Math.random() * Math.PI * 2;
-      blinkSpeeds[i] = 0.6 + Math.random() * 1.0;
+      blinkSpeeds[i] = 0.5 + Math.random() * 1.8;
 
       i3 += 3;
     }
@@ -81,9 +81,9 @@ export const GalaxySky = () => {
   };
 
   // Keep inside camera far (300) to avoid clipping
-  const small = useMemo(() => generateLayer(14000, 140, 260), []);
-  const medium = useMemo(() => generateLayer(5000, 150, 240), []);
-  const large = useMemo(() => generateLayer(1800, 160, 220), []);
+  const small = useMemo(() => generateLayer(24000, 140, 260), []);
+  const medium = useMemo(() => generateLayer(9000, 150, 240), []);
+  const large = useMemo(() => generateLayer(3500, 160, 220), []);
   // Refs to update star colors each frame
   const smallRef = useRef<THREE.Points>(null);
   const mediumRef = useRef<THREE.Points>(null);
@@ -101,7 +101,7 @@ export const GalaxySky = () => {
       const phases = layer.blinkPhases as Float32Array;
       const speeds = layer.blinkSpeeds as Float32Array;
       for (let i = 0, j = 0; i < phases.length; i++, j += 3) {
-        const f = 0.72 + 0.28 * Math.sin(t * speeds[i] + phases[i]);
+        const f = 0.7 + 0.5 * Math.sin(t * speeds[i] + phases[i]);
         arr[j] = base[j] * f;
         arr[j + 1] = base[j + 1] * f;
         arr[j + 2] = base[j + 2] * f;
