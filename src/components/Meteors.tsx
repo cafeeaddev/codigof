@@ -34,9 +34,9 @@ export const Meteors = ({
 
     const grad = ctx.createLinearGradient(0, 0, c.width, 0);
     grad.addColorStop(0.0, 'rgba(255,255,255,0)');
-    grad.addColorStop(0.25, 'rgba(255,255,255,0.35)');
-    grad.addColorStop(0.55, 'rgba(255,255,255,0.9)');
-    grad.addColorStop(0.8, 'rgba(255,255,255,0.5)');
+    grad.addColorStop(0.18, 'rgba(255,255,255,0.5)');
+    grad.addColorStop(0.48, 'rgba(255,255,255,1.0)');
+    grad.addColorStop(0.78, 'rgba(255,255,255,0.7)');
     grad.addColorStop(1.0, 'rgba(255,255,255,0)');
 
     ctx.fillStyle = grad;
@@ -63,6 +63,7 @@ export const Meteors = ({
       depthWrite: false,
       side: THREE.DoubleSide,
       toneMapped: false,
+      fog: false,
       color: new THREE.Color(1, 1, 1),
     });
     return m;

@@ -34,7 +34,14 @@ export const VaporwaveScene = ({ cameraPosition, cameraFov }: VaporwaveSceneProp
         {/* Galaxy background + horizon stars */}
         <GalaxySky />
         <CustomStars />
-        <Meteors />
+        <Meteors
+          count={250}
+          spawnRate={6}
+          area={{ x: [-140, 140], y: [15, 90], z: [-150, -70] }}
+          speedRange={[12, 28]}
+          lengthRange={[6, 14]}
+          thickness={0.18}
+        />
         
         <ambientLight intensity={0.4} color="#ffffff" />
         
