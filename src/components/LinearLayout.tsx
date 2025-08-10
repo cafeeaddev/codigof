@@ -7,7 +7,8 @@ import { Footer } from './Footer';
 import { Navigation } from './Navigation';
 import { SectionContainer } from './SectionContainer';
 import { ScrollProgress } from './ScrollProgress';
-import { ChevronDown, MessageCircle } from 'lucide-react';
+import { FeatureFold } from './FeatureFold';
+import { ChevronDown, MessageCircle, Target, Trophy, Medal } from 'lucide-react';
 import { useInternalScroll } from '@/hooks/useInternalScroll';
 import { LoginScreen } from './LoginScreen';
 import { WelcomeScreen } from './WelcomeScreen';
@@ -73,7 +74,7 @@ export const LinearLayout = () => {
   useEffect(() => {
     if (gameProgressEnabled && user && currentSection !== undefined) {
       console.log('[LinearLayout] Updating position for section:', currentSection, 'user:', user.id);
-      const sectionNames = ['hero', 'features', 'footer'];
+      const sectionNames = ['hero', 'features', 'missions', 'xp-levels', 'medals', 'footer'];
       const sectionName = sectionNames[currentSection] || 'hero';
       updatePosition(sectionName);
     }
@@ -204,10 +205,61 @@ export const LinearLayout = () => {
             />
           </SectionContainer>
 
+          {/* Missions Fold */}
+          <SectionContainer
+            sectionId="missions"
+            sectionIndex={2}
+            registerSection={registerSection}
+            unregisterSection={unregisterSection}
+            className="scroll-snap-start bg-transparent"
+          >
+            <FeatureFold
+              id="missions"
+              title="4 MISSÕES"
+              subtitle="Desafios interativos"
+              colorClass="bg-neon-cyan"
+              Icon={Target}
+            />
+          </SectionContainer>
+
+          {/* XP & Levels Fold */}
+          <SectionContainer
+            sectionId="xp-levels"
+            sectionIndex={3}
+            registerSection={registerSection}
+            unregisterSection={unregisterSection}
+            className="scroll-snap-start bg-transparent"
+          >
+            <FeatureFold
+              id="xp-levels"
+              title="XP & LEVELS"
+              subtitle="Pontuação e progresso"
+              colorClass="bg-neon-purple"
+              Icon={Trophy}
+            />
+          </SectionContainer>
+
+          {/* Medals Fold */}
+          <SectionContainer
+            sectionId="medals"
+            sectionIndex={4}
+            registerSection={registerSection}
+            unregisterSection={unregisterSection}
+            className="scroll-snap-start bg-transparent"
+          >
+            <FeatureFold
+              id="medals"
+              title="MEDALHAS"
+              subtitle="Perfis de habilidade"
+              colorClass="bg-neon-pink"
+              Icon={Medal}
+            />
+          </SectionContainer>
+
           {/* Footer Section */}
           <SectionContainer
             sectionId="footer"
-            sectionIndex={2}
+            sectionIndex={5}
             registerSection={registerSection}
             unregisterSection={unregisterSection}
             className="scroll-snap-start bg-transparent"
