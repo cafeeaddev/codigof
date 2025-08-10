@@ -196,7 +196,7 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
           >
             <primitive attach="geometry" object={wireframeGeometry} />
             <lineBasicMaterial
-              color="#00ffff"
+              color="hsl(180, 100%, 50%)"
               transparent={true}
               depthTest={true}
               depthWrite={false}
@@ -233,7 +233,7 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
             >
               <primitive attach="geometry" object={wireframeGeometry} />
               <lineBasicMaterial
-                color="#00ffff"
+                color="hsl(180, 100%, 50%)"
                 transparent={true}
                 depthTest={true}
                 depthWrite={false}
@@ -271,7 +271,7 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
             >
               <primitive attach="geometry" object={wireframeGeometry} />
               <lineBasicMaterial
-                color="#00ffff"
+                color="hsl(180, 100%, 50%)"
                 transparent={true}
                 depthTest={true}
                 depthWrite={false}
