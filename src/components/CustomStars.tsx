@@ -111,7 +111,7 @@ export const CustomStars = () => {
         map={starTexture}
         blending={THREE.AdditiveBlending}
         toneMapped={false}
-        depthTest={false}
+        depthTest={true}
         depthWrite={false}
       />
     </points>

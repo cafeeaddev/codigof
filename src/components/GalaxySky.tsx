@@ -108,7 +108,7 @@ export const GalaxySky = () => {
           map={starTexture}
           blending={THREE.AdditiveBlending}
           toneMapped={false}
-          depthTest={false}
+           depthTest={true}
           depthWrite={false}
         />
       </points>
@@ -140,7 +140,7 @@ export const GalaxySky = () => {
           map={starTexture}
           blending={THREE.AdditiveBlending}
           toneMapped={false}
-          depthTest={false}
+           depthTest={true}
           depthWrite={false}
         />
       </points>
@@ -172,7 +172,7 @@ export const GalaxySky = () => {
           map={starTexture}
           blending={THREE.AdditiveBlending}
           toneMapped={false}
-          depthTest={false}
+          depthTest={true}
           depthWrite={false}
         />
       </points>
