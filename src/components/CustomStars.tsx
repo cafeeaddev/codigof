@@ -52,8 +52,8 @@ export const CustomStars = () => {
     for (let i = 0; i < starCount; i++) {
       // Concentrate stars near the horizon line of the terrain
       const x = (Math.random() - 0.5) * 240; // Wider lateral spread (-120 .. 120)
-      const z = -110 + (Math.random() - 0.5) * 60; // Horizon band (-140 .. -80)
-      const y = 10 + Math.random() * 18; // Always well above mountains
+      const z = -140 + Math.random() * 30;   // Tight horizon band (-140 .. -110)
+      const y = 15 + Math.random() * 20;     // Higher above mountains (15 .. 35)
 
       positions[index] = x;
       positions[index + 1] = y;
@@ -101,17 +101,17 @@ export const CustomStars = () => {
         />
       </bufferGeometry>
       <pointsMaterial
-        size={1.8}
+        size={2.4}
         sizeAttenuation={false}
         vertexColors={true}
         fog={false}
         transparent={true}
-        opacity={0.9}
+        opacity={1}
         alphaTest={0.001}
         map={starTexture}
         blending={THREE.AdditiveBlending}
         toneMapped={false}
-        depthTest={true}
+        depthTest={false}
         depthWrite={false}
       />
     </points>
