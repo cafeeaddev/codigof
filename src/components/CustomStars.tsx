@@ -39,25 +39,25 @@ export const CustomStars = () => {
       positions[index + 1] = y;
       positions[index + 2] = z;
       
-      // Cores mais brilhantes e variadas
-      const brightness = 0.8 + Math.random() * 0.2; // Aumentando brilho base
+      // Cores muito mais brilhantes para melhor visibilidade
+      const brightness = 1.0; // Brilho máximo
       const colorVariation = Math.random();
       
-      if (colorVariation < 0.7) {
-        // Maioria das estrelas brancas/amareladas
-        colors[index] = brightness;     // R
-        colors[index + 1] = brightness; // G  
-        colors[index + 2] = brightness * 0.9; // B ligeiramente menos azul
-      } else if (colorVariation < 0.85) {
-        // Algumas estrelas azuladas
-        colors[index] = brightness * 0.8;     // R
-        colors[index + 1] = brightness * 0.9; // G  
-        colors[index + 2] = brightness;       // B
+      if (colorVariation < 0.6) {
+        // Estrelas brancas muito brilhantes
+        colors[index] = 1.0;     // R
+        colors[index + 1] = 1.0; // G  
+        colors[index + 2] = 1.0; // B
+      } else if (colorVariation < 0.8) {
+        // Estrelas amarelo-brancas brilhantes
+        colors[index] = 1.0;     // R
+        colors[index + 1] = 1.0; // G  
+        colors[index + 2] = 0.8; // B
       } else {
-        // Algumas estrelas amareladas/alaranjadas
-        colors[index] = brightness;           // R
-        colors[index + 1] = brightness * 0.9; // G  
-        colors[index + 2] = brightness * 0.7; // B
+        // Estrelas azul-brancas brilhantes
+        colors[index] = 0.9;     // R
+        colors[index + 1] = 0.95; // G  
+        colors[index + 2] = 1.0; // B
       }
       
       index += 3;

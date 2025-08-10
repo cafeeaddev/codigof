@@ -26,14 +26,14 @@ export const VaporwaveScene = ({ cameraPosition, cameraFov }: VaporwaveSceneProp
           scene.fog = new THREE.Fog(0x0a0a0a, 25, 120);
         }}
       >
-        {/* Background gradient and stars */}
+        {/* Background gradient */}
         <VaporwaveBackground />
         
-        {/* Custom stars positioned only in the sky */}
+        {/* Custom stars positioned only in the sky - renderizar depois do background */}
         <CustomStars />
         
         {/* Darker ambient lighting for dramatic effect */}
-        <ambientLight intensity={0.2} color="#ffffff" />
+        <ambientLight intensity={0.4} color="#ffffff" />
         
         {/* Main directional light */}
         <directionalLight
