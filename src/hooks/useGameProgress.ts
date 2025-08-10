@@ -10,6 +10,10 @@ interface GameProgress {
   lastSavedAt: Date;
 }
 
+const MAX_SESSION_TIME = 8 * 60 * 60; // 8 hours in seconds
+const INACTIVITY_TIMEOUT = 5 * 60 * 1000; // 5 minutes in milliseconds
+const AUTO_SAVE_INTERVAL = 60 * 1000; // 1 minute in milliseconds
+
 export const useGameProgress = () => {
   const { user } = useAuth();
   const [progress, setProgress] = useState<GameProgress>({
@@ -24,6 +28,53 @@ export const useGameProgress = () => {
   const sessionStartRef = useRef<Date>(new Date());
   const autoSaveIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const lastSaveTimeRef = useRef<number>(Date.now());
+  const lastActivityRef = useRef<number>(Date.now());
+  const isActiveRef = useRef<boolean>(true);
+  const hasUnsavedChangesRef = useRef<boolean>(false);
+
+  // Track user activity
+  const updateActivity = useCallback(() => {
+    lastActivityRef.current = Date.now();
+    if (!isActiveRef.current) {
+      isActiveRef.current = true;
+      sessionStartRef.current = new Date(); // Reset session start when becoming active again
+      console.log('[useGameProgress] User became active, resetting session timer');
+    }
+  }, []);
+
+  // Check if user is inactive
+  const checkInactivity = useCallback(() => {
+    const now = Date.now();
+    const timeSinceLastActivity = now - lastActivityRef.current;
+    
+    if (timeSinceLastActivity > INACTIVITY_TIMEOUT && isActiveRef.current) {
+      isActiveRef.current = false;
+      console.log('[useGameProgress] User became inactive');
+      // Save progress when becoming inactive
+      if (hasUnsavedChangesRef.current) {
+        saveProgress(undefined, true);
+      }
+    }
+  }, []);
+
+  // Setup activity listeners
+  useEffect(() => {
+    const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'];
+    
+    events.forEach(event => {
+      document.addEventListener(event, updateActivity, true);
+    });
+
+    // Check inactivity every minute
+    const inactivityInterval = setInterval(checkInactivity, 60000);
+
+    return () => {
+      events.forEach(event => {
+        document.removeEventListener(event, updateActivity, true);
+      });
+      clearInterval(inactivityInterval);
+    };
+  }, [updateActivity, checkInactivity]);
 
   // Load progress when user logs in
   const loadProgress = useCallback(async () => {
@@ -46,12 +97,17 @@ export const useGameProgress = () => {
       }
 
       if (data) {
+        // Validate and sanitize loaded data
+        const sanitizedPlayTime = Math.max(0, Math.min(data.total_play_time || 0, MAX_SESSION_TIME * 100)); // Max 100 sessions worth
+        
         setProgress({
           currentPosition: data.current_position || 'inicio',
-          totalPlayTime: data.total_play_time || 0,
+          totalPlayTime: sanitizedPlayTime,
           sessionStartTime: new Date(data.session_start_time || Date.now()),
           lastSavedAt: new Date(data.last_saved_at || Date.now()),
         });
+        
+        console.log('[useGameProgress] Loaded progress with total time:', sanitizedPlayTime, 'seconds');
       } else {
         // Create initial progress record
         await createInitialProgress();
@@ -80,6 +136,8 @@ export const useGameProgress = () => {
 
       if (error) {
         console.error('Error creating initial progress:', error);
+      } else {
+        console.log('[useGameProgress] Created initial progress record');
       }
     } catch (error) {
       console.error('Error creating initial progress:', error);
@@ -94,21 +152,37 @@ export const useGameProgress = () => {
     }
 
     const now = Date.now();
-    const sessionTime = Math.floor((now - sessionStartRef.current.getTime()) / 1000);
+    
+    // Only calculate session time if user is active
+    let sessionTime = 0;
+    if (isActiveRef.current) {
+      sessionTime = Math.floor((now - sessionStartRef.current.getTime()) / 1000);
+      // Cap session time to prevent absurd values
+      sessionTime = Math.min(sessionTime, MAX_SESSION_TIME);
+    }
+    
     const currentPosition = position || progress.currentPosition;
 
-    // Throttle saves to avoid too frequent database updates (max every 10 seconds)
-    if (!forceUpdate && now - lastSaveTimeRef.current < 10000) {
-      console.log('[useGameProgress] Save throttled');
+    // Throttle saves to avoid too frequent database updates (max every 30 seconds unless forced)
+    if (!forceUpdate && !hasUnsavedChangesRef.current && now - lastSaveTimeRef.current < 30000) {
+      console.log('[useGameProgress] Save throttled - no changes or too recent');
       return;
     }
 
-    console.log('[useGameProgress] Saving progress for user:', user.id, 'position:', currentPosition);
+    // Skip save if no meaningful session time and no position change
+    if (!forceUpdate && sessionTime < 1 && !position) {
+      console.log('[useGameProgress] Save skipped - no meaningful activity');
+      return;
+    }
+
+    console.log('[useGameProgress] Saving progress for user:', user.id, 'position:', currentPosition, 'session time:', sessionTime, 'seconds');
 
     try {
+      const newTotalTime = progress.totalPlayTime + sessionTime;
+      
       const updateData = {
         current_position: currentPosition,
-        total_play_time: progress.totalPlayTime + sessionTime,
+        total_play_time: newTotalTime,
         session_start_time: sessionStartRef.current.toISOString(),
         last_saved_at: new Date().toISOString(),
       };
@@ -124,17 +198,19 @@ export const useGameProgress = () => {
       }
 
       lastSaveTimeRef.current = now;
+      hasUnsavedChangesRef.current = false;
       
       // Update local state
       setProgress(prev => ({
         ...prev,
         currentPosition,
-        totalPlayTime: prev.totalPlayTime + sessionTime,
+        totalPlayTime: newTotalTime,
         lastSavedAt: new Date(),
       }));
 
-      // Reset session start time
+      // Reset session start time only after successful save
       sessionStartRef.current = new Date();
+      console.log('[useGameProgress] Progress saved successfully. New total time:', newTotalTime, 'seconds');
 
     } catch (error) {
       console.error('Error saving progress:', error);
@@ -144,16 +220,20 @@ export const useGameProgress = () => {
   // Update current position
   const updatePosition = useCallback((position: string) => {
     setProgress(prev => ({ ...prev, currentPosition: position }));
+    hasUnsavedChangesRef.current = true;
+    updateActivity(); // Mark user as active when changing position
     saveProgress(position);
-  }, [saveProgress]);
+  }, [saveProgress, updateActivity]);
 
-  // Auto-save every 30 seconds
+  // Auto-save with reduced frequency
   useEffect(() => {
     if (!user?.id) return;
 
     autoSaveIntervalRef.current = setInterval(() => {
-      saveProgress();
-    }, 30000); // Auto-save every 30 seconds
+      if (hasUnsavedChangesRef.current || isActiveRef.current) {
+        saveProgress();
+      }
+    }, AUTO_SAVE_INTERVAL);
 
     return () => {
       if (autoSaveIntervalRef.current) {
@@ -162,29 +242,22 @@ export const useGameProgress = () => {
     };
   }, [user?.id, saveProgress]);
 
-  // Save on page unload
+  // Save on page unload and visibility change
   useEffect(() => {
     const handleBeforeUnload = () => {
-      if (user?.id) {
-        // Use sendBeacon for reliable saving on page unload
-        const now = Date.now();
-        const sessionTime = Math.floor((now - sessionStartRef.current.getTime()) / 1000);
-        
-        const updateData = {
-          current_position: progress.currentPosition,
-          total_play_time: progress.totalPlayTime + sessionTime,
-          session_start_time: sessionStartRef.current.toISOString(),
-          last_saved_at: new Date().toISOString(),
-        };
-
-        // Use synchronous save for page unload (simplified approach)
+      if (user?.id && (hasUnsavedChangesRef.current || isActiveRef.current)) {
         saveProgress(undefined, true);
       }
     };
 
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'hidden') {
-        saveProgress(undefined, true);
+        if (user?.id && (hasUnsavedChangesRef.current || isActiveRef.current)) {
+          saveProgress(undefined, true);
+        }
+        isActiveRef.current = false;
+      } else if (document.visibilityState === 'visible') {
+        updateActivity();
       }
     };
 
@@ -195,13 +268,15 @@ export const useGameProgress = () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
-  }, [user?.id, progress.currentPosition, progress.totalPlayTime, saveProgress]);
+  }, [user?.id, saveProgress, updateActivity]);
 
   // Load progress on mount
   useEffect(() => {
     if (user?.id) {
       loadProgress();
       sessionStartRef.current = new Date();
+      lastActivityRef.current = Date.now();
+      isActiveRef.current = true;
     }
   }, [user?.id, loadProgress]);
 
@@ -212,7 +287,7 @@ export const useGameProgress = () => {
     const remainingSeconds = seconds % 60;
 
     if (hours > 0) {
-      return `${hours}h ${minutes}m ${remainingSeconds}s`;
+      return `${hours}h ${minutes}m`;
     } else if (minutes > 0) {
       return `${minutes}m ${remainingSeconds}s`;
     } else {
@@ -223,7 +298,10 @@ export const useGameProgress = () => {
   return {
     progress,
     updatePosition,
-    saveProgress: () => saveProgress(undefined, true),
+    saveProgress: () => {
+      hasUnsavedChangesRef.current = true;
+      saveProgress(undefined, true);
+    },
     formatPlayTime,
     totalPlayTime: progress.totalPlayTime,
     currentPosition: progress.currentPosition,
