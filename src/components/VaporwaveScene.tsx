@@ -79,11 +79,6 @@ export const VaporwaveScene = ({ cameraPosition, cameraFov }: VaporwaveSceneProp
           decay={2}
         />
         
-        {/* Terrain background plane to prevent stars from showing through */}
-        <mesh position={[0, -0.5, -15]} rotation={[-Math.PI / 2, 0, 0]}>
-          <planeGeometry args={[200, 200]} />
-          <meshBasicMaterial color="#0a0a0a" transparent opacity={0.95} />
-        </mesh>
         
         {/* Main terrain */}
         <VaporwaveTerrain cameraPosition={cameraPosition} />

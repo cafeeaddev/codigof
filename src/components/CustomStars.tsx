@@ -54,9 +54,9 @@ export const CustomStars = () => {
       // Calculate terrain height at this x,z position
       const terrainHeight = calculateHeightAtPoint(x, z);
       
-      // Colocar estrelas mais próximas e visíveis
-      const minSkyHeight = Math.max(terrainHeight + 1.5, 1.5); 
-      const maxSkyHeight = 25; // Altura mais baixa para ficarem visíveis
+      // Colocar estrelas bem acima do terreno para evitar vazamento
+      const minSkyHeight = Math.max(terrainHeight + 4, 4); // Margem maior
+      const maxSkyHeight = 30; // Altura um pouco maior
       const y = minSkyHeight + Math.random() * (maxSkyHeight - minSkyHeight);
       
       positions[index] = x;
