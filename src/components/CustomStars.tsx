@@ -15,7 +15,7 @@ export const CustomStars = () => {
 
   // Generate star positions only in the sky area
   const { positions, colors } = useMemo(() => {
-    const starCount = 3000; // More stars for better coverage
+    const starCount = 4000; // Aumentando número de estrelas
     const positions = new Float32Array(starCount * 3);
     const colors = new Float32Array(starCount * 3);
     
@@ -38,11 +38,26 @@ export const CustomStars = () => {
       positions[index + 1] = y;
       positions[index + 2] = z;
       
-      // White color with slight variation
-      const brightness = 0.7 + Math.random() * 0.3;
-      colors[index] = brightness;     // R
-      colors[index + 1] = brightness; // G  
-      colors[index + 2] = brightness; // B
+      // Cores mais brilhantes e variadas
+      const brightness = 0.8 + Math.random() * 0.2; // Aumentando brilho base
+      const colorVariation = Math.random();
+      
+      if (colorVariation < 0.7) {
+        // Maioria das estrelas brancas/amareladas
+        colors[index] = brightness;     // R
+        colors[index + 1] = brightness; // G  
+        colors[index + 2] = brightness * 0.9; // B ligeiramente menos azul
+      } else if (colorVariation < 0.85) {
+        // Algumas estrelas azuladas
+        colors[index] = brightness * 0.8;     // R
+        colors[index + 1] = brightness * 0.9; // G  
+        colors[index + 2] = brightness;       // B
+      } else {
+        // Algumas estrelas amareladas/alaranjadas
+        colors[index] = brightness;           // R
+        colors[index + 1] = brightness * 0.9; // G  
+        colors[index + 2] = brightness * 0.7; // B
+      }
       
       index += 3;
     }
@@ -74,12 +89,13 @@ export const CustomStars = () => {
         />
       </bufferGeometry>
       <pointsMaterial
-        size={0.04}
+        size={0.08}           // Aumentando tamanho das estrelas
         sizeAttenuation={true}
         vertexColors={true}
         transparent={true}
-        opacity={0.9}
+        opacity={1.0}         // Opacidade máxima
         alphaTest={0.001}
+        blending={THREE.AdditiveBlending} // Adicionando brilho
       />
     </points>
   );
