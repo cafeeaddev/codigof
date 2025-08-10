@@ -62,6 +62,7 @@ export const LinearLayout = () => {
     currentSection,
     totalSections,
     scrollToSection,
+    nextSection,
     registerSection,
     unregisterSection
   } = useInternalScroll();
@@ -172,7 +173,7 @@ export const LinearLayout = () => {
             unregisterSection={unregisterSection}
             className="scroll-snap-start bg-transparent"
           >
-            <HeroSection onLoginClick={() => setShowLogin(true)} />
+            <HeroSection onLoginClick={() => setShowLogin(true)} onContinueClick={nextSection} />
           </SectionContainer>
 
           {/* Feature Section */}

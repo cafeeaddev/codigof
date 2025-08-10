@@ -5,9 +5,10 @@ import { useScrollReveal } from '@/hooks/useScrollReveal';
 
 interface HeroSectionProps {
   onLoginClick?: () => void;
+  onContinueClick?: () => void;
 }
 
-export const HeroSection = ({ onLoginClick }: HeroSectionProps) => {
+export const HeroSection = ({ onLoginClick, onContinueClick }: HeroSectionProps) => {
   // Scroll reveal for hero elements
   const titleReveal = useScrollReveal({ 
     direction: 'up', 
@@ -58,7 +59,7 @@ export const HeroSection = ({ onLoginClick }: HeroSectionProps) => {
         </div>
 
         {/* Scroll indicator - CONTINUE */}
-        <div className="absolute bottom-4 sm:bottom-6 lg:bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center text-white/60 hover:text-white/80 transition-colors duration-300 cursor-pointer">
+        <div onClick={() => onContinueClick?.()} className="absolute bottom-4 sm:bottom-6 lg:bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center text-white/60 hover:text-white/80 transition-colors duration-300 cursor-pointer">
           <span className="text-xs sm:text-sm font-medium tracking-wider mb-1 sm:mb-2">CONTINUE</span>
           <ChevronDown className="w-5 h-5 sm:w-6 sm:h-6 animate-bounce" />
         </div>
