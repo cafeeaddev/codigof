@@ -237,7 +237,7 @@ const AdminDashboard = () => {
         general: {
           total: totalNonAdminProfiles,
           completed: gameCompleted,
-          percentage: totalNonAdminProfiles > 0 ? Math.round((gameCompleted / totalNonAdminProfiles) * 100) : 0
+          percentage: totalNonAdminProfiles > 0 ? parseFloat(((gameCompleted / totalNonAdminProfiles) * 100).toFixed(2)) : 0
         }
       });
       
