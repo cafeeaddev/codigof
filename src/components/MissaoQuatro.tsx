@@ -198,6 +198,17 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
           }
         });
 
+      // Update user progress to mark mission 4 as completed and add XP
+      await supabase
+        .from('user_progress')
+        .upsert({
+          user_id: user.id,
+          missao_4_completed: true,
+          total_xp: 25 // Add 25 XP for completing mission 4
+        }, {
+          onConflict: 'user_id'
+        });
+
       toast({
         title: "Missão 4 concluída! +25 XP",
         description: `Você obteve ${totalScore.toFixed(1)} pontos em Ferramentas Digitais.`,
