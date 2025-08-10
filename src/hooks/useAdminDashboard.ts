@@ -10,6 +10,7 @@ export const useAdminDashboard = () => {
   const [responses4, setResponses4] = useState<ResponseData[]>([]);
   const [progressData, setProgressData] = useState<{ data: UserProgress[], userProfiles: Map<string, UserProfile>, userProfilesByEmail: Map<string, UserProfile> } | null>(null);
   const [adminUsers, setAdminUsers] = useState<{ data: any[] } | null>(null);
+  const [totalProfiles, setTotalProfiles] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
 
   // Função para calcular pontuação total de um usuário (apenas missões 1, 2 e 3)
@@ -87,8 +88,8 @@ export const useAdminDashboard = () => {
     const adminUserIds = new Set(adminUsers.data.map(admin => admin.user_id));
     const nonAdminUsers = progressData.data.filter(p => !adminUserIds.has(p.user_id));
     
-    // Total de colaboradores da empresa (850) - excluindo admins
-    const totalCollaborators = 850 - adminUserIds.size;
+    // Total de colaboradores da empresa (busca dinâmica) - excluindo admins
+    const totalCollaborators = totalProfiles - adminUserIds.size;
     
     const mission1Completed = nonAdminUsers.filter(p => p.missao_1_completed === true).length;
     const mission2Completed = nonAdminUsers.filter(p => p.missao_2_completed === true).length;
@@ -114,24 +115,24 @@ export const useAdminDashboard = () => {
     return {
       missionStats: {
         mission1: {
-          total: totalCollaborators, // Base nos 850 colaboradores
+          total: totalCollaborators,
           completed: mission1Completed,
-          percentage: totalCollaborators > 0 ? Math.round((mission1Completed / totalCollaborators) * 100) : 0
+          percentage: totalCollaborators > 0 ? (mission1Completed > 0 ? Math.max(0.1, parseFloat(((mission1Completed / totalCollaborators) * 100).toFixed(1))) : 0) : 0
         },
         mission2: {
           total: totalCollaborators,
           completed: mission2Completed,
-          percentage: totalCollaborators > 0 ? Math.round((mission2Completed / totalCollaborators) * 100) : 0
+          percentage: totalCollaborators > 0 ? (mission2Completed > 0 ? Math.max(0.1, parseFloat(((mission2Completed / totalCollaborators) * 100).toFixed(1))) : 0) : 0
         },
         mission3: {
           total: totalCollaborators,
           completed: mission3Completed,
-          percentage: totalCollaborators > 0 ? Math.round((mission3Completed / totalCollaborators) * 100) : 0
+          percentage: totalCollaborators > 0 ? (mission3Completed > 0 ? Math.max(0.1, parseFloat(((mission3Completed / totalCollaborators) * 100).toFixed(1))) : 0) : 0
         },
         mission4: {
           total: totalCollaborators,
           completed: mission4Completed,
-          percentage: totalCollaborators > 0 ? Math.round((mission4Completed / totalCollaborators) * 100) : 0
+          percentage: totalCollaborators > 0 ? (mission4Completed > 0 ? Math.max(0.1, parseFloat(((mission4Completed / totalCollaborators) * 100).toFixed(1))) : 0) : 0
         },
         general: {
           total: totalCollaborators,
@@ -140,7 +141,7 @@ export const useAdminDashboard = () => {
         }
       },
       adminStats: {
-        totalUsers: totalCollaborators, // 850 colaboradores (menos admins)
+        totalUsers: totalCollaborators, // Total de colaboradores (menos admins)
         usersStarted: nonAdminUsers.length, // Quantos começaram de fato
         usersCompleted: gameCompleted, // Quantos finalizaram
         completionRate: totalCollaborators > 0 ? parseFloat(((gameCompleted / totalCollaborators) * 100).toFixed(2)) : 0, // Taxa baseada no total
@@ -149,13 +150,13 @@ export const useAdminDashboard = () => {
         profileDistribution: profileCounts
       }
     };
-  }, [progressData, adminUsers, calculateUserTotalScore]);
+  }, [progressData, adminUsers, totalProfiles, calculateUserTotalScore]);
 
   const loadAllResponses = async () => {
     try {
       setIsLoading(true);
       
-      const [res1, res2, res3, res4, progressData, profilesData, adminUsers, allProfiles] = await Promise.all([
+      const [res1, res2, res3, res4, progressData, profilesCount, adminUsers, allProfiles] = await Promise.all([
         supabase.from('respostas').select('*').order('id', { ascending: false }),
         supabase.from('respostas_missao2').select('*').order('created_at', { ascending: false }),
         supabase.from('respostas_missao3').select('*').order('created_at', { ascending: false }),
@@ -165,6 +166,9 @@ export const useAdminDashboard = () => {
         supabase.from('user_roles').select('user_id').eq('role', 'admin'),
         supabase.from('profiles').select('user_id, nome, email, cargo, area')
       ]);
+
+      // Define o total de profiles
+      setTotalProfiles(profilesCount.count || 0);
 
       if (res1.error) console.error('Error loading mission 1:', res1.error);
       if (res2.error) console.error('Error loading mission 2:', res2.error);
