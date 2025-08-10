@@ -536,6 +536,11 @@ const AdminDashboard = () => {
                           };
                           const userCargo = formatCargo(userProfile?.cargo);
                           
+                          // Debug logs
+                          console.log('User Profile:', userProfile);
+                          console.log('User Cargo raw:', userProfile?.cargo);
+                          console.log('User Cargo formatted:', userCargo);
+                          
                           return (
                             <TableRow key={progress.user_id}>
                               <TableCell className="font-medium">
@@ -544,6 +549,8 @@ const AdminDashboard = () => {
                                   {userCargo && (
                                     <span className="text-xs text-muted-foreground">{userCargo}</span>
                                   )}
+                                  {/* Debug: sempre mostrar algo */}
+                                  <span className="text-xs text-red-500">Cargo debug: "{userProfile?.cargo || 'sem cargo'}"</span>
                                 </div>
                               </TableCell>
                               <TableCell>{new Date(progress.created_at).toLocaleDateString('pt-BR')}</TableCell>
