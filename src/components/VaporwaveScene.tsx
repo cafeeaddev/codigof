@@ -37,7 +37,7 @@ export const VaporwaveScene = ({ cameraPosition, cameraFov }: VaporwaveSceneProp
         <Meteors
           count={250}
           spawnRate={6}
-          area={{ x: [-140, 140], y: [15, 90], z: [-150, -70] }}
+          area={{ x: [-140, 140], y: [15, 90], z: [20, 140] }}
           speedRange={[12, 28]}
           lengthRange={[6, 14]}
           thickness={0.18}
