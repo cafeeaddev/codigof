@@ -3,6 +3,7 @@ import { VaporwaveTerrain } from './VaporwaveTerrain';
 
 import { CustomStars } from './CustomStars';
 import { GalaxySky } from './GalaxySky';
+import { Meteors } from './Meteors';
 import * as THREE from 'three';
 
 interface VaporwaveSceneProps {
@@ -33,6 +34,7 @@ export const VaporwaveScene = ({ cameraPosition, cameraFov }: VaporwaveSceneProp
         {/* Galaxy background + horizon stars */}
         <GalaxySky />
         <CustomStars />
+        <Meteors />
         
         <ambientLight intensity={0.4} color="#ffffff" />
         
