@@ -171,11 +171,13 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
           >
             <meshStandardMaterial
               ref={index === 0 ? backgroundMaterialRef : undefined}
-              color="#0a1030"
-              emissive="#0030ff"
-              emissiveIntensity={1.1}
+              color="#1a0f2e"
+              emissive="#5a3cff"
+              emissiveIntensity={0.7}
               roughness={0.95}
               metalness={0.05}
+              map={backgroundTexture as unknown as THREE.Texture}
+              normalMap={normalTexture as unknown as THREE.Texture}
               transparent={false}
               opacity={1.0}
               side={THREE.FrontSide}
