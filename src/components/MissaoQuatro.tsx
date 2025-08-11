@@ -272,6 +272,25 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
         </CardHeader>
 
         <CardContent className="space-y-6">
+          <div className="sticky top-0 z-20 bg-card/90 backdrop-blur-sm border-b border-secondary/30 py-3 flex justify-between items-center">
+            <Button
+              variant="outline"
+              onClick={handlePrevious}
+              disabled={currentQuestion === 0}
+              className="w-24"
+            >
+              Anterior
+            </Button>
+            {isLastQuestion ? (
+              <Button onClick={handleSubmit} disabled={!currentAnswer || isSubmitting} className="w-32">
+                {isSubmitting ? "Enviando..." : "Finalizar"}
+              </Button>
+            ) : (
+              <Button onClick={handleNext} disabled={!currentAnswer} className="w-24">
+                Próxima
+              </Button>
+            )}
+          </div>
           <RadioGroup 
             value={currentAnswer || ""} 
             onValueChange={(value) => handleAnswer(currentQ.id, value)}
@@ -301,34 +320,6 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
             ))}
           </RadioGroup>
 
-          <div className="flex justify-between items-center pt-6 border-t border-secondary/30">
-            <Button
-              variant="outline"
-              onClick={handlePrevious}
-              disabled={currentQuestion === 0}
-              className="w-24"
-            >
-              Anterior
-            </Button>
-
-            {isLastQuestion ? (
-              <Button
-                onClick={handleSubmit}
-                disabled={!currentAnswer || isSubmitting}
-                className="w-32"
-              >
-                {isSubmitting ? "Enviando..." : "Finalizar"}
-              </Button>
-            ) : (
-              <Button
-                onClick={handleNext}
-                disabled={!currentAnswer}
-                className="w-24"
-              >
-                Próxima
-              </Button>
-            )}
-          </div>
         </CardContent>
       </Card>
       <MedalEarnedDialog open={showMedal} onOpenChange={handleMedalChange} missionLabel="Missão 4" xp={25} />

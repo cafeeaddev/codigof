@@ -300,6 +300,39 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
     <div className="h-full flex flex-col">
       <ScrollArea className="flex-1">
         <div className="p-2 pb-12">
+          <div className="sticky top-0 z-20 bg-card/80 backdrop-blur-sm border-b border-secondary/30 py-2 px-1 flex justify-between items-center">
+            <Button
+              onClick={goToPreviousQuestion}
+              disabled={currentQuestion === 0}
+              variant="outline"
+              size="sm"
+              className="border-secondary text-secondary hover:bg-secondary hover:text-secondary-foreground"
+            >
+              <ChevronLeft className="w-3 h-3 mr-1" />
+              Anterior
+            </Button>
+
+            {currentQuestion === quizQuestions.length - 1 ? (
+              <Button
+                onClick={submitQuiz}
+                disabled={!answers[currentQuestionData.id] || isSubmitting}
+                size="sm"
+                className="bg-primary hover:bg-primary/90"
+              >
+                {isSubmitting ? 'Enviando...' : 'Finalizar'}
+              </Button>
+            ) : (
+              <Button
+                onClick={goToNextQuestion}
+                disabled={!answers[currentQuestionData.id]}
+                size="sm"
+                className="bg-primary hover:bg-primary/90"
+              >
+                Próxima
+                <ChevronRight className="w-3 h-3 ml-1" />
+              </Button>
+            )}
+          </div>
 
           <div className="mb-5">
             <div className="flex justify-between items-center mb-1">
@@ -349,39 +382,6 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
         </div>
       </ScrollArea>
       
-      <div className="flex justify-between p-2 border-t border-secondary/30 bg-background">
-        <Button
-          onClick={goToPreviousQuestion}
-          disabled={currentQuestion === 0}
-          variant="outline"
-          size="sm"
-          className="border-secondary text-secondary hover:bg-secondary hover:text-secondary-foreground"
-        >
-          <ChevronLeft className="w-3 h-3 mr-1" />
-          Anterior
-        </Button>
-
-        {currentQuestion === quizQuestions.length - 1 ? (
-          <Button
-            onClick={submitQuiz}
-            disabled={!answers[currentQuestionData.id] || isSubmitting}
-            size="sm"
-            className="bg-primary hover:bg-primary/90"
-          >
-            {isSubmitting ? 'Enviando...' : 'Finalizar'}
-          </Button>
-        ) : (
-          <Button
-            onClick={goToNextQuestion}
-            disabled={!answers[currentQuestionData.id]}
-            size="sm"
-            className="bg-primary hover:bg-primary/90"
-          >
-            Próxima
-            <ChevronRight className="w-3 h-3 ml-1" />
-          </Button>
-        )}
-      </div>
 
       <MedalEarnedDialog open={showMedal} onOpenChange={handleMedalChange} missionLabel="Missão 1" xp={25} />
     </div>
