@@ -144,19 +144,6 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
 
   return (
     <>
-      {/* CSS global para esconder scrollbars */}
-      <style>{`
-        * {
-          scrollbar-width: none !important;
-          -ms-overflow-style: none !important;
-        }
-        *::-webkit-scrollbar {
-          display: none !important;
-        }
-        .welcome-screen * {
-          overflow: hidden !important;
-        }
-      `}</style>
       
       <div 
         className="fixed inset-0 bg-background z-[9999] welcome-screen" 
