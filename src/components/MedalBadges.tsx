@@ -36,7 +36,7 @@ export const MedalBadges: React.FC<MedalBadgesProps> = ({ completed, size = "md"
   const pad = size === "sm" ? "px-2 py-1" : "px-2.5 py-1.5";
 
   return (
-    <TooltipProvider>
+    <TooltipProvider delayDuration={100}>
       <div className={cn("flex items-center", gap, className)} aria-label="Insígnias de missões">
         {items.map((item) => (
           <Tooltip key={item.id}>
