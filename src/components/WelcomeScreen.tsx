@@ -209,7 +209,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                 className="pl-2 ml-2 border-l border-border/50"
               />
             </div>
-          
+          </div>
           
           {/* Botão Admin (só aparece para admins) */}
           {isAdmin && (
@@ -223,8 +223,6 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
               <span className="hidden md:inline">ADMIN</span>
             </Button>
           )}
-            </div>
-          </div>
           
           <Button
             onClick={handleLogout}
