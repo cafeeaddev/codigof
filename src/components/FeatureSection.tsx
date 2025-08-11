@@ -90,15 +90,13 @@ export const FeatureSection = ({
             {/* Glowing circle border */}
             <div className="w-64 h-64 lg:w-80 lg:h-80 rounded-full bg-gradient-to-r from-neon-pink via-neon-purple to-neon-cyan p-1 shadow-glow">
               <div className="w-full h-full rounded-full bg-background/90 backdrop-blur-xl overflow-hidden relative">
-                <video 
+                <img 
+                  src="/lovable-uploads/251cee5d-6967-4808-81dd-97bb3e4d9afe.png"
+                  alt="Anéis neon azuis brilhando dentro de um túnel circular"
                   className="w-full h-full object-cover rounded-full"
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                >
-                  <source src="https://meta.cafeeadhost.com.br/Cody/hero-animation.mp4" type="video/mp4" />
-                </video>
+                  loading="lazy"
+                  decoding="async"
+                />
                 {/* Additional glow effect */}
                 <div className="absolute inset-0 rounded-full bg-gradient-to-t from-transparent via-transparent to-neon-cyan/10"></div>
               </div>
