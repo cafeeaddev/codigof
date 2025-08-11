@@ -45,7 +45,7 @@ export const getDynamicNeonColor = (scrollProgress: number): string => {
   // Array of vibrant neon colors
   const neonColors = [
     '#2283D2', // Substitui Bright Cyan (#00FFFF)
-    '#34C5F0', // Substitui #70FFFF
+    '#35A587', // Substitui #70FFFF
     '#4739CC', // Substitui #7089FF
     '#9649FF', // Substitui Neon Green (#00FF7F)
     '#D92CFF', // Substitui #FF7BFF
