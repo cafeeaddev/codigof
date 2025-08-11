@@ -112,6 +112,63 @@ export const useInternalScroll = () => {
     };
   }, [nextSection, prevSection, isScrolling, sections.length, scrollToSection]);
 
+  // Track scroll position (including touch/gesture) to update currentSection on mobile and desktop
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    let rafId: number | null = null;
+
+    const computeCurrentSection = () => {
+      rafId = null;
+      if (!container) return;
+      if (sections.length === 0) return;
+
+      const scrollMiddle = container.scrollTop + container.clientHeight / 2;
+      let closestIndex = 0;
+      let closestDistance = Number.POSITIVE_INFINITY;
+
+      sections.forEach((s, idx) => {
+        const top = s.element.offsetTop;
+        const height = s.element.offsetHeight || container.clientHeight;
+        const middle = top + height / 2;
+        const distance = Math.abs(middle - scrollMiddle);
+        if (distance < closestDistance) {
+          closestDistance = distance;
+          closestIndex = idx;
+        }
+      });
+
+      if (closestIndex !== currentSection) {
+        setCurrentSection(closestIndex);
+        // Light debug log to help validate on mobile/desktop
+        console.log('[useInternalScroll] currentSection ->', closestIndex);
+      }
+    };
+
+    const onScroll = () => {
+      if (rafId === null) {
+        rafId = requestAnimationFrame(computeCurrentSection);
+      }
+    };
+
+    container.addEventListener('scroll', onScroll, { passive: true });
+
+    // Initial compute on mount and when sections change
+    computeCurrentSection();
+
+    const onResize = () => computeCurrentSection();
+    window.addEventListener('resize', onResize);
+
+    return () => {
+      container.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onResize);
+      if (rafId !== null) {
+        cancelAnimationFrame(rafId);
+      }
+    };
+  }, [sections, currentSection]);
+
   // Register sections
   const registerSection = useCallback((id: string, element: HTMLElement) => {
     setSections(prev => {

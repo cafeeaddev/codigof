@@ -166,7 +166,7 @@ export const LinearLayout = () => {
               aria-label="Abrir FAQ secreto"
               className="group flex items-center gap-3 bg-transparent hover:opacity-95 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
             >
-              <span className="text-sm font-medium text-foreground story-link">Posso te contar um segredo?</span>
+              <span className="text-sm font-medium text-foreground">Posso te contar um segredo?</span>
             </button>
           </SecretFAQDialog>
         </div>
