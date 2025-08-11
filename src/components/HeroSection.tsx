@@ -31,6 +31,12 @@ export const HeroSection = ({ onLoginClick, onContinueClick }: HeroSectionProps)
             style={titleReveal.style}
             className="mb-6 sm:mb-8 lg:mb-12"
           >
+            {/* CÓDIGO F - moved here and made larger */}
+            <div className="mb-4 sm:mb-6">
+              <span className="text-secondary text-2xl sm:text-3xl lg:text-4xl font-bold tracking-wide">CÓDIGO</span>{' '}
+              <span className="text-neon-pink text-2xl sm:text-3xl lg:text-4xl font-bold">F</span>
+            </div>
+            
             <p className="text-neon-pink text-xs sm:text-sm lg:text-base uppercase tracking-[0.15em] sm:tracking-[0.2em] font-medium mb-4 sm:mb-6 px-4 drop-shadow-[0_2px_10px_hsl(var(--background)_/_0.9)]">
               CAPÍTULO 01: TRANSFORMAÇÃO DIGITAL
             </p>
@@ -55,8 +61,8 @@ export const HeroSection = ({ onLoginClick, onContinueClick }: HeroSectionProps)
               {/* Content */}
               <div className="relative z-10">
                 <span className="text-white text-sm sm:text-base lg:text-lg font-medium">
-                  <span className="hidden sm:inline">Sistema de Diagnóstico Ativado</span>
-                  <span className="sm:hidden">Diagnóstico Ativado</span>
+                  <span className="hidden sm:inline">Sistema de Diagnóstico</span>
+                  <span className="sm:hidden">Diagnóstico</span>
                 </span>
               </div>
             </div>

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { VaporwaveScene } from './VaporwaveScene';
 import { HeroSection } from './HeroSection';
@@ -151,12 +150,6 @@ export const LinearLayout = () => {
         {/* Fixed Navigation */}
         <div className="fixed top-0 left-0 right-0 z-30">
           <Navigation />
-        </div>
-
-        {/* Top-left label: CÓDIGO F */}
-        <div className="fixed top-3 left-4 z-40 pointer-events-none">
-          <span className="text-secondary font-bold tracking-wide">CÓDIGO</span>{' '}
-          <span className="text-neon-pink font-bold">F</span>
         </div>
 
         {/* Top-right diagnostic status indicator - completely static */}
