@@ -25,6 +25,18 @@ export const ProfileChart = ({ adminStats }: ProfileChartProps) => {
       color: profileColors[profile as keyof typeof profileColors]
     }));
 
+  const RADIAN = Math.PI / 180;
+  const renderLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, value }: any) => {
+    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+    return (
+      <text x={x} y={y} fill="hsl(var(--background))" textAnchor="middle" dominantBaseline="central" fontSize={12} fontWeight={700}>
+        {value}
+      </text>
+    );
+  };
+
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
@@ -60,6 +72,8 @@ export const ProfileChart = ({ adminStats }: ProfileChartProps) => {
                 cx="50%"
                 cy="50%"
                 outerRadius={80}
+                label={renderLabel}
+                labelLine={false}
                 dataKey="value"
                 animationBegin={0}
                 animationDuration={1000}
