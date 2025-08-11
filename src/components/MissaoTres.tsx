@@ -89,6 +89,11 @@ export const MissaoTres = ({ onComplete }: MissaoTresProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showMedal, setShowMedal] = useState(false);
 
+  const handleMedalChange = (open: boolean) => {
+    setShowMedal(open);
+    if (!open) onComplete();
+  };
+
   const handleAnswerSelect = (questionId: number, optionLetter: string) => {
     setAnswers(prev => ({
       ...prev,
@@ -203,10 +208,6 @@ export const MissaoTres = ({ onComplete }: MissaoTresProps) => {
         description: "Parabéns! Suas respostas foram salvas.",
       });
 
-      // Automatically complete after a delay
-      setTimeout(() => {
-        onComplete();
-      }, 2000);
 
     } catch (error) {
       console.error('Error submitting mission 3 quiz:', error);
@@ -332,7 +333,7 @@ export const MissaoTres = ({ onComplete }: MissaoTresProps) => {
         )}
       </div>
 
-      <MedalEarnedDialog open={showMedal} onOpenChange={setShowMedal} missionLabel="Missão 3" xp={25} />
+      <MedalEarnedDialog open={showMedal} onOpenChange={handleMedalChange} missionLabel="Missão 3" xp={25} />
     </div>
   );
 };

@@ -133,6 +133,11 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showMedal, setShowMedal] = useState(false);
 
+  const handleMedalChange = (open: boolean) => {
+    setShowMedal(open);
+    if (!open) onComplete();
+  };
+
   const handleAnswer = (questionId: number, answer: string) => {
     setAnswers(prev => ({ ...prev, [questionId]: answer }));
   };
@@ -232,10 +237,6 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
         title: "Missão 4 concluída! +25 XP",
         description: `Você obteve ${totalScore.toFixed(1)} pontos em Ferramentas Digitais.`,
       });
-
-      setTimeout(() => {
-        onComplete();
-      }, 2000);
     } catch (error) {
       console.error('Error submitting quiz:', error);
       toast({
@@ -330,6 +331,7 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
           </div>
         </CardContent>
       </Card>
+      <MedalEarnedDialog open={showMedal} onOpenChange={handleMedalChange} missionLabel="Missão 4" xp={25} />
     </div>
   );
 };

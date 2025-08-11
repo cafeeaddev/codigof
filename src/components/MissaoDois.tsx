@@ -69,6 +69,11 @@ export const MissaoDois = ({ onComplete, userId }: MissaoDoisProps) => {
   const [isLoading, setIsLoading] = useState(true);
   const [showMedal, setShowMedal] = useState(false);
 
+  const handleMedalChange = (open: boolean) => {
+    setShowMedal(open);
+    if (!open) onComplete();
+  };
+
   // Carregar progresso salvo ao iniciar
   useEffect(() => {
     const loadProgress = async () => {
@@ -245,10 +250,6 @@ export const MissaoDois = ({ onComplete, userId }: MissaoDoisProps) => {
         description: "Parabéns! Suas respostas foram salvas.",
       });
 
-      // Automatically complete after a delay
-      setTimeout(() => {
-        onComplete();
-      }, 2000);
 
     } catch (error) {
       console.error('Error submitting mission 2 quiz:', error);
@@ -385,7 +386,7 @@ export const MissaoDois = ({ onComplete, userId }: MissaoDoisProps) => {
         )}
       </div>
 
-      <MedalEarnedDialog open={showMedal} onOpenChange={setShowMedal} missionLabel="Missão 2" xp={25} />
+      <MedalEarnedDialog open={showMedal} onOpenChange={handleMedalChange} missionLabel="Missão 2" xp={25} />
     </div>
   );
 };

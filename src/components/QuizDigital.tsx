@@ -81,6 +81,11 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
   const [isLoading, setIsLoading] = useState(true);
   const [showMedal, setShowMedal] = useState(false);
 
+  const handleMedalChange = (open: boolean) => {
+    setShowMedal(open);
+    if (!open) onClose();
+  };
+
   // Carregar progresso salvo ao iniciar
   useEffect(() => {
     const loadProgress = async () => {
@@ -263,10 +268,6 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
         description: "Passando para a Missão 2...",
       });
 
-      // Automatically progress to mission 2 after a delay
-      setTimeout(() => {
-        onClose(); // This will trigger showing mission 2
-      }, 2000);
 
     } catch (error) {
       console.error('Error submitting quiz:', error);
@@ -399,7 +400,7 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
         )}
       </div>
 
-      <MedalEarnedDialog open={showMedal} onOpenChange={setShowMedal} missionLabel="Missão 1" xp={25} />
+      <MedalEarnedDialog open={showMedal} onOpenChange={handleMedalChange} missionLabel="Missão 1" xp={25} />
     </div>
   );
 };
