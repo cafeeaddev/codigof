@@ -52,13 +52,6 @@ export const LoginScreen = () => {
   return (
     <div className="w-full">
       <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-4 sm:p-6 lg:p-8 shadow-neon">
-        {/* Terminal header */}
-        <div className="flex items-center gap-1 sm:gap-2 mb-6 sm:mb-8 p-2 sm:p-3 bg-muted/50 rounded-lg">
-          <div className="w-2 h-2 sm:w-3 sm:h-3 bg-neon-cyan rounded-full"></div>
-          <div className="w-2 h-2 sm:w-3 sm:h-3 bg-neon-pink rounded-full"></div>
-          <div className="w-2 h-2 sm:w-3 sm:h-3 bg-neon-yellow rounded-full"></div>
-          <span className="text-muted-foreground text-xs sm:text-sm ml-1 sm:ml-2 font-mono">NAVE_TERMINAL_v2.0</span>
-        </div>
 
         {/* Header */}
         <div className="text-center mb-6 sm:mb-8">

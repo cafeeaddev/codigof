@@ -64,13 +64,6 @@ export const Footer = () => {
     <footer className="relative py-16 px-4 sm:px-6 lg:px-8 pb-[env(safe-area-inset-bottom)]">
       <div className="max-w-md mx-auto">
         <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-8 shadow-neon">
-          {/* Terminal header */}
-          <div className="flex items-center gap-2 mb-6 p-3 bg-muted/50 rounded-t-lg">
-            <div className="w-3 h-3 bg-neon-cyan rounded-full"></div>
-            <div className="w-3 h-3 bg-neon-pink rounded-full"></div>
-            <div className="w-3 h-3 bg-neon-yellow rounded-full"></div>
-            <span className="text-muted-foreground text-sm ml-2 font-mono">NAVE_TERMINAL_v2.0</span>
-          </div>
 
           {/* Wifi icon and title */}
           <div className="text-center mb-6">
