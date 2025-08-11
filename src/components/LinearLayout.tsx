@@ -165,10 +165,9 @@ export const LinearLayout = () => {
               <button
                 type="button"
                 aria-label="Abrir FAQ secreto"
-                className="pointer-events-auto group inline-flex items-center gap-2 rounded-full border border-border bg-background/80 text-foreground shadow-md px-4 py-2 hover:bg-background transition-colors"
+                className="pointer-events-auto bg-transparent p-0 m-0 text-foreground/90 hover:text-foreground text-xs sm:text-sm font-medium story-link"
               >
-                <span className="pulse inline-block h-2.5 w-2.5 sm:h-3 sm:w-3 rounded-full bg-gradient-to-r from-neon-cyan via-neon-purple to-neon-pink"></span>
-                <span className="text-xs sm:text-sm font-medium">Posso te contar um segredo?</span>
+                Posso te contar um segredo?
               </button>
             </SecretFAQDialog>
           </div>
