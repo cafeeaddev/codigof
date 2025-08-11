@@ -449,7 +449,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
           {/* Área Principal das Perguntas */}
           <div className="flex-1 overflow-hidden">
             <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-4 shadow-neon h-full flex flex-col">
-              <div className="flex items-center gap-2 mb-6 p-2 bg-muted/50 rounded-lg">
+              <div className="flex items-center gap-2 mb-4 p-2 bg-muted/50 rounded-lg">
                 <div className="w-3 h-3 bg-accent rounded-full"></div>
                 <span className="text-accent text-sm font-bold tracking-wider">
                   {currentMission === 1 && "MISSÃO 1 – Como você encara o digital?"}
