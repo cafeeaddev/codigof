@@ -16,15 +16,18 @@ export const VaporwaveScene = ({ cameraPosition, cameraFov }: VaporwaveSceneProp
   return (
     <div className="w-full h-screen relative overflow-hidden">
       <Canvas
+        dpr={[1, 1.5]}
         camera={{
           position: cameraPosition,
           fov: cameraFov,
           near: 0.1,
           far: 300,
         }}
-        gl={{ alpha: false, depth: true }}
+        gl={{ alpha: false, depth: true, antialias: false, powerPreference: 'high-performance' }}
         className="w-full h-full"
         onCreated={({ scene, gl }) => {
+          // Reduce pixel ratio for performance on high-DPI screens
+          gl.setPixelRatio(Math.min(1.5, window.devicePixelRatio || 1));
           // Céu preto sólido e neblina preta para combinar
           gl.setClearColor('#000000', 1);
           scene.fog = new THREE.Fog(0x000000, 80, 200);

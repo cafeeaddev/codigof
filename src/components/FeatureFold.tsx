@@ -30,15 +30,20 @@ export const FeatureFold = ({ id, title, subtitle, colorClass: _colorClass, Icon
               {/* Glowing ring */}
               <div className="w-64 h-64 sm:w-72 sm:h-72 lg:w-80 lg:h-80 rounded-full bg-gradient-to-r from-neon-pink via-neon-purple to-neon-cyan p-1 shadow-glow">
                 <div className="w-full h-full rounded-full bg-background/90 backdrop-blur-xl overflow-hidden relative">
-                  <video 
-                    className="w-full h-full object-cover rounded-full"
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                  >
-                    <source src="https://meta.cafeeadhost.com.br/Cody/hero-animation.mp4" type="video/mp4" />
-                  </video>
+                  {circleReveal.isVisible ? (
+                    <video 
+                      className="w-full h-full object-cover rounded-full"
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                      preload="metadata"
+                    >
+                      <source src="https://meta.cafeeadhost.com.br/Cody/hero-animation.mp4" type="video/mp4" />
+                    </video>
+                  ) : (
+                    <div className="w-full h-full rounded-full bg-background/90" aria-hidden />
+                  )}
                   <div className="absolute inset-0 rounded-full bg-gradient-to-t from-transparent via-transparent to-neon-cyan/10"></div>
                 </div>
               </div>
