@@ -291,7 +291,7 @@ export const LinearLayout = () => {
                 aria-hidden="true"
                 className="mr-2 inline-flex items-center justify-center rounded-full shrink-0 w-3.5 h-3.5 sm:w-4 sm:h-4 pulse"
                 style={{
-                  background: 'conic-gradient(from 0deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 50%, hsl(var(--secondary)) 100%)'
+                  background: 'var(--gradient-neon-ring)'
                 }}
               >
                 <span className="w-[65%] h-[65%] rounded-full bg-background" />
