@@ -300,8 +300,9 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
     <div className="h-full flex flex-col">
       <ScrollArea className="flex-1">
         <div className="p-2 pb-12" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 48px)' }}>
-          <div className="sticky top-0 z-20 bg-card/80 backdrop-blur-sm border-b border-secondary/30 py-2 px-1 flex justify-between items-center shadow-neon">
+          <div className="sticky top-0 z-40 bg-card/80 backdrop-blur-sm border-b border-secondary/30 py-2 px-1 flex justify-between items-center shadow-neon pointer-events-auto">
             <Button
+              type="button"
               onClick={goToPreviousQuestion}
               disabled={currentQuestion === 0}
               variant="outline"
@@ -314,6 +315,7 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
 
             {currentQuestion === quizQuestions.length - 1 ? (
               <Button
+                type="button"
                 onClick={submitQuiz}
                 disabled={!answers[currentQuestionData.id] || isSubmitting}
                 size="sm"
@@ -323,6 +325,7 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
               </Button>
             ) : (
               <Button
+                type="button"
                 onClick={goToNextQuestion}
                 disabled={!answers[currentQuestionData.id]}
                 size="sm"

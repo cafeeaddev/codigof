@@ -272,8 +272,9 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
         </CardHeader>
 
         <CardContent className="space-y-6">
-          <div className="sticky top-0 z-20 bg-card/90 backdrop-blur-sm border-b border-secondary/30 py-3 flex justify-between items-center">
+          <div className="sticky top-0 z-40 bg-card/90 backdrop-blur-sm border-b border-secondary/30 py-3 flex justify-between items-center pointer-events-auto">
             <Button
+              type="button"
               variant="outline"
               onClick={handlePrevious}
               disabled={currentQuestion === 0}
@@ -282,11 +283,21 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
               Anterior
             </Button>
             {isLastQuestion ? (
-              <Button onClick={handleSubmit} disabled={!currentAnswer || isSubmitting} className="w-32">
+              <Button
+                type="button"
+                onClick={handleSubmit}
+                disabled={!currentAnswer || isSubmitting}
+                className="w-32"
+              >
                 {isSubmitting ? "Enviando..." : "Finalizar"}
               </Button>
             ) : (
-              <Button onClick={handleNext} disabled={!currentAnswer} className="w-24">
+              <Button
+                type="button"
+                onClick={handleNext}
+                disabled={!currentAnswer}
+                className="w-24"
+              >
                 Próxima
               </Button>
             )}

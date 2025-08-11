@@ -282,8 +282,9 @@ export const MissaoDois = ({ onComplete, userId }: MissaoDoisProps) => {
     <div className="h-full flex flex-col">
       <ScrollArea className="flex-1">
         <div className="p-4 pb-20" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 56px)' }}>
-          <div className="sticky top-0 z-20 bg-card/80 backdrop-blur-sm border-b border-secondary/30 py-2 px-2 flex justify-between items-center">
+          <div className="sticky top-0 z-40 bg-card/80 backdrop-blur-sm border-b border-secondary/30 py-2 px-2 flex justify-between items-center pointer-events-auto">
             <Button
+              type="button"
               onClick={goToPreviousQuestion}
               disabled={currentQuestion === 0}
               variant="outline"
@@ -295,6 +296,7 @@ export const MissaoDois = ({ onComplete, userId }: MissaoDoisProps) => {
             </Button>
             {currentQuestion === quizQuestions.length - 1 ? (
               <Button
+                type="button"
                 onClick={submitQuiz}
                 disabled={!answers[currentQuestionData.id] || isSubmitting}
                 size="sm"
@@ -304,6 +306,7 @@ export const MissaoDois = ({ onComplete, userId }: MissaoDoisProps) => {
               </Button>
             ) : (
               <Button
+                type="button"
                 onClick={goToNextQuestion}
                 disabled={!answers[currentQuestionData.id]}
                 size="sm"
