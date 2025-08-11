@@ -1,5 +1,4 @@
 
-import { Button } from './ui/button';
 import { ChevronDown } from 'lucide-react';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
 
@@ -41,20 +40,28 @@ export const HeroSection = ({ onLoginClick, onContinueClick }: HeroSectionProps)
             </h1>
           </div>
 
-          {/* CTA Button */}
+          {/* Status Indicator - não clicável */}
           <div 
             ref={buttonsReveal.elementRef}
             style={buttonsReveal.style}
             className="flex justify-center px-4"
           >
-            <Button 
-              size="lg" 
-              className="bg-white/10 text-white hover:bg-white/20 px-4 sm:px-6 lg:px-8 py-4 sm:py-5 lg:py-6 text-sm sm:text-base lg:text-lg font-medium backdrop-blur-md rounded-xl shadow-lg border border-white/20 w-full sm:w-auto max-w-xs sm:max-w-none"
-              onClick={onLoginClick}
-            >
-              <span className="hidden sm:inline">Sistema de Diagnóstico Ativado</span>
-              <span className="sm:hidden">Diagnóstico Ativado</span>
-            </Button>
+            <div className="flex items-center gap-3 bg-white/10 backdrop-blur-md px-4 sm:px-6 lg:px-8 py-4 sm:py-5 lg:py-6 rounded-xl border border-white/20 shadow-lg w-full sm:w-auto max-w-xs sm:max-w-none pointer-events-none">
+              {/* Status indicator */}
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-neon-cyan rounded-full animate-pulse shadow-lg shadow-neon-cyan/50"></div>
+                <span className="text-neon-cyan text-xs sm:text-sm font-medium tracking-wide">ATIVO</span>
+              </div>
+              
+              {/* Separator */}
+              <div className="w-px h-4 bg-white/30"></div>
+              
+              {/* Diagnostic text */}
+              <span className="text-white/90 text-sm sm:text-base lg:text-lg font-medium">
+                <span className="hidden sm:inline">Sistema de Diagnóstico Ativado</span>
+                <span className="sm:hidden">Diagnóstico Ativado</span>
+              </span>
+            </div>
           </div>
         </div>
 
