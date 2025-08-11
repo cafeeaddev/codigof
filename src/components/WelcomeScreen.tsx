@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from './ui/button';
-import { LogOut, User, Loader2, Shield } from 'lucide-react';
+import { LogOut, User, Loader2, Shield, HelpCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 import { ScrollArea } from './ui/scroll-area';
@@ -11,7 +11,7 @@ import { MissaoDois } from './MissaoDois';
 import { MissaoTres } from './MissaoTres';
 import { MissaoQuatro } from './MissaoQuatro';
 import MedalBadges from './MedalBadges';
-
+import TutorialOverlay from './TutorialOverlay';
 interface WelcomeScreenProps {
   user: {
     nome: string;
@@ -31,7 +31,14 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
   const [completedMissions, setCompletedMissions] = useState<Set<number>>(new Set());
   const [userProgress, setUserProgress] = useState({ total_xp: 0, completedMissionsCount: 0 });
   const [justCompleted, setJustCompleted] = useState<1 | 2 | 3 | 4 | null>(null);
+  const [showTutorial, setShowTutorial] = useState(false);
   const UNLOCK_DELAY = 1000; // ms
+
+  useEffect(() => {
+    const seen = localStorage.getItem('tutorialSeen');
+    if (!seen) setShowTutorial(true);
+  }, []);
+
   console.log('[WelcomeScreen] Props received:', { 
     userProfile: userProfile.nome, 
     userId,
