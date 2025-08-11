@@ -153,7 +153,6 @@ export const LinearLayout = () => {
         </div>
 
         {/* Top-right diagnostic status indicator - completely static */}
-        {currentSection >= 1 && (
           <div className="fixed top-3 right-4 z-40">
             <SecretFAQDialog>
               <button
@@ -168,7 +167,6 @@ export const LinearLayout = () => {
               </button>
             </SecretFAQDialog>
           </div>
-        )}
 
         
         {/* Internal scroll container */}
