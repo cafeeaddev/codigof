@@ -112,6 +112,13 @@ export const LinearLayout = () => {
     }
   }, [user, profile, showWelcome, isLoading]);
 
+  // Log when Secret FAQ link becomes visible
+  useEffect(() => {
+    if (typeof currentSection === 'number' && currentSection > 0) {
+      console.log('[LinearLayout] Secret FAQ link visible at section:', currentSection);
+    }
+  }, [currentSection]);
+
   // Show loading state
   if (isLoading) {
     console.log('[LinearLayout] Showing loading state');
@@ -156,24 +163,7 @@ export const LinearLayout = () => {
           <Navigation />
         </div>
 
-        {/* Floating Secret FAQ button - show from section 2 onwards */}
-        {typeof currentSection === 'number' && currentSection > 0 && (
-          <div
-            className="pointer-events-none fixed right-4 bottom-[calc(env(safe-area-inset-bottom,0px)+1rem)] sm:top-[calc(env(safe-area-inset-top,0px)+1rem)] sm:bottom-auto z-60"
-          >
-            <SecretFAQDialog>
-              <button
-                type="button"
-                aria-label="Abrir FAQ secreto"
-                className="pointer-events-auto bg-transparent p-0 m-0 text-foreground/90 hover:text-foreground text-xs sm:text-sm font-medium story-link"
-              >
-                Posso te contar um segredo?
-              </button>
-            </SecretFAQDialog>
-          </div>
-        )}
-
-        
+        {/* Secret FAQ link moved outside content layer */}
         {/* Internal scroll container */}
         <div 
           ref={containerRef}
@@ -287,6 +277,19 @@ export const LinearLayout = () => {
             <span className="text-xs sm:text-sm font-medium tracking-wider mb-1 sm:mb-2 uppercase">CONTINUE</span>
             <ChevronDown className="w-5 h-5 sm:w-6 sm:h-6 animate-bounce" />
           </button>
+        </div>
+      )}
+      {typeof currentSection === 'number' && currentSection > 0 && (
+        <div className="pointer-events-none fixed right-4 bottom-[calc(env(safe-area-inset-bottom,0px)+1rem)] sm:top-[calc(env(safe-area-inset-top,0px)+1rem)] sm:bottom-auto z-[70]">
+          <SecretFAQDialog>
+            <button
+              type="button"
+              aria-label="Abrir FAQ secreto"
+              className="pointer-events-auto bg-transparent p-0 m-0 text-foreground hover:underline underline-offset-4 text-xs sm:text-sm font-medium"
+            >
+              Posso te contar um segredo?
+            </button>
+          </SecretFAQDialog>
         </div>
       )}
 
