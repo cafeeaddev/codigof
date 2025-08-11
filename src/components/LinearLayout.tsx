@@ -285,8 +285,17 @@ export const LinearLayout = () => {
             <button
               type="button"
               aria-label="Abrir FAQ secreto"
-              className="pointer-events-auto bg-transparent p-0 m-0 text-secondary hover:underline underline-offset-4 text-xs sm:text-sm font-medium"
+              className="pointer-events-auto bg-transparent p-0 m-0 text-secondary hover:underline underline-offset-4 text-xs sm:text-sm font-medium inline-flex items-center"
             >
+              <span
+                aria-hidden="true"
+                className="mr-2 inline-flex items-center justify-center rounded-full shrink-0 w-3.5 h-3.5 sm:w-4 sm:h-4 pulse"
+                style={{
+                  background: 'conic-gradient(from 0deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 50%, hsl(var(--secondary)) 100%)'
+                }}
+              >
+                <span className="w-[65%] h-[65%] rounded-full bg-background" />
+              </span>
               Posso te contar um segredo?
             </button>
           </SecretFAQDialog>
