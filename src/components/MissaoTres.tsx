@@ -264,10 +264,6 @@ export const MissaoTres = ({ onComplete }: MissaoTresProps) => {
               </Button>
             )}
           </div>
-          <div className="mb-4">
-            <h3 className="text-lg font-bold text-foreground mb-1">Desafios e inovação</h3>
-            <p className="text-sm text-muted-foreground">Missão 3 - Como você lida com novos desafios</p>
-          </div>
 
           <div className="mb-4">
             <div className="flex justify-between items-center mb-2">
