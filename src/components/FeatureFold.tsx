@@ -7,9 +7,10 @@ interface FeatureFoldProps {
   subtitle: string;
   colorClass: string; // e.g., 'bg-neon-cyan'
   Icon: LucideIcon;
+  titleClass?: string;
 }
 
-export const FeatureFold = ({ id, title, subtitle, colorClass: _colorClass, Icon: _Icon }: FeatureFoldProps) => {
+export const FeatureFold = ({ id, title, subtitle, colorClass: _colorClass, Icon: _Icon, titleClass = 'text-neon-pink' }: FeatureFoldProps) => {
   const titleReveal = useScrollReveal({ direction: 'left', delay: 0, distance: 100 });
   const circleReveal = useScrollReveal({ direction: 'right', delay: 200, distance: 100 });
 
@@ -18,7 +19,7 @@ export const FeatureFold = ({ id, title, subtitle, colorClass: _colorClass, Icon
       <div className="max-w-6xl mx-auto w-full">
         <div className="flex flex-col md:flex-row items-center justify-between gap-10 md:gap-12 lg:gap-16">
           <div ref={titleReveal.elementRef} style={titleReveal.style}>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-6 text-neon-pink drop-shadow-[0_2px_18px_hsl(var(--background)_/_0.5)]">{title}</h2>
+            <h2 className={`text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-6 drop-shadow-[0_2px_18px_hsl(var(--background)_/_0.5)] ${titleClass}`}>{title}</h2>
             <div className="flex items-start gap-3">
               <span aria-hidden className="mt-2 w-2 h-2 rounded-full bg-primary shadow-[0_0_20px_hsl(var(--primary)_/_0.6)]"></span>
               <p className="text-lg sm:text-xl leading-relaxed max-w-3xl text-muted-foreground">{subtitle}</p>
