@@ -10,7 +10,7 @@ const FixedBrandLogos: React.FC = () => {
         <img
           src="/lovable-uploads/94d6cc17-4c86-4276-8ad9-8406ccab7fd8.png"
           alt="Forvis Mazars"
-          className="h-6 sm:h-8 w-auto opacity-90"
+          className="h-7 sm:h-9 w-auto opacity-90"
           loading="lazy"
           decoding="async"
         />
@@ -18,7 +18,7 @@ const FixedBrandLogos: React.FC = () => {
         <img
           src="/lovable-uploads/35f1196e-cbc7-43e5-a230-07f5020611f7.png"
           alt="Universidade Forvis Mazars"
-          className="h-6 sm:h-8 w-auto opacity-90"
+          className="h-7 sm:h-9 w-auto opacity-90"
           loading="lazy"
           decoding="async"
         />
