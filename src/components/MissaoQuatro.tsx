@@ -7,6 +7,7 @@ import { Progress } from '@/components/ui/progress';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
+import MedalEarnedDialog from './MedalEarnedDialog';
 
 interface MissaoQuatroProps {
   onComplete: () => void;
@@ -130,6 +131,7 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showMedal, setShowMedal] = useState(false);
 
   const handleAnswer = (questionId: number, answer: string) => {
     setAnswers(prev => ({ ...prev, [questionId]: answer }));
@@ -199,22 +201,41 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
         });
 
       // Update user progress to mark mission 4 as completed and add XP
-      await supabase
-        .from('user_progress')
-        .upsert({
-          user_id: user.id,
-          missao_4_completed: true,
-          total_xp: 25 // Add 25 XP for completing mission 4
-        }, {
-          onConflict: 'user_id'
-        });
+      if (user) {
+        const { data: existingProgress } = await supabase
+          .from('user_progress')
+          .select('*')
+          .eq('user_id', user.id)
+          .maybeSingle();
 
+        if (existingProgress) {
+          await supabase
+            .from('user_progress')
+            .update({
+              missao_4_completed: true,
+              total_xp: (existingProgress.total_xp || 0) + 25
+            })
+            .eq('user_id', user.id);
+        } else {
+          await supabase
+            .from('user_progress')
+            .insert({
+              user_id: user.id,
+              missao_4_completed: true,
+              total_xp: 25
+            });
+        }
+      }
+
+      setShowMedal(true);
       toast({
         title: "Missão 4 concluída! +25 XP",
         description: `Você obteve ${totalScore.toFixed(1)} pontos em Ferramentas Digitais.`,
       });
 
-      onComplete();
+      setTimeout(() => {
+        onComplete();
+      }, 2000);
     } catch (error) {
       console.error('Error submitting quiz:', error);
       toast({

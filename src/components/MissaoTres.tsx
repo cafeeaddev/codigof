@@ -7,6 +7,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 import { ScrollArea } from './ui/scroll-area';
 import { useAuth } from '@/contexts/AuthContext';
+import MedalEarnedDialog from './MedalEarnedDialog';
 
 interface QuizQuestion {
   id: number;
@@ -86,6 +87,7 @@ export const MissaoTres = ({ onComplete }: MissaoTresProps) => {
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [isCompleted, setIsCompleted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showMedal, setShowMedal] = useState(false);
 
   const handleAnswerSelect = (questionId: number, optionLetter: string) => {
     setAnswers(prev => ({
@@ -195,6 +197,7 @@ export const MissaoTres = ({ onComplete }: MissaoTresProps) => {
       }
 
       setIsCompleted(true);
+      setShowMedal(true);
       toast({
         title: "Missão 3 concluída! +25 XP",
         description: "Parabéns! Suas respostas foram salvas.",
@@ -328,6 +331,8 @@ export const MissaoTres = ({ onComplete }: MissaoTresProps) => {
           </Button>
         )}
       </div>
+
+      <MedalEarnedDialog open={showMedal} onOpenChange={setShowMedal} missionLabel="Missão 3" xp={25} />
     </div>
   );
 };
