@@ -285,7 +285,7 @@ export const LinearLayout = () => {
             <button
               type="button"
               aria-label="Abrir FAQ secreto"
-              className="pointer-events-auto bg-transparent p-0 m-0 text-foreground hover:underline underline-offset-4 text-xs sm:text-sm font-medium"
+              className="pointer-events-auto bg-transparent p-0 m-0 text-secondary hover:underline underline-offset-4 text-xs sm:text-sm font-medium"
             >
               Posso te contar um segredo?
             </button>
