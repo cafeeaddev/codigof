@@ -16,7 +16,7 @@ const queryClient = new QueryClient();
 
 const RouteAwareLogos = () => {
   const location = useLocation();
-  if (location.pathname !== '/admin') return null;
+  if (location.pathname === '/admin') return null; // hide on admin only
   return <FixedBrandLogos />;
 };
 
