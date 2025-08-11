@@ -280,7 +280,7 @@ export const LinearLayout = () => {
         </div>
       )}
       {typeof currentSection === 'number' && currentSection > 0 && (
-        <div className="pointer-events-none fixed right-4 bottom-[calc(env(safe-area-inset-bottom,0px)+1rem)] sm:top-[calc(env(safe-area-inset-top,0px)+1rem)] sm:bottom-auto z-[70]">
+        <div className="pointer-events-none fixed right-4 top-[calc(env(safe-area-inset-top,0px)+1rem)] z-[70]">
           <SecretFAQDialog>
             <button
               type="button"
