@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface SecretFAQDialogProps {
   children: React.ReactNode;
@@ -99,7 +100,7 @@ export const SecretFAQDialog: React.FC<SecretFAQDialogProps> = ({ children }) =>
   return (
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-xl max-h-[80vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-xl max-h-[80vh]">
         <DialogHeader>
           <DialogTitle className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-neon-cyan via-neon-purple to-neon-pink bg-clip-text text-transparent">
             Segredos do Código F
@@ -109,18 +110,20 @@ export const SecretFAQDialog: React.FC<SecretFAQDialogProps> = ({ children }) =>
           </DialogDescription>
         </DialogHeader>
 
-        <Accordion type="single" collapsible className="w-full">
-          {faqs.map((item, idx) => (
-            <AccordionItem key={idx} value={`item-${idx + 1}`}>
-              <AccordionTrigger className="text-left">
-                <span className="text-secondary font-medium">{item.q.replace(/^Q\d+:\s*/, "")}</span>
-              </AccordionTrigger>
-              <AccordionContent className="text-muted-foreground">
-                {typeof item.a === "string" ? <p>{item.a}</p> : item.a}
-              </AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
+        <ScrollArea className="max-h-[60vh] pr-2">
+          <Accordion type="single" collapsible className="w-full">
+            {faqs.map((item, idx) => (
+              <AccordionItem key={idx} value={`item-${idx + 1}`}>
+                <AccordionTrigger className="text-left">
+                  <span className="text-secondary font-medium">{item.q.replace(/^Q\d+:\s*/, "")}</span>
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground">
+                  {typeof item.a === "string" ? <p>{item.a}</p> : item.a}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </ScrollArea>
 
         <div className="mt-4 flex justify-end">
           <DialogClose asChild>

@@ -14,6 +14,7 @@ import { WelcomeScreen } from './WelcomeScreen';
 import { useAuth } from '@/contexts/AuthContext';
 import { useGameProgress } from '@/hooks/useGameProgress';
 import SecretFAQDialog from './SecretFAQDialog';
+import { Button } from './ui/button';
 
 
 const features = [
@@ -157,17 +158,17 @@ export const LinearLayout = () => {
 
         {/* Top-right diagnostic status indicator - completely static */}
         <div
-          className={`fixed top-[calc(env(safe-area-inset-top,0px)+0.75rem)] right-4 z-60 transition-opacity duration-300 ${
-            ((currentSection ?? 0) >= 1) ? 'opacity-100 pointer-events-auto animate-fade-in' : 'opacity-0 pointer-events-none'
-          }`}
+          className="fixed right-4 bottom-[calc(env(safe-area-inset-bottom,0px)+1rem)] sm:top-[calc(env(safe-area-inset-top,0px)+1rem)] sm:bottom-auto z-60 animate-fade-in"
         >
           <SecretFAQDialog>
-            <button
+            <Button
+              variant="secondary"
+              size="sm"
               aria-label="Abrir FAQ secreto"
-              className="group flex items-center gap-3 bg-transparent hover:opacity-95 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+              className="rounded-full px-4 py-2 hover-scale"
             >
-              <span className="text-sm font-medium text-foreground">Posso te contar um segredo?</span>
-            </button>
+              Posso te contar um segredo?
+            </Button>
           </SecretFAQDialog>
         </div>
 
