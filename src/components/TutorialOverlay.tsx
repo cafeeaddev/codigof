@@ -86,11 +86,16 @@ export const TutorialOverlay = ({ stage, onClose, onDontShowAgain }: TutorialOve
       // Optional: load custom avatar video URL stored by admin
       try {
         const url = localStorage.getItem('codyAvatarUrl');
-        if (url) setVideoUrl(url);
-      } catch {}
+        if (url) {
+          setVideoUrl(url);
+        } else {
+          setVideoUrl('https://meta.cafeeadhost.com.br/Cody/hero-animation.mp4');
+        }
+      } catch {
+        setVideoUrl('https://meta.cafeeadhost.com.br/Cody/hero-animation.mp4');
+      }
     }
   }, []);
-
   const play = async () => {
     try {
       setIsSpeaking(true);
