@@ -31,7 +31,7 @@ export const ProfileChart = ({ adminStats }: ProfileChartProps) => {
     const x = cx + radius * Math.cos(-midAngle * RADIAN);
     const y = cy + radius * Math.sin(-midAngle * RADIAN);
     return (
-      <text x={x} y={y} fill="hsl(var(--background))" textAnchor="middle" dominantBaseline="central" fontSize={12} fontWeight={700}>
+      <text x={x} y={y} fill="hsl(var(--foreground))" textAnchor="middle" dominantBaseline="central" fontSize={14} fontWeight={700}>
         {value}
       </text>
     );
