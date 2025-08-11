@@ -14,7 +14,7 @@ import { WelcomeScreen } from './WelcomeScreen';
 import { useAuth } from '@/contexts/AuthContext';
 import { useGameProgress } from '@/hooks/useGameProgress';
 import SecretFAQDialog from './SecretFAQDialog';
-import { Button } from './ui/button';
+
 
 
 const features = [
@@ -162,14 +162,14 @@ export const LinearLayout = () => {
             className="pointer-events-none fixed right-4 bottom-[calc(env(safe-area-inset-bottom,0px)+1rem)] sm:top-[calc(env(safe-area-inset-top,0px)+1rem)] sm:bottom-auto z-60"
           >
             <SecretFAQDialog>
-              <Button
-                variant="secondary"
-                size="sm"
+              <button
+                type="button"
                 aria-label="Abrir FAQ secreto"
-                className="pointer-events-auto rounded-full px-4 py-2 hover-scale"
+                className="pointer-events-auto group inline-flex items-center gap-2 rounded-full border border-border bg-background/80 text-foreground shadow-md px-4 py-2 hover:bg-background transition-colors"
               >
-                Posso te contar um segredo?
-              </Button>
+                <span className="pulse inline-block h-2.5 w-2.5 sm:h-3 sm:w-3 rounded-full bg-gradient-to-r from-neon-cyan via-neon-purple to-neon-pink"></span>
+                <span className="text-xs sm:text-sm font-medium">Posso te contar um segredo?</span>
+              </button>
             </SecretFAQDialog>
           </div>
         )}
