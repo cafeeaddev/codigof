@@ -47,11 +47,11 @@ export const FeatureSection = ({
   return (
     <section 
       id={id}
-      className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 py-16"
+      className="min-h-[100svh] flex items-center justify-center px-4 sm:px-6 lg:px-8 py-16"
     >
       <div className="max-w-6xl mx-auto">
         {/* Main content section */}
-        <div className="flex items-center justify-between gap-8 lg:gap-16 mb-16">
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-16 mb-16">
           {/* Left side - Content */}
           <div 
             ref={titleReveal.elementRef}
@@ -85,10 +85,10 @@ export const FeatureSection = ({
           <div 
             ref={videoReveal.elementRef}
             style={videoReveal.style}
-            className="flex-shrink-0 relative"
+            className="flex-shrink-0 relative mt-8 lg:mt-0"
           >
             {/* Glowing circle border */}
-            <div className="w-64 h-64 lg:w-80 lg:h-80 rounded-full bg-gradient-to-r from-neon-pink via-neon-purple to-neon-cyan p-1 shadow-glow">
+            <div className="w-48 h-48 sm:w-64 sm:h-64 lg:w-80 lg:h-80 rounded-full bg-gradient-to-r from-neon-pink via-neon-purple to-neon-cyan p-1 shadow-glow">
               <div className="w-full h-full rounded-full bg-background/90 backdrop-blur-xl overflow-hidden relative">
                 {videoReveal.isVisible ? (
                   <video 

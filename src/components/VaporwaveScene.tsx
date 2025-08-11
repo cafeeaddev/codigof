@@ -14,7 +14,7 @@ interface VaporwaveSceneProps {
 
 export const VaporwaveScene = ({ cameraPosition, cameraFov }: VaporwaveSceneProps) => {
   return (
-    <div className="w-full h-screen relative overflow-hidden">
+    <div className="w-full h-[100svh] relative overflow-hidden">
       <Canvas
         dpr={[1, 1.5]}
         camera={{

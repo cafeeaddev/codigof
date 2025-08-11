@@ -7,12 +7,19 @@ export const Navigation = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
+    const container = document.querySelector('[data-internal-scroll]') as HTMLElement | null;
+
+    const getScrollTop = () => (container ? container.scrollTop : (window.scrollY || window.pageYOffset));
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+      setIsScrolled(getScrollTop() > 50);
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    // Initial state
+    handleScroll();
+
+    const target: any = container ?? window;
+    target.addEventListener('scroll', handleScroll, { passive: true });
+    return () => target.removeEventListener('scroll', handleScroll);
   }, []);
 
   const navLinks = [

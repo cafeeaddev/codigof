@@ -21,7 +21,7 @@ export const HeroSection = ({ onLoginClick, onContinueClick }: HeroSectionProps)
   });
 
   return (
-    <section className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20 lg:pt-24">
+    <section className="min-h-[100svh] flex items-center justify-center px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20 lg:pt-24">
       <div className="max-w-6xl mx-auto text-center w-full">
         {/* Main content positioned above the terrain */}
         <div className="mb-8 sm:mb-12 lg:mb-16">

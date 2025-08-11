@@ -38,7 +38,7 @@ export const SectionContainer = ({
     <div
       ref={sectionRef}
       className={cn(
-        "min-h-screen w-full flex-shrink-0 relative",
+        "min-h-[100svh] w-full flex-shrink-0 relative",
         "bg-transparent backdrop-blur-none",
         className
       )}

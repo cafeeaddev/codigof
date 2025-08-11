@@ -14,7 +14,7 @@ export const FeatureFold = ({ id, title, subtitle, colorClass: _colorClass, Icon
   const circleReveal = useScrollReveal({ direction: 'right', delay: 200, distance: 100 });
 
   return (
-    <section id={id} className="min-h-screen flex items-center px-4 sm:px-6 lg:px-8 pr-6 sm:pr-12 lg:pr-24 py-16">
+    <section id={id} className="min-h-[100svh] flex items-center px-4 sm:px-6 lg:px-8 pr-6 sm:pr-12 lg:pr-24 py-16">
       <div className="max-w-6xl mx-auto w-full">
         <div className="flex flex-col md:flex-row items-center justify-between gap-10 md:gap-12 lg:gap-16">
           <div ref={titleReveal.elementRef} style={titleReveal.style}>
@@ -28,7 +28,7 @@ export const FeatureFold = ({ id, title, subtitle, colorClass: _colorClass, Icon
           <div ref={circleReveal.elementRef} style={circleReveal.style} className="flex justify-center md:justify-end md:pr-10 lg:pr-24 xl:pr-36 2xl:pr-48">
             <div className="relative">
               {/* Glowing ring */}
-              <div className="w-64 h-64 sm:w-72 sm:h-72 lg:w-80 lg:h-80 rounded-full bg-gradient-to-r from-neon-pink via-neon-purple to-neon-cyan p-1 shadow-glow">
+              <div className="w-48 h-48 sm:w-64 sm:h-64 lg:w-80 lg:h-80 rounded-full bg-gradient-to-r from-neon-pink via-neon-purple to-neon-cyan p-1 shadow-glow">
                 <div className="w-full h-full rounded-full bg-background/90 backdrop-blur-xl overflow-hidden relative">
                   {circleReveal.isVisible ? (
                     <video 
