@@ -269,7 +269,8 @@ export const MissaoDois = ({ onComplete, userId }: MissaoDoisProps) => {
 
 
   const currentQuestionData = quizQuestions[currentQuestion];
-  const progress = ((currentQuestion + 1) / quizQuestions.length) * 100;
+  const answeredCount = Object.keys(answers).length;
+  const progress = (answeredCount / quizQuestions.length) * 100;
 
   return (
     <div className="h-full flex flex-col min-h-0">

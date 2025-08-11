@@ -244,7 +244,8 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
   };
 
   const currentQ = questions[currentQuestion];
-  const progress = ((currentQuestion + 1) / questions.length) * 100;
+  const answeredCount = Object.keys(answers).length;
+  const progress = (answeredCount / questions.length) * 100;
   const isLastQuestion = currentQuestion === questions.length - 1;
   const currentAnswer = answers[currentQ.id];
 
