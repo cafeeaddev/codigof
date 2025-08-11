@@ -112,13 +112,14 @@ export const Footer = () => {
               </div>
               <Input
                 id="cpf"
-                type="text"
+                type="password"
                 inputMode="numeric"
                 pattern="[0-9]*"
                 maxLength={4}
                 value={cpf}
                 onChange={(e) => setCpf(e.target.value.replace(/\D/g, '').slice(0, 4))}
                 placeholder="4 últimos dígitos do CPF"
+                autoComplete="current-password"
                 className="bg-input border-border text-foreground placeholder-muted-foreground placeholder:text-xs sm:placeholder:text-sm focus:border-secondary focus:ring-secondary/50 rounded-lg px-3 sm:px-4"
                 required
               />

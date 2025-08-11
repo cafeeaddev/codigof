@@ -94,10 +94,11 @@ export const LoginScreen = () => {
             </Label>
             <Input
               id="cpf"
-              type="text"
+              type="password"
               inputMode="numeric"
               pattern="[0-9]*"
               maxLength={4}
+              autoComplete="current-password"
               placeholder="4 últimos dígitos do CPF"
               value={cpf}
               onChange={(e) => setCpf(e.target.value.replace(/\D/g, '').slice(0, 4))}
