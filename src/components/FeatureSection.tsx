@@ -75,7 +75,7 @@ export const FeatureSection = ({
             {!hideInlineSecret && (
               <SecretFAQDialog>
                 <div className="text-secondary cursor-pointer story-link">
-                  <span className="font-medium">Posso te contar um segredo?</span>
+                  <span className="font-medium">Quer um spoiler?</span>
                 </div>
               </SecretFAQDialog>
             )}

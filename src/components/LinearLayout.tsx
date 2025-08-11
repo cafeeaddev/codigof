@@ -290,7 +290,7 @@ export const LinearLayout = () => {
               >
                 <span className="w-[65%] h-[65%] rounded-full bg-background" />
               </span>
-              Posso te contar um segredo?
+              Quer um spoiler?
             </button>
           </SecretFAQDialog>
         </div>
