@@ -190,7 +190,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
             </div>
             
             {/* Estatísticas compactas no Header Desktop */}
-            <div className="hidden md:flex items-center gap-4 ml-4 mr-8">
+            <div className="hidden lg:flex items-center gap-4 ml-4 mr-8">
               <div className="text-center">
                 <div className="text-sm font-bold text-primary">{userProgress.total_xp}</div>
                 <div className="text-muted-foreground text-xs">XP</div>
@@ -286,14 +286,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                     MISSÃO {currentMission} ATIVADA
                   </span>
                 </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setCurrentMission(currentMission >= 4 ? 1 : (currentMission + 1) as 1 | 2 | 3 | 4)}
-                  className="text-xs"
-                >
-                  Próxima Missão
-                </Button>
+                {/* Botão "Próxima Missão" removido no mobile conforme solicitação */}
               </div>
 
               <div className="flex-1 overflow-hidden min-h-0">
