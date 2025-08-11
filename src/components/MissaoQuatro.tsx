@@ -258,7 +258,8 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
             {currentQ.options.map((option) => (
               <div 
                 key={option.value} 
-                className="flex items-start space-x-3 p-3 rounded-lg border border-secondary/30 hover:border-primary/30 transition-colors"
+                className="flex items-start space-x-3 p-3 rounded-lg border border-secondary/30 hover:border-primary/30 transition-colors cursor-pointer"
+                onClick={() => handleAnswer(currentQ.id, option.value)}
               >
                 <RadioGroupItem 
                   value={option.value} 

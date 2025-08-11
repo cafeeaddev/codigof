@@ -328,7 +328,7 @@ export const MissaoDois = ({ onComplete, userId }: MissaoDoisProps) => {
               className="space-y-2"
             >
               {currentQuestionData.options.map((option) => (
-                <div key={option.letter} className="flex items-start space-x-2 p-2 rounded hover:bg-muted/20">
+                <div key={option.letter} className="flex items-start space-x-2 p-2 rounded hover:bg-muted/20 cursor-pointer" onClick={() => handleAnswerSelect(currentQuestionData.id, option.letter)}>
                   <RadioGroupItem
                     value={option.letter}
                     id={`q${currentQuestionData.id}-${option.letter}`}
