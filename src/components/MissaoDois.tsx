@@ -281,7 +281,7 @@ export const MissaoDois = ({ onComplete, userId }: MissaoDoisProps) => {
   return (
     <div className="h-full flex flex-col">
       <ScrollArea className="flex-1">
-        <div className="p-4 pb-20">
+        <div className="p-4 pb-20" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 56px)' }}>
           <div className="sticky top-0 z-20 bg-card/80 backdrop-blur-sm border-b border-secondary/30 py-2 px-2 flex justify-between items-center">
             <Button
               onClick={goToPreviousQuestion}
@@ -344,18 +344,18 @@ export const MissaoDois = ({ onComplete, userId }: MissaoDoisProps) => {
             <RadioGroup
               value={answers[currentQuestionData.id] || ""}
               onValueChange={(value) => handleAnswerSelect(currentQuestionData.id, value)}
-              className="space-y-2"
+              className="space-y-3"
             >
               {currentQuestionData.options.map((option) => (
-                <div key={option.letter} className="flex items-start space-x-2 p-2 rounded hover:bg-muted/20 cursor-pointer" onClick={() => handleAnswerSelect(currentQuestionData.id, option.letter)}>
+                <div key={option.letter} className="flex items-start space-x-2 p-3 md:p-2 rounded hover:bg-muted/20 cursor-pointer" onClick={() => handleAnswerSelect(currentQuestionData.id, option.letter)}>
                   <RadioGroupItem
                     value={option.letter}
                     id={`q${currentQuestionData.id}-${option.letter}`}
-                    className="border-secondary mt-0.5"
+                    className="border-secondary mt-0.5 h-5 w-5 md:h-4 md:w-4"
                   />
                   <Label
                     htmlFor={`q${currentQuestionData.id}-${option.letter}`}
-                    className="text-xs text-foreground cursor-pointer flex-1 leading-relaxed"
+                    className="text-sm md:text-xs text-foreground cursor-pointer flex-1 leading-relaxed"
                   >
                     <span className="font-medium text-primary mr-1">{option.letter})</span>
                     {option.text}

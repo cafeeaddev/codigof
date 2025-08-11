@@ -299,8 +299,8 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
   return (
     <div className="h-full flex flex-col">
       <ScrollArea className="flex-1">
-        <div className="p-2 pb-12">
-          <div className="sticky top-0 z-20 bg-card/80 backdrop-blur-sm border-b border-secondary/30 py-2 px-1 flex justify-between items-center">
+        <div className="p-2 pb-12" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 48px)' }}>
+          <div className="sticky top-0 z-20 bg-card/80 backdrop-blur-sm border-b border-secondary/30 py-2 px-1 flex justify-between items-center shadow-neon">
             <Button
               onClick={goToPreviousQuestion}
               disabled={currentQuestion === 0}
@@ -343,34 +343,34 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
                 {Math.round(progress)}%
               </span>
             </div>
-            <div className="w-full bg-secondary/20 rounded-full h-0.5">
+            <div className="w-full bg-secondary/20 rounded-full h-1.5 md:h-1">
               <div
-                className="bg-primary h-0.5 rounded-full transition-all duration-300"
+                className="bg-primary h-1.5 md:h-1 rounded-full transition-all duration-300"
                 style={{ width: `${progress}%` }}
               />
             </div>
           </div>
 
           <div className="mb-2">
-            <h4 className="text-sm font-medium text-foreground mb-1">
+            <h4 className="text-base md:text-sm font-medium text-foreground mb-2">
               {currentQuestionData.question}
             </h4>
 
             <RadioGroup
               value={answers[currentQuestionData.id] || ""}
               onValueChange={(value) => handleAnswerSelect(currentQuestionData.id, value)}
-              className="space-y-2"
+              className="space-y-3"
             >
               {currentQuestionData.options.map((option) => (
-                <div key={option.letter} className="flex items-start space-x-2 p-1 rounded hover:bg-muted/20 cursor-pointer" onClick={() => handleAnswerSelect(currentQuestionData.id, option.letter)}>
+                <div key={option.letter} className="flex items-start space-x-2 p-3 md:p-1 rounded hover:bg-muted/20 cursor-pointer" onClick={() => handleAnswerSelect(currentQuestionData.id, option.letter)}>
                   <RadioGroupItem
                     value={option.letter}
                     id={`q${currentQuestionData.id}-${option.letter}`}
-                    className="border-secondary mt-0.5"
+                    className="border-secondary mt-0.5 h-5 w-5 md:h-4 md:w-4"
                   />
                   <Label
                     htmlFor={`q${currentQuestionData.id}-${option.letter}`}
-                    className="text-xs text-foreground cursor-pointer flex-1 leading-snug"
+                    className="text-sm md:text-xs text-foreground cursor-pointer flex-1 leading-relaxed"
                   >
                     <span className="font-medium text-primary mr-1">{option.letter})</span>
                     {option.text}
