@@ -30,6 +30,8 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
   const [currentMission, setCurrentMission] = useState<1 | 2 | 3 | 4>(1);
   const [completedMissions, setCompletedMissions] = useState<Set<number>>(new Set());
   const [userProgress, setUserProgress] = useState({ total_xp: 0, completedMissionsCount: 0 });
+  const [justCompleted, setJustCompleted] = useState<1 | 2 | 3 | 4 | null>(null);
+  const UNLOCK_DELAY = 1800; // ms
   
   console.log('[WelcomeScreen] Props received:', { 
     userProfile: userProfile.nome, 
@@ -45,6 +47,28 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
         completedMissionsCount: prev.completedMissionsCount + 1
       }));
     }
+  };
+
+  // Fluxo ao finalizar missão: mostra tela de concluída e libera a próxima após um tempo
+  const handleMissionComplete = (missionId: 1 | 2 | 3 | 4) => {
+    updateProgress(missionId);
+    setJustCompleted(missionId);
+    setTimeout(() => {
+      setCompletedMissions(prev => new Set([...prev, missionId]));
+      if (missionId < 4) {
+        setCurrentMission((missionId + 1) as 1 | 2 | 3 | 4);
+        toast({
+          title: `Missão ${missionId} concluída! +25 XP`,
+          description: `Missão ${missionId + 1} desbloqueada! Continue evoluindo.`,
+        });
+      } else {
+        toast({
+          title: `Missão ${missionId} concluída! +25 XP`,
+          description: 'Parabéns! Todas as missões foram concluídas.',
+        });
+      }
+      setJustCompleted(null);
+    }, UNLOCK_DELAY);
   };
 
   useEffect(() => {
@@ -283,45 +307,34 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
               </div>
 
               <div className="flex-1 overflow-hidden">
-                {currentMission === 1 && !completedMissions.has(1) ? (
+                {justCompleted !== null ? (
+                  <div className="h-full flex flex-col items-center justify-center space-y-4 p-4 animate-fade-in">
+                    <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center">
+                      <svg className="w-6 h-6 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                    <div className="text-center">
+                      <h4 className="text-lg font-bold text-primary mb-1">
+                        Missão {justCompleted} concluída! +25 XP
+                      </h4>
+                      <p className="text-sm text-muted-foreground">
+                        Liberando a próxima missão...
+                      </p>
+                    </div>
+                  </div>
+                ) : currentMission === 1 && !completedMissions.has(1) ? (
                   <QuizDigital 
                     userId={userId}
-                    onClose={() => {
-                      updateProgress(1);
-                      setCompletedMissions(prev => new Set([...prev, 1]));
-                      setCurrentMission(2);
-                    }} />
+                    onClose={() => handleMissionComplete(1)} />
                 ) : currentMission === 2 && !completedMissions.has(2) ? (
                   <MissaoDois 
                     userId={userId}
-                    onComplete={() => {
-                      updateProgress(2);
-                      setCompletedMissions(prev => new Set([...prev, 2]));
-                      setCurrentMission(3);
-                    toast({
-                      title: "Missão 2 concluída! +25 XP",
-                      description: "Missão 3 desbloqueada! Continue evoluindo.",
-                    });
-                  }} />
+                    onComplete={() => handleMissionComplete(2)} />
                 ) : currentMission === 3 && !completedMissions.has(3) ? (
-                  <MissaoTres onComplete={() => {
-                    updateProgress(3);
-                    setCompletedMissions(prev => new Set([...prev, 3]));
-                    setCurrentMission(4);
-                    toast({
-                      title: "Missão 3 concluída! +25 XP",
-                      description: "Missão 4 desbloqueada! Continue evoluindo.",
-                    });
-                  }} />
+                  <MissaoTres onComplete={() => handleMissionComplete(3)} />
                 ) : currentMission === 4 && !completedMissions.has(4) ? (
-                  <MissaoQuatro onComplete={() => {
-                    updateProgress(4);
-                    setCompletedMissions(prev => new Set([...prev, 4]));
-                    toast({
-                      title: "Missão 4 concluída! +25 XP",
-                      description: "Parabéns! Todas as missões foram concluídas.",
-                    });
-                  }} />
+                  <MissaoQuatro onComplete={() => handleMissionComplete(4)} />
                 ) : (
                   <div className="h-full flex flex-col items-center justify-center space-y-4 p-4">
                     <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center">
@@ -448,33 +461,32 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
 
               <ScrollArea className="flex-1">
                 <div className="pr-3">
-                  {currentMission === 1 && !completedMissions.has(1) ? (
+                  {justCompleted !== null ? (
+                    <div className="h-full flex flex-col items-center justify-center space-y-5 animate-fade-in">
+                      <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center">
+                        <svg className="w-8 h-8 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                      <div className="text-center">
+                        <h4 className="text-xl font-bold text-primary mb-1">
+                          Missão {justCompleted} concluída! +25 XP
+                        </h4>
+                        <p className="text-sm text-muted-foreground">Liberando a próxima missão...</p>
+                      </div>
+                    </div>
+                  ) : currentMission === 1 && !completedMissions.has(1) ? (
                     <QuizDigital 
                       userId={userId}
-                      onClose={() => {
-                        updateProgress(1);
-                        setCompletedMissions(prev => new Set([...prev, 1]));
-                        setCurrentMission(2);
-                      }} />
+                      onClose={() => handleMissionComplete(1)} />
                   ) : currentMission === 2 && !completedMissions.has(2) ? (
                     <MissaoDois 
                       userId={userId}
-                      onComplete={() => {
-                        updateProgress(2);
-                        setCompletedMissions(prev => new Set([...prev, 2]));
-                        setCurrentMission(3);
-                      }} />
+                      onComplete={() => handleMissionComplete(2)} />
                   ) : currentMission === 3 && !completedMissions.has(3) ? (
-                    <MissaoTres onComplete={() => {
-                      updateProgress(3);
-                      setCompletedMissions(prev => new Set([...prev, 3]));
-                      setCurrentMission(4);
-                    }} />
+                    <MissaoTres onComplete={() => handleMissionComplete(3)} />
                   ) : currentMission === 4 && !completedMissions.has(4) ? (
-                    <MissaoQuatro onComplete={() => {
-                      updateProgress(4);
-                      setCompletedMissions(prev => new Set([...prev, 4]));
-                    }} />
+                    <MissaoQuatro onComplete={() => handleMissionComplete(4)} />
                   ) : (
                     <div className="h-full flex flex-col items-center justify-center space-y-4">
                       <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center">
