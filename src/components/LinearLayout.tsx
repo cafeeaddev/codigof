@@ -156,8 +156,25 @@ export const LinearLayout = () => {
         {currentSection >= 1 && (
           <div className="fixed top-3 right-4 z-40">
             <SecretFAQDialog>
-              <button className="bg-card/90 backdrop-blur-md px-4 py-2 rounded-lg border border-border/50 shadow-lg hover:bg-card transition-colors text-sm font-medium">
-                Posso te contar um segredo?
+              <button
+                aria-label="Abrir FAQ secreto"
+                className="flex items-center gap-3 bg-transparent hover:opacity-95 transition-opacity"
+              >
+                {/* Avatar da IA com borda em gradiente */}
+                <div className="relative w-10 h-10 rounded-full p-[2px] bg-gradient-to-r from-neon-pink via-neon-purple to-neon-cyan shadow-glow">
+                  <div className="w-full h-full rounded-full bg-background overflow-hidden">
+                    <img
+                      src="/lovable-uploads/37267435-1ca0-44b0-adde-17af9ee06454.png"
+                      alt="IA Cody"
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                    />
+                  </div>
+                </div>
+                {/* Balão de fala */}
+                <div className="px-4 py-2 rounded-lg bg-card/90 backdrop-blur-md border border-border/50 shadow-lg text-sm font-medium">
+                  Posso te contar um segredo?
+                </div>
               </button>
             </SecretFAQDialog>
           </div>
