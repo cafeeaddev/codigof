@@ -301,7 +301,7 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
       <ScrollArea className="flex-1">
         <div className="p-2 pb-12">
 
-          <div className="mb-1">
+          <div className="mb-5">
             <div className="flex justify-between items-center mb-1">
               <span className="text-xs text-muted-foreground">
                 Pergunta {currentQuestion + 1} de {quizQuestions.length}
