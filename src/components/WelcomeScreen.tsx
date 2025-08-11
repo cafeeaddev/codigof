@@ -10,6 +10,7 @@ import { QuizDigital } from './QuizDigital';
 import { MissaoDois } from './MissaoDois';
 import { MissaoTres } from './MissaoTres';
 import { MissaoQuatro } from './MissaoQuatro';
+import MedalBadges from './MedalBadges';
 
 interface WelcomeScreenProps {
   user: {
@@ -142,7 +143,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
   }
 
   return (
-    <>
+    <div>
       {/* CSS global para esconder scrollbars */}
       <style>{`
         * {
@@ -196,7 +197,19 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
               <div className="text-center">
                 <div className="text-sm font-bold text-accent">{userProgress.completedMissionsCount}/4</div>
                 <div className="text-muted-foreground text-xs">Completadas</div>
+              </div>
+              <MedalBadges
+                completed={{
+                  m1: completedMissions.has(1),
+                  m2: completedMissions.has(2),
+                  m3: completedMissions.has(3),
+                  m4: completedMissions.has(4),
+                }}
+                size="md"
+                className="pl-2 ml-2 border-l border-border/50"
+              />
             </div>
+          
           
           {/* Botão Admin (só aparece para admins) */}
           {isAdmin && (
@@ -237,8 +250,17 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
             <div className="text-sm font-bold text-accent">{userProgress.completedMissionsCount}/4</div>
             <div className="text-muted-foreground text-xs">Completadas</div>
           </div>
+          <MedalBadges
+            completed={{
+              m1: completedMissions.has(1),
+              m2: completedMissions.has(2),
+              m3: completedMissions.has(3),
+              m4: completedMissions.has(4),
+            }}
+            size="sm"
+          />
         </div>
-      </div>
+        </div>
 
       <div className="h-[calc(100vh-3rem)] md:h-[calc(100vh-4.5rem)] overflow-hidden p-2 md:p-4 relative z-10">
         <div className="max-w-7xl mx-auto h-full flex flex-col">
@@ -481,6 +503,6 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
         </div>
       </div>
 
-    </>
+    </div>
   );
 };
