@@ -1,3 +1,4 @@
+
 import { useRef, useMemo } from 'react';
 import { useFrame, useLoader } from '@react-three/fiber';
 import { TextureLoader } from 'three';
@@ -108,8 +109,8 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
   // Animation and color updates with pulsating effect
   useFrame((state) => {
     // Movimento automático contínuo + efeito do scroll + posição da câmera
-    const timeMovement = state.clock.elapsedTime * 0.7; // Movimento mais lento e dramático
-    const scrollMovement = scrollProgress * 6; // Acelera mais com o scroll
+    const timeMovement = state.clock.elapsedTime * 0.8; // Movimento mais consistente
+    const scrollMovement = scrollProgress * 8; // Mais responsivo ao scroll
     const cameraZOffset = cameraPosition[2] * 0.2; // Ajusta baseado na posição Z da câmera
     
     // Combina os três movimentos - INVERTIDO para ir para frente
@@ -118,19 +119,29 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
     // Pulsating effect for wireframe material
     const pulseIntensity = 2.0 + Math.sin(state.clock.elapsedTime * 2) * 0.5;
     
+    // Terrain spacing: 90 units for better overlap and continuity
+    const terrainSpacing = 90;
+    const totalLoopDistance = terrainSpacing * 4; // 4 terrain segments = 360 units total
+    
     // Move cada grupo de terreno individualmente
-    groupRefs.current.forEach((group) => {
+    groupRefs.current.forEach((group, index) => {
       if (group) {
-        // Usa zIndex salvo no userData para mover por "faixa" de Z, independente do tile lateral
-        const zIndex = (group as any).userData?.zIndex ?? 0;
-        // Calcula posição com loop infinito, ajustando pela câmera - MOVIMENTO PARA FRENTE
-        const basePosition = -20 + (zIndex * -80);
-        group.position.z = basePosition + (totalMovement % 240);
+        // Posição base de cada terreno com espaçamento otimizado
+        const basePosition = index * terrainSpacing;
         
-        // Reset position quando passa muito longe para criar loop infinito
-        if (group.position.z < -120) {
-          group.position.z += 240;
+        // Calcula posição atual com movimento contínuo
+        const currentPosition = basePosition + (totalMovement % totalLoopDistance);
+        
+        // Normaliza a posição para manter dentro do loop
+        let normalizedPosition = currentPosition;
+        if (normalizedPosition > terrainSpacing * 2) {
+          normalizedPosition -= totalLoopDistance;
         }
+        if (normalizedPosition < -terrainSpacing * 2) {
+          normalizedPosition += totalLoopDistance;
+        }
+        
+        group.position.z = normalizedPosition;
         
          // Apply pulsating effect and dynamic color to all wireframe line materials
          group.children.forEach((child) => {
@@ -148,8 +159,8 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
   
   return (
     <group>
-      {/* Múltiplos terrenos para loop infinito perfeito */}
-      {[0, 1, 2].map((index) => (
+      {/* Increased to 4 terrain segments for perfect infinite loop */}
+      {[0, 1, 2, 3].map((index) => (
         <group 
           key={index}
           ref={(el) => {
@@ -158,7 +169,7 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
               (el as any).userData = { ...(el as any).userData, zIndex: index };
             }
           }}
-          position={[0, 0, -25 + (index * -60)]}
+          position={[0, 0, index * -90]} // Optimized spacing for seamless connection
         >
           {/* Dark terrain base with gradient effect */}
           <mesh
