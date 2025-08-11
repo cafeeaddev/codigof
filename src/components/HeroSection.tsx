@@ -52,17 +52,15 @@ export const HeroSection = ({ onLoginClick, onContinueClick }: HeroSectionProps)
             style={buttonsReveal.style}
             className="flex justify-center px-4"
           >
-            <div className="relative bg-transparent backdrop-blur-md px-4 sm:px-6 lg:px-8 py-4 sm:py-5 lg:py-6 rounded-xl w-full sm:w-auto max-w-xs sm:max-w-none pointer-events-none">
+            <div className="relative bg-transparent backdrop-blur-md px-4 sm:px-6 lg:px-8 py-3 sm:py-4 lg:py-5 rounded-xl inline-flex items-center justify-center max-w-full pointer-events-none mx-auto">
               {/* Gradient border */}
-              <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-neon-cyan via-neon-purple to-neon-pink p-[2px]">
+              <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-neon-cyan via-neon-purple to-neon-pink p-[2px] pulse">
                 <div className="w-full h-full rounded-xl bg-black/80 backdrop-blur-md"></div>
               </div>
               
-              {/* Content */}
               <div className="relative z-10">
-                <span className="text-white text-sm sm:text-base lg:text-lg font-medium">
-                  <span className="hidden sm:inline">Sistema de Diagnóstico</span>
-                  <span className="sm:hidden">Diagnóstico</span>
+                <span className="text-white text-sm sm:text-base lg:text-lg font-semibold drop-shadow-[0_2px_10px_hsl(var(--background)_/_0.9)] whitespace-normal">
+                  Sistema de Diagnóstico Ativado
                 </span>
               </div>
             </div>
