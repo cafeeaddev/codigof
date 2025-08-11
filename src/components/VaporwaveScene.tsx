@@ -1,7 +1,7 @@
 import { Canvas } from '@react-three/fiber';
 import { VaporwaveTerrain } from './VaporwaveTerrain';
-import { Suspense, useMemo } from 'react';
-import { Html } from '@react-three/drei';
+import { Suspense, useMemo, useState } from 'react';
+import { Html, PerformanceMonitor } from '@react-three/drei';
 
 import * as THREE from 'three';
 import { LightStarfield } from './LightStarfield';
@@ -23,6 +23,8 @@ export const VaporwaveScene = ({ cameraPosition, cameraFov }: VaporwaveSceneProp
       return false;
     }
   }, []);
+
+  const [starCount, setStarCount] = useState(1800);
 
   if (!webglSupported) {
     return (
@@ -53,37 +55,53 @@ export const VaporwaveScene = ({ cameraPosition, cameraFov }: VaporwaveSceneProp
             gl.setClearColor('#000000', 1);
             scene.fog = new THREE.Fog(0x000000, 80, 200);
             console.info('[VaporwaveScene] Canvas created');
+
+            const canvasEl = gl.domElement as HTMLCanvasElement | undefined;
+            if (canvasEl) {
+              const lostHandler = (ev: Event) => {
+                // Prevent default to allow restoration
+                ev.preventDefault?.();
+                console.warn('[VaporwaveScene] WebGL context lost');
+              };
+              const restoredHandler = () => {
+                console.info('[VaporwaveScene] WebGL context restored');
+              };
+              canvasEl.addEventListener('webglcontextlost', lostHandler as EventListener);
+              canvasEl.addEventListener('webglcontextrestored', restoredHandler as EventListener);
+            }
           } catch (e) {
             console.error('[VaporwaveScene] Error during Canvas onCreated:', e);
           }
         }}
       >
-        <Suspense
-          fallback={
-            <Html center>
-              <div className="rounded-md border border-border bg-background/80 px-3 py-1.5 text-xs text-foreground shadow-sm backdrop-blur-sm">
-                Inicializando cena 3D...
-              </div>
-            </Html>
-          }
-        >
-          {/* Light starfield background (temporary replacement) */}
-          <LightStarfield count={3500} radius={260} size={1.6} twinkle />
+        <PerformanceMonitor onDecline={() => setStarCount(1200)} onIncline={() => setStarCount(1800)}>
+          <Suspense
+            fallback={
+              <Html center>
+                <div className="rounded-md border border-border bg-background/80 px-3 py-1.5 text-xs text-foreground shadow-sm backdrop-blur-sm">
+                  Inicializando cena 3D...
+                </div>
+              </Html>
+            }
+          >
+            {/* Light starfield background (temporary replacement) */}
+            <LightStarfield count={starCount} radius={260} size={1.6} twinkle />
 
-          <ambientLight intensity={0.35} color="#ffffff" />
+            <ambientLight intensity={0.35} color="#ffffff" />
 
-          {/* Main directional light */}
-          <directionalLight position={[0, 5, 3]} intensity={0.35} color="#ffffff" />
+            {/* Main directional light */}
+            <directionalLight position={[0, 5, 3]} intensity={0.35} color="#ffffff" />
 
-          {/* Large ground plane to ensure no "glass floor" */}
-          <mesh position={[0, -20, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-            <planeGeometry args={[2000, 2000]} />
-            <meshBasicMaterial color="#2b2b31" transparent={false} side={THREE.DoubleSide} />
-          </mesh>
+            {/* Large ground plane to ensure no "glass floor" */}
+            <mesh position={[0, -20, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+              <planeGeometry args={[2000, 2000]} />
+              <meshBasicMaterial color="#2b2b31" transparent={false} side={THREE.DoubleSide} />
+            </mesh>
 
-          {/* Main terrain */}
-          <VaporwaveTerrain cameraPosition={cameraPosition} />
-        </Suspense>
+            {/* Main terrain */}
+            <VaporwaveTerrain cameraPosition={cameraPosition} />
+          </Suspense>
+        </PerformanceMonitor>
       </Canvas>
     </div>
   );
