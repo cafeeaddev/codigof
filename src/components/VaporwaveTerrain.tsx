@@ -1,4 +1,3 @@
-
 import { useRef, useMemo } from 'react';
 import { useFrame, useLoader } from '@react-three/fiber';
 import { TextureLoader } from 'three';
@@ -188,7 +187,7 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
             />
           </mesh>
           
-          {/* Cyan/blue neon wireframe overlay as line segments to avoid z-fighting */}
+          {/* Wireframe overlay with specified color #2286D6 */}
           <lineSegments
             rotation={[-Math.PI * 0.5, 0, 0]}
             position={[0, -2.91, 0]}
@@ -196,7 +195,7 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
           >
             <primitive attach="geometry" object={wireframeGeometry} />
             <lineBasicMaterial
-              color="hsl(180, 100%, 50%)"
+              color="#2286D6"
               transparent={true}
               depthTest={true}
               depthWrite={false}
@@ -233,7 +232,7 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
             >
               <primitive attach="geometry" object={wireframeGeometry} />
               <lineBasicMaterial
-                color="hsl(180, 100%, 50%)"
+                color="#2286D6"
                 transparent={true}
                 depthTest={true}
                 depthWrite={false}
@@ -271,7 +270,7 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
             >
               <primitive attach="geometry" object={wireframeGeometry} />
               <lineBasicMaterial
-                color="hsl(180, 100%, 50%)"
+                color="#2286D6"
                 transparent={true}
                 depthTest={true}
                 depthWrite={false}
