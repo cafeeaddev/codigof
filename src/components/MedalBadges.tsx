@@ -37,7 +37,7 @@ export const MedalBadges: React.FC<MedalBadgesProps> = ({ completed, size = "md"
 
   return (
     <TooltipProvider delayDuration={100}>
-      <div className={cn("flex items-center", gap, className)} aria-label="Insígnias de missões">
+      <div className={cn("flex items-center relative z-[100] pointer-events-auto", gap, className)} aria-label="Insígnias de missões">
         {items.map((item) => (
           <Tooltip key={item.id}>
             <TooltipTrigger asChild>
@@ -45,7 +45,7 @@ export const MedalBadges: React.FC<MedalBadgesProps> = ({ completed, size = "md"
                 role="img"
                 aria-label={`${item.label} ${item.done ? "concluída" : "pendente"}`}
                 className={cn(
-                  "rounded-full border inline-flex items-center justify-center transition-colors",
+                  "rounded-full border inline-flex items-center justify-center transition-colors pointer-events-auto",
                   pad,
                   item.done
                     ? "bg-neon-green/10 border-neon-green/30 text-neon-green ring-1 ring-neon-green/40"
