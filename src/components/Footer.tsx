@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
-import { Wifi, User, Lock, Building2, Code2 } from 'lucide-react';
+import { Wifi, User, Lock, Building2 } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import { WelcomeScreen } from './WelcomeScreen';
@@ -155,9 +155,6 @@ export const Footer = () => {
 
             {/* Developer section */}
             <div className="text-center space-y-2">
-              <div className="flex justify-center mb-2">
-                <Code2 className="w-5 h-5 text-accent" />
-              </div>
               <p className="text-muted-foreground text-xs">
                 Desenvolvido pela{' '}
                 <span className="text-accent font-semibold">Café EAD</span>
