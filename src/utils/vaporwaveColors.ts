@@ -44,12 +44,12 @@ export const getEmissiveIntensity = (progress: number, height: number = 0): numb
 export const getDynamicNeonColor = (scrollProgress: number): string => {
   // Array of vibrant neon colors
   const neonColors = [
-    '#00FFFF', // Bright Cyan
-    '#FF00FF', // Neon Magenta
-    '#FF007F', // Neon Pink
-    '#00FF7F', // Neon Green
-    '#FF7F00', // Neon Orange
-    '#007FFF', // Electric Blue
+    '#2283D2', // Substitui Bright Cyan (#00FFFF)
+    '#70FFFF', // Substitui Neon Magenta (#FF00FF)
+    '#7089FF', // Substitui Neon Pink (#FF007F)
+    '#9649FF', // Substitui Neon Green (#00FF7F)
+    '#FF7BFF', // Substitui Neon Orange (#FF7F00)
+    '#FFC6FF', // Substitui Electric Blue (#007FFF)
   ];
   
   // Calculate which color segment we're in
