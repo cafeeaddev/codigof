@@ -1,5 +1,6 @@
 import { Canvas } from '@react-three/fiber';
 import { VaporwaveTerrain } from './VaporwaveTerrain';
+import { Suspense } from 'react';
 
 import { CustomStars } from './CustomStars';
 import { GalaxySky } from './GalaxySky';
