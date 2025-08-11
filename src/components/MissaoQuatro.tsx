@@ -309,7 +309,7 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
                 />
                 <Label 
                   htmlFor={`${currentQ.id}-${option.value}`}
-                  className="flex-1 text-sm leading-relaxed cursor-pointer"
+                  className="flex-1 text-base md:text-sm leading-relaxed cursor-pointer"
                 >
                   <span className="font-semibold text-primary mr-2">
                     {option.value.toUpperCase()})

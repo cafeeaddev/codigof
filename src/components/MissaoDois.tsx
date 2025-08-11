@@ -355,7 +355,7 @@ export const MissaoDois = ({ onComplete, userId }: MissaoDoisProps) => {
                   />
                   <Label
                     htmlFor={`q${currentQuestionData.id}-${option.letter}`}
-                    className="text-sm md:text-xs text-foreground cursor-pointer flex-1 leading-relaxed"
+                    className="text-base md:text-sm text-foreground cursor-pointer flex-1 leading-relaxed"
                   >
                     <span className="font-medium text-primary mr-1">{option.letter})</span>
                     {option.text}
