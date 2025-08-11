@@ -157,7 +157,7 @@ export const LinearLayout = () => {
 
         {/* Top-right diagnostic status indicator - completely static */}
         <div
-          className={`fixed top-[calc(env(safe-area-inset-top,0px)+0.75rem)] right-4 z-40 transition-opacity duration-300 ${
+          className={`fixed top-[calc(env(safe-area-inset-top,0px)+0.75rem)] right-4 z-60 transition-opacity duration-300 ${
             ((currentSection ?? 0) >= 1) ? 'opacity-100 pointer-events-auto animate-fade-in' : 'opacity-0 pointer-events-none'
           }`}
         >
