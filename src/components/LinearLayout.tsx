@@ -154,35 +154,15 @@ export const LinearLayout = () => {
 
         {/* Top-right diagnostic status indicator - completely static */}
         {currentSection >= 1 && (
-          <div className="fixed top-3 right-4 z-40 pointer-events-none">
-            <div className="flex items-center gap-3 bg-card/80 backdrop-blur-md px-4 py-2 rounded-lg border border-neon-cyan/30 shadow-lg">
-              {/* Status indicator */}
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-neon-cyan rounded-full animate-pulse shadow-lg shadow-neon-cyan/50"></div>
-                <span className="text-neon-cyan text-sm font-medium tracking-wide">ATIVO</span>
-              </div>
-              
-              {/* Separator */}
-              <div className="w-px h-4 bg-border/50"></div>
-              
-              {/* Diagnostic text */}
-              <span className="text-foreground/90 text-sm font-medium">
-                Sistema de Diagnóstico
-              </span>
-            </div>
-          </div>
-        )}
-
-        {/* Secret access moved to bottom corner */}
-        {currentSection >= 1 && (
-          <div className="fixed bottom-4 right-4 z-40">
+          <div className="fixed top-3 right-4 z-40">
             <SecretFAQDialog>
-              <div className="text-muted-foreground/40 hover:text-accent transition-colors cursor-pointer text-xs font-mono bg-card/60 backdrop-blur-sm px-2 py-1 rounded border border-border/30">
-                [?]
-              </div>
+              <button className="bg-card/90 backdrop-blur-md px-4 py-2 rounded-lg border border-border/50 shadow-lg hover:bg-card transition-colors text-sm font-medium">
+                Posso te contar um segredo?
+              </button>
             </SecretFAQDialog>
           </div>
         )}
+
         
         {/* Internal scroll container */}
         <div 
@@ -216,7 +196,7 @@ export const LinearLayout = () => {
             <FeatureSection
               {...features[0]}
               index={0}
-              hideInlineSecret={false}
+              hideInlineSecret={true}
             />
           </SectionContainer>
 
