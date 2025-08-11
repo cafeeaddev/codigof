@@ -10,6 +10,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import CreateAdmin from "./pages/CreateAdmin";
 import GameSummary from "./pages/GameSummary";
 import NotFound from "./pages/NotFound";
+import FixedBrandLogos from "./components/FixedBrandLogos";
 
 const queryClient = new QueryClient();
 
@@ -28,6 +29,7 @@ const App = () => (
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
+      <FixedBrandLogos />
     </TooltipProvider>
   </QueryClientProvider>
 );
