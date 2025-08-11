@@ -14,7 +14,7 @@ import { WelcomeScreen } from './WelcomeScreen';
 import { useAuth } from '@/contexts/AuthContext';
 import { useGameProgress } from '@/hooks/useGameProgress';
 import SecretFAQDialog from './SecretFAQDialog';
-import { useScrollProgress } from '@/hooks/useScrollProgress';
+
 
 const features = [
   {
@@ -71,7 +71,7 @@ export const LinearLayout = () => {
     unregisterSection
   } = useInternalScroll();
 
-  const scrollProgress = useScrollProgress();
+  
 
   // Update position when section changes - only if user is authenticated and game progress is enabled
   useEffect(() => {
@@ -158,8 +158,8 @@ export const LinearLayout = () => {
         {/* Top-right diagnostic status indicator - completely static */}
         <div
           className={`fixed top-[calc(env(safe-area-inset-top,0px)+0.75rem)] right-4 z-40 transition-opacity duration-300 ${
-            scrollProgress > 0 ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
-          } md:opacity-100 md:pointer-events-auto`}
+            ((currentSection ?? 0) >= 2) ? 'opacity-100 pointer-events-auto animate-fade-in' : 'opacity-0 pointer-events-none'
+          }`}
         >
           <SecretFAQDialog>
             <button
