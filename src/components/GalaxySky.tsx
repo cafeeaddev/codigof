@@ -81,9 +81,9 @@ export const GalaxySky = () => {
   };
 
   // Keep inside camera far (300) to avoid clipping
-  const small = useMemo(() => generateLayer(3000, 140, 260), []);
-  const medium = useMemo(() => generateLayer(1200, 150, 240), []);
-  const large = useMemo(() => generateLayer(500, 160, 220), []);
+  const small = useMemo(() => generateLayer(4500, 140, 260), []);
+  const medium = useMemo(() => generateLayer(1800, 150, 240), []);
+  const large = useMemo(() => generateLayer(800, 160, 220), []);
   // Refs to update star colors each frame
   const smallRef = useRef<THREE.Points>(null);
   const mediumRef = useRef<THREE.Points>(null);
