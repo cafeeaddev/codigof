@@ -154,7 +154,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
+      (event, session) => {
         console.log('[AuthContext] Auth state change:', event, 'session exists:', !!session, 'user:', session?.user?.id);
         console.log('[AuthContext] Full session object:', session);
         setSession(session);
@@ -164,7 +164,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           console.log('[AuthContext] User logged in, userId:', session.user.id);
           updateLastActivity(); // Set activity on login
           // Defer profile fetch to avoid deadlock
-setTimeout(() => {
+          setTimeout(() => {
             fetchUserProfile(session.user.id, session.user.email ?? undefined);
           }, 0);
         } else {
