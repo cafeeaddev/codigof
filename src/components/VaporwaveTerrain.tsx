@@ -4,6 +4,7 @@ import { TextureLoader } from 'three';
 import * as THREE from 'three';
 import gridTexture from '../assets/vaporwave-grid.jpg';
 import { useScrollProgress } from '../hooks/useScrollProgress';
+import { getDynamicNeonColor } from '../utils/vaporwaveColors';
 
 interface VaporwaveTerrainProps {
   cameraPosition?: [number, number, number];
@@ -37,7 +38,7 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
     return tex;
   }, [texture]);
   
-  // Create normal map from the same texture for depth
+  // Configure texture for background (stone-like appearance)
   const normalTexture = useMemo(() => {
     const tex = texture.clone();
     tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
@@ -101,17 +102,8 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
   // Wireframe geometry for line rendering (shared)
   const wireframeGeometry = useMemo(() => new THREE.WireframeGeometry(backgroundGeometry), [backgroundGeometry]);
   
-  // Enhanced color calculation with cyan/blue neon
-  const getEnhancedColor = (progress: number): string => {
-    // Use cyan/blue color for neon lines like in reference image
-    const neonCyan = [0, 255, 255]; // #00ffff
-    
-    const r = neonCyan[0];
-    const g = neonCyan[1];
-    const b = neonCyan[2];
-    
-    return `rgb(${r}, ${g}, ${b})`;
-  };
+  // Get dynamic neon color based on scroll progress
+  const currentNeonColor = getDynamicNeonColor(scrollProgress);
   
   // Animation and color updates with pulsating effect
   useFrame((state) => {
@@ -140,12 +132,13 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
           group.position.z += 240;
         }
         
-         // Apply pulsating effect to all wireframe line materials in this tile (center + sides)
+         // Apply pulsating effect and dynamic color to all wireframe line materials
          group.children.forEach((child) => {
            if ((child as any).type === 'LineSegments') {
              const material = (child as THREE.LineSegments).material as THREE.LineBasicMaterial;
              if (material) {
                material.opacity = 0.7 + Math.sin(state.clock.elapsedTime * 1.5) * 0.2;
+               material.color.set(currentNeonColor); // Apply dynamic color
              }
            }
          });
@@ -187,7 +180,7 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
             />
           </mesh>
           
-          {/* Wireframe overlay with specified color #2286D6 */}
+          {/* Wireframe overlay with dynamic neon color */}
           <lineSegments
             rotation={[-Math.PI * 0.5, 0, 0]}
             position={[0, -2.91, 0]}
@@ -195,7 +188,7 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
           >
             <primitive attach="geometry" object={wireframeGeometry} />
             <lineBasicMaterial
-              color="#2286D6"
+              color={currentNeonColor}
               transparent={true}
               depthTest={true}
               depthWrite={false}
@@ -232,7 +225,7 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
             >
               <primitive attach="geometry" object={wireframeGeometry} />
               <lineBasicMaterial
-                color="#2286D6"
+                color={currentNeonColor}
                 transparent={true}
                 depthTest={true}
                 depthWrite={false}
@@ -270,7 +263,7 @@ export const VaporwaveTerrain = ({ cameraPosition = [0, 3, 5] }: VaporwaveTerrai
             >
               <primitive attach="geometry" object={wireframeGeometry} />
               <lineBasicMaterial
-                color="#2286D6"
+                color={currentNeonColor}
                 transparent={true}
                 depthTest={true}
                 depthWrite={false}

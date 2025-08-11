@@ -39,3 +39,55 @@ export const getEmissiveIntensity = (progress: number, height: number = 0): numb
   const heightFactor = Math.max(0, Math.min(1, (height + 0.5) / 1.0));
   return baseIntensity + (heightFactor * 0.4); // Strong emission for wireframe glow
 };
+
+// New function for dynamic neon colors based on scroll progress
+export const getDynamicNeonColor = (scrollProgress: number): string => {
+  // Array of vibrant neon colors
+  const neonColors = [
+    '#00FFFF', // Bright Cyan
+    '#FF00FF', // Neon Magenta
+    '#FF007F', // Neon Pink
+    '#00FF7F', // Neon Green
+    '#FF7F00', // Neon Orange
+    '#007FFF', // Electric Blue
+  ];
+  
+  // Calculate which color segment we're in
+  const segmentCount = neonColors.length;
+  const segmentSize = 1 / (segmentCount - 1);
+  const currentSegment = Math.floor(scrollProgress / segmentSize);
+  const localProgress = (scrollProgress % segmentSize) / segmentSize;
+  
+  // Handle edge cases
+  if (currentSegment >= segmentCount - 1) {
+    return neonColors[segmentCount - 1];
+  }
+  
+  // Get current and next colors
+  const currentColor = neonColors[currentSegment];
+  const nextColor = neonColors[currentSegment + 1];
+  
+  // Convert hex to RGB for interpolation
+  const hexToRgb = (hex: string) => {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+      r: parseInt(result[1], 16),
+      g: parseInt(result[2], 16),
+      b: parseInt(result[3], 16)
+    } : { r: 0, g: 255, b: 255 }; // Default to cyan
+  };
+  
+  const rgbToHex = (r: number, g: number, b: number) => {
+    return `#${Math.round(r).toString(16).padStart(2, '0')}${Math.round(g).toString(16).padStart(2, '0')}${Math.round(b).toString(16).padStart(2, '0')}`;
+  };
+  
+  const currentRgb = hexToRgb(currentColor);
+  const nextRgb = hexToRgb(nextColor);
+  
+  // Interpolate between colors
+  const interpolatedR = currentRgb.r + (nextRgb.r - currentRgb.r) * localProgress;
+  const interpolatedG = currentRgb.g + (nextRgb.g - currentRgb.g) * localProgress;
+  const interpolatedB = currentRgb.b + (nextRgb.b - currentRgb.b) * localProgress;
+  
+  return rgbToHex(interpolatedR, interpolatedG, interpolatedB);
+};
