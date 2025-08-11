@@ -221,6 +221,7 @@ export const LinearLayout = () => {
               subtitle="Prepare-se para 4 missões intensas onde cada decisão pode mudar o rumo da sua jornada. Encare desafios estratégicos e deixe suas escolhas guiarem o caminho."
               colorClass="bg-neon-cyan"
               Icon={Target}
+              titleClass="text-neon-cyan"
             />
           </SectionContainer>
 
