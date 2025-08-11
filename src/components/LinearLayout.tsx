@@ -158,23 +158,9 @@ export const LinearLayout = () => {
             <SecretFAQDialog>
               <button
                 aria-label="Abrir FAQ secreto"
-                className="flex items-center gap-3 bg-transparent hover:opacity-95 transition-opacity"
+                className="relative grid place-items-center w-10 h-10 rounded-full bg-gradient-to-r from-neon-pink via-neon-purple to-neon-cyan text-primary-foreground border border-border/50 shadow-glow hover:opacity-90 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background pulse"
               >
-                {/* Avatar da IA com borda em gradiente */}
-                <div className="relative w-10 h-10 rounded-full p-[2px] bg-gradient-to-r from-neon-pink via-neon-purple to-neon-cyan shadow-glow">
-                  <div className="w-full h-full rounded-full bg-background overflow-hidden">
-                    <img
-                      src="/lovable-uploads/37267435-1ca0-44b0-adde-17af9ee06454.png"
-                      alt="IA Cody"
-                      className="w-full h-full object-cover"
-                      loading="lazy"
-                    />
-                  </div>
-                </div>
-                {/* Balão de fala */}
-                <div className="px-4 py-2 rounded-lg bg-card/90 backdrop-blur-md border border-border/50 shadow-lg text-sm font-medium">
-                  Posso te contar um segredo?
-                </div>
+                <span className="text-base font-bold">?</span>
               </button>
             </SecretFAQDialog>
           </div>
