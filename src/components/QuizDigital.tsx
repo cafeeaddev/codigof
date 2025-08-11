@@ -292,23 +292,6 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
     );
   }
 
-  if (isCompleted) {
-    return (
-      <div className="h-full flex flex-col items-center justify-center space-y-4 p-4">
-        <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center">
-          <CheckCircle className="w-6 h-6 text-primary" />
-        </div>
-        <div className="text-center">
-          <h4 className="text-lg font-bold text-primary mb-1">
-            Quiz Concluído!
-          </h4>
-          <p className="text-sm text-muted-foreground">
-            Suas respostas foram salvas com sucesso.
-          </p>
-        </div>
-      </div>
-    );
-  }
 
   const currentQuestionData = quizQuestions[currentQuestion];
   const progress = ((currentQuestion + 1) / quizQuestions.length) * 100;
