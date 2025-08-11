@@ -45,11 +45,11 @@ export const getDynamicNeonColor = (scrollProgress: number): string => {
   // Array of vibrant neon colors
   const neonColors = [
     '#2283D2', // Substitui Bright Cyan (#00FFFF)
-    '#70FFFF', // Substitui Neon Magenta (#FF00FF)
-    '#7089FF', // Substitui Neon Pink (#FF007F)
+    '#34C5F0', // Substitui #70FFFF
+    '#4739CC', // Substitui #7089FF
     '#9649FF', // Substitui Neon Green (#00FF7F)
-    '#FF7BFF', // Substitui Neon Orange (#FF7F00)
-    '#FFC6FF', // Substitui Electric Blue (#007FFF)
+    '#D92CFF', // Substitui #FF7BFF
+    '#2200BF', // Substitui #FFC6FF
   ];
   
   // Calculate which color segment we're in
