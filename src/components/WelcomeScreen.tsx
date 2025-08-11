@@ -31,7 +31,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
   const [completedMissions, setCompletedMissions] = useState<Set<number>>(new Set());
   const [userProgress, setUserProgress] = useState({ total_xp: 0, completedMissionsCount: 0 });
   const [justCompleted, setJustCompleted] = useState<1 | 2 | 3 | 4 | null>(null);
-  const UNLOCK_DELAY = 1800; // ms
+  
   
   console.log('[WelcomeScreen] Props received:', { 
     userProfile: userProfile.nome, 
@@ -49,26 +49,23 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
     }
   };
 
-  // Fluxo ao finalizar missão: mostra tela de concluída e libera a próxima após um tempo
+  // Fluxo ao finalizar missão: atualização instantânea sem atraso
   const handleMissionComplete = (missionId: 1 | 2 | 3 | 4) => {
     updateProgress(missionId);
-    setJustCompleted(missionId);
-    setTimeout(() => {
-      setCompletedMissions(prev => new Set([...prev, missionId]));
-      if (missionId < 4) {
-        setCurrentMission((missionId + 1) as 1 | 2 | 3 | 4);
-        toast({
-          title: `Missão ${missionId} concluída! +25 XP`,
-          description: `Missão ${missionId + 1} desbloqueada! Continue evoluindo.`,
-        });
-      } else {
-        toast({
-          title: `Missão ${missionId} concluída! +25 XP`,
-          description: 'Parabéns! Todas as missões foram concluídas.',
-        });
-      }
-      setJustCompleted(null);
-    }, UNLOCK_DELAY);
+    setCompletedMissions(prev => new Set([...prev, missionId]));
+    if (missionId < 4) {
+      setCurrentMission((missionId + 1) as 1 | 2 | 3 | 4);
+      toast({
+        title: `Missão ${missionId} concluída! +25 XP`,
+        description: `Missão ${missionId + 1} desbloqueada! Continue evoluindo.`,
+      });
+    } else {
+      toast({
+        title: `Missão ${missionId} concluída! +25 XP`,
+        description: 'Parabéns! Todas as missões foram concluídas.',
+      });
+    }
+    setJustCompleted(null);
   };
 
   useEffect(() => {
