@@ -118,8 +118,8 @@ export const Footer = () => {
                 maxLength={4}
                 value={cpf}
                 onChange={(e) => setCpf(e.target.value.replace(/\D/g, '').slice(0, 4))}
-                placeholder="Digite os 4 últimos dígitos do seu CPF"
-                className="bg-input border-border text-foreground placeholder-muted-foreground focus:border-secondary focus:ring-secondary/50 rounded-lg"
+                placeholder="4 últimos dígitos do CPF"
+                className="bg-input border-border text-foreground placeholder-muted-foreground placeholder:text-xs sm:placeholder:text-sm focus:border-secondary focus:ring-secondary/50 rounded-lg px-3 sm:px-4"
                 required
               />
             </div>
