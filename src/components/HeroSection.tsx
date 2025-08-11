@@ -1,4 +1,3 @@
-
 import { ChevronDown } from 'lucide-react';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
 
@@ -46,18 +45,9 @@ export const HeroSection = ({ onLoginClick, onContinueClick }: HeroSectionProps)
             style={buttonsReveal.style}
             className="flex justify-center px-4"
           >
-            <div className="flex items-center gap-3 bg-white/10 backdrop-blur-md px-4 sm:px-6 lg:px-8 py-4 sm:py-5 lg:py-6 rounded-xl border border-white/20 shadow-lg w-full sm:w-auto max-w-xs sm:max-w-none pointer-events-none">
-              {/* Status indicator */}
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-neon-cyan rounded-full animate-pulse shadow-lg shadow-neon-cyan/50"></div>
-                <span className="text-neon-cyan text-xs sm:text-sm font-medium tracking-wide">ATIVO</span>
-              </div>
-              
-              {/* Separator */}
-              <div className="w-px h-4 bg-white/30"></div>
-              
+            <div className="bg-gradient-to-r from-neon-cyan to-neon-purple backdrop-blur-md px-4 sm:px-6 lg:px-8 py-4 sm:py-5 lg:py-6 rounded-xl border border-neon-cyan/40 shadow-lg shadow-neon-cyan/20 w-full sm:w-auto max-w-xs sm:max-w-none pointer-events-none">
               {/* Diagnostic text */}
-              <span className="text-white/90 text-sm sm:text-base lg:text-lg font-medium">
+              <span className="text-white text-sm sm:text-base lg:text-lg font-medium">
                 <span className="hidden sm:inline">Sistema de Diagnóstico Ativado</span>
                 <span className="sm:hidden">Diagnóstico Ativado</span>
               </span>
