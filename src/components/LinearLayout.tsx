@@ -8,12 +8,13 @@ import { Navigation } from './Navigation';
 import { SectionContainer } from './SectionContainer';
 import { ScrollProgress } from './ScrollProgress';
 import { FeatureFold } from './FeatureFold';
-import { ChevronDown, MessageCircle, Target, Trophy, Medal } from 'lucide-react';
+import { ChevronDown, Target, Trophy, Medal } from 'lucide-react';
 import { useInternalScroll } from '@/hooks/useInternalScroll';
 import { LoginScreen } from './LoginScreen';
 import { WelcomeScreen } from './WelcomeScreen';
 import { useAuth } from '@/contexts/AuthContext';
 import { useGameProgress } from '@/hooks/useGameProgress';
+import SecretFAQDialog from './SecretFAQDialog';
 
 const features = [
   {
@@ -159,14 +160,14 @@ export const LinearLayout = () => {
         </div>
         {/* Top-right secret label */}
         {currentSection >= 1 && (
-          <button
-            className="fixed top-3 right-4 z-40 pointer-events-auto flex items-center gap-2 text-secondary bg-card/60 backdrop-blur px-3 py-1.5 rounded-full border border-border/50 hover-scale"
-            aria-label="Segredo"
-          >
-            <MessageCircle className="w-4 h-4" />
-            <span className="font-medium">Posso te contar um segredo?</span>
-            <span className="text-xs">🤫</span>
-          </button>
+          <SecretFAQDialog>
+            <button
+              className="fixed top-3 right-4 z-40 pointer-events-auto flex items-center gap-2 text-secondary bg-card/60 backdrop-blur px-3 py-1.5 rounded-full border border-border/50 hover-scale"
+              aria-label="Segredo"
+            >
+              <span className="font-medium">Posso te contar um segredo?</span>
+            </button>
+          </SecretFAQDialog>
         )}
         
         {/* Internal scroll container */}
