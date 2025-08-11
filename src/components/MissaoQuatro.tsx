@@ -278,7 +278,8 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
               variant="outline"
               onClick={(e) => { e.stopPropagation(); handlePrevious(); }}
               disabled={currentQuestion === 0}
-              className="w-24"
+              size="sm"
+              className="border-secondary text-secondary hover:bg-secondary hover:text-secondary-foreground"
             >
               Anterior
             </Button>
@@ -287,7 +288,8 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
                 type="button"
                 onClick={(e) => { e.stopPropagation(); handleSubmit(); }}
                 disabled={!currentAnswer || isSubmitting}
-                className="w-32"
+                size="sm"
+                className="bg-primary hover:bg-primary/90"
               >
                 {isSubmitting ? "Enviando..." : "Finalizar"}
               </Button>
