@@ -287,7 +287,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
           
           {/* Layout Mobile: Apenas a missão ativa em tela cheia */}
           <div className="block md:hidden h-full">
-            <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-4 shadow-neon h-full overflow-hidden flex flex-col">
+            <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-4 shadow-neon h-full overflow-hidden flex flex-col min-h-0">
               <div className="flex items-center justify-between mb-4 p-3 bg-muted/50 rounded-lg">
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 bg-accent rounded-full"></div>
@@ -305,7 +305,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                 </Button>
               </div>
 
-              <div className="flex-1 overflow-hidden">
+              <div className="flex-1 overflow-hidden min-h-0">
                 {justCompleted !== null ? (
                   <div className="h-full flex flex-col items-center justify-center space-y-4 p-4 animate-fade-in">
                     <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center">
@@ -446,8 +446,8 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
           </div>
 
           {/* Área Principal das Perguntas */}
-          <div className="flex-1 overflow-hidden">
-            <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-4 shadow-neon h-full flex flex-col">
+          <div className="flex-1 overflow-hidden min-h-0">
+            <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-4 shadow-neon h-full flex flex-col overflow-hidden min-h-0">
               <div className="flex items-center gap-2 mb-4 p-2 bg-muted/50 rounded-lg">
                 <div className="w-3 h-3 bg-accent rounded-full"></div>
                 <span className="text-accent text-sm font-bold tracking-wider">

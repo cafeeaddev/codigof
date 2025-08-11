@@ -8,6 +8,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import MedalEarnedDialog from './MedalEarnedDialog';
+import { ScrollArea } from './ui/scroll-area';
 
 interface MissaoQuatroProps {
   onComplete: () => void;
@@ -255,86 +256,90 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
   const currentAnswer = answers[currentQ.id];
 
   return (
-    <div className="w-full max-w-4xl mx-auto p-6">
-      <Card className="border-primary/20 bg-card/50 backdrop-blur-sm">
-        <CardHeader className="text-center pb-3">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-sm text-muted-foreground">
-              Pergunta {currentQuestion + 1} de {questions.length}
-            </span>
-          </div>
-          
-          <Progress value={progress} className="w-full h-2 mb-3" />
-          
-          <CardTitle className="text-lg font-bold text-primary">
-            {currentQ.id}. {currentQ.question}
-          </CardTitle>
-        </CardHeader>
-
-        <CardContent className="space-y-6">
-          <div className="sticky top-0 z-[10000] bg-card/90 backdrop-blur-sm border-b border-secondary/30 py-2 px-1 flex justify-between items-center pointer-events-auto shadow-neon" role="toolbar">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={(e) => { e.stopPropagation(); handlePrevious(); }}
-              disabled={currentQuestion === 0}
-              size="sm"
-              className="border-secondary text-secondary hover:bg-secondary hover:text-secondary-foreground"
-            >
-              Anterior
-            </Button>
-            {isLastQuestion ? (
-              <Button
-                type="button"
-                onClick={(e) => { e.stopPropagation(); handleSubmit(); }}
-                disabled={!currentAnswer || isSubmitting}
-                size="sm"
-                className="bg-primary hover:bg-primary/90"
-              >
-                {isSubmitting ? "Enviando..." : "Finalizar"}
-              </Button>
-            ) : (
-              <Button
-                type="button"
-                onClick={(e) => { e.stopPropagation(); handleNext(); }}
-                disabled={!currentAnswer}
-                className="w-24"
-              >
-                Próxima
-              </Button>
-            )}
-          </div>
-          <RadioGroup 
-            value={currentAnswer || ""} 
-            onValueChange={(value) => handleAnswer(currentQ.id, value)}
-            className="space-y-4"
-          >
-            {currentQ.options.map((option) => (
-              <div 
-                key={option.value} 
-                className="flex items-start space-x-3 p-3 rounded-lg border border-secondary/30 hover:border-primary/30 transition-colors cursor-pointer"
-                onClick={() => handleAnswer(currentQ.id, option.value)}
-              >
-                <RadioGroupItem 
-                  value={option.value} 
-                  id={`${currentQ.id}-${option.value}`}
-                  className="mt-1"
-                />
-                <Label 
-                  htmlFor={`${currentQ.id}-${option.value}`}
-                  className="flex-1 text-base md:text-sm leading-relaxed cursor-pointer"
-                >
-                  <span className="font-semibold text-primary mr-2">
-                    {option.value.toUpperCase()})
-                  </span>
-                  {option.text}
-                </Label>
+    <div className="h-full flex flex-col min-h-0">
+      <ScrollArea className="flex-1">
+        <div className="w-full max-w-4xl mx-auto p-4 pb-20" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 56px)' }}>
+          <Card className="border-primary/20 bg-card/50 backdrop-blur-sm">
+            <CardHeader className="text-center pb-3">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-sm text-muted-foreground">
+                  Pergunta {currentQuestion + 1} de {questions.length}
+                </span>
               </div>
-            ))}
-          </RadioGroup>
+              
+              <Progress value={progress} className="w-full h-2 mb-3" />
+              
+              <CardTitle className="text-lg font-bold text-primary">
+                {currentQ.id}. {currentQ.question}
+              </CardTitle>
+            </CardHeader>
 
-        </CardContent>
-      </Card>
+            <CardContent className="space-y-6">
+              <div className="sticky top-0 z-[10000] bg-card/90 backdrop-blur-sm border-b border-secondary/30 py-2 px-1 flex justify-between items-center pointer-events-auto shadow-neon" role="toolbar">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={(e) => { e.stopPropagation(); handlePrevious(); }}
+                  disabled={currentQuestion === 0}
+                  size="sm"
+                  className="border-secondary text-secondary hover:bg-secondary hover:text-secondary-foreground"
+                >
+                  Anterior
+                </Button>
+                {isLastQuestion ? (
+                  <Button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); handleSubmit(); }}
+                    disabled={!currentAnswer || isSubmitting}
+                    size="sm"
+                    className="bg-primary hover:bg-primary/90"
+                  >
+                    {isSubmitting ? "Enviando..." : "Finalizar"}
+                  </Button>
+                ) : (
+                  <Button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); handleNext(); }}
+                    disabled={!currentAnswer}
+                    className="w-24"
+                  >
+                    Próxima
+                  </Button>
+                )}
+              </div>
+              <RadioGroup 
+                value={currentAnswer || ""} 
+                onValueChange={(value) => handleAnswer(currentQ.id, value)}
+                className="space-y-4"
+              >
+                {currentQ.options.map((option) => (
+                  <div 
+                    key={option.value} 
+                    className="flex items-start space-x-3 p-3 rounded-lg border border-secondary/30 hover:border-primary/30 transition-colors cursor-pointer"
+                    onClick={() => handleAnswer(currentQ.id, option.value)}
+                  >
+                    <RadioGroupItem 
+                      value={option.value} 
+                      id={`${currentQ.id}-${option.value}`}
+                      className="mt-1"
+                    />
+                    <Label 
+                      htmlFor={`${currentQ.id}-${option.value}`}
+                      className="flex-1 text-base md:text-sm leading-relaxed cursor-pointer"
+                    >
+                      <span className="font-semibold text-primary mr-2">
+                        {option.value.toUpperCase()})
+                      </span>
+                      {option.text}
+                    </Label>
+                  </div>
+                ))}
+              </RadioGroup>
+
+            </CardContent>
+          </Card>
+        </div>
+      </ScrollArea>
       <MedalEarnedDialog open={showMedal} onOpenChange={handleMedalChange} missionLabel="Missão 4" xp={25} />
     </div>
   );
