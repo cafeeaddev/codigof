@@ -49,7 +49,7 @@ export const getDynamicNeonColor = (scrollProgress: number): string => {
     '#4739CC', // Substitui #7089FF
     '#9649FF', // Substitui Neon Green (#00FF7F)
     '#D92CFF', // Substitui #FF7BFF
-    '#2200BF', // Substitui #FFC6FF
+    '#2283D2', // Substitui #FFC6FF
   ];
   
   // Calculate which color segment we're in
