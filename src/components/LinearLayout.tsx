@@ -7,15 +7,13 @@ import { Navigation } from './Navigation';
 import { SectionContainer } from './SectionContainer';
 import { ScrollProgress } from './ScrollProgress';
 import { FeatureFold } from './FeatureFold';
-import { ChevronDown, Target, Trophy, Medal, HelpCircle } from 'lucide-react';
+import { ChevronDown, Target, Trophy, Medal } from 'lucide-react';
 import { useInternalScroll } from '@/hooks/useInternalScroll';
 import { LoginScreen } from './LoginScreen';
 import { WelcomeScreen } from './WelcomeScreen';
 import { useAuth } from '@/contexts/AuthContext';
 import { useGameProgress } from '@/hooks/useGameProgress';
 import SecretFAQDialog from './SecretFAQDialog';
-import TutorialOverlay from './TutorialOverlay';
-import { Button } from './ui/button';
 const features = [
   {
     id: 'timeline',
@@ -43,7 +41,6 @@ const features = [
 export const LinearLayout = () => {
   const [showWelcome, setShowWelcome] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
-  const [showTutorial, setShowTutorial] = useState(false);
   // Camera configuration for vaporwave scene
   const [cameraPosition, setCameraPosition] = useState<[number, number, number]>([0, 1, -8]);
   const [cameraFov, setCameraFov] = useState(65);
@@ -71,14 +68,6 @@ export const LinearLayout = () => {
     registerSection,
     unregisterSection
   } = useInternalScroll();
-
-  // Show tutorial on first visit
-  useEffect(() => {
-    const seen = localStorage.getItem('tutorialSeen');
-    if (!seen) {
-      setShowTutorial(true);
-    }
-  }, []);
   // Update position when section changes - only if user is authenticated and game progress is enabled
   useEffect(() => {
     if (gameProgressEnabled && user && currentSection !== undefined) {
@@ -314,24 +303,6 @@ export const LinearLayout = () => {
         onSectionClick={scrollToSection}
       />
 
-      {/* Help button */}
-      <div className="fixed bottom-4 right-4 z-[60] pointer-events-auto">
-        <Button variant="secondary" size="sm" onClick={() => setShowTutorial(true)}>
-          <HelpCircle className="w-4 h-4 mr-2" /> Ajuda
-        </Button>
-      </div>
-
-      {/* Tutorial Overlay */}
-      {showTutorial && (
-        <TutorialOverlay
-          stage={user && profile ? 'ingame' : 'prelogin'}
-          onClose={() => setShowTutorial(false)}
-          onDontShowAgain={() => {
-            localStorage.setItem('tutorialSeen', '1');
-            setShowTutorial(false);
-          }}
-        />
-      )}
     </div>
   );
 };

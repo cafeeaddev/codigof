@@ -503,6 +503,25 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
         </div>
       </div>
 
+      {/* Botão de Ajuda dentro do jogo */}
+      <div className="fixed bottom-4 right-4 z-[90]">
+        <Button variant="secondary" size="sm" onClick={() => setShowTutorial(true)}>
+          <HelpCircle className="w-4 h-4 mr-2" /> Ajuda
+        </Button>
+      </div>
+
+      {/* Tutorial somente in-game */}
+      {showTutorial && (
+        <TutorialOverlay
+          stage="ingame"
+          onClose={() => setShowTutorial(false)}
+          onDontShowAgain={() => {
+            localStorage.setItem('tutorialSeen','1');
+            setShowTutorial(false);
+          }}
+        />
+      )}
+
     </>
   );
 };
