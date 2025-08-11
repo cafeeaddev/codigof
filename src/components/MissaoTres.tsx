@@ -229,10 +229,10 @@ export const MissaoTres = ({ onComplete }: MissaoTresProps) => {
     <div className="h-full flex flex-col">
       <ScrollArea className="flex-1">
         <div className="p-2 pb-20" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 56px)' }}>
-          <div className="sticky top-0 z-[2000] bg-card/80 backdrop-blur-sm border-b border-secondary/30 py-2 px-1 flex justify-between items-center pointer-events-auto shadow-neon">
+          <div className="sticky top-0 z-[10000] bg-card/80 backdrop-blur-sm border-b border-secondary/30 py-2 px-1 flex justify-between items-center pointer-events-auto shadow-neon">
             <Button
               type="button"
-              onClick={goToPreviousQuestion}
+              onClick={(e) => { e.stopPropagation(); goToPreviousQuestion(); }}
               disabled={currentQuestion === 0}
               variant="outline"
               size="sm"
@@ -244,7 +244,7 @@ export const MissaoTres = ({ onComplete }: MissaoTresProps) => {
             {currentQuestion === quizQuestions.length - 1 ? (
               <Button
                 type="button"
-                onClick={submitQuiz}
+                onClick={(e) => { e.stopPropagation(); submitQuiz(); }}
                 disabled={!answers[currentQuestionData.id] || isSubmitting}
                 size="sm"
                 className="bg-primary hover:bg-primary/90"
@@ -254,7 +254,7 @@ export const MissaoTres = ({ onComplete }: MissaoTresProps) => {
             ) : (
               <Button
                 type="button"
-                onClick={goToNextQuestion}
+                onClick={(e) => { e.stopPropagation(); goToNextQuestion(); }}
                 disabled={!answers[currentQuestionData.id]}
                 size="sm"
                 className="bg-primary hover:bg-primary/90"
