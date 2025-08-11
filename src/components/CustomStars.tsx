@@ -45,7 +45,7 @@ export const CustomStars = () => {
 
   // Generate star positions with a strong horizon focus
   const { positions, colors, blinkPhases } = useMemo(() => {
-    const starCount = 1500;
+    const starCount = 600;
     const positions = new Float32Array(starCount * 3);
     const colors = new Float32Array(starCount * 3);
     const blinkPhases = new Float32Array(starCount);

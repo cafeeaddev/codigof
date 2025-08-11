@@ -16,8 +16,8 @@ interface MeteorsProps {
 }
 
 export const Meteors = ({
-  count = 60,
-  spawnRate = 0.8,
+  count = 25,
+  spawnRate = 0.4,
   area = { x: [-160, 160], y: [20, 100], z: [-220, -120] },
   speedRange = [40, 90],
   lengthRange = [3, 9],
