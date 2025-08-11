@@ -207,6 +207,12 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                 }}
                 size="md"
                 className="pl-2 ml-2 border-l border-border/50"
+                medalNames={[
+                  "Explorador do Digital",
+                  "Navegante do Cotidiano Digital",
+                  "Superador de Desafios",
+                  "Conhecedor de Ferramentas",
+                ]}
               />
             </div>
           </div>
@@ -256,6 +262,12 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
               m4: completedMissions.has(4),
             }}
             size="sm"
+            medalNames={[
+              "Explorador do Digital",
+              "Navegante do Cotidiano Digital",
+              "Superador de Desafios",
+              "Conhecedor de Ferramentas",
+            ]}
           />
         </div>
         </div>

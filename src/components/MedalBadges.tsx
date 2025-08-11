@@ -12,14 +12,22 @@ interface MedalBadgesProps {
   };
   size?: "sm" | "md";
   className?: string;
+  medalNames?: string[]; // [m1, m2, m3, m4]
 }
 
-export const MedalBadges: React.FC<MedalBadgesProps> = ({ completed, size = "md", className }) => {
+export const MedalBadges: React.FC<MedalBadgesProps> = ({ completed, size = "md", className, medalNames }) => {
+  const defaultMedalNames = [
+    "Explorador do Digital",
+    "Navegante do Cotidiano Digital",
+    "Superador de Desafios",
+    "Conhecedor de Ferramentas",
+  ];
+  const names = medalNames && medalNames.length === 4 ? medalNames : defaultMedalNames;
   const items = [
-    { id: 1, label: "Missão 1", done: completed.m1 },
-    { id: 2, label: "Missão 2", done: completed.m2 },
-    { id: 3, label: "Missão 3", done: completed.m3 },
-    { id: 4, label: "Missão 4", done: completed.m4 },
+    { id: 1, label: "Missão 1", done: completed.m1, medalName: names[0] },
+    { id: 2, label: "Missão 2", done: completed.m2, medalName: names[1] },
+    { id: 3, label: "Missão 3", done: completed.m3, medalName: names[2] },
+    { id: 4, label: "Missão 4", done: completed.m4, medalName: names[3] },
   ];
 
   const iconSize = size === "sm" ? 16 : 20;
@@ -40,7 +48,7 @@ export const MedalBadges: React.FC<MedalBadgesProps> = ({ completed, size = "md"
                   "rounded-full border inline-flex items-center justify-center transition-colors",
                   pad,
                   item.done
-                    ? "bg-primary/10 border-primary/30 text-primary"
+                    ? "bg-neon-green/10 border-neon-green/30 text-neon-green ring-1 ring-neon-green/40"
                     : "bg-muted/30 border-border text-muted-foreground"
                 )}
               >
@@ -50,7 +58,7 @@ export const MedalBadges: React.FC<MedalBadgesProps> = ({ completed, size = "md"
                     className={cn(
                       "absolute -bottom-0.5 -right-0.5 rounded-full",
                       dotSize,
-                      item.done ? "bg-primary" : "bg-border"
+                      item.done ? "bg-neon-green" : "bg-border"
                     )}
                     aria-hidden
                   />
@@ -59,7 +67,7 @@ export const MedalBadges: React.FC<MedalBadgesProps> = ({ completed, size = "md"
             </TooltipTrigger>
             <TooltipContent>
               <p>
-                {item.label}: {item.done ? "Concluída" : "Pendente"}
+                {item.label} • Medalha: {item.medalName} — {item.done ? "Concluída" : "Pendente"}
               </p>
             </TooltipContent>
           </Tooltip>
