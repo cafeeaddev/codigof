@@ -156,21 +156,23 @@ export const LinearLayout = () => {
           <Navigation />
         </div>
 
-        {/* Top-right diagnostic status indicator - completely static */}
-        <div
-          className="fixed right-4 bottom-[calc(env(safe-area-inset-bottom,0px)+1rem)] sm:top-[calc(env(safe-area-inset-top,0px)+1rem)] sm:bottom-auto z-60 animate-fade-in"
-        >
-          <SecretFAQDialog>
-            <Button
-              variant="secondary"
-              size="sm"
-              aria-label="Abrir FAQ secreto"
-              className="rounded-full px-4 py-2 hover-scale"
-            >
-              Posso te contar um segredo?
-            </Button>
-          </SecretFAQDialog>
-        </div>
+        {/* Floating Secret FAQ button - show from section 2 onwards */}
+        {typeof currentSection === 'number' && currentSection > 0 && (
+          <div
+            className="pointer-events-none fixed right-4 bottom-[calc(env(safe-area-inset-bottom,0px)+1rem)] sm:top-[calc(env(safe-area-inset-top,0px)+1rem)] sm:bottom-auto z-60"
+          >
+            <SecretFAQDialog>
+              <Button
+                variant="secondary"
+                size="sm"
+                aria-label="Abrir FAQ secreto"
+                className="pointer-events-auto rounded-full px-4 py-2 hover-scale"
+              >
+                Posso te contar um segredo?
+              </Button>
+            </SecretFAQDialog>
+          </div>
+        )}
 
         
         {/* Internal scroll container */}
