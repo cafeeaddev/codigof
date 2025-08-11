@@ -3,10 +3,8 @@ import { VaporwaveTerrain } from './VaporwaveTerrain';
 import { Suspense, useMemo } from 'react';
 import { Html } from '@react-three/drei';
 
-import { CustomStars } from './CustomStars';
-import { GalaxySky } from './GalaxySky';
-import { Meteors } from './Meteors';
 import * as THREE from 'three';
+import { LightStarfield } from './LightStarfield';
 
 interface VaporwaveSceneProps {
   cameraPosition: [number, number, number];
@@ -69,10 +67,8 @@ export const VaporwaveScene = ({ cameraPosition, cameraFov }: VaporwaveSceneProp
             </Html>
           }
         >
-          {/* Galaxy background + horizon stars */}
-          <GalaxySky />
-          <CustomStars />
-          <Meteors />
+          {/* Light starfield background (temporary replacement) */}
+          <LightStarfield count={3500} radius={260} size={1.2} twinkle />
 
           <ambientLight intensity={0.35} color="#ffffff" />
 
