@@ -79,7 +79,7 @@ export const LoginScreen = () => {
             <Input
               id="email"
               type="email"
-              placeholder="Digite seu email"
+              placeholder="Digite seu email corporativo"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="bg-muted/30 border-secondary/50 text-foreground placeholder:text-muted-foreground focus:border-primary text-sm sm:text-base h-10 sm:h-12"

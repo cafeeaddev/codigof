@@ -96,7 +96,7 @@ export const Footer = () => {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="Digite seu email"
+                placeholder="Digite seu email corporativo"
                 className="bg-input border-border text-foreground placeholder-muted-foreground placeholder:text-xs sm:placeholder:text-sm focus:border-secondary focus:ring-secondary/50 rounded-lg"
                 required
               />
