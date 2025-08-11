@@ -318,8 +318,7 @@ export const MissaoDois = ({ onComplete, userId }: MissaoDoisProps) => {
             )}
           </div>
           <div className="mb-4">
-            <h3 className="text-lg font-bold text-foreground mb-1">O digital no seu dia a dia</h3>
-            <p className="text-sm text-muted-foreground">Missão 2 - Avalie suas práticas digitais</p>
+            <h3 className="text-lg font-bold text-foreground mb-1">MISSÃO 2 – O digital no seu dia a dia</h3>
           </div>
 
           <div className="mb-4">
