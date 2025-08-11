@@ -216,7 +216,7 @@ export const LinearLayout = () => {
             <FeatureSection
               {...features[0]}
               index={0}
-              hideInlineSecret={currentSection >= 1}
+              hideInlineSecret={false}
             />
           </SectionContainer>
 
