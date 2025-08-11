@@ -344,10 +344,10 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
             <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-3 shadow-neon">
               <div className="flex items-center gap-3">
                 {[
-                  { id: 1, title: "MISSÃO 1", progress: completedMissions.has(1) ? 4 : 0, total: 4 },
-                  { id: 2, title: "MISSÃO 2", progress: completedMissions.has(2) ? 3 : 0, total: 3 },
-                  { id: 3, title: "MISSÃO 3", progress: completedMissions.has(3) ? 1 : 0, total: 1 },
-                  { id: 4, title: "MISSÃO 4", progress: completedMissions.has(4) ? 10 : 0, total: 10 }
+                  { id: 1, title: "MISSÃO 1", progress: completedMissions.has(1) ? 4 : 0, total: 4, xp: 25 },
+                  { id: 2, title: "MISSÃO 2", progress: completedMissions.has(2) ? 3 : 0, total: 3, xp: 25 },
+                  { id: 3, title: "MISSÃO 3", progress: completedMissions.has(3) ? 1 : 0, total: 1, xp: 25 },
+                  { id: 4, title: "MISSÃO 4", progress: completedMissions.has(4) ? 10 : 0, total: 10, xp: 25 }
                 ].map((mission, index) => {
                   const isCompleted = completedMissions.has(mission.id);
                   const isActive = mission.id === currentMission && !isCompleted;
@@ -393,6 +393,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                               {isActive && (
                                 <div className="text-xs text-accent font-medium">ATIVADA</div>
                               )}
+                              <div className="text-[10px] text-muted-foreground mt-0.5">Vale {mission.xp} XP</div>
                             </div>
                           </div>
                           <div className="text-xs">
