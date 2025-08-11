@@ -8,7 +8,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 import { ScrollArea } from './ui/scroll-area';
 import { useAuth } from '@/contexts/AuthContext';
-import MedalEarnedDialog from './MedalEarnedDialog';
+
 
 interface QuizQuestion {
   id: number;
@@ -79,12 +79,6 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
   const [isCompleted, setIsCompleted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [showMedal, setShowMedal] = useState(false);
-
-  const handleMedalChange = (open: boolean) => {
-    setShowMedal(open);
-    if (!open) onClose();
-  };
 
   // Carregar progresso salvo ao iniciar
   useEffect(() => {
@@ -262,11 +256,10 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
       }
 
       setIsCompleted(true);
-      setShowMedal(true);
       toast({
-        title: "Missão 1 concluída! +25 XP",
-        description: "Passando para a Missão 2...",
+        title: "Medalha conquistada!",
       });
+      onClose();
 
 
     } catch (error) {
@@ -384,9 +377,6 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
           </div>
         </div>
       </ScrollArea>
-      
-
-      <MedalEarnedDialog open={showMedal} onOpenChange={handleMedalChange} missionLabel="Missão 1" xp={25} />
     </div>
   );
 };

@@ -56,15 +56,6 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
       setCompletedMissions(prev => new Set([...prev, missionId]));
       if (missionId < 4) {
         setCurrentMission((missionId + 1) as 1 | 2 | 3 | 4);
-        toast({
-          title: `Missão ${missionId} concluída! +25 XP`,
-          description: `Missão ${missionId + 1} desbloqueada! Continue evoluindo.`,
-        });
-      } else {
-        toast({
-          title: `Missão ${missionId} concluída! +25 XP`,
-          description: 'Parabéns! Todas as missões foram concluídas.',
-        });
       }
       setJustCompleted(null);
     }, UNLOCK_DELAY);

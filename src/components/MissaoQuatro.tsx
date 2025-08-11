@@ -7,7 +7,7 @@ import { Progress } from '@/components/ui/progress';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
-import MedalEarnedDialog from './MedalEarnedDialog';
+
 import { ScrollArea } from './ui/scroll-area';
 
 interface MissaoQuatroProps {
@@ -132,12 +132,6 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showMedal, setShowMedal] = useState(false);
-
-  const handleMedalChange = (open: boolean) => {
-    setShowMedal(open);
-    if (!open) onComplete();
-  };
 
   const handleAnswer = (questionId: number, answer: string) => {
     setAnswers(prev => ({ ...prev, [questionId]: answer }));
@@ -233,11 +227,10 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
         }
       }
 
-      setShowMedal(true);
       toast({
-        title: "Missão 4 concluída! +25 XP",
-        description: `Você obteve ${totalScore.toFixed(1)} pontos em Ferramentas Digitais.`,
+        title: "Medalha conquistada!",
       });
+      onComplete();
     } catch (error) {
       console.error('Error submitting quiz:', error);
       toast({
@@ -340,7 +333,6 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
           </Card>
         </div>
       </ScrollArea>
-      <MedalEarnedDialog open={showMedal} onOpenChange={handleMedalChange} missionLabel="Missão 4" xp={25} />
     </div>
   );
 };
