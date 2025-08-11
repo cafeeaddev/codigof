@@ -143,7 +143,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
   }
 
   return (
-    <div>
+    <>
       {/* CSS global para esconder scrollbars */}
       <style>{`
         * {
@@ -503,6 +503,6 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
         </div>
       </div>
 
-    </div>
+    </>
   );
 };
