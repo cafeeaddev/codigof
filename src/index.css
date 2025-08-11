@@ -129,3 +129,16 @@
     scroll-behavior: smooth;
   }
 }
+
+/* Hide scrollbars on mobile/tablet but keep scroll gestures */
+@media (max-width: 1024px) {
+  body,
+  [data-internal-scroll="true"] {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+  body::-webkit-scrollbar,
+  [data-internal-scroll="true"]::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
+}
