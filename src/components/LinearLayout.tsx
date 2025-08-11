@@ -158,16 +158,33 @@ export const LinearLayout = () => {
           <span className="text-secondary font-bold tracking-wide">CÓDIGO</span>{' '}
           <span className="text-neon-pink font-bold">F</span>
         </div>
-        {/* Top-right secret label */}
+
+        {/* Top-right diagnostic status indicator */}
         {currentSection >= 1 && (
-          <SecretFAQDialog>
-            <button
-              className="fixed top-3 right-4 z-40 pointer-events-auto flex items-center gap-2 text-secondary bg-card/60 backdrop-blur px-3 py-1.5 rounded-full border border-border/50 hover-scale"
-              aria-label="Segredo"
-            >
-              <span className="font-medium">Posso te contar um segredo?</span>
-            </button>
-          </SecretFAQDialog>
+          <div className="fixed top-3 right-4 z-40 pointer-events-none">
+            <div className="flex items-center gap-3 bg-card/80 backdrop-blur-md px-4 py-2 rounded-lg border border-neon-cyan/30 shadow-lg">
+              {/* Status indicator */}
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-neon-cyan rounded-full animate-pulse shadow-lg shadow-neon-cyan/50"></div>
+                <span className="text-neon-cyan text-sm font-medium tracking-wide">ATIVO</span>
+              </div>
+              
+              {/* Separator */}
+              <div className="w-px h-4 bg-border/50"></div>
+              
+              {/* Diagnostic text */}
+              <span className="text-foreground/90 text-sm font-medium">
+                Sistema de Diagnóstico
+              </span>
+              
+              {/* Secret access indicator */}
+              <SecretFAQDialog>
+                <div className="ml-2 text-muted-foreground/60 hover:text-accent transition-colors cursor-pointer text-xs font-mono">
+                  [?]
+                </div>
+              </SecretFAQDialog>
+            </div>
+          </div>
         )}
         
         {/* Internal scroll container */}
