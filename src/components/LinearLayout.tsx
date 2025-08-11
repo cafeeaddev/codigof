@@ -158,7 +158,7 @@ export const LinearLayout = () => {
         {/* Top-right diagnostic status indicator - completely static */}
         <div
           className={`fixed top-[calc(env(safe-area-inset-top,0px)+0.75rem)] right-4 z-40 transition-opacity duration-300 ${
-            ((currentSection ?? 0) >= 2) ? 'opacity-100 pointer-events-auto animate-fade-in' : 'opacity-0 pointer-events-none'
+            ((currentSection ?? 0) >= 1) ? 'opacity-100 pointer-events-auto animate-fade-in' : 'opacity-0 pointer-events-none'
           }`}
         >
           <SecretFAQDialog>
@@ -166,11 +166,7 @@ export const LinearLayout = () => {
               aria-label="Abrir FAQ secreto"
               className="group flex items-center gap-3 bg-transparent hover:opacity-95 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
             >
-              <span className="relative grid place-items-center w-10 h-10">
-                <span className="absolute inset-0 rounded-full bg-gradient-to-r from-neon-pink via-neon-purple to-neon-cyan shadow-glow animate-pulse" />
-                <span className="absolute inset-[3px] rounded-full bg-background" />
-              </span>
-              <span className="text-sm font-medium text-foreground">Posso te contar um segredo?</span>
+              <span className="text-sm font-medium text-foreground story-link">Posso te contar um segredo?</span>
             </button>
           </SecretFAQDialog>
         </div>
