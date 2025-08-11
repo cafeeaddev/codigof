@@ -169,7 +169,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
     <>
       
       <div 
-        className="fixed inset-0 bg-background z-[9999] welcome-screen" 
+        className="fixed inset-0 bg-background z-[10] welcome-screen" 
         style={{ 
           height: '100vh', 
           width: '100vw',

@@ -282,7 +282,7 @@ export const MissaoDois = ({ onComplete, userId }: MissaoDoisProps) => {
     <div className="h-full flex flex-col">
       <ScrollArea className="flex-1">
         <div className="p-2 pb-20" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 56px)' }}>
-          <div className="sticky top-0 z-[10000] bg-card/80 backdrop-blur-sm border-b border-secondary/30 py-2 px-1 flex justify-between items-center pointer-events-auto shadow-neon">
+          <div className="sticky top-0 z-[40] bg-card/80 backdrop-blur-sm border-b border-secondary/30 py-2 px-1 flex justify-between items-center pointer-events-auto shadow-neon">
             <Button
               type="button"
               onClick={(e) => { e.stopPropagation(); goToPreviousQuestion(); }}
