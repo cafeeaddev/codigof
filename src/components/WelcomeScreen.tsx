@@ -357,7 +357,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
           </div>
 
           {/* Barra de Missões Horizontal - Estilo Game */}
-          <div className="hidden md:block mb-4">
+          <div className="hidden md:block mb-6">
             <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-3 shadow-neon">
               <div className="flex items-center gap-3">
                 {[
