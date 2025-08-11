@@ -272,11 +272,11 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
         </CardHeader>
 
         <CardContent className="space-y-6">
-          <div className="sticky top-0 z-40 bg-card/90 backdrop-blur-sm border-b border-secondary/30 py-2 px-1 flex justify-between items-center pointer-events-auto shadow-neon">
+          <div className="sticky top-0 z-[10000] bg-card/90 backdrop-blur-sm border-b border-secondary/30 py-2 px-1 flex justify-between items-center pointer-events-auto shadow-neon" role="toolbar">
             <Button
               type="button"
               variant="outline"
-              onClick={handlePrevious}
+              onClick={(e) => { e.stopPropagation(); handlePrevious(); }}
               disabled={currentQuestion === 0}
               className="w-24"
             >
@@ -285,7 +285,7 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
             {isLastQuestion ? (
               <Button
                 type="button"
-                onClick={handleSubmit}
+                onClick={(e) => { e.stopPropagation(); handleSubmit(); }}
                 disabled={!currentAnswer || isSubmitting}
                 className="w-32"
               >
@@ -294,7 +294,7 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
             ) : (
               <Button
                 type="button"
-                onClick={handleNext}
+                onClick={(e) => { e.stopPropagation(); handleNext(); }}
                 disabled={!currentAnswer}
                 className="w-24"
               >
