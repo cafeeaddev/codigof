@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
-import { User, Lock, Wifi } from 'lucide-react';
+import { User, Lock } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from '@/hooks/use-toast';
 
@@ -56,7 +56,7 @@ export const LoginScreen = () => {
         {/* Header */}
         <div className="text-center mb-6 sm:mb-8">
           <div className="w-12 h-12 sm:w-16 sm:h-16 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
-            <Wifi className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
+            <Lock className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
           </div>
           <h1 className="text-xl sm:text-2xl font-bold text-primary mb-2">ACESSO SEGURO</h1>
           

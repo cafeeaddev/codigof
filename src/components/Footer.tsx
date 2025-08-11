@@ -68,7 +68,7 @@ export const Footer = () => {
           {/* Wifi icon and title */}
           <div className="text-center mb-6">
             <div className="flex justify-center mb-3">
-              <Wifi className="w-8 h-8 text-secondary" />
+              <Lock className="w-8 h-8 text-secondary" />
             </div>
             <h2 className="text-secondary text-xl font-bold mb-2">ACESSO SEGURO</h2>
             
