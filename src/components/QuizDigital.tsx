@@ -299,7 +299,7 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
   return (
     <div className="h-full flex flex-col min-h-0">
       <ScrollArea className="flex-1">
-        <div className="p-2 pb-12" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 48px)' }}>
+        <div className="p-2 pb-28" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 96px)' }}>
           <div className="sticky top-0 z-[40] bg-card/80 backdrop-blur-sm border-b border-secondary/30 py-2 px-1 flex justify-between items-center shadow-neon pointer-events-auto">
             <Button
               type="button"

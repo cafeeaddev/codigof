@@ -282,7 +282,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
         </div>
         </div>
 
-      <div className="h-[calc(100vh-3rem)] md:h-[calc(100vh-4.5rem)] overflow-hidden p-2 md:p-4 relative z-10">
+      <div className="h-[calc(100svh-3rem)] md:h-[calc(100svh-4.5rem)] overflow-hidden p-2 md:p-4 relative z-10">
         <div className="max-w-7xl mx-auto h-full flex flex-col">
           
           {/* Layout Mobile: Apenas a missão ativa em tela cheia */}
