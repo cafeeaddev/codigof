@@ -98,10 +98,10 @@ export const LoginScreen = () => {
               inputMode="numeric"
               pattern="[0-9]*"
               maxLength={4}
-              placeholder="Últimos 4 dígitos do CPF"
+              placeholder="4 últimos dígitos do CPF"
               value={cpf}
               onChange={(e) => setCpf(e.target.value.replace(/\D/g, '').slice(0, 4))}
-              className="bg-muted/30 border-secondary/50 text-foreground placeholder:text-muted-foreground focus:border-primary text-sm sm:text-base h-10 sm:h-12"
+              className="bg-muted/30 border-secondary/50 text-foreground placeholder:text-muted-foreground placeholder:text-xs sm:placeholder:text-base focus:border-primary text-sm sm:text-base h-10 sm:h-12 px-2 sm:px-3"
               disabled={isLoading}
             />
           </div>
