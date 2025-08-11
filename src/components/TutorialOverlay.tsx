@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "./ui/button";
-import { X, Volume2, VolumeX, SkipForward, RotateCcw, ChevronLeft, ChevronRight, HelpCircle } from "lucide-react";
+import { X, Volume2, RotateCcw, ChevronLeft, ChevronRight, HelpCircle } from "lucide-react";
 import { narrator } from "@/utils/tutorialNarrator";
 
 interface TutorialOverlayProps {
@@ -75,6 +75,7 @@ export const TutorialOverlay = ({ stage, onClose, onDontShowAgain }: TutorialOve
   const [index, setIndex] = useState(0);
   const [audioEnabled, setAudioEnabled] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const [videoUrl, setVideoUrl] = useState<string | null>(null);
   const mounted = useRef(false);
 
   useEffect(() => {
@@ -82,6 +83,11 @@ export const TutorialOverlay = ({ stage, onClose, onDontShowAgain }: TutorialOve
       mounted.current = true;
       // Prepare narrator silently
       narrator.init().catch(() => {});
+      // Optional: load custom avatar video URL stored by admin
+      try {
+        const url = localStorage.getItem('codyAvatarUrl');
+        if (url) setVideoUrl(url);
+      } catch {}
     }
   }, []);
 
@@ -149,15 +155,44 @@ export const TutorialOverlay = ({ stage, onClose, onDontShowAgain }: TutorialOve
         </header>
 
         <main className="px-5 md:px-6 py-6">
-          <div className="space-y-2">
-            <h2 className="text-xl md:text-2xl font-bold text-primary">{slides[index].title}</h2>
-            <p className="text-sm md:text-base text-muted-foreground">{slides[index].description}</p>
-          </div>
+          <div className="grid grid-cols-1 md:grid-cols-[1fr,136px] gap-4 items-start">
+            <div className="space-y-2">
+              <h2 className="text-xl md:text-2xl font-bold text-primary">{slides[index].title}</h2>
+              <p className="text-sm md:text-base text-muted-foreground">{slides[index].description}</p>
 
-          <div className="mt-4 flex items-center justify-between text-xs text-muted-foreground">
-            <span>
-              Passo {index + 1} de {slides.length}
-            </span>
+              <div className="mt-4 flex items-center justify-between text-xs text-muted-foreground">
+                <span>
+                  Passo {index + 1} de {slides.length}
+                </span>
+              </div>
+            </div>
+
+            <aside className="hidden md:block">
+              <div className="relative w-[136px] h-[136px] rounded-xl overflow-hidden border border-accent/50 shadow-neon bg-background/40">
+                {videoUrl ? (
+                  <video
+                    src={videoUrl}
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className="w-full h-full object-cover"
+                    aria-label="Avatar de IA"
+                  />
+                ) : (
+                  <div className="flex items-end justify-center h-full gap-1 p-4" aria-label="Visual da IA">
+                    {[0,1,2,3,4].map((i) => (
+                      <span
+                        key={i}
+                        className={`w-2 rounded bg-accent ${isSpeaking ? 'h-16 animate-pulse' : 'h-8'}`}
+                        style={{ transition: 'height 200ms ease' }}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+              <p className="mt-2 text-[11px] text-muted-foreground text-center">Cody, IA mentora</p>
+            </aside>
           </div>
         </main>
 

@@ -45,7 +45,7 @@ class TutorialNarrator {
   private async speakWithEdge(text: string): Promise<boolean> {
     try {
       const { data, error } = await supabase.functions.invoke("tutorial-narration", {
-        body: { text },
+        body: { text, voice: 'shimmer' },
       });
       if (error) throw error;
       const base64 = (data as any)?.audioContent;
@@ -63,12 +63,24 @@ class TutorialNarrator {
 
   private speakWithWebSpeech(text: string, onend?: () => void) {
     if (typeof window === "undefined" || !("speechSynthesis" in window)) return false;
+    const synth = window.speechSynthesis;
+    const pickVoice = () => {
+      const voices = synth.getVoices();
+      return (
+        voices.find(v => v.lang?.startsWith('pt') && /female|feminina|Luciana|Camila|Victoria/i.test(v.name)) ||
+        voices.find(v => v.lang?.startsWith('pt')) ||
+        voices[0]
+      );
+    };
+    const voice = pickVoice();
     const utter = new SpeechSynthesisUtterance(text);
     utter.lang = "pt-BR";
-    utter.rate = 1;
+    if (voice) utter.voice = voice;
+    utter.pitch = 1.2; // leve toque robótico
+    utter.rate = 0.98;
     utter.onend = () => onend && onend();
-    window.speechSynthesis.cancel();
-    window.speechSynthesis.speak(utter);
+    synth.cancel();
+    synth.speak(utter);
     return true;
   }
 
