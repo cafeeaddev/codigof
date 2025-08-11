@@ -113,7 +113,7 @@ export const SecretFAQDialog: React.FC<SecretFAQDialogProps> = ({ children }) =>
           {faqs.map((item, idx) => (
             <AccordionItem key={idx} value={`item-${idx + 1}`}>
               <AccordionTrigger className="text-left">
-                <span className="text-secondary font-medium">{item.q}</span>
+                <span className="text-secondary font-medium">{item.q.replace(/^Q\d+:\s*/, "")}</span>
               </AccordionTrigger>
               <AccordionContent className="text-muted-foreground">
                 {typeof item.a === "string" ? <p>{item.a}</p> : item.a}
