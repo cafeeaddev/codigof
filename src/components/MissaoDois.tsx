@@ -317,9 +317,6 @@ export const MissaoDois = ({ onComplete, userId }: MissaoDoisProps) => {
               </Button>
             )}
           </div>
-          <div className="mb-4">
-            <h3 className="text-lg font-bold text-foreground mb-1">MISSÃO 2 – O digital no seu dia a dia</h3>
-          </div>
 
           <div className="mb-4">
             <div className="flex justify-between items-center mb-2">
