@@ -159,7 +159,7 @@ export const LinearLayout = () => {
           <span className="text-neon-pink font-bold">F</span>
         </div>
 
-        {/* Top-right diagnostic status indicator */}
+        {/* Top-right diagnostic status indicator - completely static */}
         {currentSection >= 1 && (
           <div className="fixed top-3 right-4 z-40 pointer-events-none">
             <div className="flex items-center gap-3 bg-card/80 backdrop-blur-md px-4 py-2 rounded-lg border border-neon-cyan/30 shadow-lg">
@@ -176,14 +176,18 @@ export const LinearLayout = () => {
               <span className="text-foreground/90 text-sm font-medium">
                 Sistema de Diagnóstico
               </span>
-              
-              {/* Secret access indicator */}
-              <SecretFAQDialog>
-                <div className="ml-2 text-muted-foreground/60 hover:text-accent transition-colors cursor-pointer text-xs font-mono">
-                  [?]
-                </div>
-              </SecretFAQDialog>
             </div>
+          </div>
+        )}
+
+        {/* Secret access moved to bottom corner */}
+        {currentSection >= 1 && (
+          <div className="fixed bottom-4 right-4 z-40">
+            <SecretFAQDialog>
+              <div className="text-muted-foreground/40 hover:text-accent transition-colors cursor-pointer text-xs font-mono bg-card/60 backdrop-blur-sm px-2 py-1 rounded border border-border/30">
+                [?]
+              </div>
+            </SecretFAQDialog>
           </div>
         )}
         
