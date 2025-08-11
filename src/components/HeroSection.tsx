@@ -1,3 +1,4 @@
+
 import { ChevronDown } from 'lucide-react';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
 
@@ -39,18 +40,25 @@ export const HeroSection = ({ onLoginClick, onContinueClick }: HeroSectionProps)
             </h1>
           </div>
 
-          {/* Status Indicator - não clicável */}
+          {/* Status Indicator - fundo transparente com bordas coloridas */}
           <div 
             ref={buttonsReveal.elementRef}
             style={buttonsReveal.style}
             className="flex justify-center px-4"
           >
-            <div className="bg-gradient-to-r from-neon-cyan to-neon-purple backdrop-blur-md px-4 sm:px-6 lg:px-8 py-4 sm:py-5 lg:py-6 rounded-xl border border-neon-cyan/40 shadow-lg shadow-neon-cyan/20 w-full sm:w-auto max-w-xs sm:max-w-none pointer-events-none">
-              {/* Diagnostic text */}
-              <span className="text-white text-sm sm:text-base lg:text-lg font-medium">
-                <span className="hidden sm:inline">Sistema de Diagnóstico Ativado</span>
-                <span className="sm:hidden">Diagnóstico Ativado</span>
-              </span>
+            <div className="relative bg-transparent backdrop-blur-md px-4 sm:px-6 lg:px-8 py-4 sm:py-5 lg:py-6 rounded-xl w-full sm:w-auto max-w-xs sm:max-w-none pointer-events-none">
+              {/* Gradient border */}
+              <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-neon-cyan via-neon-purple to-neon-pink p-[2px]">
+                <div className="w-full h-full rounded-xl bg-black/80 backdrop-blur-md"></div>
+              </div>
+              
+              {/* Content */}
+              <div className="relative z-10">
+                <span className="text-white text-sm sm:text-base lg:text-lg font-medium">
+                  <span className="hidden sm:inline">Sistema de Diagnóstico Ativado</span>
+                  <span className="sm:hidden">Diagnóstico Ativado</span>
+                </span>
+              </div>
             </div>
           </div>
         </div>
