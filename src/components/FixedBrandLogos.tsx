@@ -1,7 +1,9 @@
 import React from "react";
+import { createPortal } from "react-dom";
 
 const FixedBrandLogos: React.FC = () => {
-  return (
+  if (typeof document === 'undefined') return null;
+  const content = (
     <aside
       aria-label="Logos institucionais"
       className="fixed left-3 sm:left-4 top-[calc(env(safe-area-inset-top,0px)+0.5rem)] z-[60] pointer-events-none"
@@ -25,6 +27,7 @@ const FixedBrandLogos: React.FC = () => {
       </div>
     </aside>
   );
+  return createPortal(content, document.body);
 };
 
 export default FixedBrandLogos;
