@@ -9,7 +9,7 @@ interface FeatureFoldProps {
   Icon: LucideIcon;
 }
 
-export const FeatureFold = ({ id, title, subtitle, colorClass, Icon }: FeatureFoldProps) => {
+export const FeatureFold = ({ id, title, subtitle, colorClass: _colorClass, Icon: _Icon }: FeatureFoldProps) => {
   const titleReveal = useScrollReveal({ direction: 'left', delay: 0, distance: 100 });
   const circleReveal = useScrollReveal({ direction: 'right', delay: 200, distance: 100 });
 
@@ -29,10 +29,17 @@ export const FeatureFold = ({ id, title, subtitle, colorClass, Icon }: FeatureFo
             <div className="relative">
               {/* Glowing ring */}
               <div className="w-64 h-64 sm:w-72 sm:h-72 lg:w-80 lg:h-80 rounded-full bg-gradient-to-r from-neon-pink via-neon-purple to-neon-cyan p-1 shadow-glow">
-                <div className="w-full h-full rounded-full bg-background/90 backdrop-blur-xl flex items-center justify-center">
-                  <div className={`w-28 h-28 sm:w-32 sm:h-32 lg:w-36 lg:h-36 rounded-full ${colorClass} flex items-center justify-center shadow-lg`}>
-                    <Icon className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 text-background" />
-                  </div>
+                <div className="w-full h-full rounded-full bg-background/90 backdrop-blur-xl overflow-hidden relative">
+                  <video 
+                    className="w-full h-full object-cover rounded-full"
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                  >
+                    <source src="https://meta.cafeeadhost.com.br/Cody/hero-animation.mp4" type="video/mp4" />
+                  </video>
+                  <div className="absolute inset-0 rounded-full bg-gradient-to-t from-transparent via-transparent to-neon-cyan/10"></div>
                 </div>
               </div>
 
