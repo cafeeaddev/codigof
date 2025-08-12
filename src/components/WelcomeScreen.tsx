@@ -226,10 +226,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
             </Button>
           )}
           
-          {/* Avatar + Info do usuário à direita */}
-          <div className="w-8 h-8 md:w-10 md:h-10 bg-secondary/20 rounded-full flex items-center justify-center border border-secondary/50 mr-2">
-            <User className="w-4 h-4 md:w-5 md:h-5 text-secondary" />
-          </div>
+          {/* Info do usuário à direita */}
           <div className="min-w-0 max-w-[50vw] text-right mr-2">
             <h1 className="text-secondary text-sm md:text-base font-bold tracking-wider truncate">
               {userProfile.nome}
@@ -238,7 +235,10 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
               {userProfile.area} {userProfile.cargo && `• ${userProfile.cargo}`}
             </p>
           </div>
-
+          {/* Avatar imediatamente ao lado do botão SAIR */}
+          <div className="w-8 h-8 md:w-10 md:h-10 bg-secondary/20 rounded-full flex items-center justify-center border border-secondary/50 mr-2">
+            <User className="w-4 h-4 md:w-5 md:h-5 text-secondary" />
+          </div>
           <Button
             onClick={handleLogout}
             variant="outline"
