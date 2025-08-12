@@ -3,7 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
+
 import MedalBadges from '@/components/MedalBadges';
 import { toast } from '@/hooks/use-toast';
 import { getDigitalProfile, getProfileColor, getProfilePhrase } from '@/lib/digitalProfile';
@@ -48,8 +48,8 @@ const GameSummary = () => {
   const phrase = useMemo(() => getProfilePhrase(profile.profile, profile.sublevel), [profile]);
 
   useEffect(() => {
-    document.title = 'Resumo Final do Jogo | Perfil Digital';
-    setMeta('description', 'Veja suas medalhas, XP total e seu Perfil Digital (Beginner, Explorer, Pro-Player, Ninja). Compartilhe seu resultado no LinkedIn!');
+    document.title = 'Parabéns por finalizar suas missões | Perfil Digital';
+    setMeta('description', 'Resumo final: suas medalhas, XP e Perfil Digital. Parabéns por finalizar as missões!');
     setCanonical(`${window.location.origin}/final`);
   }, []);
 
@@ -139,7 +139,7 @@ const GameSummary = () => {
 
   if (!user?.id) {
     return (
-      <main className="container mx-auto px-4 py-12">
+      <main className="container mx-auto px-4 pt-24 pb-12">
         <header className="mb-6">
           <h1 className="text-3xl font-bold">Resumo Final</h1>
         </header>
@@ -150,10 +150,11 @@ const GameSummary = () => {
   }
 
   return (
-    <main className="container mx-auto px-4 py-8">
+    <main className="container mx-auto px-4 pt-24 pb-12">
       <header className="mb-8">
-        <h1 className="text-3xl font-bold">Seu Resumo Final</h1>
-        <p className="text-muted-foreground">Veja suas conquistas e compartilhe seu resultado.</p>
+        <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-primary via-primary/80 to-primary-foreground bg-clip-text text-transparent">
+          Parabéns por finalizar suas missões!
+        </h1>
       </header>
 
       <section className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
@@ -166,16 +167,17 @@ const GameSummary = () => {
             </CardHeader>
             <CardContent>
               <div className="flex flex-col gap-4">
-                <MedalBadges completed={medals} />
-                <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-                  <span>Missão 1: <strong className="text-foreground">{score.mission1}</strong></span>
-                  <Separator orientation="vertical" className="hidden sm:block" />
-                  <span>Missão 2: <strong className="text-foreground">{score.mission2}</strong></span>
-                  <Separator orientation="vertical" className="hidden sm:block" />
-                  <span>Missão 3: <strong className="text-foreground">{score.mission3}</strong></span>
-                  <Separator orientation="vertical" className="hidden sm:block" />
-                  <span>Total: <strong className="text-foreground">{score.total}</strong></span>
-                </div>
+                <MedalBadges
+                  completed={medals}
+                  showNames
+                  medalNames={[
+                    "Explorador do digital",
+                    "Navegante do cotidiano digital",
+                    "Superador de desafios",
+                    "Conhecedor de ferramentas",
+                  ]}
+                />
+              </div>
 
                 <Card className="mt-2">
                   <CardHeader>
@@ -189,7 +191,6 @@ const GameSummary = () => {
                     </div>
                   </CardContent>
                 </Card>
-              </div>
             </CardContent>
           </Card>
         </article>
