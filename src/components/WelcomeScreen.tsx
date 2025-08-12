@@ -184,33 +184,6 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
       <div className="bg-card/90 backdrop-blur-xl border-b border-secondary/50 p-3 md:p-4 relative z-10" style={{ pointerEvents: 'auto' }}>
         <div className="flex items-center justify-between max-w-7xl mx-auto" style={{ pointerEvents: 'auto' }}>
           <div className="flex items-center gap-3 flex-1">
-            {/* Estatísticas compactas no Header Desktop */}
-            <div className="hidden lg:flex items-center gap-4 ml-4 mr-8">
-              <div className="text-center">
-                <div className="text-sm font-bold text-primary">{userProgress.total_xp}</div>
-                <div className="text-muted-foreground text-xs">XP</div>
-              </div>
-              <div className="text-center">
-                <div className="text-sm font-bold text-accent">{userProgress.completedMissionsCount}/4</div>
-                <div className="text-muted-foreground text-xs">Completadas</div>
-              </div>
-              <MedalBadges
-                completed={{
-                  m1: completedMissions.has(1),
-                  m2: completedMissions.has(2),
-                  m3: completedMissions.has(3),
-                  m4: completedMissions.has(4),
-                }}
-                size="md"
-                className="pl-2 ml-2 border-l border-border/50"
-                medalNames={[
-                  "Explorador do Digital",
-                  "Navegante do Cotidiano Digital",
-                  "Superador de Desafios",
-                  "Conhecedor de Ferramentas",
-                ]}
-              />
-            </div>
           </div>
           
           {/* Botão Admin (só aparece para admins) */}
@@ -235,6 +208,35 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
               {userProfile.area} {userProfile.cargo && `• ${userProfile.cargo}`}
             </p>
           </div>
+
+          {/* Estatísticas compactas no Header Desktop (à direita) */}
+          <div className="hidden lg:flex items-center gap-4 mx-4">
+            <div className="text-center">
+              <div className="text-sm font-bold text-primary">{userProgress.total_xp}</div>
+              <div className="text-muted-foreground text-xs">XP</div>
+            </div>
+            <div className="text-center">
+              <div className="text-sm font-bold text-accent">{userProgress.completedMissionsCount}/4</div>
+              <div className="text-muted-foreground text-xs">Completadas</div>
+            </div>
+            <MedalBadges
+              completed={{
+                m1: completedMissions.has(1),
+                m2: completedMissions.has(2),
+                m3: completedMissions.has(3),
+                m4: completedMissions.has(4),
+              }}
+              size="md"
+              className="pl-2 ml-2 border-l border-border/50"
+              medalNames={[
+                "Explorador do Digital",
+                "Navegante do Cotidiano Digital",
+                "Superador de Desafios",
+                "Conhecedor de Ferramentas",
+              ]}
+            />
+          </div>
+
           {/* Avatar imediatamente ao lado do botão SAIR */}
           <div className="w-8 h-8 md:w-10 md:h-10 bg-secondary/20 rounded-full flex items-center justify-center border border-secondary/50 mr-2">
             <User className="w-4 h-4 md:w-5 md:h-5 text-secondary" />
