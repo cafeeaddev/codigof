@@ -152,7 +152,7 @@ const GameSummary = () => {
   return (
     <main className="container mx-auto px-4 pt-24 pb-12">
       <header className="mb-8">
-        <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-primary via-primary/80 to-primary-foreground bg-clip-text text-transparent">
+        <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-primary">
           Parabéns! Jornada concluída com sucesso!
         </h1>
       </header>
