@@ -184,9 +184,6 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
       <div className="bg-card/90 backdrop-blur-xl border-b border-secondary/50 p-3 md:p-4 relative z-10" style={{ pointerEvents: 'auto' }}>
         <div className="flex items-center justify-between max-w-7xl mx-auto" style={{ pointerEvents: 'auto' }}>
           <div className="flex items-center gap-3 flex-1">
-            <div className="w-8 h-8 md:w-12 md:h-12 bg-secondary/20 rounded-full flex items-center justify-center border border-secondary/50">
-              <User className="w-4 h-4 md:w-6 md:h-6 text-secondary" />
-            </div>
             {/* Estatísticas compactas no Header Desktop */}
             <div className="hidden lg:flex items-center gap-4 ml-4 mr-8">
               <div className="text-center">
@@ -229,7 +226,10 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
             </Button>
           )}
           
-          {/* Info do usuário alinhada à direita, ao lado do SAIR */}
+          {/* Avatar + Info do usuário à direita */}
+          <div className="w-8 h-8 md:w-10 md:h-10 bg-secondary/20 rounded-full flex items-center justify-center border border-secondary/50 mr-2">
+            <User className="w-4 h-4 md:w-5 md:h-5 text-secondary" />
+          </div>
           <div className="min-w-0 max-w-[50vw] text-right mr-2">
             <h1 className="text-secondary text-sm md:text-base font-bold tracking-wider truncate">
               {userProfile.nome}
