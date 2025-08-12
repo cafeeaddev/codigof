@@ -38,7 +38,7 @@ export const HeroSection = ({ onLoginClick, onContinueClick }: HeroSectionProps)
             </div>
             
             <p className="text-white text-xs sm:text-sm lg:text-base uppercase tracking-[0.15em] sm:tracking-[0.2em] font-medium mb-4 sm:mb-6 px-4 drop-shadow-[0_2px_10px_hsl(var(--background)_/_0.9)]">
-              CAPÍTULO 01: TRANSFORMAÇÃO DIGITAL
+              QUIZ DE MATURIDADE DIGITAL
             </p>
             <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white leading-tight px-4 drop-shadow-[0_2px_18px_hsl(var(--background)_/_0.85)]">
               SUA JORNADA DIGITAL<br />
