@@ -28,7 +28,7 @@ const questions = [
   },
   {
     id: 2,
-    question: "Power Point",
+    question: "PowerPoint",
     options: [
       { value: "a", text: "Consigo fazer apresentações simples", points: 0.0 },
       { value: "b", text: "Crio apresentações com textos e imagens.", points: 1.0 },
