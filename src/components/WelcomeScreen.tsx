@@ -252,7 +252,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
       </div>
 
       {/* Estatísticas Mobile compactas */}
-      <div className="block md:hidden bg-card/80 backdrop-blur-xl border-b border-secondary/30 px-4 py-2">
+      <div className="hidden md:hidden bg-card/80 backdrop-blur-xl border-b border-secondary/30 px-4 py-2">
         <div className="flex items-center justify-center gap-6 max-w-sm mx-auto">
           <div className="text-center">
             <div className="text-sm font-bold text-primary">{userProgress.total_xp}</div>
