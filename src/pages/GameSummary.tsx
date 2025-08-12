@@ -166,7 +166,6 @@ const GameSummary = () => {
   return (
     <main className="container mx-auto px-4 pt-24 pb-12">
       <header className="mb-6">
-        <div className="text-2xl font-extrabold text-primary">Parabéns! Jornada concluída com sucesso!</div>
         <UserHeader name={nome} level={profile.profile as any} breadcrumb="Início" />
       </header>
 
