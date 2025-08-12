@@ -34,7 +34,7 @@ export const HeroSection = ({ onLoginClick, onContinueClick }: HeroSectionProps)
             {/* CÓDIGO F - moved here and made larger */}
             <div className="mb-4 sm:mb-6">
               <span className="text-secondary text-2xl sm:text-3xl lg:text-4xl font-bold tracking-wide">CÓDIGO</span>{' '}
-              <span className="text-neon-pink text-2xl sm:text-3xl lg:text-4xl font-bold">F</span>
+              <span className="text-neon-purple text-2xl sm:text-3xl lg:text-4xl font-bold">F</span>
             </div>
             
             <p className="text-white text-xs sm:text-sm lg:text-base uppercase tracking-[0.15em] sm:tracking-[0.2em] font-medium mb-4 sm:mb-6 px-4 drop-shadow-[0_2px_10px_hsl(var(--background)_/_0.9)]">
@@ -54,7 +54,7 @@ export const HeroSection = ({ onLoginClick, onContinueClick }: HeroSectionProps)
           >
             <div className="relative bg-transparent backdrop-blur-md px-4 sm:px-6 lg:px-8 py-3 sm:py-4 lg:py-5 rounded-xl inline-flex items-center justify-center max-w-full pointer-events-none mx-auto">
               {/* Gradient border */}
-              <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-neon-cyan via-neon-purple to-neon-pink p-[2px] pulse">
+              <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-neon-cyan via-neon-purple to-neon-purple p-[2px] pulse">
                 <div className="w-full h-full rounded-xl bg-black/80 backdrop-blur-md"></div>
               </div>
               

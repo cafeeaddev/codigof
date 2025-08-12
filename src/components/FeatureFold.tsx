@@ -10,7 +10,7 @@ interface FeatureFoldProps {
   titleClass?: string;
 }
 
-export const FeatureFold = ({ id, title, subtitle, colorClass: _colorClass, Icon: _Icon, titleClass = 'text-neon-pink' }: FeatureFoldProps) => {
+export const FeatureFold = ({ id, title, subtitle, colorClass: _colorClass, Icon: _Icon, titleClass = 'text-neon-purple' }: FeatureFoldProps) => {
   const titleReveal = useScrollReveal({ direction: 'left', delay: 0, distance: 100 });
   const circleReveal = useScrollReveal({ direction: 'right', delay: 200, distance: 100 });
 
@@ -29,7 +29,7 @@ export const FeatureFold = ({ id, title, subtitle, colorClass: _colorClass, Icon
           <div ref={circleReveal.elementRef} style={circleReveal.style} className="flex justify-center md:justify-end md:pr-10 lg:pr-24 xl:pr-36 2xl:pr-48">
             <div className="relative">
               {/* Glowing ring */}
-              <div className="w-48 h-48 sm:w-64 sm:h-64 lg:w-80 lg:h-80 rounded-full bg-gradient-to-r from-neon-pink via-neon-purple to-neon-cyan p-1 shadow-glow">
+              <div className="w-48 h-48 sm:w-64 sm:h-64 lg:w-80 lg:h-80 rounded-full bg-gradient-to-r from-neon-purple via-neon-purple to-neon-cyan p-1 shadow-glow">
                 <div className="w-full h-full rounded-full bg-background/90 backdrop-blur-xl overflow-hidden relative">
                   {circleReveal.isVisible ? (
                     <video 
@@ -51,7 +51,7 @@ export const FeatureFold = ({ id, title, subtitle, colorClass: _colorClass, Icon
 
               {/* Floating particles */}
               <div className="absolute -top-2 -right-2 w-4 h-4 bg-neon-cyan rounded-full opacity-60 animate-pulse"></div>
-              <div className="absolute top-8 -left-3 w-2 h-2 bg-neon-pink rounded-full opacity-40 animate-pulse delay-500"></div>
+              <div className="absolute top-8 -left-3 w-2 h-2 bg-neon-purple rounded-full opacity-40 animate-pulse delay-500"></div>
               <div className="absolute -bottom-1 left-8 w-3 h-3 bg-neon-purple rounded-full opacity-50 animate-pulse delay-1000"></div>
             </div>
           </div>

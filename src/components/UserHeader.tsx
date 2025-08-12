@@ -26,7 +26,7 @@ export const UserHeader: React.FC<UserHeaderProps> = ({ name, level, breadcrumb 
     <header className={cn("flex flex-col gap-3 mb-8", className)}>
       {/* Saudação como H1 */}
       <h1
-        className="text-3xl sm:text-4xl font-extrabold tracking-tight text-[hsl(var(--neon-pink))] break-words hyphens-auto"
+        className="text-3xl sm:text-4xl font-extrabold tracking-tight text-[hsl(var(--neon-purple))] break-words hyphens-auto"
         style={{ wordBreak: 'break-word' }}
       >
         Parabéns, {name}! Sua jornada foi concluída com sucesso!

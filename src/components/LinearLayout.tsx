@@ -241,7 +241,7 @@ export const LinearLayout = () => {
               id="medals"
               title="Medalhas"
               subtitle="Conquiste medalhas exclusivas ao completar cada missão. São elas que provam sua trajetória dentro do jogo."
-              colorClass="bg-neon-pink"
+              colorClass="bg-neon-purple"
               Icon={Medal}
               titleClass="text-neon-cyan"
             />

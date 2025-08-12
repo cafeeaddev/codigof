@@ -102,7 +102,7 @@ export const SecretFAQDialog: React.FC<SecretFAQDialogProps> = ({ children }) =>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-xl max-h-[80vh]">
         <DialogHeader>
-          <DialogTitle className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-neon-cyan via-neon-purple to-neon-pink bg-clip-text text-transparent">
+          <DialogTitle className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-neon-cyan via-neon-purple to-neon-purple bg-clip-text text-transparent">
             Segredos do Código F
           </DialogTitle>
           <DialogDescription>

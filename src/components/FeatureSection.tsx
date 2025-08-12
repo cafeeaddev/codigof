@@ -62,7 +62,7 @@ export const FeatureSection = ({
               Sou a <span className="text-secondary/80">Cody</span>, sua IA mentora.
             </h2>
             <h3 className="text-base sm:text-lg mb-6 text-foreground/80">
-              Pronto(a) para ativar seu modo <span className="text-neon-pink/80 font-semibold">Ninja digital</span>?
+              Pronto(a) para ativar seu modo <span className="text-neon-purple/90 font-semibold">Ninja digital</span>?
             </h3>
             
             <p className="text-foreground/70 text-base sm:text-lg mb-6">
@@ -85,7 +85,7 @@ export const FeatureSection = ({
             className="flex-shrink-0 relative mt-8 lg:mt-0"
           >
             {/* Glowing circle border */}
-            <div className="w-48 h-48 sm:w-64 sm:h-64 lg:w-80 lg:h-80 rounded-full bg-gradient-to-r from-neon-pink via-neon-purple to-neon-cyan p-1 shadow-glow">
+            <div className="w-48 h-48 sm:w-64 sm:h-64 lg:w-80 lg:h-80 rounded-full bg-gradient-to-r from-neon-purple via-neon-purple to-neon-cyan p-1 shadow-glow">
               <div className="w-full h-full rounded-full bg-background/90 backdrop-blur-xl overflow-hidden relative">
                 {videoReveal.isVisible ? (
                   <video 
@@ -107,7 +107,7 @@ export const FeatureSection = ({
             </div>
             {/* Floating particles effect */}
             <div className="absolute -top-2 -right-2 w-4 h-4 bg-neon-cyan rounded-full opacity-60 animate-pulse"></div>
-            <div className="absolute top-8 -left-3 w-2 h-2 bg-neon-pink rounded-full opacity-40 animate-pulse delay-500"></div>
+            <div className="absolute top-8 -left-3 w-2 h-2 bg-neon-purple rounded-full opacity-40 animate-pulse delay-500"></div>
             <div className="absolute -bottom-1 left-8 w-3 h-3 bg-neon-purple rounded-full opacity-50 animate-pulse delay-1000"></div>
           </div>
         </div>
