@@ -252,13 +252,13 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
       </div>
 
       {/* Estatísticas Mobile compactas */}
-      <div className="hidden md:hidden bg-card/80 backdrop-blur-xl border-b border-secondary/30 px-4 py-2">
-        <div className="flex items-center justify-center gap-6 max-w-sm mx-auto">
-          <div className="text-center">
+      <div className="block lg:hidden bg-card/80 backdrop-blur-xl border-b border-secondary/30 px-4 py-2">
+        <div className="flex items-center gap-4 px-3 overflow-x-auto whitespace-nowrap">
+          <div className="text-center shrink-0">
             <div className="text-sm font-bold text-primary">{userProgress.total_xp}</div>
             <div className="text-muted-foreground text-xs">XP</div>
           </div>
-          <div className="text-center">
+          <div className="text-center shrink-0">
             <div className="text-sm font-bold text-accent">{userProgress.completedMissionsCount}/4</div>
             <div className="text-muted-foreground text-xs">Completadas</div>
           </div>
@@ -270,6 +270,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
               m4: completedMissions.has(4),
             }}
             size="sm"
+            className="shrink-0"
             medalNames={[
               "Explorador do Digital",
               "Navegante do Cotidiano Digital",
@@ -280,7 +281,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
         </div>
         </div>
 
-      <div className="h-[calc(100svh-3rem)] md:h-[calc(100svh-4.5rem)] overflow-hidden p-2 md:p-4 relative z-10">
+      <div className="h-[calc(100svh-5.25rem)] md:h-[calc(100svh-4.5rem)] overflow-hidden p-2 md:p-4 relative z-10">
         <div className="max-w-7xl mx-auto h-full flex flex-col">
           
           {/* Layout Mobile: Apenas a missão ativa em tela cheia */}
