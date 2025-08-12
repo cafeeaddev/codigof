@@ -28,7 +28,7 @@ const questions = [
   },
   {
     id: 2,
-    question: "PowerPoint",
+    question: "Power Point",
     options: [
       { value: "a", text: "Consigo fazer apresentações simples", points: 0.0 },
       { value: "b", text: "Crio apresentações com textos e imagens.", points: 1.0 },
@@ -228,7 +228,7 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
       }
 
       toast({
-        title: "Medalha conquistada!",
+        title: "Medalha conquistada: Produtividade e Eficiência!",
       });
       onComplete();
     } catch (error) {

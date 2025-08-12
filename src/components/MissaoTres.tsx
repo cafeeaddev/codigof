@@ -197,7 +197,7 @@ export const MissaoTres = ({ onComplete }: MissaoTresProps) => {
 
       setIsCompleted(true);
       toast({
-        title: "Medalha conquistada!",
+        title: "Medalha conquistada: Guardião de Segurança Digital!",
       });
       onComplete();
 

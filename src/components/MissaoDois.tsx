@@ -239,7 +239,7 @@ export const MissaoDois = ({ onComplete, userId }: MissaoDoisProps) => {
 
       setIsCompleted(true);
       toast({
-        title: "Medalha conquistada!",
+        title: "Medalha conquistada: Navegante do Cotidiano Digital!",
       });
       onComplete();
 
