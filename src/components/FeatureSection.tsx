@@ -65,12 +65,9 @@ export const FeatureSection = ({
               Pronto(a) para ativar seu modo <span className="text-neon-pink font-bold">Ninja digital</span>?
             </h3>
             
-            <div className="flex items-center gap-2 mb-6">
-              <div className="w-4 h-4 bg-primary rounded-full"></div>
-              <p className="text-muted-foreground text-base sm:text-lg">
-                {description}
-              </p>
-            </div>
+            <p className="text-muted-foreground text-base sm:text-lg mb-6">
+              {description}
+            </p>
 
             {!hideInlineSecret && (
               <SecretFAQDialog>
