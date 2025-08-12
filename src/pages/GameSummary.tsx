@@ -166,7 +166,7 @@ const GameSummary = () => {
   return (
     <main className="container mx-auto px-4 pt-24 pb-12">
       <header className="mb-6">
-        <UserHeader name={nome} level={profile.profile as any} breadcrumb="Início" />
+        <UserHeader name={nome} level={profile.profile as any} />
       </header>
 
       <AchievementList achievements={achievements} />

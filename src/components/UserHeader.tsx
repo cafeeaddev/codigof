@@ -19,36 +19,33 @@ const levelVarMap: Record<LevelName, string> = {
   'Ninja': 'var(--level-ninja)',
 };
 
-export const UserHeader: React.FC<UserHeaderProps> = ({ name, level, breadcrumb = 'Início', className }) => {
+export const UserHeader: React.FC<UserHeaderProps> = ({ name, level, className }) => {
   const levelColor = levelVarMap[level] || 'var(--primary)';
 
   return (
-    <header className={cn("flex flex-col gap-3 mb-8", className)}>
-      {/* Saudação como H1 */}
+    <header className={cn("flex flex-col items-center text-center gap-4 mb-10 py-8", className)}>
+      {/* Título principal com gradiente neon animado */}
       <h1
-        className="text-3xl sm:text-4xl font-extrabold tracking-tight text-[hsl(var(--neon-pink))] break-words hyphens-auto"
+        className="text-[28px] sm:text-[36px] md:text-[56px] leading-tight font-extrabold text-neon-gradient text-glow-subtle break-words hyphens-none"
         style={{ wordBreak: 'break-word' }}
       >
         Parabéns, {name}! Sua jornada foi concluída com sucesso!
       </h1>
 
-      {/* Linha secundária: badge do nível + breadcrumb */}
-      <div className="flex items-center gap-3 flex-wrap">
-        <Badge
-          variant="secondary"
-          className="text-background font-medium shadow-sm"
+      {/* Badge de perfil destacado */}
+      <div className="mt-2">
+        <div
+          className="inline-flex items-center justify-center rounded-[28px] px-6 sm:px-7 md:px-8 py-3 sm:py-3.5 text-[16px] sm:text-[18px] md:text-[20px] font-bold shadow-lg hover:animate-[pulse_2.5s_ease-in-out_infinite] motion-reduce:animate-none"
           style={{
             background: `hsl(${levelColor})`,
-            color: 'hsl(var(--background))',
-            borderColor: `hsl(${levelColor})`,
+            color: `hsl(var(--on-level))`,
+            boxShadow: `0 0 24px hsl(${levelColor} / 0.45)`,
+            border: `1px solid hsl(${levelColor})`,
           }}
           aria-label={`Seu Perfil: ${level}`}
         >
           Seu Perfil: {level}
-        </Badge>
-        <span className="text-sm sm:text-base text-[hsl(var(--lavender))]">
-          — {breadcrumb}
-        </span>
+        </div>
       </div>
     </header>
   );
