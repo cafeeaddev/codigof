@@ -187,15 +187,6 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
             <div className="w-8 h-8 md:w-12 md:h-12 bg-secondary/20 rounded-full flex items-center justify-center border border-secondary/50">
               <User className="w-4 h-4 md:w-6 md:h-6 text-secondary" />
             </div>
-            <div className="min-w-0 flex-1">
-              <h1 className="text-secondary text-sm md:text-xl font-bold tracking-wider truncate">
-                {userProfile.nome}
-              </h1>
-              <p className="text-muted-foreground text-xs md:text-sm truncate">
-                {userProfile.area} {userProfile.cargo && `• ${userProfile.cargo}`}
-              </p>
-            </div>
-            
             {/* Estatísticas compactas no Header Desktop */}
             <div className="hidden lg:flex items-center gap-4 ml-4 mr-8">
               <div className="text-center">
@@ -238,6 +229,16 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
             </Button>
           )}
           
+          {/* Info do usuário alinhada à direita, ao lado do SAIR */}
+          <div className="min-w-0 max-w-[50vw] text-right mr-2">
+            <h1 className="text-secondary text-sm md:text-base font-bold tracking-wider truncate">
+              {userProfile.nome}
+            </h1>
+            <p className="text-muted-foreground text-xs md:text-sm truncate">
+              {userProfile.area} {userProfile.cargo && `• ${userProfile.cargo}`}
+            </p>
+          </div>
+
           <Button
             onClick={handleLogout}
             variant="outline"
