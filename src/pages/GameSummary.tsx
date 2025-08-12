@@ -4,9 +4,10 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-import MedalBadges from '@/components/MedalBadges';
+import UserHeader from '@/components/UserHeader';
+import { AchievementList } from '@/components/Achievements';
 import { toast } from '@/hooks/use-toast';
-import { getDigitalProfile, getProfileColor, getProfilePhrase } from '@/lib/digitalProfile';
+import { getDigitalProfile, getProfilePhrase } from '@/lib/digitalProfile';
 import { Link } from 'react-router-dom';
 
 interface ScoreBreakdown {
@@ -46,6 +47,19 @@ const GameSummary = () => {
 
   const profile = useMemo(() => getDigitalProfile(score.total), [score.total]);
   const phrase = useMemo(() => getProfilePhrase(profile.profile, profile.sublevel), [profile]);
+
+  const achievementNames = [
+    "Explorador do digital",
+    "Navegante do cotidiano digital",
+    "Superador de desafios",
+    "Conhecedor de ferramentas",
+  ];
+  const achievements = [
+    { id: 1, title: achievementNames[0], done: medals.m1 },
+    { id: 2, title: achievementNames[1], done: medals.m2 },
+    { id: 3, title: achievementNames[2], done: medals.m3 },
+    { id: 4, title: achievementNames[3], done: medals.m4 },
+  ];
 
   useEffect(() => {
     document.title = 'Parabéns por finalizar suas missões | Perfil Digital';
@@ -151,46 +165,25 @@ const GameSummary = () => {
 
   return (
     <main className="container mx-auto px-4 pt-24 pb-12">
-      <header className="mb-8">
-        <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-primary">
-          Parabéns! Jornada concluída com sucesso!
-        </h1>
+      <header className="mb-6">
+        <div className="text-2xl font-extrabold text-primary">Parabéns! Jornada concluída com sucesso!</div>
+        <UserHeader name={nome} level={profile.profile as any} breadcrumb="Início" />
       </header>
+
+      <AchievementList achievements={achievements} />
 
       <section className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
         <article className="lg:col-span-2">
           <Card className="shadow-neon">
             <CardHeader>
-              <CardTitle>
-                Olá, {nome}! Seu Perfil: <span style={{ color: getProfileColor(profile.profile) }}>{profile.profile}</span> — {profile.sublevel}
-              </CardTitle>
+              <CardTitle className="text-lg">Frase para compartilhar</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex flex-col gap-4">
-                <MedalBadges
-                  completed={medals}
-                  showNames
-                  medalNames={[
-                    "Explorador do digital",
-                    "Navegante do cotidiano digital",
-                    "Superador de desafios",
-                    "Conhecedor de ferramentas",
-                  ]}
-                />
+              <p className="mb-4 leading-relaxed">{phrase}</p>
+              <div className="flex flex-wrap gap-3">
+                <Button variant="secondary" onClick={handleCopy}>Copiar frase</Button>
+                <Button onClick={handleShareLinkedIn}>Compartilhar no LinkedIn</Button>
               </div>
-
-                <Card className="mt-2">
-                  <CardHeader>
-                    <CardTitle className="text-lg">Frase para compartilhar</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="mb-4 leading-relaxed">{phrase}</p>
-                    <div className="flex flex-wrap gap-3">
-                      <Button variant="secondary" onClick={handleCopy}>Copiar frase</Button>
-                      <Button onClick={handleShareLinkedIn}>Compartilhar no LinkedIn</Button>
-                    </div>
-                  </CardContent>
-                </Card>
             </CardContent>
           </Card>
         </article>
