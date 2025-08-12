@@ -58,14 +58,14 @@ export const FeatureSection = ({
             style={titleReveal.style}
             className="flex-1"
           >
-            <h2 className="text-2xl sm:text-3xl lg:text-5xl font-bold text-foreground mb-4">
-              Sou a <span className="text-secondary">Cody</span>, sua IA mentora.
+            <h2 className="text-2xl sm:text-3xl lg:text-5xl font-bold text-foreground/90 mb-4">
+              Sou a <span className="text-secondary/80">Cody</span>, sua IA mentora.
             </h2>
-            <h3 className="text-base sm:text-lg mb-6">
-              Pronto(a) para ativar seu modo <span className="text-neon-pink font-bold">Ninja digital</span>?
+            <h3 className="text-base sm:text-lg mb-6 text-foreground/80">
+              Pronto(a) para ativar seu modo <span className="text-neon-pink/80 font-semibold">Ninja digital</span>?
             </h3>
             
-            <p className="text-muted-foreground text-base sm:text-lg mb-6">
+            <p className="text-foreground/70 text-base sm:text-lg mb-6">
               {description}
             </p>
 
