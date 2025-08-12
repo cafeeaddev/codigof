@@ -199,15 +199,6 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
             </Button>
           )}
           
-          {/* Info do usuário à direita */}
-          <div className="min-w-0 max-w-[50vw] text-right mr-2">
-            <h1 className="text-secondary text-sm md:text-base font-bold tracking-wider truncate">
-              {userProfile.nome}
-            </h1>
-            <p className="text-muted-foreground text-xs md:text-sm truncate">
-              {userProfile.area} {userProfile.cargo && `• ${userProfile.cargo}`}
-            </p>
-          </div>
 
           {/* Estatísticas compactas no Header Desktop (à direita) */}
           <div className="hidden lg:flex items-center gap-4 mx-4">
@@ -237,9 +228,15 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
             />
           </div>
 
-          {/* Avatar imediatamente ao lado do botão SAIR */}
-          <div className="w-8 h-8 md:w-10 md:h-10 bg-secondary/20 rounded-full flex items-center justify-center border border-secondary/50 mr-2">
-            <User className="w-4 h-4 md:w-5 md:h-5 text-secondary" />
+          {/* Avatar + Nome/Cargo ao lado do SAIR */}
+          <div className="flex items-center gap-2 mr-2 max-w-[50vw]">
+            <div className="w-8 h-8 md:w-10 md:h-10 bg-secondary/20 rounded-full flex items-center justify-center border border-secondary/50">
+              <User className="w-4 h-4 md:w-5 md:h-5 text-secondary" />
+            </div>
+            <div className="min-w-0">
+              <h1 className="text-secondary text-sm md:text-base font-bold tracking-wider truncate">{userProfile.nome}</h1>
+              <p className="text-muted-foreground text-xs md:text-sm truncate">{userProfile.area} {userProfile.cargo && `• ${userProfile.cargo}`}</p>
+            </div>
           </div>
           <Button
             onClick={handleLogout}
