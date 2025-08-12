@@ -18,7 +18,7 @@ const FixedBrandLogos: React.FC = () => {
         />
         <span className="h-5 sm:h-6 w-px bg-foreground/20" aria-hidden />
         <img
-          src="/lovable-uploads/35f1196e-cbc7-43e5-a230-07f5020611f7.png"
+          src="/lovable-uploads/43c76620-9ebd-4a6b-b624-57ee3c348759.png"
           alt="Universidade Forvis Mazars"
           className="h-7 sm:h-9 w-auto opacity-90"
           loading="lazy"
