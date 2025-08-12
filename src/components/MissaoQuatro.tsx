@@ -228,7 +228,7 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
       }
 
       toast({
-        title: "Medalha conquistada: Produtividade e Eficiência!",
+        title: "Medalha conquistada: Conhecedor de ferramentas",
       });
       onComplete();
     } catch (error) {
