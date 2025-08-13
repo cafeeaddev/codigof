@@ -61,14 +61,7 @@ const faqs = [
   },
   {
     q: "Q5: Como o quiz será aplicado?",
-    a: (
-      <ul className="list-disc pl-5 space-y-1">
-        <li>100% online</li>
-        <li>Composto por 4 missões</li>
-        <li>Apresentado em formato de jogo leve, com visual futurista</li>
-        <li>Durante o jogo, você responde perguntas e ganha XP por engajamento.</li>
-      </ul>
-    ),
+    a: "O quiz será 100% online, com acesso por meio de um link enviado por e-mail e Teams. Durante o jogo, você responde perguntas e ganha XP por engajamento.",
   },
   {
     q: "Q6: Existe tempo para concluir?",
