@@ -20,10 +20,6 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
   // Get questions based on user's area
   const questions = useMemo(() => {
     const userQuestions = getMission4QuestionsForUser(profile?.area);
-    console.log('User area:', profile?.area);
-    console.log('Total questions for user:', userQuestions.length);
-    console.log('Questions:', userQuestions.map(q => ({ id: q.id, type: (q as any).type })));
-    
     // Convert to the format expected by the component
     return userQuestions.map(q => ({
       id: q.id,
