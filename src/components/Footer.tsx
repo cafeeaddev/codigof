@@ -142,9 +142,9 @@ export const Footer = () => {
             <div className="text-center space-y-2">
               <p className="text-muted-foreground text-xs">
                 Desenvolvido pela{' '}
-                <span className="text-accent font-semibold">Café EAD</span>
+                <span className="text-secondary font-semibold">Café EAD</span>
                 {' '}- Empresa do Grupo{' '}
-                <span className="text-accent font-semibold">Café Educacional</span>
+                <span className="text-secondary font-semibold">Café Educacional</span>
               </p>
             </div>
           </div>
