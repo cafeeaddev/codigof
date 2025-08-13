@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { ArrowLeft, User, Lock } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
+import { ForgotPasswordDialog } from '@/components/ForgotPasswordDialog';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -182,6 +183,11 @@ const AdminDashboard = () => {
                 {isLoading ? 'AUTENTICANDO...' : 'ACESSAR PAINEL'}
               </Button>
             </form>
+
+            {/* Forgot password */}
+            <div className="text-center mt-4">
+              <ForgotPasswordDialog />
+            </div>
           </CardContent>
         </Card>
       </div>
