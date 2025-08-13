@@ -28,14 +28,20 @@ class TutorialNarrator {
     // try to unlock audio context by playing tiny silent sound
     try {
       if (this.audioEl) {
+        console.log('[TutorialNarrator] Activating audio context...');
         this.audioEl.muted = true;
+        this.audioEl.volume = 1.0;
         this.audioEl.src = "data:audio/mp3;base64,//uQZAAAAAAAAAAAAAAAAAAAA"; // minimal silent mp3 header
         await this.audioEl.play();
         this.audioEl.pause();
         this.audioEl.muted = false;
+        this.audioEl.currentTime = 0;
         this.audioEl.removeAttribute("src");
+        console.log('[TutorialNarrator] Audio context activated successfully. Muted:', this.audioEl.muted, 'Volume:', this.audioEl.volume);
       }
-    } catch (_) {}
+    } catch (error) {
+      console.warn('[TutorialNarrator] Failed to activate audio context:', error);
+    }
   }
 
   isSpeaking() {
@@ -89,7 +95,22 @@ class TutorialNarrator {
       if (!this.audioEl) await this.init();
       if (!this.audioEl) return false;
       
+      console.log('[TutorialNarrator] Playing custom audio:', url);
+      console.log('[TutorialNarrator] Audio state before play - Muted:', this.audioEl.muted, 'Volume:', this.audioEl.volume);
+      
+      // Ensure audio is unmuted and volume is set
+      this.audioEl.muted = false;
+      this.audioEl.volume = 1.0;
+      this.audioEl.crossOrigin = "anonymous";
+      
       const handleEnd = () => {
+        console.log('[TutorialNarrator] Custom audio ended');
+        this.speaking = false;
+        onend && onend();
+      };
+
+      const handleError = (error: Event) => {
+        console.error('[TutorialNarrator] Custom audio error:', error);
         this.speaking = false;
         onend && onend();
       };
@@ -97,10 +118,13 @@ class TutorialNarrator {
       this.speaking = true;
       this.audioEl.src = url;
       this.audioEl.onended = handleEnd;
-      this.audioEl.onerror = handleEnd;
+      this.audioEl.onerror = handleError;
+      
       await this.audioEl.play();
+      console.log('[TutorialNarrator] Custom audio started playing successfully');
       return true;
-    } catch (e) {
+    } catch (error) {
+      console.error('[TutorialNarrator] Failed to play custom audio:', error);
       this.speaking = false;
       return false;
     }
