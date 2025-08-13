@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import SecretFAQDialog from './SecretFAQDialog';
 
 import { useScrollReveal } from '@/hooks/useScrollReveal';
+import { Flag, ArrowUpCircle, Trophy } from 'lucide-react';
 
 interface FeatureSectionProps {
   id: string;
@@ -58,16 +59,55 @@ export const FeatureSection = ({
             style={titleReveal.style}
             className="flex-1"
           >
-            <h2 className="text-2xl sm:text-3xl lg:text-5xl font-bold text-[hsl(var(--heading-readable))] mb-4">
-              Sou a <span className="text-secondary/80">Cody</span>, sua IA mentora.
-            </h2>
-            <h3 className="text-lg sm:text-xl mb-6 font-semibold text-[hsl(var(--near-white))]">
-              Vamos iniciar essa jornada digital?
-            </h3>
-            
-            <p className="text-[hsl(var(--body-readable))] text-base sm:text-lg mb-6">
-              {description}
-            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+              {/* Card: Missões */}
+              <div className="group relative rounded-2xl bg-gradient-to-br from-[hsl(var(--neon-cyan))] to-[hsl(var(--neon-purple))] p-[1px]">
+                <article className="rounded-2xl h-full bg-[hsl(var(--background)/0.6)] backdrop-blur-md border border-border/60 p-4 sm:p-6 transition-transform duration-200 hover:scale-[1.03] shadow-md hover:shadow-glow" aria-label="4 MISSÕES — Desafios interativos">
+                  <div className="flex flex-col items-start gap-3">
+                    <Flag
+                      size={28}
+                      className="text-[hsl(var(--neon-cyan))]"
+                      style={{ filter: 'drop-shadow(0 0 12px hsl(var(--neon-cyan)))' }}
+                      aria-hidden
+                    />
+                    <h3 className="text-[hsl(var(--heading-readable))] text-sm sm:text-base font-extrabold tracking-wide uppercase">4 Missões</h3>
+                    <p className="text-[hsl(var(--body-readable))] text-xs sm:text-sm">Desafios interativos</p>
+                  </div>
+                </article>
+              </div>
+
+              {/* Card: XP & Levels */}
+              <div className="group relative rounded-2xl bg-gradient-to-br from-[hsl(var(--neon-cyan))] to-[hsl(var(--neon-purple))] p-[1px]">
+                <article className="rounded-2xl h-full bg-[hsl(var(--background)/0.6)] backdrop-blur-md border border-border/60 p-4 sm:p-6 transition-transform duration-200 hover:scale-[1.03] shadow-md hover:shadow-glow" aria-label="XP & LEVELS — Pontuação e progresso">
+                  <div className="flex flex-col items-start gap-3">
+                    <ArrowUpCircle
+                      size={28}
+                      className="text-[hsl(var(--neon-cyan))]"
+                      style={{ filter: 'drop-shadow(0 0 12px hsl(var(--neon-cyan)))' }}
+                      aria-hidden
+                    />
+                    <h3 className="text-[hsl(var(--heading-readable))] text-sm sm:text-base font-extrabold tracking-wide uppercase">XP & Levels</h3>
+                    <p className="text-[hsl(var(--body-readable))] text-xs sm:text-sm">Pontuação e progresso</p>
+                  </div>
+                </article>
+              </div>
+
+              {/* Card: Medalhas */}
+              <div className="group relative rounded-2xl bg-gradient-to-br from-[hsl(var(--neon-cyan))] to-[hsl(var(--neon-purple))] p-[1px]">
+                <article className="rounded-2xl h-full bg-[hsl(var(--background)/0.6)] backdrop-blur-md border border-border/60 p-4 sm:p-6 transition-transform duration-200 hover:scale-[1.03] shadow-md hover:shadow-glow" aria-label="MEDALHAS — Perfis de habilidade">
+                  <div className="flex flex-col items-start gap-3">
+                    <Trophy
+                      size={28}
+                      className="text-[hsl(var(--neon-purple))]"
+                      style={{ filter: 'drop-shadow(0 0 12px hsl(var(--neon-purple)))' }}
+                      aria-hidden
+                    />
+                    <h3 className="text-[hsl(var(--heading-readable))] text-sm sm:text-base font-extrabold tracking-wide uppercase">Medalhas</h3>
+                    <p className="text-[hsl(var(--body-readable))] text-xs sm:text-sm">Perfis de habilidade</p>
+                  </div>
+                </article>
+              </div>
+            </div>
 
           </div>
 
