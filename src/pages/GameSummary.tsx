@@ -215,22 +215,20 @@ const GameSummary = () => {
       <div className="relative z-10 min-h-screen pt-20 pb-12">
         <div className="container mx-auto px-4">
           
-          {/* Hero Section with User Name */}
+          {/* Hero Section */}
           <header className="text-center mb-12">
             <h1 
-              className="text-6xl md:text-8xl font-bold mb-4 animate-holographic"
+              className="text-4xl md:text-6xl font-bold mb-4 animate-holographic"
               style={{ 
                 background: 'linear-gradient(45deg, hsl(var(--primary)), hsl(var(--secondary)))',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text'
+                backgroundClip: 'text',
+                filter: 'drop-shadow(0 0 20px hsl(var(--primary)))'
               }}
             >
-              {nome}
+              Etapa 1 do Código F Concluída
             </h1>
-            <p className="text-2xl md:text-3xl text-muted-foreground animate-epic-entry">
-              Missões Completas! 🎉
-            </p>
           </header>
 
           {/* Main Profile Card */}
