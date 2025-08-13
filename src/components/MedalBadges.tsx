@@ -58,7 +58,7 @@ export const MedalBadges: React.FC<MedalBadgesProps> = ({ completed, size = "md"
                     "rounded-full border inline-flex items-center justify-center transition-colors pointer-events-auto",
                     pad,
                     item.done
-                      ? "bg-neon-green/10 border-neon-green/30 text-neon-green ring-1 ring-neon-green/40"
+                      ? "bg-neon-purple/10 border-neon-purple/30 text-neon-purple ring-1 ring-neon-purple/40"
                       : "bg-muted/30 border-border text-muted-foreground"
                   )}
                 >
@@ -68,7 +68,7 @@ export const MedalBadges: React.FC<MedalBadgesProps> = ({ completed, size = "md"
                       className={cn(
                         "absolute -bottom-0.5 -right-0.5 rounded-full",
                         dotSize,
-                        item.done ? "bg-neon-green" : "bg-border"
+                        item.done ? "bg-neon-purple" : "bg-border"
                       )}
                       aria-hidden
                     />
