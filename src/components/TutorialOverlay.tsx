@@ -34,6 +34,7 @@ const useSlides = (stage: "prelogin" | "ingame") => {
             "Cada missão vale 25 XPs. Seu progresso inicia em 0% e avança conforme você responde. Complete cada missão e conquiste uma nova medalha.",
           narration:
             "Cada missão vale 25 XPs. Seu progresso inicia em 0% e avança conforme você responde. Complete cada missão e conquiste uma nova medalha.",
+          customAudioUrl: "https://meta.cafeeadhost.com.br/Cody/audio02.mp3",
         },
         {
           title: "Como Navegar",
