@@ -84,7 +84,29 @@ class TutorialNarrator {
     return true;
   }
 
-  async speak(text: string, onend?: () => void) {
+  async playCustomAudio(url: string, onend?: () => void): Promise<boolean> {
+    try {
+      if (!this.audioEl) await this.init();
+      if (!this.audioEl) return false;
+      
+      const handleEnd = () => {
+        this.speaking = false;
+        onend && onend();
+      };
+
+      this.speaking = true;
+      this.audioEl.src = url;
+      this.audioEl.onended = handleEnd;
+      this.audioEl.onerror = handleEnd;
+      await this.audioEl.play();
+      return true;
+    } catch (e) {
+      this.speaking = false;
+      return false;
+    }
+  }
+
+  async speak(text: string, onend?: () => void, customAudioUrl?: string) {
     if (!this.activated) return;
     if (this.speaking) {
       // stop current
@@ -96,6 +118,13 @@ class TutorialNarrator {
         window.speechSynthesis.cancel();
       }
     }
+
+    // Try custom audio first if provided
+    if (customAudioUrl) {
+      const success = await this.playCustomAudio(customAudioUrl, onend);
+      if (success) return;
+    }
+
     this.speaking = true;
 
     const handleEnd = () => {

@@ -13,6 +13,7 @@ interface Slide {
   title: string;
   description: string;
   narration: string;
+  customAudioUrl?: string;
 }
 
 const useSlides = (stage: "prelogin" | "ingame") => {
@@ -51,6 +52,7 @@ const useSlides = (stage: "prelogin" | "ingame") => {
           "Sou a Cody, sua IA mentora. Em poucos passos você vai descobrir seu perfil digital e encarar 4 missões.",
         narration:
           "Oi, eu sou a Cody, sua mentora. Em poucos passos você descobre seu perfil digital e encara quatro missões divertidas.",
+        customAudioUrl: "https://meta.cafeeadhost.com.br/Cody/audio01.MP3",
       },
       {
         title: "Como Funciona",
@@ -96,11 +98,12 @@ export const TutorialOverlay = ({ stage, onClose, onDontShowAgain }: TutorialOve
       }
     }
   }, []);
-  const play = async (overrideText?: string) => {
+  const play = async (overrideText?: string, slideIndex?: number) => {
     try {
       setIsSpeaking(true);
-      const text = overrideText ?? slides[index].narration;
-      await narrator.speak(text, () => setIsSpeaking(false));
+      const currentSlide = slides[slideIndex ?? index];
+      const text = overrideText ?? currentSlide.narration;
+      await narrator.speak(text, () => setIsSpeaking(false), currentSlide.customAudioUrl);
     } catch (e) {
       setIsSpeaking(false);
     }
@@ -119,13 +122,13 @@ export const TutorialOverlay = ({ stage, onClose, onDontShowAgain }: TutorialOve
   const handleNext = async () => {
     const next = Math.min(index + 1, slides.length - 1);
     setIndex(next);
-    if (audioEnabled) await play(slides[next].narration);
+    if (audioEnabled) await play(slides[next].narration, next);
   };
 
   const handlePrev = async () => {
     const prev = Math.max(index - 1, 0);
     setIndex(prev);
-    if (audioEnabled) await play(slides[prev].narration);
+    if (audioEnabled) await play(slides[prev].narration, prev);
   };
 
   const handleReplay = async () => {
