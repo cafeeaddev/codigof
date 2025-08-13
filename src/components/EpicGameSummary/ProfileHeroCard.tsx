@@ -135,16 +135,12 @@ export const ProfileHeroCard: React.FC<ProfileHeroCardProps> = ({
                 </div>
 
                 <h2 
-                  className="text-3xl md:text-5xl font-bold mb-2 animate-holographic"
+                  className="text-3xl md:text-5xl font-bold mb-2"
                   style={{ 
-                    background: `linear-gradient(45deg, ${profileColor}, ${profileColor}80)`,
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    backgroundClip: 'text',
-                    filter: `drop-shadow(0 0 20px ${profileColor}50)`
+                    color: profileColor
                   }}
                 >
-                  {sublevel}
+                  {profile}
                 </h2>
               </div>
 
