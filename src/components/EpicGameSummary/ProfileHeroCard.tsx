@@ -52,28 +52,16 @@ export const ProfileHeroCard: React.FC<ProfileHeroCardProps> = ({
 
       <Card 
         className={cn(
-          "relative overflow-hidden backdrop-blur-xl animate-epic-entry",
-          "bg-gradient-to-br from-background/90 to-background/60",
+          "relative overflow-hidden animate-epic-entry",
+          "bg-background/95 backdrop-blur-sm",
           "border-2",
           className
         )}
         style={{
           borderColor: profileColor,
-          boxShadow: `
-            0 0 50px ${profileColor}30,
-            0 0 100px ${profileColor}20,
-            inset 0 0 30px ${profileColor}10
-          `
+          backgroundColor: 'hsl(240 100% 2%)'
         }}
       >
-        {/* Animated border effect */}
-        <div 
-          className="absolute inset-0 rounded-lg opacity-30 animate-pulse"
-          style={{
-            background: `conic-gradient(from 0deg, ${profileColor}, transparent, ${profileColor})`
-          }}
-        />
-        
         <CardContent className="relative p-8 md:p-12">
           <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
             
