@@ -61,8 +61,8 @@ export const FeatureSection = ({
             <h2 className="text-2xl sm:text-3xl lg:text-5xl font-bold text-[hsl(var(--heading-readable))] mb-4">
               Sou a <span className="text-secondary/80">Cody</span>, sua IA mentora.
             </h2>
-            <h3 className="text-base sm:text-lg mb-6 font-semibold text-[hsl(var(--near-white))]">
-              Pronto(a) para ativar seu modo Ninja digital?
+            <h3 className="text-lg sm:text-xl mb-6 font-semibold text-[hsl(var(--near-white))]">
+              Vamos iniciar essa jornada digital?
             </h3>
             
             <p className="text-[hsl(var(--body-readable))] text-base sm:text-lg mb-6">
