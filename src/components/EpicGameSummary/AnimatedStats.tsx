@@ -61,11 +61,11 @@ export const AnimatedStats: React.FC<AnimatedStatsProps> = ({
   return (
     <div className={cn("w-full", className)}>
       {/* Title */}
-      <div className="text-center mb-12">
-        <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+      <div className="text-center mb-8">
+        <h2 className="text-2xl md:text-3xl font-bold mb-2 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
           XP & Levels
         </h2>
-        <p className="text-muted-foreground text-lg">
+        <p className="text-muted-foreground">
           Seu nível de experiência conquistado
         </p>
       </div>

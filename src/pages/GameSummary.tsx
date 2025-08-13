@@ -194,21 +194,21 @@ const GameSummary = () => {
       <CelebrationParticles />
 
       {/* Content */}
-      <div className="relative z-10 min-h-screen py-12">
-        <div className="container mx-auto px-4 max-w-6xl">
+      <div className="relative z-10 min-h-screen py-8">
+        <div className="container mx-auto px-4 max-w-5xl">
           
           {/* Hero Section */}
-          <header className="text-center mb-16">            
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
+          <header className="text-center mb-12">            
+            <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-2">
               ETAPA 1 DO CÓDIGO F
             </h1>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-neon-purple mb-12">
-            CONCLUÍDA!
-          </h2>
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-neon-purple mb-8">
+              CONCLUÍDA!
+            </h2>
           </header>
 
           {/* Main Profile Card */}
-          <section className="mb-16">
+          <section className="mb-10">
             <ProfileHeroCard 
               profile={profile.profile} 
               sublevel={profile.sublevel}
@@ -221,7 +221,7 @@ const GameSummary = () => {
           </section>
 
           {/* Stats Grid */}
-          <section className="mb-16">
+          <section className="mb-10">
             <AnimatedStats 
               xp={xp} 
               totalScore={score.total}
@@ -230,12 +230,12 @@ const GameSummary = () => {
           </section>
 
           {/* Floating Medals with Descriptions */}
-          <section className="mb-16">
+          <section className="mb-10">
             <FloatingMedals medals={achievements} />
           </section>
 
           {/* Share Actions */}
-          <section className="max-w-2xl mx-auto mb-16">
+          <section className="max-w-xl mx-auto mb-10">
             <ShareActions 
               phrase={phrase}
               profile={profile.profile}
@@ -247,8 +247,8 @@ const GameSummary = () => {
           <section className="text-center">
             <Button 
               asChild 
-              size="lg"
-              className="bg-neon-cyan hover:bg-neon-cyan/80 text-black font-bold px-8 py-4 text-lg"
+              size="default"
+              className="bg-neon-cyan hover:bg-neon-cyan/80 text-black font-bold px-6 py-3"
             >
               <Link to="/">🚀 Explorar mais missões</Link>
             </Button>
