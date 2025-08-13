@@ -38,7 +38,7 @@ const useSlides = (stage: "prelogin" | "ingame") => {
           description:
             "Use os botões Próximo e Voltar para navegar pelas missões. Você pode sair e retornar quando quiser: seu progresso será salvo automaticamente.",
           narration:
-            "Use próximo e voltar para navegar nas perguntas. Você pode sair e voltar depois. O seu progresso fica salvo.",
+            "Use os botões Próximo e Voltar para navegar pelas missões. Você pode sair e retornar quando quiser: seu progresso será salvo automaticamente.",
         },
       ];
     }
