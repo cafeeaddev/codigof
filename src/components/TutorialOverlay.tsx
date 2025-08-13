@@ -24,7 +24,7 @@ const useSlides = (stage: "prelogin" | "ingame") => {
           description:
             "Aqui você conquista XPs, coleciona medalhas e vê qual missão está ativa. Progrida para liberar novos desafios e avançar mais um passo rumo ao Código F.",
           narration:
-            "Bem vindo à sua base. Aqui você acompanha seu progresso em tempo real, suas medalhas e a missão ativa. Complete uma missão para liberar a próxima.",
+            "Aqui você conquista XPs, coleciona medalhas e vê qual missão está ativa. Progrida para liberar novos desafios e avançar mais um passo rumo ao Código F.",
         },
         {
           title: "Missões e Progresso",
