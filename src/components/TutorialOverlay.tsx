@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "./ui/button";
-import { X, Volume2, RotateCcw, ChevronLeft, ChevronRight, HelpCircle } from "lucide-react";
+import { X, Volume2, VolumeX, RotateCcw, ChevronLeft, ChevronRight, HelpCircle } from "lucide-react";
 import { narrator } from "@/utils/tutorialNarrator";
 
 interface TutorialOverlayProps {
@@ -132,6 +132,17 @@ export const TutorialOverlay = ({ stage, onClose, onDontShowAgain }: TutorialOve
     if (audioEnabled) await play();
   };
 
+  const handleToggleAudio = () => {
+    setAudioEnabled(!audioEnabled);
+    if (audioEnabled && narrator.isSpeaking()) {
+      // Para o áudio atual se estiver falando
+      if (typeof window !== "undefined" && "speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+      }
+      setIsSpeaking(false);
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-[80] flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" />
@@ -150,9 +161,14 @@ export const TutorialOverlay = ({ stage, onClose, onDontShowAgain }: TutorialOve
                 <Volume2 className="w-4 h-4 mr-1" /> Ativar Áudio
               </Button>
             ) : (
-              <Button size="sm" variant="outline" onClick={handleReplay}>
-                {isSpeaking ? <Volume2 className="w-4 h-4 mr-1 animate-pulse" /> : <RotateCcw className="w-4 h-4 mr-1" />} Repetir
-              </Button>
+              <>
+                <Button size="sm" variant="outline" onClick={handleReplay}>
+                  {isSpeaking ? <Volume2 className="w-4 h-4 mr-1 animate-pulse" /> : <RotateCcw className="w-4 h-4 mr-1" />} Repetir
+                </Button>
+                <Button size="icon" variant="outline" onClick={handleToggleAudio} aria-label="Desativar áudio">
+                  <VolumeX className="w-4 h-4" />
+                </Button>
+              </>
             )}
             <Button size="icon" variant="outline" onClick={onClose} aria-label="Fechar">
               <X className="w-4 h-4" />
