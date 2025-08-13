@@ -510,12 +510,12 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
           variant="secondary"
           size="lg"
           onClick={() => setShowTutorial(true)}
-          className="inline-flex items-center bg-background text-foreground border border-neon-cyan hover:bg-background/80"
+          className="inline-flex items-center bg-background text-foreground border border-neon-cyan hover:bg-background/80 pl-0 pr-5"
         >
           <img
             src="/lovable-uploads/ead95ee7-bc88-4e43-88ad-3ae3499162d4.png"
             alt="Cody, assistente IA"
-            className="w-12 h-12 mr-3 rounded-full ring-2 ring-neon-cyan shadow-md"
+            className="w-12 h-12 -ml-px mr-3 rounded-full ring-2 ring-neon-cyan shadow-md shrink-0"
             loading="lazy"
             decoding="async"
           />
