@@ -2,6 +2,7 @@ import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { getProfileColor } from '@/lib/digitalProfile';
 import { cn } from '@/lib/utils';
+import { Brain, Zap, Star, Target } from 'lucide-react';
 
 interface ProfileHeroCardProps {
   profile: string;
@@ -17,6 +18,17 @@ export const ProfileHeroCard: React.FC<ProfileHeroCardProps> = ({
   className
 }) => {
   const profileColor = getProfileColor(profile as any);
+
+  const getProfileIcon = () => {
+    switch (profile.toLowerCase()) {
+      case 'ninja': return Brain;
+      case 'pro-player': return Zap;
+      case 'explorer': return Star;
+      default: return Target;
+    }
+  };
+
+  const ProfileIcon = getProfileIcon();
 
   return (
     <div className={cn("relative", className)}>
@@ -60,66 +72,102 @@ export const ProfileHeroCard: React.FC<ProfileHeroCardProps> = ({
           }}
         />
         
-        <CardContent className="relative p-12 text-center">
-          {/* Profile Avatar Circle */}
-          <div className="mb-8">
-            <div 
-              className="w-32 h-32 mx-auto rounded-full flex items-center justify-center relative animate-float-medal"
-              style={{
-                background: `radial-gradient(circle, ${profileColor}30, ${profileColor}10)`,
-                border: `3px solid ${profileColor}`,
-                boxShadow: `0 0 40px ${profileColor}50`
-              }}
-            >
-              <div 
-                className="text-6xl font-bold animate-holographic"
-                style={{ color: profileColor }}
-              >
-                {profile.charAt(0)}
+        <CardContent className="relative p-8 md:p-12">
+          <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
+            
+            {/* Left side - Avatar and announcement */}
+            <div className="flex-shrink-0 text-center lg:text-left">
+              {/* Avatar Circle */}
+              <div className="relative mb-6">
+                <div 
+                  className="w-40 h-40 mx-auto lg:mx-0 rounded-full flex items-center justify-center relative animate-float-medal"
+                  style={{
+                    background: `radial-gradient(circle, ${profileColor}30, ${profileColor}10)`,
+                    border: `4px solid ${profileColor}`,
+                    boxShadow: `0 0 50px ${profileColor}50`
+                  }}
+                >
+                  {/* Avatar Icon */}
+                  <ProfileIcon 
+                    size={64} 
+                    style={{ 
+                      color: profileColor,
+                      filter: `drop-shadow(0 0 20px ${profileColor})`
+                    }}
+                  />
+                  
+                  {/* Orbiting dots */}
+                  <div 
+                    className="absolute w-3 h-3 rounded-full animate-orbit"
+                    style={{ 
+                      backgroundColor: profileColor,
+                      boxShadow: `0 0 15px ${profileColor}`
+                    }}
+                  />
+                  
+                  {/* Pulse ring */}
+                  <div 
+                    className="absolute inset-0 rounded-full border-2 animate-ping opacity-20"
+                    style={{ borderColor: profileColor }}
+                  />
+                </div>
               </div>
-              
-              {/* Orbiting dots */}
-              <div 
-                className="absolute w-2 h-2 rounded-full animate-orbit"
-                style={{ 
-                  backgroundColor: profileColor,
-                  boxShadow: `0 0 10px ${profileColor}`
-                }}
-              />
-            </div>
-          </div>
 
-          <div className="mb-8">
-            <h2 
-              className="text-5xl md:text-7xl font-bold mb-4 animate-holographic"
-              style={{ 
-                background: `linear-gradient(45deg, ${profileColor}, ${profileColor}80)`,
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-                filter: `drop-shadow(0 0 20px ${profileColor}50)`
-              }}
-            >
-              {profile}
-            </h2>
-            <p 
-              className="text-2xl md:text-3xl font-semibold opacity-90"
-              style={{ color: profileColor }}
-            >
-              {sublevel}
-            </p>
-          </div>
-          
-          <div className="relative max-w-2xl mx-auto">
-            <div 
-              className="absolute inset-0 rounded-lg opacity-20 blur-sm"
-              style={{ 
-                background: `linear-gradient(45deg, ${profileColor}40, transparent, ${profileColor}40)` 
-              }}
-            />
-            <p className="relative text-foreground/90 text-xl md:text-2xl leading-relaxed font-medium">
-              {phrase}
-            </p>
+              {/* Announcement text */}
+              <div className="space-y-2">
+                <p className="text-lg md:text-xl text-foreground/80">
+                  Sou a <span style={{ color: profileColor }} className="font-bold">Cody</span>, sua IA mentora.
+                </p>
+                <p className="text-2xl md:text-3xl font-bold" style={{ color: profileColor }}>
+                  Transição → {profile}
+                </p>
+              </div>
+            </div>
+
+            {/* Right side - Profile details */}
+            <div className="flex-1 text-center lg:text-left">
+              {/* Profile badge */}
+              <div className="inline-flex items-center gap-2 mb-6 px-4 py-2 rounded-full border-2" 
+                   style={{ 
+                     borderColor: profileColor,
+                     backgroundColor: `${profileColor}20`
+                   }}>
+                <div 
+                  className="w-3 h-3 rounded-full"
+                  style={{ backgroundColor: profileColor }}
+                />
+                <span className="text-sm font-semibold" style={{ color: profileColor }}>
+                  {sublevel}
+                </span>
+              </div>
+
+              {/* Profile title */}
+              <h2 
+                className="text-4xl md:text-6xl font-bold mb-6 animate-holographic"
+                style={{ 
+                  background: `linear-gradient(45deg, ${profileColor}, ${profileColor}80)`,
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                  filter: `drop-shadow(0 0 20px ${profileColor}50)`
+                }}
+              >
+                {profile}
+              </h2>
+              
+              {/* Description */}
+              <div className="relative">
+                <div 
+                  className="absolute inset-0 rounded-lg opacity-20 blur-sm"
+                  style={{ 
+                    background: `linear-gradient(45deg, ${profileColor}40, transparent, ${profileColor}40)` 
+                  }}
+                />
+                <p className="relative text-foreground/90 text-lg md:text-xl leading-relaxed">
+                  {phrase}
+                </p>
+              </div>
+            </div>
           </div>
           
           {/* Decorative neon lines */}
