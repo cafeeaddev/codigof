@@ -76,6 +76,9 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
       setCompletedMissions(prev => new Set([...prev, missionId]));
       if (missionId < 4) {
         setCurrentMission((missionId + 1) as 1 | 2 | 3 | 4);
+      } else {
+        // Após completar missão 4, manter currentMission em 4 para mostrar tela de conclusão
+        setCurrentMission(4);
       }
       setJustCompleted(null);
     }, UNLOCK_DELAY);
@@ -121,7 +124,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
             } else if (!progress.missao_4_completed) {
               setCurrentMission(4);
             } else {
-              setCurrentMission(1); // All completed, default to first
+              setCurrentMission(4); // All completed, keep on mission 4 to show completion screen
             }
           }
         } else {
