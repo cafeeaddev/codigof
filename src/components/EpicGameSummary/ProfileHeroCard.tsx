@@ -32,7 +32,7 @@ export const ProfileHeroCard: React.FC<ProfileHeroCardProps> = ({
   totalScore,
   className
 }) => {
-  const profileColor = getProfileColor(profile as any);
+  const profileColor = 'hsl(var(--neon-cyan))'; // Always use neon cyan
   const [isExpanded, setIsExpanded] = useState(false);
 
   const getProfileIcon = () => {
