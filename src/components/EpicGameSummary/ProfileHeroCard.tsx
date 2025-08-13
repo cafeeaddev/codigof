@@ -49,21 +49,6 @@ export const ProfileHeroCard: React.FC<ProfileHeroCardProps> = ({
 
   return (
     <div className={cn("relative", className)}>
-      {/* Vaporwave Grid Background */}
-      <div className="absolute inset-0 opacity-20">
-        <div 
-          className="w-full h-full"
-          style={{
-            background: `
-              linear-gradient(90deg, ${profileColor}20 1px, transparent 1px),
-              linear-gradient(0deg, ${profileColor}20 1px, transparent 1px)
-            `,
-            backgroundSize: '40px 40px',
-            transform: 'perspective(500px) rotateX(45deg)',
-            transformOrigin: 'center bottom'
-          }}
-        />
-      </div>
 
       <Card 
         className={cn(
