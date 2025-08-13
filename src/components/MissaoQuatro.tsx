@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
@@ -7,115 +7,30 @@ import { toast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { ScrollArea } from './ui/scroll-area';
+import { getMission4QuestionsForUser } from '@/data/questions';
 
 interface MissaoQuatroProps {
   onComplete: () => void;
 }
 
-const questions = [
-  {
-    id: 1,
-    question: "Word",
-    options: [
-      { letter: "A", text: "Uso o Word para o básico, como escrever textos simples.", points: 0.0 },
-      { letter: "B", text: "Uso para textos simples, como cartas e relatórios curtos.", points: 1.0 },
-      { letter: "C", text: "Sei usar estilos, sumário automático e recursos de formatação mais avançados.", points: 2.5 },
-      { letter: "D", text: "Utilizo recursos como mala direta, controle de alterações e formatação corporativa.", points: 3.7 },
-      { letter: "E", text: "Crio modelos profissionais, configurando normas e recursos avançados para equipes.", points: 5.0 }
-    ]
-  },
-  {
-    id: 2,
-    question: "PowerPoint",
-    options: [
-      { letter: "A", text: "Consigo fazer apresentações simples", points: 0.0 },
-      { letter: "B", text: "Crio apresentações com textos e imagens.", points: 1.0 },
-      { letter: "C", text: "Uso animações, transições e layouts personalizados.", points: 2.5 },
-      { letter: "D", text: "Desenvolvo apresentações estruturadas para reuniões, com vídeos e gráficos.", points: 3.7 },
-      { letter: "E", text: "Crio templates institucionais, apresentações narrativas e visual storytelling.", points: 5.0 }
-    ]
-  },
-  {
-    id: 3,
-    question: "Excel",
-    options: [
-      { letter: "A", text: "Uso o Excel para tarefas simples, como organizar dados sem usar fórmulas.", points: 0.0 },
-      { letter: "B", text: "Conheço fórmulas básicas e formatação de tabelas.", points: 1.0 },
-      { letter: "C", text: "Uso funções intermediárias, filtros, gráficos e validações.", points: 2.5 },
-      { letter: "D", text: "Crio dashboards com PROC/VLOOKUP, tabelas dinâmicas e Power Query.", points: 3.7 },
-      { letter: "E", text: "Desenvolvo modelos automatizados, macros e soluções para múltiplos usuários.", points: 5.0 }
-    ]
-  },
-  {
-    id: 4,
-    question: "Power BI",
-    options: [
-      { letter: "A", text: "Já ouvi falar do Power BI, mas ainda não usei nem explorei a ferramenta.", points: 0.0 },
-      { letter: "B", text: "Conheço o nome ou assisti apresentações feitas com ele.", points: 1.0 },
-      { letter: "C", text: "Já criei relatórios simples com dados importados.", points: 2.5 },
-      { letter: "D", text: "Desenvolvo dashboards com DAX, filtros e visualizações interativas.", points: 3.7 },
-      { letter: "E", text: "Integro múltiplas fontes de dados e compartilho relatórios para tomada de decisão.", points: 5.0 }
-    ]
-  },
-  {
-    id: 5,
-    question: "Power Automate",
-    options: [
-      { letter: "A", text: "Nunca ouvi falar sobre essa ferramenta", points: 0.0 },
-      { letter: "B", text: "Nunca usei ou só ouvi falar.", points: 1.0 },
-      { letter: "C", text: "Testei fluxos simples, como alertas ou aprovações.", points: 2.5 },
-      { letter: "D", text: "Automatizei processos reais do meu trabalho.", points: 3.7 },
-      { letter: "E", text: "Crio fluxos conectando múltiplas ferramentas e oriento colegas.", points: 5.0 }
-    ]
-  },
-  {
-    id: 6,
-    question: "SharePoint",
-    options: [
-      { letter: "A", text: "Nunca acessei ao SharePoint.", points: 0.0 },
-      { letter: "B", text: "Já acessei páginas ou documentos, mas com uso pontual.", points: 1.0 },
-      { letter: "C", text: "Participo de equipes e bibliotecas compartilhadas.", points: 2.5 },
-      { letter: "D", text: "Organizo conteúdos, permissões e estrutura de sites.", points: 3.7 },
-      { letter: "E", text: "Administro ambientes SharePoint com fluxos, listas e integrações.", points: 5.0 }
-    ]
-  },
-  {
-    id: 7,
-    question: "Power Apps",
-    options: [
-      { letter: "A", text: "Ainda não ouvi falar sobre a ferramenta.", points: 0.0 },
-      { letter: "B", text: "Nunca usei ou só ouvi falar.", points: 1.0 },
-      { letter: "C", text: "Já explorei aplicativos prontos ou modelos.", points: 2.5 },
-      { letter: "D", text: "Criei apps simples para uso interno ou pessoal.", points: 3.7 },
-      { letter: "E", text: "Desenvolvo e publico aplicativos integrados com dados e processos da equipe.", points: 5.0 }
-    ]
-  },
-  {
-    id: 8,
-    question: "Banco de Dados / SQL",
-    options: [
-      { letter: "A", text: "Nunca tive contato com banco de dados/SQL.", points: 0.0 },
-      { letter: "B", text: "Já ouvi falar e tenho interesse em aprender mais.", points: 1.0 },
-      { letter: "C", text: "Já fiz consultas simples (SELECT, filtros, joins básicos).", points: 2.5 },
-      { letter: "D", text: "Realizo análises com queries intermediárias e múltiplas tabelas.", points: 3.7 },
-      { letter: "E", text: "Crio estruturas, mantenho bases e otimizações com SQL avançado.", points: 5.0 }
-    ]
-  },
-  {
-    id: 9,
-    question: "ChatGPT / IA",
-    options: [
-      { letter: "A", text: "Ainda não conheço nenhuma ferramenta de IA.", points: 0.0 },
-      { letter: "B", text: "Ainda não faz parte do meu dia a dia, mas já experimentei pelo menos uma IA.", points: 1.0 },
-      { letter: "C", text: "Uso para consultas ou inspiração.", points: 2.5 },
-      { letter: "D", text: "Aplico com foco em produtividade real.", points: 3.7 },
-      { letter: "E", text: "Crio fluxos ou soluções que combinam IA com outras ferramentas.", points: 5.0 }
-    ]
-  }
-];
-
 export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
   const { profile, user } = useAuth();
+  
+  // Get questions based on user's area
+  const questions = useMemo(() => {
+    const userQuestions = getMission4QuestionsForUser(profile?.area);
+    // Convert to the format expected by the component
+    return userQuestions.map(q => ({
+      id: q.id,
+      question: q.question,
+      options: Object.entries(q.options).map(([letter, option]) => ({
+        letter,
+        text: option.text,
+        points: option.points
+      }))
+    }));
+  }, [profile?.area]);
+
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);

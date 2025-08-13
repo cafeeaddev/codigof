@@ -144,11 +144,12 @@ export const mission3Questions = [
   }
 ];
 
-// Mission 4 (Ferramentas Digitais) - 10 questions
-export const mission4Questions = [
+// Mission 4 (Ferramentas Digitais) - General questions (for all users)
+export const mission4GeneralQuestions = [
   {
     id: 1,
     question: "Microsoft Excel/Google Sheets",
+    type: 'geral',
     options: {
       A: { text: "Nunca usei", points: 0 },
       B: { text: "Uso básico (inserir dados, somas simples)", points: 1 },
@@ -160,6 +161,7 @@ export const mission4Questions = [
   {
     id: 2,
     question: "PowerPoint/Google Slides",
+    type: 'geral',
     options: {
       A: { text: "Nunca usei", points: 0 },
       B: { text: "Uso básico (slides simples com texto)", points: 1 },
@@ -171,6 +173,7 @@ export const mission4Questions = [
   {
     id: 3,
     question: "Microsoft Teams/Zoom/Google Meet",
+    type: 'geral',
     options: {
       A: { text: "Nunca usei", points: 0 },
       B: { text: "Participo de reuniões apenas", points: 1 },
@@ -182,6 +185,7 @@ export const mission4Questions = [
   {
     id: 4,
     question: "WhatsApp Business/Telegram",
+    type: 'geral',
     options: {
       A: { text: "Nunca usei", points: 0 },
       B: { text: "Uso pessoal apenas", points: 1 },
@@ -193,6 +197,7 @@ export const mission4Questions = [
   {
     id: 5,
     question: "Google Drive/OneDrive/Dropbox",
+    type: 'geral',
     options: {
       A: { text: "Nunca usei", points: 0 },
       B: { text: "Armazeno arquivos básicos", points: 1 },
@@ -204,6 +209,7 @@ export const mission4Questions = [
   {
     id: 6,
     question: "ChatGPT/Claude/Gemini (IA)",
+    type: 'geral',
     options: {
       A: { text: "Nunca usei", points: 0 },
       B: { text: "Experimentei algumas vezes", points: 1 },
@@ -215,6 +221,7 @@ export const mission4Questions = [
   {
     id: 7,
     question: "Canva/Adobe/Figma (Design)",
+    type: 'geral',
     options: {
       A: { text: "Nunca usei", points: 0 },
       B: { text: "Uso templates prontos", points: 1 },
@@ -226,6 +233,7 @@ export const mission4Questions = [
   {
     id: 8,
     question: "Trello/Asana/Monday (Gestão de Projetos)",
+    type: 'geral',
     options: {
       A: { text: "Nunca usei", points: 0 },
       B: { text: "Acompanho tarefas atribuídas", points: 1 },
@@ -237,6 +245,7 @@ export const mission4Questions = [
   {
     id: 9,
     question: "LinkedIn/Redes Sociais Profissionais",
+    type: 'geral',
     options: {
       A: { text: "Não tenho perfil", points: 0 },
       B: { text: "Tenho perfil mas uso pouco", points: 1 },
@@ -244,19 +253,220 @@ export const mission4Questions = [
       D: { text: "Publico conteúdo e faço networking ativo", points: 3.7 },
       E: { text: "Influenciador/especialista reconhecido", points: 5 }
     }
+  }
+];
+
+// Mission 4 - Area-specific questions
+export const mission4AreaQuestions = [
+  // TI/TI & TRANSFORMAÇÃO DIGITAL
+  {
+    id: 100,
+    question: "GitHub/GitLab (Controle de Versão)",
+    type: 'area-specific',
+    criteria: { areas: ['TI', 'TI & TRANSFORMAÇÃO DIGITAL'] },
+    options: {
+      A: { text: "Nunca usei", points: 0 },
+      B: { text: "Conhecimento básico (clone, commit)", points: 1 },
+      C: { text: "Uso intermediário (branches, merge, pull requests)", points: 2.5 },
+      D: { text: "Uso avançado (workflows, CI/CD, code review)", points: 3.7 },
+      E: { text: "Especialista (administração, estratégias de branching)", points: 5 }
+    }
   },
   {
-    id: 10,
-    question: "YouTube/Coursera/Udemy (Aprendizado Online)",
+    id: 101,
+    question: "Docker/Kubernetes (Containerização)",
+    type: 'area-specific',
+    criteria: { areas: ['TI', 'TI & TRANSFORMAÇÃO DIGITAL'] },
     options: {
-      A: { text: "Nunca usei para aprender", points: 0 },
-      B: { text: "Assisto vídeos ocasionalmente", points: 1 },
-      C: { text: "Faço cursos online regularmente", points: 2.5 },
-      D: { text: "Completo certificações e aplico conhecimentos", points: 3.7 },
-      E: { text: "Mentor/criador de conteúdo educacional", points: 5 }
+      A: { text: "Nunca usei", points: 0 },
+      B: { text: "Conceitos básicos", points: 1 },
+      C: { text: "Uso Docker para desenvolvimento", points: 2.5 },
+      D: { text: "Deploy em produção com orquestração", points: 3.7 },
+      E: { text: "Arquitetura completa de microserviços", points: 5 }
+    }
+  },
+  // MARKETING
+  {
+    id: 200,
+    question: "Google Analytics/Google Ads",
+    type: 'area-specific',
+    criteria: { areas: ['MARKETING'] },
+    options: {
+      A: { text: "Nunca usei", points: 0 },
+      B: { text: "Visualizo relatórios básicos", points: 1 },
+      C: { text: "Configuração e análise intermediária", points: 2.5 },
+      D: { text: "Campanhas otimizadas e segmentação avançada", points: 3.7 },
+      E: { text: "Estratégias complexas de marketing digital", points: 5 }
+    }
+  },
+  {
+    id: 201,
+    question: "HubSpot/Salesforce (CRM)",
+    type: 'area-specific',
+    criteria: { areas: ['MARKETING'] },
+    options: {
+      A: { text: "Nunca usei", points: 0 },
+      B: { text: "Visualização de contatos e deals", points: 1 },
+      C: { text: "Gestão de pipeline e automações básicas", points: 2.5 },
+      D: { text: "Workflows complexos e integrações", points: 3.7 },
+      E: { text: "Customização avançada e estratégia de CRM", points: 5 }
+    }
+  },
+  // JURIDICO
+  {
+    id: 300,
+    question: "Sistemas Jurídicos (SAJ, Projuris, etc.)",
+    type: 'area-specific',
+    criteria: { areas: ['JURIDICO'] },
+    options: {
+      A: { text: "Nunca usei", points: 0 },
+      B: { text: "Consulta básica de processos", points: 1 },
+      C: { text: "Gestão de prazos e controle processual", points: 2.5 },
+      D: { text: "Automação de petições e relatórios", points: 3.7 },
+      E: { text: "Configuração e otimização do sistema", points: 5 }
+    }
+  },
+  {
+    id: 301,
+    question: "E-Social/SPED (Obrigações Acessórias)",
+    type: 'area-specific',
+    criteria: { areas: ['JURIDICO'] },
+    options: {
+      A: { text: "Nunca trabalhei", points: 0 },
+      B: { text: "Conhecimento básico dos sistemas", points: 1 },
+      C: { text: "Envio de informações e consultas", points: 2.5 },
+      D: { text: "Análise e correção de inconsistências", points: 3.7 },
+      E: { text: "Otimização de processos e compliance", points: 5 }
+    }
+  },
+  // FINANCIAL ADVISORY/CONTROLADORIA
+  {
+    id: 400,
+    question: "SAP/Oracle (ERP Financeiro)",
+    type: 'area-specific',
+    criteria: { areas: ['FINANCIAL ADVISORY', 'CONTROLADORIA'] },
+    options: {
+      A: { text: "Nunca usei", points: 0 },
+      B: { text: "Consulta de relatórios básicos", points: 1 },
+      C: { text: "Lançamentos e conciliações", points: 2.5 },
+      D: { text: "Configuração de processos e workflows", points: 3.7 },
+      E: { text: "Customização e otimização do ERP", points: 5 }
+    }
+  },
+  {
+    id: 401,
+    question: "Tableau/QlikView (BI Financeiro)",
+    type: 'area-specific',
+    criteria: { areas: ['FINANCIAL ADVISORY', 'CONTROLADORIA'] },
+    options: {
+      A: { text: "Nunca usei", points: 0 },
+      B: { text: "Consumo dashboards prontos", points: 1 },
+      C: { text: "Criação de relatórios básicos", points: 2.5 },
+      D: { text: "Dashboards interativos e KPIs", points: 3.7 },
+      E: { text: "Modelagem de dados e visualizações complexas", points: 5 }
+    }
+  },
+  // BPO/TAX
+  {
+    id: 500,
+    question: "Domínio/Alterdata (Sistemas Contábeis)",
+    type: 'area-specific',
+    criteria: { areas: ['BPO', 'TAX'] },
+    options: {
+      A: { text: "Nunca usei", points: 0 },
+      B: { text: "Operação básica", points: 1 },
+      C: { text: "Escrituração e apurações", points: 2.5 },
+      D: { text: "Configuração e parametrização", points: 3.7 },
+      E: { text: "Otimização e automação de processos", points: 5 }
+    }
+  },
+  {
+    id: 501,
+    question: "SPED Fiscal/Contábil",
+    type: 'area-specific',
+    criteria: { areas: ['BPO', 'TAX'] },
+    options: {
+      A: { text: "Nunca trabalhei", points: 0 },
+      B: { text: "Conhecimento básico", points: 1 },
+      C: { text: "Geração e validação", points: 2.5 },
+      D: { text: "Análise e correção de erros", points: 3.7 },
+      E: { text: "Auditoria e otimização", points: 5 }
+    }
+  },
+  // CONSULTORIA
+  {
+    id: 600,
+    question: "Miro/Lucidchart (Diagramação)",
+    type: 'area-specific',
+    criteria: { areas: ['CONSULTORIA'] },
+    options: {
+      A: { text: "Nunca usei", points: 0 },
+      B: { text: "Criação básica de diagramas", points: 1 },
+      C: { text: "Fluxogramas e mapas de processo", points: 2.5 },
+      D: { text: "Workshops colaborativos", points: 3.7 },
+      E: { text: "Facilitação de design thinking", points: 5 }
+    }
+  },
+  {
+    id: 601,
+    question: "Metodologias Ágeis (Scrum, Kanban)",
+    type: 'area-specific',
+    criteria: { areas: ['CONSULTORIA'] },
+    options: {
+      A: { text: "Nunca usei", points: 0 },
+      B: { text: "Conhecimento teórico", points: 1 },
+      C: { text: "Participação em projetos ágeis", points: 2.5 },
+      D: { text: "Facilitação de cerimônias", points: 3.7 },
+      E: { text: "Coach/Scrum Master certificado", points: 5 }
+    }
+  },
+  // AUDITORIA
+  {
+    id: 700,
+    question: "TeamMate/AuditBoard (Auditoria)",
+    type: 'area-specific',
+    criteria: { areas: ['AUDITORIA'] },
+    options: {
+      A: { text: "Nunca usei", points: 0 },
+      B: { text: "Acesso básico para consultas", points: 1 },
+      C: { text: "Documentação de achados", points: 2.5 },
+      D: { text: "Planejamento e execução", points: 3.7 },
+      E: { text: "Configuração e administração", points: 5 }
+    }
+  },
+  {
+    id: 701,
+    question: "ACL/IDEA (Análise de Dados)",
+    type: 'area-specific',
+    criteria: { areas: ['AUDITORIA'] },
+    options: {
+      A: { text: "Nunca usei", points: 0 },
+      B: { text: "Conhecimento básico", points: 1 },
+      C: { text: "Análises simples de dados", points: 2.5 },
+      D: { text: "Scripts e automações", points: 3.7 },
+      E: { text: "Análises forenses avançadas", points: 5 }
     }
   }
 ];
+
+// Combined mission 4 questions (legacy for backward compatibility)
+export const mission4Questions = mission4GeneralQuestions;
+
+// Helper function to get questions for Mission 4 based on user area
+export const getMission4QuestionsForUser = (userArea?: string) => {
+  const generalQuestions = mission4GeneralQuestions;
+  
+  if (!userArea) {
+    return generalQuestions;
+  }
+  
+  // Get area-specific questions for the user's area
+  const areaQuestions = mission4AreaQuestions.filter(q => 
+    q.criteria?.areas?.some(area => area.toLowerCase() === userArea.toLowerCase())
+  );
+  
+  return [...generalQuestions, ...areaQuestions];
+};
 
 // Helper function to get question by mission type and question ID
 export const getQuestionById = (missionType: string, questionId: number) => {

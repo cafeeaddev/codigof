@@ -23,7 +23,6 @@ interface UserProfile {
   cpf: string;
   area: string;
   cargo: string;
-  situacao: string;
 }
 
 interface AuthContextType {
@@ -225,7 +224,6 @@ setTimeout(() => {
           .from('profiles')
           .select('*')
           .eq('email', userEmail)
-          .eq('situacao', 'ATIVO')
           .limit(1)
           .maybeSingle();
 
