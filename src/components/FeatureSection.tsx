@@ -69,13 +69,6 @@ export const FeatureSection = ({
               {description}
             </p>
 
-            {!hideInlineSecret && (
-              <SecretFAQDialog>
-                <div className="text-secondary cursor-pointer story-link">
-                  <span className="font-medium">Quer um spoiler?</span>
-                </div>
-              </SecretFAQDialog>
-            )}
           </div>
 
           {/* Right side - Video with circular design */}
@@ -109,6 +102,23 @@ export const FeatureSection = ({
             <div className="absolute -top-2 -right-2 w-4 h-4 bg-neon-cyan rounded-full opacity-60 animate-pulse"></div>
             <div className="absolute top-8 -left-3 w-2 h-2 bg-neon-purple rounded-full opacity-40 animate-pulse delay-500"></div>
             <div className="absolute -bottom-1 left-8 w-3 h-3 bg-neon-purple rounded-full opacity-50 animate-pulse delay-1000"></div>
+
+            {/* Spoiler bubble near Cody */}
+            {!hideInlineSecret && (
+              <SecretFAQDialog>
+                <div className="absolute -top-6 -right-6 sm:-top-8 sm:-right-8">
+                  <div className="relative group cursor-pointer select-none">
+                    <div className="rounded-xl border border-border bg-popover/90 px-3 py-2 shadow-md backdrop-blur supports-[backdrop-filter]:backdrop-blur-md text-[hsl(var(--near-white))]">
+                      <span className="inline-flex items-center gap-2">
+                        <span className="inline-block size-3 rounded-full bg-gradient-to-r from-[hsl(var(--primary))] to-[hsl(var(--secondary))] ring-2 ring-primary/40" aria-hidden></span>
+                        <span className="font-medium">Quer um spoiler?</span>
+                      </span>
+                    </div>
+                    <span className="absolute -bottom-1 right-8 w-2 h-2 bg-popover/90 border-r border-b border-border rotate-45" aria-hidden></span>
+                  </div>
+                </div>
+              </SecretFAQDialog>
+            )}
           </div>
         </div>
 
