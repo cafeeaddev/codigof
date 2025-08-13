@@ -132,6 +132,13 @@ export const TutorialOverlay = ({ stage, onClose, onDontShowAgain }: TutorialOve
   };
 
   const handleNext = async () => {
+    if (index === slides.length - 1) {
+      // Se é o último slide, fechar o tutorial
+      narrator.stop();
+      onClose();
+      return;
+    }
+    
     const next = Math.min(index + 1, slides.length - 1);
     setIndex(next);
     if (audioEnabled) await play(slides[next].narration, next);
@@ -256,7 +263,7 @@ export const TutorialOverlay = ({ stage, onClose, onDontShowAgain }: TutorialOve
             <Button variant="outline" size="sm" onClick={handlePrev} disabled={index === 0}>
               <ChevronLeft className="w-4 h-4 mr-1" /> Voltar
             </Button>
-            <Button variant="default" size="sm" onClick={handleNext} disabled={index === slides.length - 1}>
+            <Button variant="default" size="sm" onClick={handleNext}>
               {index === slides.length - 1 ? "Vamos começar?" : "Próximo"} <ChevronRight className="w-4 h-4 ml-1" />
             </Button>
           </div>
