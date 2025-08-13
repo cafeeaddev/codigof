@@ -341,18 +341,6 @@ const AdminDashboard = () => {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-6">
       <div className="w-full max-w-md">
-        <div className="flex items-center justify-between mb-8">
-          <Button
-            onClick={() => navigate('/')}
-            variant="outline"
-            size="sm"
-            className="hover-scale"
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Voltar
-          </Button>
-        </div>
-
         <Card className="animate-fade-in">
           <CardHeader className="text-center">
             <CardTitle className="text-2xl font-bold bg-gradient-neon bg-clip-text text-transparent">
@@ -416,11 +404,6 @@ const AdminDashboard = () => {
                 {isLoading ? 'AUTENTICANDO...' : 'ACESSAR PAINEL'}
               </Button>
             </form>
-
-            {/* Forgot password */}
-            <div className="text-center mt-4">
-              <ForgotPasswordDialog />
-            </div>
           </CardContent>
         </Card>
       </div>
