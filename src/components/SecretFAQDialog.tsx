@@ -77,7 +77,7 @@ const faqs = [
   },
   {
     q: "Q10: Com quem falo em caso de dúvidas?",
-    a: "Caso tenha dúvidas ou dificuldades de acesso, entre em contato com o nosso time pelo canal [e-mail ou canal interno].",
+    a: "Caso tenha dúvidas ou dificuldades de acesso, entre em contato com o nosso time pelo e-mail treinamento@mazars.com.br.",
   },
 ];
 
