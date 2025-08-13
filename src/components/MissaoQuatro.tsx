@@ -7,6 +7,7 @@ import { Progress } from '@/components/ui/progress';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 import { ScrollArea } from './ui/scroll-area';
 
@@ -297,6 +298,41 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
                 ))}
               </RadioGroup>
 
+              <div className="mt-4 pt-2 flex justify-between items-center">
+                <Button
+                  type="button"
+                  onClick={handlePrevious}
+                  disabled={currentQuestion === 0}
+                  variant="outline"
+                  size="sm"
+                  className="border-secondary text-secondary hover:bg-secondary hover:text-secondary-foreground"
+                >
+                  <ChevronLeft className="w-3 h-3 mr-1" />
+                  Anterior
+                </Button>
+                {isLastQuestion ? (
+                  <Button
+                    type="button"
+                    onClick={handleSubmit}
+                    disabled={!currentAnswer || isSubmitting}
+                    size="sm"
+                    className="bg-primary hover:bg-primary/90"
+                  >
+                    {isSubmitting ? 'Enviando...' : 'Finalizar Missão 4'}
+                  </Button>
+                ) : (
+                  <Button
+                    type="button"
+                    onClick={handleNext}
+                    disabled={!currentAnswer}
+                    size="sm"
+                    className="bg-primary hover:bg-primary/90"
+                  >
+                    Próxima
+                    <ChevronRight className="w-3 h-3 ml-1" />
+                  </Button>
+                )}
+              </div>
             </CardContent>
           </Card>
         </div>

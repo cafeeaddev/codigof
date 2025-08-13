@@ -269,41 +269,6 @@ export const MissaoTres = ({ onComplete }: MissaoTresProps) => {
               ))}
             </RadioGroup>
 
-            <div className="mt-4 pt-2 flex justify-between items-center">
-              <Button
-                type="button"
-                onClick={() => goToPreviousQuestion()}
-                disabled={currentQuestion === 0}
-                variant="outline"
-                size="sm"
-                className="border-secondary text-secondary hover:bg-secondary hover:text-secondary-foreground"
-              >
-                <ChevronLeft className="w-3 h-3 mr-1" />
-                Anterior
-              </Button>
-              {currentQuestion === quizQuestions.length - 1 ? (
-                <Button
-                  type="button"
-                  onClick={() => submitQuiz()}
-                  disabled={!answers[currentQuestionData.id] || isSubmitting}
-                  size="sm"
-                  className="bg-primary hover:bg-primary/90"
-                >
-                  {isSubmitting ? 'Enviando...' : 'Finalizar Missão 3'}
-                </Button>
-              ) : (
-                <Button
-                  type="button"
-                  onClick={() => goToNextQuestion()}
-                  disabled={!answers[currentQuestionData.id]}
-                  size="sm"
-                  className="bg-primary hover:bg-primary/90"
-                >
-                  Próxima
-                  <ChevronRight className="w-3 h-3 ml-1" />
-                </Button>
-              )}
-            </div>
 
             <div className="mt-4 pt-2 flex justify-between items-center">
               <Button
