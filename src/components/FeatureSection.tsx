@@ -59,6 +59,9 @@ export const FeatureSection = ({
             style={titleReveal.style}
             className="flex-1"
           >
+            <p className="mb-4 text-[hsl(var(--lavender))] text-sm sm:text-base font-semibold">
+              Oi, eu sou a Cody
+            </p>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {/* Card: Missões */}
               <div className="group relative rounded-2xl bg-gradient-to-br from-[hsl(var(--neon-cyan))] to-[hsl(var(--neon-purple))] p-[1px]">
