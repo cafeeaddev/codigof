@@ -92,15 +92,18 @@ export const ForgotPasswordDialog = () => {
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="reset-password">Nova Senha</Label>
+            <Label htmlFor="reset-password">Nova Senha (4 dígitos)</Label>
             <Input
               id="reset-password"
               type="password"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              maxLength={4}
+              minLength={4}
               value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-              placeholder="Digite a nova senha"
+              onChange={(e) => setNewPassword(e.target.value.replace(/\D/g, '').slice(0, 4))}
+              placeholder="4 dígitos para a nova senha"
               required
-              minLength={6}
             />
           </div>
           
