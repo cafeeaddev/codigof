@@ -568,9 +568,9 @@ export const mission4Questions = mission4GeneralQuestions;
 // Helper function to get questions for Mission 4 based on user area
 export const getMission4QuestionsForUser = (userArea?: string) => {
   // Agora todas as áreas recebem apenas as 9 perguntas universais
-  // (anteriormente específicas de AUDITORIA)
+  // (anteriormente específicas de AUDITORIA), excluindo star-rating
   const universalQuestions = mission4AreaQuestions.filter(q => 
-    q.criteria?.areas?.includes('AUDITORIA')
+    q.criteria?.areas?.includes('AUDITORIA') && q.type !== 'star-rating'
   );
   
   return universalQuestions;
