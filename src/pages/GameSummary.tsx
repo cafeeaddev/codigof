@@ -49,10 +49,10 @@ const GameSummary = () => {
   const phrase = useMemo(() => getProfilePhrase(profile.profile, profile.sublevel), [profile]);
 
   const achievementNames = [
-    "Explorador do digital",
-    "Navegante do cotidiano digital",
-    "Superador de desafios",
-    "Conhecedor de ferramentas",
+    "Satélite",
+    "Planeta",
+    "Estrela",
+    "Galáxia",
   ];
   const achievements = [
     { id: 1, title: achievementNames[0], done: medals.m1 },

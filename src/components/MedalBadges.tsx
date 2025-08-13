@@ -18,17 +18,25 @@ interface MedalBadgesProps {
 
 export const MedalBadges: React.FC<MedalBadgesProps> = ({ completed, size = "md", className, medalNames, showNames = false }) => {
   const defaultMedalNames = [
-    "Explorador do Digital",
-    "Navegante do Cotidiano Digital",
-    "Superador de Desafios",
-    "Conhecedor de Ferramentas",
+    "Satélite",
+    "Planeta", 
+    "Estrela",
+    "Galáxia",
   ];
+  
+  const medalDescriptions = [
+    "Você lançou seu primeiro satélite. A jornada começou!",
+    "Você conquistou um planeta. Espaço ampliado!",
+    "Você dominou uma estrela. Brilho de um verdadeiro mestre!",
+    "Você explorou uma galáxia inteira. Imensidão sob controle!"
+  ];
+  
   const names = medalNames && medalNames.length === 4 ? medalNames : defaultMedalNames;
   const items = [
-    { id: 1, label: "Missão 1", done: completed.m1, medalName: names[0] },
-    { id: 2, label: "Missão 2", done: completed.m2, medalName: names[1] },
-    { id: 3, label: "Missão 3", done: completed.m3, medalName: names[2] },
-    { id: 4, label: "Missão 4", done: completed.m4, medalName: names[3] },
+    { id: 1, label: "Missão 1", done: completed.m1, medalName: names[0], description: medalDescriptions[0] },
+    { id: 2, label: "Missão 2", done: completed.m2, medalName: names[1], description: medalDescriptions[1] },
+    { id: 3, label: "Missão 3", done: completed.m3, medalName: names[2], description: medalDescriptions[2] },
+    { id: 4, label: "Missão 4", done: completed.m4, medalName: names[3], description: medalDescriptions[3] },
   ];
 
   const iconSize = size === "sm" ? 16 : 20;
@@ -68,9 +76,10 @@ export const MedalBadges: React.FC<MedalBadgesProps> = ({ completed, size = "md"
                 </div>
               </TooltipTrigger>
               <TooltipContent>
-                <p>
-                  {item.label} • Medalha: {item.medalName} — {item.done ? "Concluída" : "Pendente"}
-                </p>
+                <div className="text-center">
+                  <p className="font-semibold">{item.medalName}</p>
+                  <p className="text-sm text-muted-foreground">{item.description}</p>
+                </div>
               </TooltipContent>
             </Tooltip>
             {showNames && (

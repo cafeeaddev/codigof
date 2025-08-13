@@ -257,7 +257,8 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
 
       setIsCompleted(true);
       toast({
-        title: "Medalha conquistada: Explorador do digital",
+        title: "Medalha conquistada: Satélite",
+        description: "Você lançou seu primeiro satélite. A jornada começou!"
       });
       onClose();
 

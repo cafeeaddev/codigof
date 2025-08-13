@@ -233,10 +233,10 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
               size="md"
               className="pl-2 ml-2 border-l border-border/50"
               medalNames={[
-                "Explorador do Digital",
-                "Navegante do Cotidiano Digital",
-                "Superador de Desafios",
-                "Conhecedor de Ferramentas",
+                "Satélite",
+                "Planeta",
+                "Estrela",
+                "Galáxia",
               ]}
             />
           </div>
@@ -285,10 +285,10 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
             size="sm"
             className="shrink-0"
             medalNames={[
-              "Explorador do Digital",
-              "Navegante do Cotidiano Digital",
-              "Superador de Desafios",
-              "Conhecedor de Ferramentas",
+              "Satélite",
+              "Planeta", 
+              "Estrela",
+              "Galáxia",
             ]}
           />
         </div>
