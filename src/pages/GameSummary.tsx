@@ -169,9 +169,9 @@ const GameSummary = () => {
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
             ETAPA 1 DO CÓDIGO F
           </h1>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-neon-cyan mb-12">
-            CONCLUÍDA!
-          </h2>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-neon-purple mb-12">
+              CONCLUÍDA!
+            </h2>
           
           <div className="mt-8">
             <Button 
@@ -202,9 +202,9 @@ const GameSummary = () => {
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
               ETAPA 1 DO CÓDIGO F
             </h1>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-neon-cyan mb-12">
-              CONCLUÍDA!
-            </h2>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-neon-purple mb-12">
+            CONCLUÍDA!
+          </h2>
           </header>
 
           {/* Main Profile Card */}
