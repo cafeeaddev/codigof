@@ -107,6 +107,9 @@ export const TutorialOverlay = ({ stage, onClose, onDontShowAgain }: TutorialOve
   }, []);
   const play = async (overrideText?: string, slideIndex?: number) => {
     try {
+      // Stop any current audio before playing new one
+      narrator.stop();
+      
       setIsSpeaking(true);
       const currentSlide = slides[slideIndex ?? index];
       const text = overrideText ?? currentSlide.narration;
