@@ -68,6 +68,23 @@ class TutorialNarrator {
     return this.speaking;
   }
 
+  stop() {
+    console.log('[TutorialNarrator] Stopping audio playback');
+    this.speaking = false;
+    
+    // Stop HTML5 audio
+    if (this.audioEl) {
+      this.audioEl.pause();
+      this.audioEl.currentTime = 0;
+      this.audioEl.src = '';
+    }
+    
+    // Stop Web Speech API
+    if (typeof window !== "undefined" && "speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
+    }
+  }
+
   private async speakWithEdge(text: string): Promise<boolean> {
     try {
       const { data, error } = await supabase.functions.invoke("tutorial-narration", {

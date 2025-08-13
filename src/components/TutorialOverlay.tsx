@@ -224,10 +224,18 @@ export const TutorialOverlay = ({ stage, onClose, onDontShowAgain }: TutorialOve
 
         <footer className="flex items-center justify-between gap-2 px-4 py-3 border-t border-border/50 bg-muted/30">
           <div className="flex items-center gap-2">
-            <Button variant="ghost" size="sm" onClick={onClose}>
+            <Button variant="ghost" size="sm" onClick={() => {
+              // Stop audio when closing tutorial
+              narrator.stop();
+              onClose();
+            }}>
               Pular
             </Button>
-            <Button variant="outline" size="sm" onClick={onDontShowAgain}>
+            <Button variant="outline" size="sm" onClick={() => {
+              // Stop audio when closing tutorial
+              narrator.stop();
+              onDontShowAgain();
+            }}>
               Não mostrar de novo
             </Button>
           </div>
