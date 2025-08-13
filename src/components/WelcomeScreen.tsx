@@ -349,7 +349,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
 
           {/* Barra de Missões Horizontal - Estilo Game */}
           <div className="hidden md:block mb-6">
-            <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-3 shadow-neon">
+            <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-3">
               <div className="flex items-center gap-3">
                 {[
                   { id: 1, title: "MISSÃO 1", progress: completedMissions.has(1) ? 4 : 0, total: 4, xp: 25 },
@@ -440,7 +440,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
 
           {/* Área Principal das Perguntas */}
           <div className="flex-1 overflow-hidden min-h-0">
-            <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-4 shadow-neon h-full flex flex-col overflow-hidden min-h-0">
+            <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-4 h-full flex flex-col overflow-hidden min-h-0">
               <div className="flex items-center gap-2 mb-4 p-2 bg-muted/50 rounded-lg">
                 <div className="w-3 h-3 bg-accent rounded-full"></div>
                 <span className="text-accent text-sm font-bold tracking-wider">
