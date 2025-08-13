@@ -41,13 +41,16 @@ const faqs = [
     a: (
       <>
         <p className="mb-2">
-          Este quiz marca a Etapa 1 de um programa mais amplo de aceleramento digital que será lançado oficialmente no final de agosto. Ele nos ajuda a entender o nível atual de maturidade digital dos colaboradores, permitindo que as próximas ações sejam mais personalizadas, direcionadas e eficazes.
+          Este quiz marca o início de um programa mais amplo de aceleramento digital que será lançado oficialmente no final de agosto.
+        </p>
+        <p className="mb-2">
+          Ele nos ajuda a entender o nível atual de maturidade digital dos colaboradores, permitindo que as próximas ações sejam mais personalizadas, direcionadas e eficazes.
         </p>
         <p className="mb-2">A partir dele será possível:</p>
         <ul className="list-disc pl-5 space-y-1">
-          <li>Planejar ações de nivelamento e desenvolvimento</li>
-          <li>Identificar talentos para aprofundamento e possíveis Ninjas digitais</li>
-          <li>Apoiar a evolução estratégica da transformação digital da empresa</li>
+          <li>Planejar ações de nivelamento e desenvolvimento;</li>
+          <li>Identificar talentos para aprofundamento e possíveis Ninjas digitais;</li>
+          <li>Apoiar a evolução estratégica da transformação digital da empresa.</li>
         </ul>
       </>
     ),
