@@ -20,6 +20,8 @@ export const useMission4Questions = (userAreaId?: string | null) => {
       try {
         setIsLoading(true);
         
+        console.log('useMission4Questions - userAreaId:', userAreaId);
+        
         // Buscar perguntas universais (target_area_ids é null ou vazio)
         const { data: universalQuestions, error: universalError } = await supabase
           .from('mission4_questions')
@@ -28,6 +30,8 @@ export const useMission4Questions = (userAreaId?: string | null) => {
           .order('id');
 
         if (universalError) throw universalError;
+        
+        console.log('universalQuestions:', universalQuestions);
 
         let specificQuestions: any[] = [];
         
@@ -41,10 +45,14 @@ export const useMission4Questions = (userAreaId?: string | null) => {
 
           if (areaError) throw areaError;
           specificQuestions = areaQuestions || [];
+          
+          console.log('specificQuestions for area', userAreaId, ':', specificQuestions);
         }
 
         // Combinar perguntas universais e específicas
         const allQuestions = [...(universalQuestions || []), ...specificQuestions];
+        
+        console.log('allQuestions combined:', allQuestions);
         
         // Transformar para o formato esperado
         const formattedQuestions: Mission4Question[] = allQuestions.map(q => ({

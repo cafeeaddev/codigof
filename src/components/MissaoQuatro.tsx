@@ -22,6 +22,9 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
   // Obter o objeto área completo baseado no area_id do perfil
   const userArea = getAreaById((profile as any)?.area_id);
   
+  console.log('MissaoQuatro - profile:', profile);
+  console.log('MissaoQuatro - userArea:', userArea);
+  
   // Buscar perguntas da missão 4 com base na área do usuário
   const { questions: dbQuestions, isLoading: loadingQuestions, error } = useMission4Questions(userArea?.id);
   
