@@ -505,9 +505,16 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
       </div>
 
       {/* Botão de Ajuda dentro do jogo */}
-      <div className="fixed bottom-4 right-4 z-[90]">
+      <div className="fixed bottom-4 right-4 z-[90] flex items-center gap-2">
+        <img
+          src="/lovable-uploads/ead95ee7-bc88-4e43-88ad-3ae3499162d4.png"
+          alt="Cody, assistente IA"
+          className="w-8 h-8 rounded-full ring-2 ring-primary/60 shadow-md"
+          loading="lazy"
+          decoding="async"
+        />
         <Button variant="secondary" size="sm" onClick={() => setShowTutorial(true)}>
-          <HelpCircle className="w-4 h-4 mr-2" /> Ajuda
+          <HelpCircle className="w-4 h-4 mr-2" /> Como posso te ajudar?
         </Button>
       </div>
 
