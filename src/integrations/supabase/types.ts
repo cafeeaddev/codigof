@@ -52,7 +52,6 @@ export type Database = {
           softwares: string[] | null
           star_legends: Json | null
           target_area_ids: string[] | null
-          target_areas: string[] | null
           updated_at: string
         }
         Insert: {
@@ -65,7 +64,6 @@ export type Database = {
           softwares?: string[] | null
           star_legends?: Json | null
           target_area_ids?: string[] | null
-          target_areas?: string[] | null
           updated_at?: string
         }
         Update: {
@@ -78,7 +76,6 @@ export type Database = {
           softwares?: string[] | null
           star_legends?: Json | null
           target_area_ids?: string[] | null
-          target_areas?: string[] | null
           updated_at?: string
         }
         Relationships: []
