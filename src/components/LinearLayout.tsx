@@ -2,12 +2,13 @@ import { useState, useEffect } from 'react';
 import { VaporwaveScene } from './VaporwaveScene';
 import { HeroSection } from './HeroSection';
 import { FeatureSection } from './FeatureSection';
+import { Footer } from './Footer';
 
 import { Navigation } from './Navigation';
 import { SectionContainer } from './SectionContainer';
 import { ScrollProgress } from './ScrollProgress';
-import { FeatureFold } from './FeatureFold';
-import { ChevronDown, Target } from 'lucide-react';
+
+import { ChevronDown } from 'lucide-react';
 import { useInternalScroll } from '@/hooks/useInternalScroll';
 import { LoginScreen } from './LoginScreen';
 import { WelcomeScreen } from './WelcomeScreen';
@@ -72,7 +73,7 @@ export const LinearLayout = () => {
   useEffect(() => {
     if (gameProgressEnabled && user && currentSection !== undefined) {
       console.log('[LinearLayout] Updating position for section:', currentSection, 'user:', user.id);
-      const sectionNames = ['hero', 'features', 'missions', 'xp-levels', 'medals', 'footer'];
+      const sectionNames = ['hero', 'features', 'footer'];
       const sectionName = sectionNames[currentSection] || 'hero';
       updatePosition(sectionName);
     }
@@ -194,26 +195,16 @@ export const LinearLayout = () => {
             />
           </SectionContainer>
 
-          {/* Missions Fold */}
+          {/* Footer Section */}
           <SectionContainer
-            sectionId="missions"
+            sectionId="footer"
             sectionIndex={2}
             registerSection={registerSection}
             unregisterSection={unregisterSection}
-            className="scroll-snap-start bg-transparent"
+            className="scroll-snap-start bg-transparent pb-28 sm:pb-48"
           >
-            <FeatureFold
-              id="missions"
-              title="Missões"
-              subtitle="Prepare-se para 4 missões intensas onde cada decisão pode mudar o rumo da sua jornada. Encare desafios estratégicos e deixe suas escolhas guiarem o caminho."
-              colorClass="bg-neon-cyan"
-              Icon={Target}
-              titleClass="text-neon-cyan"
-            />
+            <Footer />
           </SectionContainer>
-
-
-
         </div>
       </div>
 
