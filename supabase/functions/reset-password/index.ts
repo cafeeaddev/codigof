@@ -41,10 +41,13 @@ serve(async (req) => {
       throw new Error('User not found')
     }
 
+    // Expand 4-digit password to 6 characters to meet Supabase requirements
+    const expandedPassword = newPassword.length === 4 ? newPassword + 'ab' : newPassword;
+
     // Update user password
     const { data, error } = await supabaseAdmin.auth.admin.updateUserById(
       user.id,
-      { password: newPassword }
+      { password: expandedPassword }
     )
 
     if (error) {

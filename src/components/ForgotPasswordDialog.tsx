@@ -75,7 +75,7 @@ export const ForgotPasswordDialog = () => {
         <DialogHeader>
           <DialogTitle>Reset de Senha</DialogTitle>
           <DialogDescription>
-            Digite seu email e uma nova senha para resetar sua conta.
+            Digite seu email e 4 dígitos para a nova senha. Os dígitos serão automaticamente expandidos para atender aos requisitos de segurança.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handlePasswordReset} className="space-y-4">
