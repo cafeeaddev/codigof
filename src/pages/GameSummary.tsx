@@ -240,6 +240,9 @@ const GameSummary = () => {
               sublevel={profile.sublevel}
               phrase={phrase}
               userName={nome}
+              medals={achievements}
+              xp={xp}
+              totalScore={score.total}
             />
           </section>
 
