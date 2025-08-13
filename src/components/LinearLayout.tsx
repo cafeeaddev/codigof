@@ -10,7 +10,7 @@ import { ScrollProgress } from './ScrollProgress';
 
 import { ChevronDown } from 'lucide-react';
 import { useInternalScroll } from '@/hooks/useInternalScroll';
-import { LoginScreen } from './LoginScreen';
+
 import { WelcomeScreen } from './WelcomeScreen';
 import { useAuth } from '@/contexts/AuthContext';
 import { useGameProgress } from '@/hooks/useGameProgress';
@@ -41,7 +41,6 @@ const features = [
 
 export const LinearLayout = () => {
   const [showWelcome, setShowWelcome] = useState(false);
-  const [showLogin, setShowLogin] = useState(false);
   // Camera configuration for vaporwave scene
   const [cameraPosition, setCameraPosition] = useState<[number, number, number]>([0, 1, -8]);
   const [cameraFov, setCameraFov] = useState(65);
@@ -130,16 +129,6 @@ export const LinearLayout = () => {
     return <WelcomeScreen user={profile} userId={user.id} onLogout={handleLogout} />;
   }
 
-  // Show login screen if explicitly requested
-  if (showLogin) {
-    return (
-      <div className="h-screen w-full bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center p-4">
-        <div className="w-full max-w-md">
-          <LoginScreen />
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="relative h-[100svh] w-full overflow-hidden">
@@ -177,7 +166,7 @@ export const LinearLayout = () => {
             unregisterSection={unregisterSection}
             className="scroll-snap-start bg-transparent"
           >
-            <HeroSection onLoginClick={() => setShowLogin(true)} onContinueClick={nextSection} />
+            <HeroSection onContinueClick={nextSection} />
           </SectionContainer>
 
           {/* Feature Section */}
