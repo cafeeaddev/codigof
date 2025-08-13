@@ -223,41 +223,6 @@ export const MissaoTres = ({ onComplete }: MissaoTresProps) => {
     <div className="h-full flex flex-col min-h-0">
       <ScrollArea className="flex-1">
         <div className="p-2 pb-28" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 96px)' }}>
-          <div className="sticky top-0 z-[40] bg-card/80 backdrop-blur-sm border-b border-secondary/30 py-2 px-1 flex justify-between items-center pointer-events-auto">
-            <Button
-              type="button"
-              onClick={(e) => { e.stopPropagation(); goToPreviousQuestion(); }}
-              disabled={currentQuestion === 0}
-              variant="outline"
-              size="sm"
-              className="border-secondary text-secondary hover:bg-secondary hover:text-secondary-foreground"
-            >
-              <ChevronLeft className="w-3 h-3 mr-1" />
-              Anterior
-            </Button>
-            {currentQuestion === quizQuestions.length - 1 ? (
-              <Button
-                type="button"
-                onClick={(e) => { e.stopPropagation(); submitQuiz(); }}
-                disabled={!answers[currentQuestionData.id] || isSubmitting}
-                size="sm"
-                className="bg-primary hover:bg-primary/90"
-              >
-                {isSubmitting ? 'Enviando...' : 'Finalizar Missão 3'}
-              </Button>
-            ) : (
-              <Button
-                type="button"
-                onClick={(e) => { e.stopPropagation(); goToNextQuestion(); }}
-                disabled={!answers[currentQuestionData.id]}
-                size="sm"
-                className="bg-primary hover:bg-primary/90"
-              >
-                Próxima
-                <ChevronRight className="w-3 h-3 ml-1" />
-              </Button>
-            )}
-          </div>
 
           <div className="mb-4">
             <div className="flex justify-between items-center mb-2">
@@ -303,6 +268,78 @@ export const MissaoTres = ({ onComplete }: MissaoTresProps) => {
                 </div>
               ))}
             </RadioGroup>
+
+            <div className="mt-4 pt-2 flex justify-between items-center">
+              <Button
+                type="button"
+                onClick={() => goToPreviousQuestion()}
+                disabled={currentQuestion === 0}
+                variant="outline"
+                size="sm"
+                className="border-secondary text-secondary hover:bg-secondary hover:text-secondary-foreground"
+              >
+                <ChevronLeft className="w-3 h-3 mr-1" />
+                Anterior
+              </Button>
+              {currentQuestion === quizQuestions.length - 1 ? (
+                <Button
+                  type="button"
+                  onClick={() => submitQuiz()}
+                  disabled={!answers[currentQuestionData.id] || isSubmitting}
+                  size="sm"
+                  className="bg-primary hover:bg-primary/90"
+                >
+                  {isSubmitting ? 'Enviando...' : 'Finalizar Missão 3'}
+                </Button>
+              ) : (
+                <Button
+                  type="button"
+                  onClick={() => goToNextQuestion()}
+                  disabled={!answers[currentQuestionData.id]}
+                  size="sm"
+                  className="bg-primary hover:bg-primary/90"
+                >
+                  Próxima
+                  <ChevronRight className="w-3 h-3 ml-1" />
+                </Button>
+              )}
+            </div>
+
+            <div className="mt-4 pt-2 flex justify-between items-center">
+              <Button
+                type="button"
+                onClick={() => goToPreviousQuestion()}
+                disabled={currentQuestion === 0}
+                variant="outline"
+                size="sm"
+                className="border-secondary text-secondary hover:bg-secondary hover:text-secondary-foreground"
+              >
+                <ChevronLeft className="w-3 h-3 mr-1" />
+                Anterior
+              </Button>
+              {currentQuestion === quizQuestions.length - 1 ? (
+                <Button
+                  type="button"
+                  onClick={() => submitQuiz()}
+                  disabled={!answers[currentQuestionData.id] || isSubmitting}
+                  size="sm"
+                  className="bg-primary hover:bg-primary/90"
+                >
+                  {isSubmitting ? 'Enviando...' : 'Finalizar Missão 3'}
+                </Button>
+              ) : (
+                <Button
+                  type="button"
+                  onClick={() => goToNextQuestion()}
+                  disabled={!answers[currentQuestionData.id]}
+                  size="sm"
+                  className="bg-primary hover:bg-primary/90"
+                >
+                  Próxima
+                  <ChevronRight className="w-3 h-3 ml-1" />
+                </Button>
+              )}
+            </div>
           </div>
         </div>
       </ScrollArea>
