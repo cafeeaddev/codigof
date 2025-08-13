@@ -59,9 +59,18 @@ export const FeatureSection = ({
             style={titleReveal.style}
             className="flex-1"
           >
-            <p className="mb-4 text-[hsl(var(--lavender))] text-sm sm:text-base font-semibold">
-              Oi, eu sou a Cody
-            </p>
+            <div className="mb-4 space-y-2">
+              <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[hsl(var(--heading-readable))]">
+                Sou a <span className="bg-gradient-to-r from-[hsl(var(--neon-cyan))] to-[hsl(var(--neon-purple))] bg-clip-text text-transparent">Cody</span>, sua IA mentora.
+              </h2>
+              <p className="text-[hsl(var(--lavender))] text-sm sm:text-base">
+                Pronto(a) para ativar seu modo <span className="text-[hsl(var(--neon-cyan))] font-semibold">Ninja digital</span>?
+              </p>
+              <p className="text-[hsl(var(--lavender))] text-sm sm:text-base flex items-center gap-2">
+                <span className="inline-block size-2 rounded-full bg-[hsl(var(--neon-purple))]" aria-hidden></span>
+                Descubra seu estilo digital e desbloqueie a trilha feita para você.
+              </p>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {/* Card: Missões */}
               <div className="group relative rounded-2xl bg-gradient-to-br from-[hsl(var(--neon-cyan))] to-[hsl(var(--neon-purple))] p-[1px]">
