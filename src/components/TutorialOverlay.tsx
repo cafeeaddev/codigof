@@ -96,10 +96,11 @@ export const TutorialOverlay = ({ stage, onClose, onDontShowAgain }: TutorialOve
       }
     }
   }, []);
-  const play = async () => {
+  const play = async (overrideText?: string) => {
     try {
       setIsSpeaking(true);
-      await narrator.speak(slides[index].narration, () => setIsSpeaking(false));
+      const text = overrideText ?? slides[index].narration;
+      await narrator.speak(text, () => setIsSpeaking(false));
     } catch (e) {
       setIsSpeaking(false);
     }
@@ -118,13 +119,13 @@ export const TutorialOverlay = ({ stage, onClose, onDontShowAgain }: TutorialOve
   const handleNext = async () => {
     const next = Math.min(index + 1, slides.length - 1);
     setIndex(next);
-    if (audioEnabled) await play();
+    if (audioEnabled) await play(slides[next].narration);
   };
 
   const handlePrev = async () => {
     const prev = Math.max(index - 1, 0);
     setIndex(prev);
-    if (audioEnabled) await play();
+    if (audioEnabled) await play(slides[prev].narration);
   };
 
   const handleReplay = async () => {
