@@ -166,7 +166,7 @@ export const FeatureSection = ({
                   <div className="rounded-xl border border-border bg-popover/90 px-3 py-2 shadow-md backdrop-blur supports-[backdrop-filter]:backdrop-blur-md text-[hsl(var(--near-white))]">
                     <span className="inline-flex items-center gap-2">
                       <span className="inline-block size-3 rounded-full bg-gradient-to-r from-[hsl(var(--primary))] to-[hsl(var(--secondary))] ring-2 ring-primary/40" aria-hidden></span>
-                      <span className="font-medium">Quer um spoiler?</span>
+                      <span className="font-medium">Você quer um spoiler?</span>
                     </span>
                   </div>
                 </button>
