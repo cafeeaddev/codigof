@@ -28,12 +28,11 @@ const faqs = [
       <>
         <p className="mb-2">O quiz avalia conhecimentos e habilidades relacionados a:</p>
         <ul className="list-disc pl-5 space-y-1">
-          <li>Tecnologia e ferramentas digitais</li>
-          <li>Mindset digital</li>
-          <li>Inteligência artificial e automatização de tarefas</li>
-          <li>Raciocínio lógico e resolução de problemas</li>
+          <li>Tecnologia e ferramentas digitais;</li>
+          <li>Mindset digital;</li>
+          <li>Inteligência artificial e automatização de tarefas;</li>
+          <li>Raciocínio lógico e resolução de problemas;</li>
         </ul>
-        <p className="mt-3">Tudo isso sem julgamentos — você vai receber um espelho do seu momento atual.</p>
       </>
     ),
   },
