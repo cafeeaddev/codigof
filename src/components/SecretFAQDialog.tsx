@@ -68,16 +68,6 @@ const faqs = [
     a: "Reserve cerca de 8 a 10 minutos. Você pode salvar o seu progresso e completá-lo mais tarde. Porém, àqueles que responder no primeiro dia receberão pontuação adicional e concorrerão a prêmios no programa Código F.",
   },
   {
-    q: "Q7: Como serão definidos os níveis?",
-    a: (
-      <>
-        <p className="mb-2">Com base nas suas respostas, você será classificado em um dos perfis:</p>
-        <p>🟡 Beginner / Beginner+ • 🟠 Explorer • 🔵 Pro-Player • 🔴 Ninja</p>
-        <p className="mt-2">Cada perfil vem com um espelho personalizado que ajuda a entender seus pontos fortes e próximos passos.</p>
-      </>
-    ),
-  },
-  {
     q: "Q8: Posso refazer o quiz?",
     a: "Não. O quiz é de tentativa única para garantir autenticidade. Mas fique tranquilo: não existem erros, só reflexos do seu momento atual.",
   },
