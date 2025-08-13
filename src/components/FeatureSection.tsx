@@ -106,17 +106,19 @@ export const FeatureSection = ({
             {/* Spoiler bubble near Cody */}
             {!hideInlineSecret && (
               <SecretFAQDialog>
-                <div className="absolute -top-6 -right-6 sm:-top-8 sm:-right-8">
-                  <div className="relative group cursor-pointer select-none">
-                    <div className="rounded-xl border border-border bg-popover/90 px-3 py-2 shadow-md backdrop-blur supports-[backdrop-filter]:backdrop-blur-md text-[hsl(var(--near-white))]">
-                      <span className="inline-flex items-center gap-2">
-                        <span className="inline-block size-3 rounded-full bg-gradient-to-r from-[hsl(var(--primary))] to-[hsl(var(--secondary))] ring-2 ring-primary/40" aria-hidden></span>
-                        <span className="font-medium">Quer um spoiler?</span>
-                      </span>
-                    </div>
-                    <span className="absolute -bottom-1 right-8 w-2 h-2 bg-popover/90 border-r border-b border-border rotate-45" aria-hidden></span>
+                <button
+                  type="button"
+                  aria-label="Abrir FAQ secreto"
+                  className="absolute -top-6 -right-6 sm:-top-8 sm:-right-8 z-50 relative group cursor-pointer select-none rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                >
+                  <div className="rounded-xl border border-border bg-popover/90 px-3 py-2 shadow-md backdrop-blur supports-[backdrop-filter]:backdrop-blur-md text-[hsl(var(--near-white))]">
+                    <span className="inline-flex items-center gap-2">
+                      <span className="inline-block size-3 rounded-full bg-gradient-to-r from-[hsl(var(--primary))] to-[hsl(var(--secondary))] ring-2 ring-primary/40" aria-hidden></span>
+                      <span className="font-medium">Quer um spoiler?</span>
+                    </span>
                   </div>
-                </div>
+                  <span className="absolute -bottom-1 right-8 w-2 h-2 bg-popover/90 border-r border-b border-border rotate-45" aria-hidden></span>
+                </button>
               </SecretFAQDialog>
             )}
           </div>
