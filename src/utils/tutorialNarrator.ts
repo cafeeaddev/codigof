@@ -77,12 +77,17 @@ class TutorialNarrator {
       this.audioEl.pause();
       this.audioEl.currentTime = 0;
       this.audioEl.src = '';
+      this.audioEl.onended = null;
+      this.audioEl.onerror = null;
+      this.audioEl.oncanplay = null;
     }
     
     // Stop Web Speech API
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
       window.speechSynthesis.cancel();
     }
+    
+    console.log('[TutorialNarrator] Audio stopped completely');
   }
 
   private async speakWithEdge(text: string): Promise<boolean> {

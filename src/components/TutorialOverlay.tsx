@@ -98,6 +98,12 @@ export const TutorialOverlay = ({ stage, onClose, onDontShowAgain }: TutorialOve
         setVideoUrl('https://meta.cafeeadhost.com.br/Cody/hero-animation.mp4');
       }
     }
+
+    // Cleanup audio when component unmounts
+    return () => {
+      console.log('[TutorialOverlay] Component unmounting, stopping audio');
+      narrator.stop();
+    };
   }, []);
   const play = async (overrideText?: string, slideIndex?: number) => {
     try {
