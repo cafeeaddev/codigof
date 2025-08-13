@@ -234,8 +234,8 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
               <User className="w-4 h-4 md:w-5 md:h-5 text-secondary" />
             </div>
             <div className="min-w-0">
-              <h1 className="text-secondary text-sm md:text-base font-bold tracking-wider truncate">{userProfile.nome}</h1>
-              <p className="text-muted-foreground text-xs md:text-sm truncate">{userProfile.area} {userProfile.cargo && `• ${userProfile.cargo}`}</p>
+              <h1 className="text-secondary text-sm md:text-base font-bold tracking-wider truncate">{(userProfile.nome || 'Usuário').split(' ')[0]}</h1>
+              <p className="text-muted-foreground text-xs md:text-sm truncate">{userProfile.area} {userProfile.cargo && `• ${userProfile.cargo.replace(/^\d+-\s*/, '').trim()}`}</p>
             </div>
           </div>
           <Button
