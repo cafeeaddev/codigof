@@ -69,8 +69,7 @@ serve(async (req) => {
         email: email,
         cpf: cpf,
         area: 'Administração',
-        cargo: 'Administrador',
-        situacao: 'Ativo'
+        cargo: 'Administrador'
       })
 
     if (profileError) {
