@@ -51,7 +51,7 @@ export const FloatingMedals: React.FC<FloatingMedalsProps> = ({ medals, classNam
     <div className={cn("w-full", className)}>
       {/* Title */}
       <div className="text-center mb-12">
-        <h2 className="text-4xl md:text-5xl font-bold mb-4 animate-holographic bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+        <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
           Medalhas Conquistadas
         </h2>
         <p className="text-muted-foreground text-lg">
