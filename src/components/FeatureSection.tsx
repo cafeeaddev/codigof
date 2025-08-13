@@ -98,8 +98,8 @@ export const FeatureSection = ({
                   <div className="flex flex-col items-start gap-3">
                     <Trophy
                       size={28}
-                      className="text-[hsl(var(--neon-purple))]"
-                      style={{ filter: 'drop-shadow(0 0 12px hsl(var(--neon-purple)))' }}
+                      className="text-[hsl(var(--neon-cyan))]"
+                      style={{ filter: 'drop-shadow(0 0 12px hsl(var(--neon-cyan)))' }}
                       aria-hidden
                     />
                     <h3 className="text-[hsl(var(--heading-readable))] text-sm sm:text-base font-extrabold tracking-wide uppercase">Medalhas</h3>
