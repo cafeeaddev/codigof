@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
-import { Wifi, User, Lock, Building2 } from 'lucide-react';
+import { User, Lock } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import { WelcomeScreen } from './WelcomeScreen';
@@ -65,13 +65,8 @@ export const Footer = () => {
       <div className="max-w-md mx-auto">
         <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-8 shadow-neon">
 
-          {/* Wifi icon and title */}
           <div className="text-center mb-6">
-            <div className="flex justify-center mb-3">
-              <Lock className="w-8 h-8 text-secondary" />
-            </div>
             <h2 className="text-secondary text-xl font-bold mb-2">CÓDIGO F – QUIZ DE MATURIDADE DIGITAL</h2>
-            
           </div>
 
           {/* Login form */}
@@ -132,9 +127,6 @@ export const Footer = () => {
           <div className="mt-8 pt-6 border-t border-border/30 space-y-6">
             {/* Community section */}
             <div className="text-center space-y-3">
-              <div className="flex justify-center mb-2">
-                <Building2 className="w-6 h-6 text-secondary" />
-              </div>
               <p className="text-foreground text-sm font-medium leading-relaxed">
                 Faça parte da comunidade que impulsiona a transformação digital na{' '}
                 <span className="text-secondary font-bold">Forvis Mazars</span>
