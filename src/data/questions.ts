@@ -567,22 +567,13 @@ export const mission4Questions = mission4GeneralQuestions;
 
 // Helper function to get questions for Mission 4 based on user area
 export const getMission4QuestionsForUser = (userArea?: string) => {
-  if (!userArea) {
-    return mission4GeneralQuestions;
-  }
-  
-  // Essas 9 perguntas específicas de AUDITORIA agora são universais para todos os perfis
+  // Agora todas as áreas recebem apenas as 9 perguntas universais
+  // (anteriormente específicas de AUDITORIA)
   const universalQuestions = mission4AreaQuestions.filter(q => 
     q.criteria?.areas?.includes('AUDITORIA')
   );
   
-  // Para outras áreas específicas, adicionar também suas perguntas específicas  
-  const areaSpecificQuestions = mission4AreaQuestions.filter(q => 
-    q.criteria?.areas?.some(area => area.toLowerCase() === userArea.toLowerCase()) &&
-    !q.criteria?.areas?.includes('AUDITORIA') // Evitar duplicação
-  );
-  
-  return [...universalQuestions, ...areaSpecificQuestions];
+  return universalQuestions;
 };
 
 // Helper function to get question by mission type and question ID
