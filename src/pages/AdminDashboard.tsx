@@ -7,13 +7,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ArrowLeft, User, Lock } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
-import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
 import { ForgotPasswordDialog } from '@/components/ForgotPasswordDialog';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const { isAdmin, isLoading: roleLoading } = useUserRole();
-  const { signInWithCredentials } = useAuth();
   
   const [email, setEmail] = useState('cafeead@cafeead.com.br');
   const [password, setPassword] = useState('');
@@ -36,15 +35,23 @@ const AdminDashboard = () => {
     setIsLoading(true);
 
     try {
-      const result = await signInWithCredentials(email, password);
+      console.log('Attempting admin login with email:', email);
       
-      if (result.error) {
+      // Use direct Supabase auth for admin login
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email,
+        password: password,
+      });
+
+      if (error) {
+        console.error('Login error:', error);
         toast({
           title: "Erro de autenticação",
-          description: result.error,
+          description: error.message || "Credenciais inválidas",
           variant: "destructive",
         });
       } else {
+        console.log('Login successful:', data);
         toast({
           title: "Login realizado com sucesso",
           description: "Bem-vindo ao painel administrativo!",
