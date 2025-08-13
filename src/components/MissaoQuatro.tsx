@@ -254,17 +254,16 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
       <ScrollArea className="flex-1">
         <div className="w-full max-w-4xl mx-auto p-4 pb-20" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 56px)' }}>
           <Card className="border-primary/20 bg-card/50 backdrop-blur-sm">
-            <CardHeader className="text-center pb-3">
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-sm text-muted-foreground">
+            <CardHeader className="pb-3">
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-xs text-muted-foreground">
                   Pergunta {currentQuestion + 1} de {questions.length}
                 </span>
+                <span className="text-xs text-muted-foreground">{Math.round(progress)}%</span>
               </div>
-              
-              <Progress value={progress} className="w-full h-2 mb-3" />
-              
-              <CardTitle className="text-lg font-bold text-primary">
-                {currentQ.id}. {currentQ.question}
+              <Progress value={progress} className="w-full h-1.5 mb-3" />
+              <CardTitle className="text-base font-medium text-foreground text-left">
+                {currentQ.question}
               </CardTitle>
             </CardHeader>
 
