@@ -83,13 +83,16 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
       return;
     }
 
-    // Validate star rating questions (at least one software rated per question)
+    // Validate star rating questions (all softwares must be rated)
     for (const question of starRatingQuestions) {
       const ratings = starRatings[question.id];
-      if (!ratings || !Object.values(ratings).some(rating => rating > 0)) {
+      const allSoftwaresRated = question.softwares.every(software => 
+        ratings && ratings[software] && ratings[software] > 0
+      );
+      if (!allSoftwaresRated) {
         toast({
           title: "Atenção",
-          description: "Por favor, avalie pelo menos uma ferramenta na questão de avaliação.",
+          description: "Por favor, avalie todas as ferramentas na questão de avaliação.",
           variant: "destructive"
         });
         return;
@@ -204,7 +207,11 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
   const starRatingQuestions = questions.filter(q => q.type === 'star-rating');
   starRatingQuestions.forEach(question => {
     const ratings = starRatings[question.id];
-    if (ratings && Object.values(ratings).some(rating => rating > 0)) {
+    // Check if ALL softwares in the question have been rated (not just one)
+    const allSoftwaresRated = question.softwares.every(software => 
+      ratings && ratings[software] && ratings[software] > 0
+    );
+    if (allSoftwaresRated) {
       answeredCount++;
     }
   });
@@ -308,7 +315,9 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
                   onClick={() => submitQuiz()}
                   disabled={isSubmitting || (
                     currentQuestionData.type === 'star-rating' 
-                      ? !starRatings[currentQuestionData.id] || !Object.values(starRatings[currentQuestionData.id] || {}).some(rating => rating > 0)
+                      ? !currentQuestionData.softwares.every(software => 
+                          starRatings[currentQuestionData.id]?.[software] > 0
+                        )
                       : !answers[currentQuestionData.id]
                   )}
                   size="sm"
@@ -322,7 +331,9 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
                   onClick={() => goToNextQuestion()}
                   disabled={
                     currentQuestionData.type === 'star-rating' 
-                      ? !starRatings[currentQuestionData.id] || !Object.values(starRatings[currentQuestionData.id] || {}).some(rating => rating > 0)
+                      ? !currentQuestionData.softwares.every(software => 
+                          starRatings[currentQuestionData.id]?.[software] > 0
+                        )
                       : !answers[currentQuestionData.id]
                   }
                   size="sm"
