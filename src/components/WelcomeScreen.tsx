@@ -32,11 +32,24 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
   const [userProgress, setUserProgress] = useState({ total_xp: 0, completedMissionsCount: 0 });
   const [justCompleted, setJustCompleted] = useState<1 | 2 | 3 | 4 | null>(null);
   const [showTutorial, setShowTutorial] = useState(false);
+  const [codyVideoUrl, setCodyVideoUrl] = useState<string | null>(null);
   const UNLOCK_DELAY = 1000; // ms
-
   useEffect(() => {
     const seen = localStorage.getItem('tutorialSeen');
     if (!seen) setShowTutorial(true);
+  }, []);
+
+  useEffect(() => {
+    try {
+      const url = localStorage.getItem('codyAvatarUrl');
+      if (url) {
+        setCodyVideoUrl(url);
+      } else {
+        setCodyVideoUrl('https://meta.cafeeadhost.com.br/Cody/hero-animation.mp4');
+      }
+    } catch {
+      setCodyVideoUrl('https://meta.cafeeadhost.com.br/Cody/hero-animation.mp4');
+    }
   }, []);
 
   console.log('[WelcomeScreen] Props received:', { 
@@ -512,13 +525,27 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
           onClick={() => setShowTutorial(true)}
           className="inline-flex items-center bg-background text-foreground border border-neon-cyan hover:bg-background/80 pl-0 pr-5"
         >
-          <img
-            src="/lovable-uploads/ead95ee7-bc88-4e43-88ad-3ae3499162d4.png"
-            alt="Cody, assistente IA"
-            className="w-12 h-12 -ml-px mr-3 rounded-full ring-2 ring-neon-cyan shadow-md shrink-0"
-            loading="lazy"
-            decoding="async"
-          />
+          <div className="mr-3 -ml-px w-12 h-12 rounded-full ring-2 ring-neon-cyan shadow-md overflow-hidden shrink-0">
+            {codyVideoUrl ? (
+              <video
+                src={codyVideoUrl}
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="w-full h-full object-cover"
+                aria-label="Cody, IA mentora"
+              />
+            ) : (
+              <img
+                src="/lovable-uploads/ead95ee7-bc88-4e43-88ad-3ae3499162d4.png"
+                alt="Cody, assistente IA"
+                className="w-full h-full object-cover"
+                loading="lazy"
+                decoding="async"
+              />
+            )}
+          </div>
           Como posso te ajudar?
         </Button>
       </div>
