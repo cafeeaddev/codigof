@@ -27,7 +27,7 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
       type: (q as any).type || 'regular',
       softwares: (q as any).softwares || [],
       starLegends: (q as any).starLegends || {},
-      options: q.options ? Object.entries(q.options).map(([letter, option]) => ({
+      options: q.options ? Object.entries(q.options).map(([letter, option]: [string, any]) => ({
         letter,
         text: option.text,
         points: option.points
