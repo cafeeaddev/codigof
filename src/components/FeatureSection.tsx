@@ -61,11 +61,11 @@ export const FeatureSection = ({
             <h2 className="text-2xl sm:text-3xl lg:text-5xl font-bold text-neon-purple/90 mb-4">
               Sou a <span className="text-secondary/80">Cody</span>, sua IA mentora.
             </h2>
-            <h3 className="text-base sm:text-lg mb-6 text-foreground/80">
-              Pronto(a) para ativar seu modo <span className="text-neon-purple/90 font-semibold">Ninja digital</span>?
+            <h3 className="text-base sm:text-lg mb-6 text-neon-purple/90 font-semibold">
+              Pronto(a) para ativar seu modo Ninja digital?
             </h3>
             
-            <p className="text-foreground/70 text-base sm:text-lg mb-6">
+            <p className="text-neon-purple/80 text-base sm:text-lg mb-6">
               {description}
             </p>
 
