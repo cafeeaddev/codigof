@@ -164,21 +164,6 @@ const GameSummary = () => {
   if (!user?.id) {
     return (
       <main className="min-h-screen flex items-center justify-center relative overflow-hidden bg-black">
-        {/* Vaporwave Grid Background */}
-        <div className="absolute inset-0">
-          <div 
-            className="w-full h-full opacity-30"
-            style={{
-              background: `
-                linear-gradient(90deg, hsl(var(--neon-cyan)) 1px, transparent 1px),
-                linear-gradient(0deg, hsl(var(--neon-cyan)) 1px, transparent 1px)
-              `,
-              backgroundSize: '50px 50px',
-              transform: 'perspective(1000px) rotateX(60deg)',
-              transformOrigin: 'center bottom'
-            }}
-          />
-        </div>
         
         <div className="relative z-10 text-center max-w-4xl mx-auto px-4">          
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
@@ -204,21 +189,6 @@ const GameSummary = () => {
 
   return (
     <main className="min-h-screen relative overflow-hidden bg-black">
-      {/* Vaporwave Grid Background */}
-      <div className="fixed inset-0">
-        <div 
-          className="w-full h-full opacity-30"
-          style={{
-            background: `
-              linear-gradient(90deg, hsl(var(--neon-cyan)) 1px, transparent 1px),
-              linear-gradient(0deg, hsl(var(--neon-cyan)) 1px, transparent 1px)
-            `,
-            backgroundSize: '50px 50px',
-            transform: 'perspective(1000px) rotateX(60deg)',
-            transformOrigin: 'center bottom'
-          }}
-        />
-      </div>
 
       {/* Celebration Particles */}
       <CelebrationParticles />
