@@ -591,7 +591,7 @@ export const getMission4QuestionsForUser = (userArea?: string) => {
     return mission4AreaQuestions.filter(q => 
       q.criteria?.areas?.includes('AUDITORIA')
     );
-  } else if (userArea === 'Risk & quality') {
+  } else if (userArea === 'Risk & quality' || userArea === 'RISK&QUALITY') {
     // Usuários de Risk & quality recebem as 9 perguntas universais + pergunta 10 (star-rating)
     const universalQuestions = mission4GeneralQuestions;
     const riskQualitySpecificQuestion = mission4AreaQuestions.filter(q => 
