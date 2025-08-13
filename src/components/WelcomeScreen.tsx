@@ -214,7 +214,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
           
 
           {/* Avatar + Nome/Área */}
-          <div className="flex items-center gap-2 mr-4 max-w-[50vw]">
+          <div className="flex items-center gap-2 mr-auto max-w-[50vw]">
             <div className="w-8 h-8 md:w-10 md:h-10 bg-secondary/20 rounded-full flex items-center justify-center border border-secondary/50">
               <User className="w-4 h-4 md:w-5 md:h-5 text-secondary" />
             </div>
