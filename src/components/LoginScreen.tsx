@@ -52,12 +52,10 @@ export const LoginScreen = () => {
   return (
     <div className="w-full">
       <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-4 sm:p-6 lg:p-8 shadow-neon">
-        <div className="text-[10px] sm:text-xs text-muted-foreground tracking-wide text-center mb-2">
-          CÓDIGO F – QUIZ DE MATURIDADE DIGITAL
-        </div>
 
         {/* Header */}
         <div className="text-center mb-6 sm:mb-8">
+          <div className="text-[10px] sm:text-xs text-muted-foreground tracking-wide text-center mb-2">CÓDIGO F – QUIZ DE MATURIDADE DIGITAL</div>
           <div className="w-12 h-12 sm:w-16 sm:h-16 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
             <Lock className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
           </div>
