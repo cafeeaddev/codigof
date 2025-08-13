@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
@@ -7,8 +7,9 @@ import { toast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { ScrollArea } from './ui/scroll-area';
-import { getMission4QuestionsForUser } from '@/data/questions';
 import { StarRating } from './StarRating';
+import { useMission4Questions } from '@/hooks/useMission4Questions';
+import { useAreas } from '@/hooks/useAreas';
 
 interface MissaoQuatroProps {
   onComplete: () => void;
@@ -16,26 +17,27 @@ interface MissaoQuatroProps {
 
 export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
   const { profile, user } = useAuth();
+  const { getAreaById } = useAreas();
   
-  // Get questions based on user's area (supports both legacy area string and new area object)
-  const questions = useMemo(() => {
-    // Try to get area from different sources for backward compatibility
-    const areaInfo = (profile as any)?.areaInfo?.name || profile?.area;
-    const userQuestions = getMission4QuestionsForUser(areaInfo);
-    // Convert to the format expected by the component
-    return userQuestions.map(q => ({
-      id: q.id,
-      question: q.question,
-      type: (q as any).type || 'regular',
-      softwares: (q as any).softwares || [],
-      starLegends: (q as any).starLegends || {},
-      options: q.options ? Object.entries(q.options).map(([letter, option]: [string, any]) => ({
-        letter,
-        text: option.text,
-        points: option.points
-      })) : []
-    }));
-  }, [profile?.area]);
+  // Obter o objeto área completo baseado no area_id do perfil
+  const userArea = getAreaById((profile as any)?.area_id);
+  
+  // Buscar perguntas da missão 4 com base na área do usuário
+  const { questions: dbQuestions, isLoading: loadingQuestions, error } = useMission4Questions(userArea?.id);
+  
+  // Convert to the format expected by the component
+  const questions = dbQuestions.map(q => ({
+    id: q.id,
+    question: q.question_text,
+    type: q.question_type === 'star-rating' ? 'star-rating' : 'regular',
+    softwares: q.softwares || [],
+    starLegends: q.star_legends || {},
+    options: q.options ? Object.entries(q.options).map(([letter, option]: [string, any]) => ({
+      letter,
+      text: option.text,
+      points: option.points
+    })) : []
+  }));
 
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
@@ -201,6 +203,30 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
       setIsSubmitting(false);
     }
   };
+
+  if (loadingQuestions) {
+    return (
+      <div className="h-full flex items-center justify-center">
+        <p className="text-muted-foreground">Carregando perguntas...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="h-full flex items-center justify-center">
+        <p className="text-destructive">Erro ao carregar perguntas: {error}</p>
+      </div>
+    );
+  }
+
+  if (questions.length === 0) {
+    return (
+      <div className="h-full flex items-center justify-center">
+        <p className="text-muted-foreground">Nenhuma pergunta encontrada para sua área.</p>
+      </div>
+    );
+  }
 
   const currentQuestionData = questions[currentQuestion];
   
