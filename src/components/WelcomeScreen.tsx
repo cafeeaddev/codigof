@@ -544,7 +544,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
           variant="link"
           size="sm"
           onClick={() => setShowTutorial(true)}
-          className="px-0 h-auto text-secondary text-sm font-semibold"
+          className="px-0 h-auto text-secondary text-sm font-semibold -ml-2"
         >
           Precisa de ajuda?
         </Button>
