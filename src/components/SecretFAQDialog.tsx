@@ -73,7 +73,7 @@ const faqs = [
   },
   {
     q: "Q9: Quando receberei o resultado?",
-    a: "Os resultados individuais e consolidados serão divulgados após a etapa de aplicação. Você será informado por e-mail ou canal interno.",
+    a: "Ao final do quiz você receberá o resultado do seu quiz com base no nível de maturidade digital identificado. Aproveite para compartilhar com colegas e nas suas redes.",
   },
   {
     q: "Q10: Com quem falo em caso de dúvidas?",
