@@ -42,6 +42,7 @@ const useSlides = (stage: "prelogin" | "ingame") => {
             "Use os botões Próximo e Voltar para navegar pelas missões. Você pode sair e retornar quando quiser: seu progresso será salvo automaticamente.",
           narration:
             "Use os botões Próximo e Voltar para navegar pelas missões. Você pode sair e retornar quando quiser: seu progresso será salvo automaticamente.",
+          customAudioUrl: "https://meta.cafeeadhost.com.br/Cody/audio03.mp3",
         },
       ];
     }
