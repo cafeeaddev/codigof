@@ -119,12 +119,12 @@ export const AnimatedStats: React.FC<AnimatedStatsProps> = ({
       >
         <CardContent className="relative p-6 text-center">
           <div className="absolute inset-0 bg-gradient-neon opacity-5" />
-          <h3 
-            className="text-lg font-semibold mb-4"
-            style={{ color: profileColor }}
-          >
-            Pontuação Final
-          </h3>
+           <h3 
+             className="text-lg font-semibold mb-4"
+             style={{ color: profileColor }}
+           >
+             Bonus
+           </h3>
           <div 
             className={cn(
               "text-5xl font-bold mb-2 transition-all duration-300",
@@ -134,9 +134,9 @@ export const AnimatedStats: React.FC<AnimatedStatsProps> = ({
           >
             {animatedScore.toFixed(1)}
           </div>
-          <p className="text-muted-foreground text-sm">
-            Pontos acumulados
-          </p>
+           <p className="text-muted-foreground text-sm">
+             Pontos de bonus
+           </p>
           
           {/* Decorative elements */}
           <div 

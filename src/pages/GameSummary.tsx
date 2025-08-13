@@ -233,11 +233,6 @@ const GameSummary = () => {
             </p>
           </header>
 
-          {/* Floating Medals */}
-          <section className="mb-16">
-            <FloatingMedals medals={achievements} />
-          </section>
-
           {/* Main Profile Card */}
           <section className="mb-12">
             <ProfileHeroCard 
@@ -254,6 +249,11 @@ const GameSummary = () => {
               totalScore={score.total}
               profile={profile.profile}
             />
+          </section>
+
+          {/* Floating Medals with Descriptions */}
+          <section className="mb-16">
+            <FloatingMedals medals={achievements} />
           </section>
 
           {/* Share Actions */}
