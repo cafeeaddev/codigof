@@ -143,10 +143,16 @@ class TutorialNarrator {
       }
     }
 
-    // Try custom audio first if provided
+    // If custom audio URL is provided, ONLY use custom audio (no TTS fallback)
     if (customAudioUrl) {
+      console.log('[TutorialNarrator] Custom audio URL provided, skipping TTS fallback');
       const success = await this.playCustomAudio(customAudioUrl, onend);
-      if (success) return;
+      if (!success) {
+        console.warn('[TutorialNarrator] Custom audio failed to play, calling onend without TTS fallback');
+        // Don't fallback to TTS, just call onend to continue tutorial
+        onend && onend();
+      }
+      return;
     }
 
     this.speaking = true;
