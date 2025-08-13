@@ -130,7 +130,7 @@ export const ProfileHeroCard: React.FC<ProfileHeroCardProps> = ({
                      }}>
                   <Trophy size={20} style={{ color: profileColor }} />
                   <span className="text-lg font-bold" style={{ color: profileColor }}>
-                    Seu Perfil é: {profile}
+                    Seu Perfil é:
                   </span>
                 </div>
 
