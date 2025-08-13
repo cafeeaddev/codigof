@@ -75,7 +75,7 @@ export const ForgotPasswordDialog = () => {
         <DialogHeader>
           <DialogTitle>Reset de Senha</DialogTitle>
           <DialogDescription>
-            Digite seu email e 4 dígitos para a nova senha. Os dígitos serão automaticamente expandidos para atender aos requisitos de segurança.
+            Digite seu email e uma nova senha de 6 dígitos para resetar sua conta.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handlePasswordReset} className="space-y-4">
@@ -92,17 +92,17 @@ export const ForgotPasswordDialog = () => {
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="reset-password">Nova Senha (4 dígitos)</Label>
+            <Label htmlFor="reset-password">Nova Senha (6 dígitos)</Label>
             <Input
               id="reset-password"
               type="password"
               inputMode="numeric"
               pattern="[0-9]*"
-              maxLength={4}
-              minLength={4}
+              maxLength={6}
+              minLength={6}
               value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value.replace(/\D/g, '').slice(0, 4))}
-              placeholder="4 dígitos para a nova senha"
+              onChange={(e) => setNewPassword(e.target.value.replace(/\D/g, '').slice(0, 6))}
+              placeholder="6 dígitos para a nova senha"
               required
             />
           </div>
