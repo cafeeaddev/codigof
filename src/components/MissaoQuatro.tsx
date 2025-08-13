@@ -269,7 +269,7 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
             </CardHeader>
 
             <CardContent className="space-y-6">
-              <div className="sticky top-0 z-[10000] bg-card/90 backdrop-blur-sm border-b border-secondary/30 py-2 px-1 flex justify-between items-center pointer-events-auto shadow-neon" role="toolbar">
+              <div className="sticky top-0 z-[10000] bg-card/90 backdrop-blur-sm border-b border-secondary/30 py-2 px-1 flex justify-between items-center pointer-events-auto" role="toolbar">
                 <Button
                   type="button"
                   variant="outline"
