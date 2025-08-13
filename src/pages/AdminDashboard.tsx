@@ -11,6 +11,7 @@ import { StatsCards } from '@/components/admin/StatsCards';
 import { ProfileChart } from '@/components/admin/ProfileChart';
 import { UserTable } from '@/components/admin/UserTable';
 import { ExportDialog } from '@/components/admin/ExportDialog';
+import { PasswordReset } from '@/components/admin/PasswordReset';
 import { useAdminDashboard } from '@/hooks/useAdminDashboard';
 import { useFilters } from '@/hooks/useFilters';
 import { ResponseData } from '@/types/admin';
@@ -206,18 +207,21 @@ const AdminDashboard = () => {
             </div>
           </div>
           
-          {progressData && (
-            <ExportDialog
-              responses1={responses1}
-              responses2={responses2}
-              responses3={responses3}
-              responses4={responses4}
-              filteredUsers={filteredUsers}
-              progressData={progressData}
-              calculateUserTotalScore={calculateUserTotalScore}
-              getDigitalProfile={getDigitalProfile}
-            />
-          )}
+          <div className="flex items-center gap-4">
+            <PasswordReset />
+            {progressData && (
+              <ExportDialog
+                responses1={responses1}
+                responses2={responses2}
+                responses3={responses3}
+                responses4={responses4}
+                filteredUsers={filteredUsers}
+                progressData={progressData}
+                calculateUserTotalScore={calculateUserTotalScore}
+                getDigitalProfile={getDigitalProfile}
+              />
+            )}
+          </div>
         </div>
 
         {/* Stats Cards */}
