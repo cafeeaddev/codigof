@@ -60,7 +60,7 @@ export const FeatureSection = ({
             className="flex-1"
           >
             <div className="mb-4 space-y-2">
-              <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[hsl(var(--heading-readable))]">
+              <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[hsl(var(--near-white))]">
                 Sou a <span className="bg-gradient-to-r from-[hsl(var(--neon-cyan))] to-[hsl(var(--neon-purple))] bg-clip-text text-transparent">Cody</span>, sua IA mentora.
               </h2>
               <p className="text-[hsl(var(--lavender))] text-sm sm:text-base">
