@@ -1,14 +1,24 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, Suspense } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Canvas } from '@react-three/fiber';
 
-import UserHeader from '@/components/UserHeader';
-import { AchievementList } from '@/components/Achievements';
 import { toast } from '@/hooks/use-toast';
 import { getDigitalProfile, getProfilePhrase } from '@/lib/digitalProfile';
 import { Link } from 'react-router-dom';
+
+// Epic Game Summary Components
+import { ProfileHeroCard } from '@/components/EpicGameSummary/ProfileHeroCard';
+import { FloatingMedals } from '@/components/EpicGameSummary/FloatingMedals';
+import { AnimatedStats } from '@/components/EpicGameSummary/AnimatedStats';
+import { CelebrationParticles } from '@/components/EpicGameSummary/CelebrationParticles';
+import { ShareActions } from '@/components/EpicGameSummary/ShareActions';
+
+// 3D Components
+import { VaporwaveBackground } from '@/components/VaporwaveBackground';
+import { LightStarfield } from '@/components/LightStarfield';
+import { Meteors } from '@/components/Meteors';
 
 interface ScoreBreakdown {
   mission1: number;
@@ -153,59 +163,133 @@ const GameSummary = () => {
 
   if (!user?.id) {
     return (
-      <main className="container mx-auto px-4 pt-24 pb-12">
-        <header className="mb-6">
-          <h1 className="text-3xl font-bold">Resumo Final</h1>
-        </header>
-        <p className="text-muted-foreground mb-6">Você precisa estar logado para ver seu resumo do jogo.</p>
-        <Button asChild><Link to="/">Voltar ao início</Link></Button>
+      <main className="min-h-screen flex items-center justify-center relative overflow-hidden">
+        {/* 3D Background */}
+        <div className="absolute inset-0 z-0">
+          <Canvas camera={{ position: [0, 0, 5], fov: 75 }}>
+            <VaporwaveBackground />
+            <LightStarfield count={300} />
+            <ambientLight intensity={0.3} />
+          </Canvas>
+        </div>
+        
+        <div className="relative z-10 text-center">
+          <h1 className="text-4xl font-bold mb-6 animate-holographic">Resumo Final</h1>
+          <p className="text-muted-foreground mb-8 text-lg">
+            Você precisa estar logado para ver seu resumo do jogo.
+          </p>
+          <Button 
+            asChild 
+            size="lg"
+            className="bg-primary hover:bg-primary/80 text-primary-foreground animate-pulse-glow"
+          >
+            <Link to="/">Voltar ao início</Link>
+          </Button>
+        </div>
       </main>
     );
   }
 
   return (
-    <main className="container mx-auto px-4 pt-24 pb-12">
-      <header className="mb-6">
-        <UserHeader name={nome} level={profile.profile as any} breadcrumb="Início" />
-      </header>
+    <main className="min-h-screen relative overflow-hidden">
+      {/* 3D Vaporwave Background */}
+      <div className="fixed inset-0 z-0">
+        <Canvas 
+          camera={{ position: [0, 2, 8], fov: 60 }}
+          gl={{ antialias: true, alpha: true }}
+        >
+          <Suspense fallback={null}>
+            <VaporwaveBackground />
+            <LightStarfield count={500} />
+            <Meteors count={8} spawnRate={0.02} />
+            <ambientLight intensity={0.4} />
+            <directionalLight position={[10, 10, 5]} intensity={0.8} />
+          </Suspense>
+        </Canvas>
+      </div>
 
-      <AchievementList achievements={achievements} />
+      {/* Celebration Particles */}
+      <CelebrationParticles />
 
-      <section className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
-        <article className="lg:col-span-2">
-          <Card className="shadow-neon">
-            <CardHeader>
-              <CardTitle className="text-lg">Frase para compartilhar</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="mb-4 leading-relaxed">{phrase}</p>
-              <div className="flex flex-wrap gap-3">
-                <Button variant="secondary" onClick={handleCopy}>Copiar frase</Button>
-                <Button onClick={handleShareLinkedIn}>Compartilhar no LinkedIn</Button>
-              </div>
-            </CardContent>
-          </Card>
-        </article>
+      {/* Content */}
+      <div className="relative z-10 min-h-screen pt-20 pb-12">
+        <div className="container mx-auto px-4">
+          
+          {/* Hero Section with User Name */}
+          <header className="text-center mb-12">
+            <h1 
+              className="text-6xl md:text-8xl font-bold mb-4 animate-holographic"
+              style={{ 
+                background: 'linear-gradient(45deg, hsl(var(--primary)), hsl(var(--secondary)))',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text'
+              }}
+            >
+              {nome}
+            </h1>
+            <p className="text-2xl md:text-3xl text-muted-foreground animate-epic-entry">
+              Missões Completas! 🎉
+            </p>
+          </header>
 
-        <aside className="lg:col-span-1">
-          <Card>
-            <CardHeader>
-              <CardTitle>Seu XP total</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-4xl font-extrabold tracking-tight">{xp}</p>
-              <p className="text-muted-foreground mt-1">Parabéns por avançar na sua jornada!</p>
-              <div className="mt-4">
-                <Button asChild variant="outline"><Link to="/">Voltar ao início</Link></Button>
-              </div>
-            </CardContent>
-          </Card>
-        </aside>
-      </section>
+          {/* Floating Medals */}
+          <section className="mb-16">
+            <FloatingMedals medals={achievements} />
+          </section>
 
+          {/* Main Profile Card */}
+          <section className="mb-12">
+            <ProfileHeroCard 
+              profile={profile.profile} 
+              sublevel={profile.sublevel}
+              phrase={phrase}
+            />
+          </section>
+
+          {/* Stats Grid */}
+          <section className="mb-12">
+            <AnimatedStats 
+              xp={xp} 
+              totalScore={score.total}
+              profile={profile.profile}
+            />
+          </section>
+
+          {/* Share Actions */}
+          <section className="max-w-2xl mx-auto mb-12">
+            <ShareActions 
+              phrase={phrase}
+              profile={profile.profile}
+              sublevel={profile.sublevel}
+            />
+          </section>
+
+          {/* Navigation */}
+          <section className="text-center">
+            <Button 
+              asChild 
+              variant="outline" 
+              size="lg"
+              className="animate-epic-entry border-2 border-primary/50 hover:border-primary hover:bg-primary/10"
+              style={{ animationDelay: '1.5s' }}
+            >
+              <Link to="/">🚀 Explorar mais missões</Link>
+            </Button>
+          </section>
+
+        </div>
+      </div>
+
+      {/* Loading Overlay */}
       {loading && (
-        <div className="fixed inset-0 grid place-items-center bg-background/60">
-          <div className="animate-pulse text-muted-foreground">Carregando seu resumo…</div>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
+          <div className="text-center">
+            <div 
+              className="w-16 h-16 border-4 border-primary/30 border-t-primary rounded-full animate-spin mb-4 mx-auto"
+            />
+            <p className="text-lg animate-pulse">Carregando sua conquista épica...</p>
+          </div>
         </div>
       )}
     </main>

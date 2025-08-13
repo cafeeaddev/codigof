@@ -107,11 +107,84 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'epic-entry': {
+					'0%': {
+						opacity: '0',
+						transform: 'scale(0.8) translateY(40px)'
+					},
+					'100%': {
+						opacity: '1',
+						transform: 'scale(1) translateY(0)'
+					}
+				},
+				'float-medal': {
+					'0%': {
+						opacity: '0',
+						transform: 'translateY(-100px) rotate(-180deg) scale(0.5)'
+					},
+					'60%': {
+						opacity: '1',
+						transform: 'translateY(10px) rotate(20deg) scale(1.1)'
+					},
+					'100%': {
+						opacity: '1',
+						transform: 'translateY(0px) rotate(0deg) scale(1)'
+					}
+				},
+				'pulse-glow': {
+					'0%, 100%': {
+						opacity: '1',
+						boxShadow: '0 0 20px hsl(var(--primary) / 0.5)'
+					},
+					'50%': {
+						opacity: '0.8',
+						boxShadow: '0 0 40px hsl(var(--primary) / 0.8)'
+					}
+				},
+				'counter-up': {
+					'0%': { transform: 'translateY(20px)', opacity: '0' },
+					'100%': { transform: 'translateY(0)', opacity: '1' }
+				},
+				'holographic': {
+					'0%, 100%': {
+						textShadow: '0 0 10px hsl(var(--primary)), 0 0 20px hsl(var(--primary)), 0 0 30px hsl(var(--primary))'
+					},
+					'50%': {
+						textShadow: '0 0 20px hsl(var(--secondary)), 0 0 30px hsl(var(--secondary)), 0 0 40px hsl(var(--secondary))'
+					}
+				},
+				'meteor-shower': {
+					'0%': {
+						transform: 'translateX(-100px) translateY(-100px)',
+						opacity: '0'
+					},
+					'10%': {
+						opacity: '1'
+					},
+					'90%': {
+						opacity: '1'
+					},
+					'100%': {
+						transform: 'translateX(100vw) translateY(100vh)',
+						opacity: '0'
+					}
+				},
+				'orbit': {
+					'0%': { transform: 'rotate(0deg) translateX(100px) rotate(0deg)' },
+					'100%': { transform: 'rotate(360deg) translateX(100px) rotate(-360deg)' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'epic-entry': 'epic-entry 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)',
+				'float-medal': 'float-medal 1s cubic-bezier(0.34, 1.56, 0.64, 1)',
+				'pulse-glow': 'pulse-glow 2s ease-in-out infinite',
+				'counter-up': 'counter-up 0.6s ease-out',
+				'holographic': 'holographic 3s ease-in-out infinite',
+				'meteor-shower': 'meteor-shower 3s linear infinite',
+				'orbit': 'orbit 20s linear infinite'
 			}
 		}
 	},
