@@ -26,6 +26,7 @@ const useSlides = (stage: "prelogin" | "ingame") => {
             "Aqui você conquista XPs, coleciona medalhas e vê qual missão está ativa. Progrida para liberar novos desafios e avançar mais um passo rumo ao Código F.",
           narration:
             "Aqui você conquista XPs, coleciona medalhas e vê qual missão está ativa. Progrida para liberar novos desafios e avançar mais um passo rumo ao Código F.",
+          customAudioUrl: "https://meta.cafeeadhost.com.br/Cody/audio01.MP3",
         },
         {
           title: "Missões e Progresso",
