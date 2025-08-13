@@ -22,7 +22,7 @@ const useSlides = (stage: "prelogin" | "ingame") => {
         {
           title: "Bem-vindo (a) à sua spaceship 🛸!",
           description:
-            "Aqui você vê seu XP, medalhas e qual missão está ativa agora. Avance missão a missão para liberar a próxima.",
+            "Aqui você conquista XPs, coleciona medalhas e vê qual missão está ativa. Progrida para liberar novos desafios e avançar mais um passo rumo ao Código F.",
           narration:
             "Bem vindo à sua base. Aqui você acompanha seu progresso em tempo real, suas medalhas e a missão ativa. Complete uma missão para liberar a próxima.",
         },
