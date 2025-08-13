@@ -140,7 +140,7 @@ export const TutorialOverlay = ({ stage, onClose, onDontShowAgain }: TutorialOve
           <div className="flex items-center gap-2 text-sm">
             <HelpCircle className="w-4 h-4 text-secondary" />
             <h1 className="text-base md:text-lg font-semibold text-secondary">
-              {stage === "prelogin" ? "Tutorial: Visão Geral" : "Tutorial: Dentro do Jogo"}
+              {stage === "prelogin" ? "Tutorial: Visão Geral" : "Tutorial"}
             </h1>
           </div>
           <div className="flex items-center gap-2">
