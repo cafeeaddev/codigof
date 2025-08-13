@@ -7,6 +7,7 @@ import { User, Lock } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import { WelcomeScreen } from './WelcomeScreen';
+import { ForgotPasswordDialog } from './ForgotPasswordDialog';
 
 export const Footer = () => {
   const [email, setEmail] = useState('');
@@ -122,6 +123,11 @@ export const Footer = () => {
               {isLoading ? 'AUTENTICANDO...' : 'INICIALIZAR SISTEMA'}
             </Button>
           </form>
+
+          {/* Forgot password */}
+          <div className="text-center mt-4">
+            <ForgotPasswordDialog />
+          </div>
 
           {/* Community and Developer section */}
           <div className="mt-8 pt-6 border-t border-border/30 space-y-6">
