@@ -45,7 +45,7 @@ class TutorialNarrator {
   private async speakWithEdge(text: string): Promise<boolean> {
     try {
       const { data, error } = await supabase.functions.invoke("tutorial-narration", {
-        body: { text, voice: 'nova' },
+        body: { text, voice: 'echo' },
       });
       if (error) throw error;
       const base64 = (data as any)?.audioContent;
