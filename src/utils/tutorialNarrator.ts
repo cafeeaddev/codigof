@@ -31,9 +31,29 @@ class TutorialNarrator {
         console.log('[TutorialNarrator] Activating audio context...');
         this.audioEl.muted = true;
         this.audioEl.volume = 1.0;
-        this.audioEl.src = "data:audio/mp3;base64,//uQZAAAAAAAAAAAAAAAAAAAA"; // minimal silent mp3 header
-        await this.audioEl.play();
-        this.audioEl.pause();
+        
+        // Create a simple oscillator context instead of trying to load a file
+        try {
+          const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+          const oscillator = audioContext.createOscillator();
+          const gainNode = audioContext.createGain();
+          
+          oscillator.connect(gainNode);
+          gainNode.connect(audioContext.destination);
+          gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+          
+          oscillator.start();
+          oscillator.stop(audioContext.currentTime + 0.1);
+          
+          await audioContext.close();
+        } catch (contextError) {
+          console.warn('[TutorialNarrator] Audio context creation failed, using silent audio element');
+          // Fallback to audio element with data URL
+          this.audioEl.src = "data:audio/wav;base64,UklGRnoAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoAAAAA";
+          await this.audioEl.play();
+          this.audioEl.pause();
+        }
+        
         this.audioEl.muted = false;
         this.audioEl.currentTime = 0;
         this.audioEl.removeAttribute("src");
@@ -101,7 +121,9 @@ class TutorialNarrator {
       // Ensure audio is unmuted and volume is set
       this.audioEl.muted = false;
       this.audioEl.volume = 1.0;
-      this.audioEl.crossOrigin = "anonymous";
+      
+      // Try different CORS settings
+      this.audioEl.crossOrigin = null; // Remove CORS restriction first
       
       const handleEnd = () => {
         console.log('[TutorialNarrator] Custom audio ended');
@@ -110,18 +132,41 @@ class TutorialNarrator {
       };
 
       const handleError = (error: Event) => {
-        console.error('[TutorialNarrator] Custom audio error:', error);
+        console.error('[TutorialNarrator] Custom audio error - trying CORS bypass:', error);
+        
+        // Try with CORS enabled as fallback
+        if (this.audioEl && this.audioEl.crossOrigin !== "anonymous") {
+          console.log('[TutorialNarrator] Retrying with CORS enabled...');
+          this.audioEl.crossOrigin = "anonymous";
+          this.audioEl.load(); // Reload with new CORS setting
+          return; // Let it try again
+        }
+        
+        console.error('[TutorialNarrator] Custom audio failed completely');
         this.speaking = false;
         onend && onend();
+      };
+
+      const handleCanPlay = () => {
+        console.log('[TutorialNarrator] Custom audio can play - starting playback');
+        if (this.audioEl) {
+          this.audioEl.play().catch((playError) => {
+            console.error('[TutorialNarrator] Play failed:', playError);
+            handleError(playError);
+          });
+        }
       };
 
       this.speaking = true;
       this.audioEl.src = url;
       this.audioEl.onended = handleEnd;
       this.audioEl.onerror = handleError;
+      this.audioEl.oncanplay = handleCanPlay;
       
-      await this.audioEl.play();
-      console.log('[TutorialNarrator] Custom audio started playing successfully');
+      // Force load the audio
+      this.audioEl.load();
+      
+      console.log('[TutorialNarrator] Custom audio loading initiated');
       return true;
     } catch (error) {
       console.error('[TutorialNarrator] Failed to play custom audio:', error);
