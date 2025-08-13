@@ -144,66 +144,17 @@ export const ProfileHeroCard: React.FC<ProfileHeroCardProps> = ({
                 </h2>
               </div>
 
-              {/* Missions Completed */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-background/20 rounded-lg p-4 border" style={{ borderColor: `${profileColor}40` }}>
-                  <div className="flex items-center gap-2 mb-2">
-                    <Medal size={20} style={{ color: profileColor }} />
-                    <span className="font-semibold" style={{ color: profileColor }}>Medalhas</span>
-                  </div>
-                  <p className="text-2xl font-bold">{completedMedals}/4</p>
-                  <p className="text-sm text-muted-foreground">Conquistas</p>
-                </div>
-
-                <div className="bg-background/20 rounded-lg p-4 border" style={{ borderColor: `${profileColor}40` }}>
-                  <div className="flex items-center gap-2 mb-2">
-                    <Zap size={20} style={{ color: profileColor }} />
-                    <span className="font-semibold" style={{ color: profileColor }}>Total XP</span>
-                  </div>
-                  <p className="text-2xl font-bold">{xp.toLocaleString()}</p>
-                  <p className="text-sm text-muted-foreground">Experiência</p>
-                </div>
-
-                <div className="bg-background/20 rounded-lg p-4 border" style={{ borderColor: `${profileColor}40` }}>
-                  <div className="flex items-center gap-2 mb-2">
-                    <Award size={20} style={{ color: profileColor }} />
-                    <span className="font-semibold" style={{ color: profileColor }}>Bonus</span>
-                  </div>
-                  <p className="text-2xl font-bold">{totalScore.toFixed(1)}</p>
-                  <p className="text-sm text-muted-foreground">Pontos</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Expandable Level Description */}
-          <div className="mt-8 border-t pt-6" style={{ borderColor: `${profileColor}40` }}>
-            <Button
-              variant="ghost"
-              onClick={() => setIsExpanded(!isExpanded)}
-              className="w-full flex items-center justify-between p-4 hover:bg-background/10"
-              style={{ color: profileColor }}
-            >
-              <span className="text-lg font-semibold">
-                {sublevel} - Detalhes do Perfil
-              </span>
-              {isExpanded ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
-            </Button>
-            
-            {isExpanded && (
-              <div className="mt-4 p-6 rounded-lg bg-background/20 border" 
-                   style={{ borderColor: `${profileColor}40` }}>
-                <div 
-                  className="absolute inset-0 rounded-lg opacity-10 blur-sm"
-                  style={{ 
-                    background: `linear-gradient(45deg, ${profileColor}40, transparent, ${profileColor}40)` 
-                  }}
-                />
-                <p className="relative text-foreground/90 text-lg leading-relaxed">
-                  {phrase}
+              {/* Profile Description */}
+              <div className="mt-8 p-6 rounded-lg border" 
+                   style={{ 
+                     borderColor: `${profileColor}40`,
+                     backgroundColor: 'hsl(240 100% 2%)'
+                   }}>
+                <p className="text-foreground/90 text-lg leading-relaxed">
+                  🟠 Nível 2 – Transição para Ninja • Seu domínio técnico vem acompanhado de visão de contexto. Você pensa no impacto coletivo e contribui para soluções além do seu escopo. Rumo ao protagonismo na transformação digital.
                 </p>
               </div>
-            )}
+            </div>
           </div>
           
           {/* Decorative neon lines */}
