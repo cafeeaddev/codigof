@@ -553,7 +553,6 @@ export const mission4AreaQuestions = [
       'Audit Report'
     ],
     starLegends: {
-      0: { text: "Não utilizo/Não aplicável", points: 0 },
       1: { text: "Não utilizo/Não aplicável", points: 0 },
       2: { text: "Nunca usei ou conheço muito pouco", points: 1 },
       3: { text: "Sei o básico, consigo realizar tarefas simples", points: 2 },
