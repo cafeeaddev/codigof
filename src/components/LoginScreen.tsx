@@ -59,7 +59,7 @@ export const LoginScreen = () => {
           <div className="w-12 h-12 sm:w-16 sm:h-16 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
             <Lock className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
           </div>
-          <h1 className="text-xl sm:text-2xl font-bold text-primary mb-2">ACESSO SEGURO</h1>
+          <h1 className="text-xl sm:text-2xl font-bold text-primary mb-2">CÓDIGO F – QUIZ DE MATURIDADE DIGITAL</h1>
           
         </div>
 
