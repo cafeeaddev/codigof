@@ -59,7 +59,18 @@ export const AnimatedStats: React.FC<AnimatedStatsProps> = ({
   const profileColor = getProfileColor();
 
   return (
-    <div className={cn("grid grid-cols-1 md:grid-cols-2 gap-6", className)}>
+    <div className={cn("w-full", className)}>
+      {/* Title */}
+      <div className="text-center mb-12">
+        <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+          XP & Levels
+        </h2>
+        <p className="text-muted-foreground text-lg">
+          Seu nível de experiência conquistado
+        </p>
+      </div>
+
+      <div className={cn("grid grid-cols-1 md:grid-cols-2 gap-6")}>
       {/* XP Card */}
       <Card 
         className={cn(
@@ -145,6 +156,7 @@ export const AnimatedStats: React.FC<AnimatedStatsProps> = ({
           />
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 };
