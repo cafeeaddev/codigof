@@ -33,7 +33,7 @@
     --secondary: 180 100% 50%;
     --secondary-foreground: 240 100% 5%;
 
-    --accent: 60 100% 50%;
+    --accent: 270 100% 60%;
     --accent-foreground: 240 100% 5%;
 
     --neon-pink: 300 100% 60%;
@@ -110,7 +110,7 @@
     --secondary-foreground: 240 100% 5%;
     --muted: 240 50% 10%;
     --muted-foreground: 300 50% 70%;
-    --accent: 60 100% 50%;
+    --accent: 270 100% 60%;
     --accent-foreground: 240 100% 5%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 300 100% 90%;

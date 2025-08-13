@@ -142,7 +142,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
             <div className="flex items-center gap-2 mb-6 p-3 bg-muted/50 rounded-t-lg">
               <div className="w-3 h-3 bg-neon-cyan rounded-full"></div>
               <div className="w-3 h-3 bg-neon-purple rounded-full"></div>
-              <div className="w-3 h-3 bg-neon-yellow rounded-full"></div>
+              <div className="w-3 h-3 bg-neon-pink rounded-full"></div>
               <span className="text-muted-foreground text-sm ml-2 font-mono">LOADING_SYSTEM_v2.0</span>
             </div>
 
