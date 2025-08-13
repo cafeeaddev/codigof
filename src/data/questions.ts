@@ -446,6 +446,28 @@ export const mission4AreaQuestions = [
       D: { text: "Scripts e automações", points: 3.7 },
       E: { text: "Análises forenses avançadas", points: 5 }
     }
+  },
+  {
+    id: 710,
+    question: "Queremos conhecer um pouco mais do seu conhecimento nas ferramentas que você usa na sua área.",
+    type: 'star-rating',
+    criteria: { areas: ['AUDITORIA'] },
+    softwares: [
+      'Data Sniper',
+      'Mica',
+      'Consoreco',
+      'Maple',
+      'Signals',
+      'Mazars Count',
+      'Audit Report'
+    ],
+    starLegends: {
+      0: { text: "Não utilizo/Não aplicável", points: 0 },
+      1: { text: "Nunca usei ou conheço muito pouco", points: 1 },
+      2: { text: "Sei o básico, consigo realizar tarefas simples", points: 2 },
+      3: { text: "Consigo usar funções intermediárias com segurança", points: 3 },
+      4: { text: "Sou expert e consigo ensinar e otimizar o uso da ferramenta", points: 4 }
+    }
   }
 ];
 

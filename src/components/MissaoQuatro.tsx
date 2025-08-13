@@ -8,6 +8,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { ScrollArea } from './ui/scroll-area';
 import { getMission4QuestionsForUser } from '@/data/questions';
+import { StarRating } from './StarRating';
 
 interface MissaoQuatroProps {
   onComplete: () => void;
@@ -23,22 +24,36 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
     return userQuestions.map(q => ({
       id: q.id,
       question: q.question,
-      options: Object.entries(q.options).map(([letter, option]) => ({
+      type: (q as any).type || 'regular',
+      softwares: (q as any).softwares || [],
+      starLegends: (q as any).starLegends || {},
+      options: q.options ? Object.entries(q.options).map(([letter, option]) => ({
         letter,
         text: option.text,
         points: option.points
-      }))
+      })) : []
     }));
   }, [profile?.area]);
 
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
+  const [starRatings, setStarRatings] = useState<Record<number, Record<string, number>>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleAnswerSelect = (questionId: number, optionLetter: string) => {
     setAnswers(prev => ({
       ...prev,
       [questionId]: optionLetter
+    }));
+  };
+
+  const handleStarRatingChange = (questionId: number, software: string, rating: number) => {
+    setStarRatings(prev => ({
+      ...prev,
+      [questionId]: {
+        ...prev[questionId],
+        [software]: rating
+      }
     }));
   };
 
@@ -55,7 +70,11 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
   };
 
   const submitQuiz = async () => {
-    if (Object.keys(answers).length !== questions.length) {
+    // Validate regular questions
+    const regularQuestions = questions.filter(q => q.type !== 'star-rating');
+    const starRatingQuestions = questions.filter(q => q.type === 'star-rating');
+    
+    if (Object.keys(answers).length !== regularQuestions.length) {
       toast({
         title: "Atenção",
         description: "Por favor, responda todas as perguntas antes de continuar.",
@@ -64,16 +83,44 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
       return;
     }
 
+    // Validate star rating questions (at least one software rated per question)
+    for (const question of starRatingQuestions) {
+      const ratings = starRatings[question.id];
+      if (!ratings || !Object.values(ratings).some(rating => rating > 0)) {
+        toast({
+          title: "Atenção",
+          description: "Por favor, avalie pelo menos uma ferramenta na questão de avaliação.",
+          variant: "destructive"
+        });
+        return;
+      }
+    }
+
     setIsSubmitting(true);
 
     try {
       // Calculate total score
       let totalScore = 0;
+      
+      // Score from regular questions
       Object.entries(answers).forEach(([questionId, answer]) => {
         const question = questions.find(q => q.id === parseInt(questionId));
         const option = question?.options.find(opt => opt.letter === answer);
         if (option) {
           totalScore += option.points;
+        }
+      });
+
+      // Score from star rating questions
+      Object.entries(starRatings).forEach(([questionId, ratings]) => {
+        const question = questions.find(q => q.id === parseInt(questionId));
+        if (question?.type === 'star-rating') {
+          Object.values(ratings).forEach(rating => {
+            const legendData = question.starLegends[rating];
+            if (legendData) {
+              totalScore += legendData.points;
+            }
+          });
         }
       });
 
@@ -101,6 +148,7 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
           user_id: user.id,
           respostas: {
             answers: answers,
+            starRatings: starRatings,
             totalScore: totalScore
           }
         });
@@ -150,7 +198,17 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
   };
 
   const currentQuestionData = questions[currentQuestion];
-  const answeredCount = Object.keys(answers).length;
+  
+  // Calculate progress considering both regular answers and star ratings
+  let answeredCount = Object.keys(answers).length;
+  const starRatingQuestions = questions.filter(q => q.type === 'star-rating');
+  starRatingQuestions.forEach(question => {
+    const ratings = starRatings[question.id];
+    if (ratings && Object.values(ratings).some(rating => rating > 0)) {
+      answeredCount++;
+    }
+  });
+  
   const progress = (answeredCount / questions.length) * 100;
 
   return (
@@ -180,28 +238,57 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
               {currentQuestionData.question}
             </h4>
 
-            <RadioGroup
-              value={answers[currentQuestionData.id] || ""}
-              onValueChange={(value) => handleAnswerSelect(currentQuestionData.id, value)}
-              className="space-y-3"
-            >
-              {currentQuestionData.options.map((option) => (
-                <div key={option.letter} className="flex items-start space-x-2 p-3 md:p-2 rounded hover:bg-muted/20 cursor-pointer" onClick={() => handleAnswerSelect(currentQuestionData.id, option.letter)}>
-                  <RadioGroupItem
-                    value={option.letter}
-                    id={`q${currentQuestionData.id}-${option.letter}`}
-                    className="border-secondary mt-0.5 h-5 w-5 md:h-4 md:w-4"
-                  />
-                  <Label
-                    htmlFor={`q${currentQuestionData.id}-${option.letter}`}
-                    className="text-base md:text-sm text-foreground cursor-pointer flex-1 leading-relaxed"
-                  >
-                    <span className="font-medium text-primary mr-1">{option.letter})</span>
-                    {option.text}
-                  </Label>
+            {currentQuestionData.type === 'star-rating' ? (
+              <div className="space-y-4">
+                <div className="mb-4 p-3 bg-muted/30 rounded-lg">
+                  <p className="text-sm text-muted-foreground mb-2">
+                    Avalie seu conhecimento em cada ferramenta usando as estrelas:
+                  </p>
+                  <div className="text-xs text-muted-foreground space-y-1">
+                    {Object.entries(currentQuestionData.starLegends).map(([stars, legend]) => (
+                      <div key={stars}>
+                        <strong>{stars} estrela{stars !== '1' ? 's' : ''}:</strong> {(legend as any).text}
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              ))}
-            </RadioGroup>
+                
+                <div className="grid gap-4 md:grid-cols-2">
+                  {currentQuestionData.softwares.map((software) => (
+                    <StarRating
+                      key={software}
+                      software={software}
+                      value={starRatings[currentQuestionData.id]?.[software] || 0}
+                      onChange={(rating) => handleStarRatingChange(currentQuestionData.id, software, rating)}
+                      legends={currentQuestionData.starLegends}
+                    />
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <RadioGroup
+                value={answers[currentQuestionData.id] || ""}
+                onValueChange={(value) => handleAnswerSelect(currentQuestionData.id, value)}
+                className="space-y-3"
+              >
+                {currentQuestionData.options.map((option) => (
+                  <div key={option.letter} className="flex items-start space-x-2 p-3 md:p-2 rounded hover:bg-muted/20 cursor-pointer" onClick={() => handleAnswerSelect(currentQuestionData.id, option.letter)}>
+                    <RadioGroupItem
+                      value={option.letter}
+                      id={`q${currentQuestionData.id}-${option.letter}`}
+                      className="border-secondary mt-0.5 h-5 w-5 md:h-4 md:w-4"
+                    />
+                    <Label
+                      htmlFor={`q${currentQuestionData.id}-${option.letter}`}
+                      className="text-base md:text-sm text-foreground cursor-pointer flex-1 leading-relaxed"
+                    >
+                      <span className="font-medium text-primary mr-1">{option.letter})</span>
+                      {option.text}
+                    </Label>
+                  </div>
+                ))}
+              </RadioGroup>
+            )}
 
             <div className="mt-4 pt-2 flex justify-between items-center">
               <Button
@@ -219,7 +306,11 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
                 <Button
                   type="button"
                   onClick={() => submitQuiz()}
-                  disabled={!answers[currentQuestionData.id] || isSubmitting}
+                  disabled={isSubmitting || (
+                    currentQuestionData.type === 'star-rating' 
+                      ? !starRatings[currentQuestionData.id] || !Object.values(starRatings[currentQuestionData.id] || {}).some(rating => rating > 0)
+                      : !answers[currentQuestionData.id]
+                  )}
                   size="sm"
                   className="bg-primary hover:bg-primary/90"
                 >
@@ -229,7 +320,11 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
                 <Button
                   type="button"
                   onClick={() => goToNextQuestion()}
-                  disabled={!answers[currentQuestionData.id]}
+                  disabled={
+                    currentQuestionData.type === 'star-rating' 
+                      ? !starRatings[currentQuestionData.id] || !Object.values(starRatings[currentQuestionData.id] || {}).some(rating => rating > 0)
+                      : !answers[currentQuestionData.id]
+                  }
                   size="sm"
                   className="bg-primary hover:bg-primary/90"
                 >
