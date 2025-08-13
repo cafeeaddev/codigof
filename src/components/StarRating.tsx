@@ -34,7 +34,7 @@ export const StarRating = ({ software, value, onChange, legends }: StarRatingPro
       </div>
       
       <div className="flex items-center gap-1 mb-3">
-        {[1, 2, 3, 4].map((starIndex) => (
+        {[1, 2, 3, 4, 5].map((starIndex) => (
           <button
             key={starIndex}
             type="button"
