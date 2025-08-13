@@ -220,7 +220,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
             </div>
             <div className="min-w-0">
               <h1 className="text-secondary text-sm md:text-base font-bold tracking-wider truncate">{(userProfile.nome || 'Usuário').split(' ')[0]}</h1>
-              <p className="text-muted-foreground text-xs md:text-sm truncate">{userProfile.area}</p>
+              <p className="text-muted-foreground text-xs md:text-sm truncate">{userProfile.cargo?.replace(/^\d+-\s*/, '').trim()}</p>
             </div>
           </div>
 
