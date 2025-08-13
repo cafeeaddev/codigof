@@ -257,7 +257,7 @@ export const TutorialOverlay = ({ stage, onClose, onDontShowAgain }: TutorialOve
               <ChevronLeft className="w-4 h-4 mr-1" /> Voltar
             </Button>
             <Button variant="default" size="sm" onClick={handleNext} disabled={index === slides.length - 1}>
-              Próximo <ChevronRight className="w-4 h-4 ml-1" />
+              {index === slides.length - 1 ? "Vamos começar?" : "Próximo"} <ChevronRight className="w-4 h-4 ml-1" />
             </Button>
           </div>
         </footer>
