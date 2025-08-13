@@ -239,6 +239,7 @@ const GameSummary = () => {
               profile={profile.profile} 
               sublevel={profile.sublevel}
               phrase={phrase}
+              userName={nome}
             />
           </section>
 

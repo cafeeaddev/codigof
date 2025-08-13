@@ -8,6 +8,7 @@ interface ProfileHeroCardProps {
   profile: string;
   sublevel: string;
   phrase: string;
+  userName: string;
   className?: string;
 }
 
@@ -15,6 +16,7 @@ export const ProfileHeroCard: React.FC<ProfileHeroCardProps> = ({
   profile,
   sublevel,
   phrase,
+  userName,
   className
 }) => {
   const profileColor = getProfileColor(profile as any);
@@ -87,14 +89,19 @@ export const ProfileHeroCard: React.FC<ProfileHeroCardProps> = ({
                     boxShadow: `0 0 50px ${profileColor}50`
                   }}
                 >
-                  {/* Avatar Icon */}
-                  <ProfileIcon 
-                    size={64} 
-                    style={{ 
-                      color: profileColor,
+                  {/* Avatar Video */}
+                  <video 
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className="w-full h-full object-cover rounded-full"
+                    style={{
                       filter: `drop-shadow(0 0 20px ${profileColor})`
                     }}
-                  />
+                  >
+                    <source src="https://meta.cafeeadhost.com.br/Cody/hero-animation.mp4" type="video/mp4" />
+                  </video>
                   
                   {/* Orbiting dots */}
                   <div 
@@ -115,11 +122,8 @@ export const ProfileHeroCard: React.FC<ProfileHeroCardProps> = ({
 
               {/* Announcement text */}
               <div className="space-y-2">
-                <p className="text-lg md:text-xl text-foreground/80">
-                  Sou a <span style={{ color: profileColor }} className="font-bold">Cody</span>, sua IA mentora.
-                </p>
-                <p className="text-2xl md:text-3xl font-bold" style={{ color: profileColor }}>
-                  Transição → {profile}
+                <p className="text-lg md:text-xl font-bold" style={{ color: profileColor }}>
+                  Parabéns, {userName}! Chegamos ao final dessa primeira etapa
                 </p>
               </div>
             </div>
