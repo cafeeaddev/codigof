@@ -144,15 +144,30 @@ export const ProfileHeroCard: React.FC<ProfileHeroCardProps> = ({
                 </h2>
               </div>
 
-              {/* Profile Description */}
+              {/* Completed Missions */}
               <div className="mt-8 p-6 rounded-lg border" 
                    style={{ 
                      borderColor: `${profileColor}40`,
                      backgroundColor: 'hsl(240 100% 2%)'
                    }}>
-                <p className="text-foreground/90 text-lg leading-relaxed">
-                  🟠 Nível 2 – Transição para Ninja • Seu domínio técnico vem acompanhado de visão de contexto. Você pensa no impacto coletivo e contribui para soluções além do seu escopo. Rumo ao protagonismo na transformação digital.
-                </p>
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 rounded-full bg-green-400"></div>
+                    <span className="text-foreground/90">Missão 1: Fundamentos Digitais</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 rounded-full bg-green-400"></div>
+                    <span className="text-foreground/90">Missão 2: Exploração Tecnológica</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 rounded-full bg-green-400"></div>
+                    <span className="text-foreground/90">Missão 3: Domínio de Ferramentas</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 rounded-full bg-green-400"></div>
+                    <span className="text-foreground/90">Missão 4: Liderança Digital</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
