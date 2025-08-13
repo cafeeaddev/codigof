@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      mission4_questions: {
+        Row: {
+          created_at: string
+          id: number
+          options: Json | null
+          question_id: number
+          question_text: string
+          question_type: string
+          softwares: string[] | null
+          star_legends: Json | null
+          target_areas: string[] | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          options?: Json | null
+          question_id: number
+          question_text: string
+          question_type: string
+          softwares?: string[] | null
+          star_legends?: Json | null
+          target_areas?: string[] | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          options?: Json | null
+          question_id?: number
+          question_text?: string
+          question_type?: string
+          softwares?: string[] | null
+          star_legends?: Json | null
+          target_areas?: string[] | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           area: string | null
