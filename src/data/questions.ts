@@ -423,28 +423,119 @@ export const mission4AreaQuestions = [
   // AUDITORIA
   {
     id: 700,
-    question: "TeamMate/AuditBoard (Auditoria)",
+    question: "Microsoft Word",
     type: 'area-specific',
     criteria: { areas: ['AUDITORIA'] },
     options: {
-      A: { text: "Nunca usei", points: 0 },
-      B: { text: "Acesso básico para consultas", points: 1 },
-      C: { text: "Documentação de achados", points: 2.5 },
-      D: { text: "Planejamento e execução", points: 3.7 },
-      E: { text: "Configuração e administração", points: 5 }
+      A: { text: "Uso o Word para o básico, como escrever textos simples.", points: 0.0 },
+      B: { text: "Uso para textos simples, como cartas e relatórios curtos.", points: 1.0 },
+      C: { text: "Sei usar estilos, sumário automático e recursos de formatação mais avançados.", points: 2.5 },
+      D: { text: "Utilizo recursos como mala direta, controle de alterações e formatação corporativa.", points: 3.7 },
+      E: { text: "Crio modelos profissionais, configurando normas e recursos avançados para equipes.", points: 5.0 }
     }
   },
   {
     id: 701,
-    question: "ACL/IDEA (Análise de Dados)",
+    question: "Microsoft PowerPoint",
     type: 'area-specific',
     criteria: { areas: ['AUDITORIA'] },
     options: {
-      A: { text: "Nunca usei", points: 0 },
-      B: { text: "Conhecimento básico", points: 1 },
-      C: { text: "Análises simples de dados", points: 2.5 },
-      D: { text: "Scripts e automações", points: 3.7 },
-      E: { text: "Análises forenses avançadas", points: 5 }
+      A: { text: "Consigo fazer apresentações simples", points: 0.0 },
+      B: { text: "Crio apresentações com textos e imagens.", points: 1.0 },
+      C: { text: "Uso animações, transições e layouts personalizados.", points: 2.5 },
+      D: { text: "Desenvolvo apresentações estruturadas para reuniões, com vídeos e gráficos.", points: 3.7 },
+      E: { text: "Crio templates institucionais, apresentações narrativas e visual storytelling.", points: 5.0 }
+    }
+  },
+  {
+    id: 702,
+    question: "Microsoft Excel",
+    type: 'area-specific',
+    criteria: { areas: ['AUDITORIA'] },
+    options: {
+      A: { text: "Uso o Excel para tarefas simples, como organizar dados sem usar fórmulas.", points: 0.0 },
+      B: { text: "Conheço fórmulas básicas e formatação de tabelas.", points: 1.0 },
+      C: { text: "Uso funções intermediárias, filtros, gráficos e validações.", points: 2.5 },
+      D: { text: "Crio dashboards com PROC/VLOOKUP, tabelas dinâmicas e Power Query.", points: 3.7 },
+      E: { text: "Desenvolvo modelos automatizados, macros e soluções para múltiplos usuários.", points: 5.0 }
+    }
+  },
+  {
+    id: 703,
+    question: "Power BI",
+    type: 'area-specific',
+    criteria: { areas: ['AUDITORIA'] },
+    options: {
+      A: { text: "Já ouvi falar do Power BI, mas ainda não usei nem explorei a ferramenta.", points: 0.0 },
+      B: { text: "Conheço o nome ou assisti apresentações feitas com ele.", points: 1.0 },
+      C: { text: "Já criei relatórios simples com dados importados.", points: 2.5 },
+      D: { text: "Desenvolvo dashboards com DAX, filtros e visualizações interativas.", points: 3.7 },
+      E: { text: "Integro múltiplas fontes de dados e compartilho relatórios para tomada de decisão.", points: 5.0 }
+    }
+  },
+  {
+    id: 704,
+    question: "Power Automate",
+    type: 'area-specific',
+    criteria: { areas: ['AUDITORIA'] },
+    options: {
+      A: { text: "Nunca ouvi falar sobre essa ferramenta", points: 0.0 },
+      B: { text: "Nunca usei ou só ouvi falar.", points: 1.0 },
+      C: { text: "Testei fluxos simples, como alertas ou aprovações.", points: 2.5 },
+      D: { text: "Automatizei processos reais do meu trabalho.", points: 3.7 },
+      E: { text: "Crio fluxos conectando múltiplas ferramentas e oriento colegas.", points: 5.0 }
+    }
+  },
+  {
+    id: 705,
+    question: "SharePoint",
+    type: 'area-specific',
+    criteria: { areas: ['AUDITORIA'] },
+    options: {
+      A: { text: "Nunca acessei ao SharePoint.", points: 0.0 },
+      B: { text: "Já acessei páginas ou documentos, mas com uso pontual.", points: 1.0 },
+      C: { text: "Participo de equipes e bibliotecas compartilhadas.", points: 2.5 },
+      D: { text: "Organizo conteúdos, permissões e estrutura de sites.", points: 3.7 },
+      E: { text: "Administro ambientes SharePoint com fluxos, listas e integrações.", points: 5.0 }
+    }
+  },
+  {
+    id: 706,
+    question: "Power Apps",
+    type: 'area-specific',
+    criteria: { areas: ['AUDITORIA'] },
+    options: {
+      A: { text: "Ainda não ouvi falar sobre a ferramenta.", points: 0.0 },
+      B: { text: "Nunca usei ou só ouvi falar.", points: 1.0 },
+      C: { text: "Já explorei aplicativos prontos ou modelos.", points: 2.5 },
+      D: { text: "Criei apps simples para uso interno ou pessoal.", points: 3.7 },
+      E: { text: "Desenvolvo e publico aplicativos integrados com dados e processos da equipe.", points: 5.0 }
+    }
+  },
+  {
+    id: 707,
+    question: "Banco de Dados / SQL",
+    type: 'area-specific',
+    criteria: { areas: ['AUDITORIA'] },
+    options: {
+      A: { text: "Nunca tive contato com banco de dados/SQL.", points: 0.0 },
+      B: { text: "Já ouvi falar e tenho interesse em aprender mais.", points: 1.0 },
+      C: { text: "Já fiz consultas simples (SELECT, filtros, joins básicos).", points: 2.5 },
+      D: { text: "Realizo análises com queries intermediárias e múltiplas tabelas.", points: 3.7 },
+      E: { text: "Crio estruturas, mantenho bases e otimizações com SQL avançado.", points: 5.0 }
+    }
+  },
+  {
+    id: 708,
+    question: "ChatGPT / IA",
+    type: 'area-specific',
+    criteria: { areas: ['AUDITORIA'] },
+    options: {
+      A: { text: "Ainda não conheço nenhuma ferramenta de IA.", points: 0.0 },
+      B: { text: "Ainda não faz parte do meu dia a dia, mas já experimentei pelo menos uma IA.", points: 1.0 },
+      C: { text: "Uso para consultas ou inspiração.", points: 2.5 },
+      D: { text: "Aplico com foco em produtividade real.", points: 3.7 },
+      E: { text: "Crio fluxos ou soluções que combinam IA com outras ferramentas.", points: 5.0 }
     }
   },
   {
@@ -476,13 +567,19 @@ export const mission4Questions = mission4GeneralQuestions;
 
 // Helper function to get questions for Mission 4 based on user area
 export const getMission4QuestionsForUser = (userArea?: string) => {
-  const generalQuestions = mission4GeneralQuestions;
-  
   if (!userArea) {
-    return generalQuestions;
+    return mission4GeneralQuestions;
   }
   
-  // Get area-specific questions for the user's area
+  // Para AUDITORIA, usar apenas as perguntas específicas (não as gerais)
+  if (userArea.toLowerCase() === 'auditoria') {
+    return mission4AreaQuestions.filter(q => 
+      q.criteria?.areas?.some(area => area.toLowerCase() === userArea.toLowerCase())
+    );
+  }
+  
+  // Para outras áreas, combinar gerais + específicas
+  const generalQuestions = mission4GeneralQuestions;
   const areaQuestions = mission4AreaQuestions.filter(q => 
     q.criteria?.areas?.some(area => area.toLowerCase() === userArea.toLowerCase())
   );
