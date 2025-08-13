@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from './ui/button';
-import { LogOut, User, Loader2, Shield, HelpCircle } from 'lucide-react';
+import { LogOut, User, Loader2, Shield } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 import { ScrollArea } from './ui/scroll-area';
@@ -505,16 +505,16 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
       </div>
 
       {/* Botão de Ajuda dentro do jogo */}
-      <div className="fixed bottom-4 right-4 z-[90] flex items-center gap-2">
-        <img
-          src="/lovable-uploads/ead95ee7-bc88-4e43-88ad-3ae3499162d4.png"
-          alt="Cody, assistente IA"
-          className="w-8 h-8 rounded-full ring-2 ring-primary/60 shadow-md"
-          loading="lazy"
-          decoding="async"
-        />
-        <Button variant="secondary" size="sm" onClick={() => setShowTutorial(true)}>
-          <HelpCircle className="w-4 h-4 mr-2" /> Como posso te ajudar?
+      <div className="fixed bottom-4 right-4 z-[90]">
+        <Button variant="secondary" size="sm" onClick={() => setShowTutorial(true)} className="inline-flex items-center">
+          <img
+            src="/lovable-uploads/ead95ee7-bc88-4e43-88ad-3ae3499162d4.png"
+            alt="Cody, assistente IA"
+            className="w-8 h-8 mr-2 rounded-full ring-2 ring-primary/60 shadow-md"
+            loading="lazy"
+            decoding="async"
+          />
+          Como posso te ajudar?
         </Button>
       </div>
 
