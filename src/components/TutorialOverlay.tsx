@@ -29,9 +29,9 @@ const useSlides = (stage: "prelogin" | "ingame") => {
         {
           title: "Missões e Progresso",
           description:
-            "Cada missão vale 25 XP. O progresso começa em 0% e só avança quando você responde. Concluiu? Ganha medalha.",
+            "Cada missão vale 25 XPs. Seu progresso inicia em 0% e avança conforme você responde. Complete cada missão e conquiste uma nova medalha.",
           narration:
-            "Cada missão vale vinte e cinco pontos de experiência. O progresso só aumenta quando você responde. Ao concluir, você recebe uma medalha.",
+            "Cada missão vale 25 XPs. Seu progresso inicia em 0% e avança conforme você responde. Complete cada missão e conquiste uma nova medalha.",
         },
         {
           title: "Como Navegar",
