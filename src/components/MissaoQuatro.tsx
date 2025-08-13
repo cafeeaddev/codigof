@@ -103,17 +103,6 @@ const questions = [
   },
   {
     id: 9,
-    question: "Access",
-    options: [
-      { letter: "A", text: "Nunca ouvi falar dessa ferramenta.", points: 0.0 },
-      { letter: "B", text: "Já abri arquivos Access, mas não utilizei ativamente.", points: 1.0 },
-      { letter: "C", text: "Entendo a estrutura de tabelas e relações.", points: 2.5 },
-      { letter: "D", text: "Crio formulários, consultas e relatórios simples.", points: 3.7 },
-      { letter: "E", text: "Desenvolvo bancos relacionais e soluções personalizadas.", points: 5.0 }
-    ]
-  },
-  {
-    id: 10,
     question: "ChatGPT / IA",
     options: [
       { letter: "A", text: "Ainda não conheço nenhuma ferramenta de IA.", points: 0.0 },
