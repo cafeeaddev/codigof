@@ -63,8 +63,8 @@ export const FeatureSection = ({
               <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[hsl(var(--near-white))]">
                 Sou a <span className="bg-gradient-to-r from-[hsl(var(--neon-cyan))] to-[hsl(var(--neon-purple))] bg-clip-text text-transparent">Cody</span>, sua IA mentora.
               </h2>
-              <p className="text-[hsl(var(--lavender))] text-sm sm:text-base">
-                Pronto(a) para ativar seu modo <span className="text-[hsl(var(--neon-cyan))] font-semibold">Ninja digital</span>?
+              <p className="text-[hsl(var(--lavender))] text-base sm:text-lg">
+                Vamos iniciar essa <span className="text-[hsl(var(--neon-cyan))] font-semibold">jornada digital</span>?
               </p>
               <p className="text-[hsl(var(--lavender))] text-sm sm:text-base flex items-center gap-2">
                 <span className="inline-block size-2 rounded-full bg-[hsl(var(--neon-purple))]" aria-hidden></span>
