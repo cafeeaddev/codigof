@@ -180,24 +180,13 @@ const GameSummary = () => {
           />
         </div>
         
-        <div className="relative z-10 text-center max-w-4xl mx-auto px-4">
-          <div className="mb-6">
-            <p className="text-neon-cyan text-sm uppercase tracking-widest mb-2">CÓDIGO F</p>
-            <p className="text-white/70 text-base mb-8">QUIZ DE MATURIDADE DIGITAL</p>
-          </div>
-          
-          <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
-            SUA JORNADA DIGITAL
+        <div className="relative z-10 text-center max-w-4xl mx-auto px-4">          
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
+            ETAPA 1 DO CÓDIGO F
           </h1>
-          <h2 className="text-4xl md:text-6xl font-bold text-neon-cyan mb-12 animate-pulse-glow">
-            COMEÇA AQUI!
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-neon-cyan mb-12">
+            CONCLUÍDA!
           </h2>
-          
-          <div className="inline-block px-8 py-4 rounded-lg border-2 border-neon-cyan bg-neon-cyan/10 backdrop-blur-sm">
-            <p className="text-white text-lg">
-              Você precisa estar logado para ver seu resumo do jogo.
-            </p>
-          </div>
           
           <div className="mt-8">
             <Button 
@@ -239,24 +228,13 @@ const GameSummary = () => {
         <div className="container mx-auto px-4 max-w-6xl">
           
           {/* Hero Section */}
-          <header className="text-center mb-16">
-            <div className="mb-6">
-              <p className="text-neon-cyan text-sm uppercase tracking-widest mb-2 animate-pulse">CÓDIGO F</p>
-              <p className="text-white/70 text-base mb-8">QUIZ DE MATURIDADE DIGITAL</p>
-            </div>
-            
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-4">
+          <header className="text-center mb-16">            
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
               ETAPA 1 DO CÓDIGO F
             </h1>
-            <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold text-neon-cyan mb-12 animate-pulse-glow">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-neon-cyan mb-12">
               CONCLUÍDA!
             </h2>
-            
-            <div className="inline-block px-8 py-4 rounded-lg border-2 border-neon-purple bg-neon-purple/10 backdrop-blur-sm">
-              <p className="text-white text-lg font-semibold">
-                Sistema de Diagnóstico Completo
-              </p>
-            </div>
           </header>
 
           {/* Main Profile Card */}
