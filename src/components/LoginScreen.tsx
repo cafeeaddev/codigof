@@ -52,6 +52,9 @@ export const LoginScreen = () => {
   return (
     <div className="w-full">
       <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-4 sm:p-6 lg:p-8 shadow-neon">
+        <div className="text-[10px] sm:text-xs text-muted-foreground tracking-wide text-center mb-2">
+          CÓDIGO F – QUIZ DE MATURIDADE DIGITAL
+        </div>
 
         {/* Header */}
         <div className="text-center mb-6 sm:mb-8">
