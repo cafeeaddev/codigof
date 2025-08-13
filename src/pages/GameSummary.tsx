@@ -163,76 +163,104 @@ const GameSummary = () => {
 
   if (!user?.id) {
     return (
-      <main className="min-h-screen flex items-center justify-center relative overflow-hidden">
-        {/* 3D Background */}
-        <div className="absolute inset-0 z-0">
-          <Canvas camera={{ position: [0, 0, 5], fov: 75 }}>
-            <VaporwaveBackground />
-            <LightStarfield count={300} />
-            <ambientLight intensity={0.3} />
-          </Canvas>
+      <main className="min-h-screen flex items-center justify-center relative overflow-hidden bg-black">
+        {/* Vaporwave Grid Background */}
+        <div className="absolute inset-0">
+          <div 
+            className="w-full h-full opacity-30"
+            style={{
+              background: `
+                linear-gradient(90deg, hsl(var(--neon-cyan)) 1px, transparent 1px),
+                linear-gradient(0deg, hsl(var(--neon-cyan)) 1px, transparent 1px)
+              `,
+              backgroundSize: '50px 50px',
+              transform: 'perspective(1000px) rotateX(60deg)',
+              transformOrigin: 'center bottom'
+            }}
+          />
         </div>
         
-        <div className="relative z-10 text-center">
-          <h1 className="text-4xl font-bold mb-6 animate-holographic">Resumo Final</h1>
-          <p className="text-muted-foreground mb-8 text-lg">
-            Você precisa estar logado para ver seu resumo do jogo.
-          </p>
-          <Button 
-            asChild 
-            size="lg"
-            className="bg-primary hover:bg-primary/80 text-primary-foreground animate-pulse-glow"
-          >
-            <Link to="/">Voltar ao início</Link>
-          </Button>
+        <div className="relative z-10 text-center max-w-4xl mx-auto px-4">
+          <div className="mb-6">
+            <p className="text-neon-cyan text-sm uppercase tracking-widest mb-2">CÓDIGO F</p>
+            <p className="text-white/70 text-base mb-8">QUIZ DE MATURIDADE DIGITAL</p>
+          </div>
+          
+          <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
+            SUA JORNADA DIGITAL
+          </h1>
+          <h2 className="text-4xl md:text-6xl font-bold text-neon-cyan mb-12 animate-pulse-glow">
+            COMEÇA AQUI!
+          </h2>
+          
+          <div className="inline-block px-8 py-4 rounded-lg border-2 border-neon-cyan bg-neon-cyan/10 backdrop-blur-sm">
+            <p className="text-white text-lg">
+              Você precisa estar logado para ver seu resumo do jogo.
+            </p>
+          </div>
+          
+          <div className="mt-8">
+            <Button 
+              asChild 
+              size="lg"
+              className="bg-neon-cyan hover:bg-neon-cyan/80 text-black font-bold px-8 py-4 text-lg"
+            >
+              <Link to="/">Voltar ao início</Link>
+            </Button>
+          </div>
         </div>
       </main>
     );
   }
 
   return (
-    <main className="min-h-screen relative overflow-hidden">
-      {/* 3D Vaporwave Background */}
-      <div className="fixed inset-0 z-0">
-        <Canvas 
-          camera={{ position: [0, 2, 8], fov: 60 }}
-          gl={{ antialias: true, alpha: true }}
-        >
-          <Suspense fallback={null}>
-            <VaporwaveBackground />
-            <LightStarfield count={500} />
-            <Meteors count={8} spawnRate={0.02} />
-            <ambientLight intensity={0.4} />
-            <directionalLight position={[10, 10, 5]} intensity={0.8} />
-          </Suspense>
-        </Canvas>
+    <main className="min-h-screen relative overflow-hidden bg-black">
+      {/* Vaporwave Grid Background */}
+      <div className="fixed inset-0">
+        <div 
+          className="w-full h-full opacity-30"
+          style={{
+            background: `
+              linear-gradient(90deg, hsl(var(--neon-cyan)) 1px, transparent 1px),
+              linear-gradient(0deg, hsl(var(--neon-cyan)) 1px, transparent 1px)
+            `,
+            backgroundSize: '50px 50px',
+            transform: 'perspective(1000px) rotateX(60deg)',
+            transformOrigin: 'center bottom'
+          }}
+        />
       </div>
 
       {/* Celebration Particles */}
       <CelebrationParticles />
 
       {/* Content */}
-      <div className="relative z-10 min-h-screen pt-20 pb-12">
-        <div className="container mx-auto px-4">
+      <div className="relative z-10 min-h-screen py-12">
+        <div className="container mx-auto px-4 max-w-6xl">
           
           {/* Hero Section */}
-          <header className="text-center mb-12">
-            <h1 
-              className="text-4xl md:text-6xl font-bold mb-4 animate-holographic"
-              style={{ 
-                background: 'linear-gradient(45deg, hsl(var(--primary)), hsl(var(--secondary)))',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-                filter: 'drop-shadow(0 0 20px hsl(var(--primary)))'
-              }}
-            >
-              Etapa 1 do Código F Concluída
+          <header className="text-center mb-16">
+            <div className="mb-6">
+              <p className="text-neon-cyan text-sm uppercase tracking-widest mb-2 animate-pulse">CÓDIGO F</p>
+              <p className="text-white/70 text-base mb-8">QUIZ DE MATURIDADE DIGITAL</p>
+            </div>
+            
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-4">
+              ETAPA 1 DO CÓDIGO F
             </h1>
+            <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold text-neon-cyan mb-12 animate-pulse-glow">
+              CONCLUÍDA!
+            </h2>
+            
+            <div className="inline-block px-8 py-4 rounded-lg border-2 border-neon-purple bg-neon-purple/10 backdrop-blur-sm">
+              <p className="text-white text-lg font-semibold">
+                Sistema de Diagnóstico Completo
+              </p>
+            </div>
           </header>
 
           {/* Main Profile Card */}
-          <section className="mb-12">
+          <section className="mb-16">
             <ProfileHeroCard 
               profile={profile.profile} 
               sublevel={profile.sublevel}
@@ -245,7 +273,7 @@ const GameSummary = () => {
           </section>
 
           {/* Stats Grid */}
-          <section className="mb-12">
+          <section className="mb-16">
             <AnimatedStats 
               xp={xp} 
               totalScore={score.total}
@@ -259,7 +287,7 @@ const GameSummary = () => {
           </section>
 
           {/* Share Actions */}
-          <section className="max-w-2xl mx-auto mb-12">
+          <section className="max-w-2xl mx-auto mb-16">
             <ShareActions 
               phrase={phrase}
               profile={profile.profile}
@@ -271,10 +299,8 @@ const GameSummary = () => {
           <section className="text-center">
             <Button 
               asChild 
-              variant="outline" 
               size="lg"
-              className="animate-epic-entry border-2 border-primary/50 hover:border-primary hover:bg-primary/10"
-              style={{ animationDelay: '1.5s' }}
+              className="bg-neon-cyan hover:bg-neon-cyan/80 text-black font-bold px-8 py-4 text-lg"
             >
               <Link to="/">🚀 Explorar mais missões</Link>
             </Button>
@@ -285,12 +311,12 @@ const GameSummary = () => {
 
       {/* Loading Overlay */}
       {loading && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm">
           <div className="text-center">
             <div 
-              className="w-16 h-16 border-4 border-primary/30 border-t-primary rounded-full animate-spin mb-4 mx-auto"
+              className="w-16 h-16 border-4 border-neon-cyan/30 border-t-neon-cyan rounded-full animate-spin mb-4 mx-auto"
             />
-            <p className="text-lg animate-pulse">Carregando sua conquista épica...</p>
+            <p className="text-lg text-white animate-pulse">Carregando sua conquista épica...</p>
           </div>
         </div>
       )}
