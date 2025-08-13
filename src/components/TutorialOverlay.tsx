@@ -148,13 +148,14 @@ export const TutorialOverlay = ({ stage, onClose, onDontShowAgain }: TutorialOve
   };
 
   const handleToggleAudio = () => {
-    setAudioEnabled(!audioEnabled);
-    if (audioEnabled && narrator.isSpeaking()) {
-      // Para o áudio atual se estiver falando
-      if (typeof window !== "undefined" && "speechSynthesis" in window) {
-        window.speechSynthesis.cancel();
-      }
+    if (audioEnabled) {
+      // Desativando áudio - para qualquer reprodução atual
+      narrator.stop();
       setIsSpeaking(false);
+      setAudioEnabled(false);
+    } else {
+      // Ativando áudio
+      setAudioEnabled(true);
     }
   };
 
@@ -180,8 +181,8 @@ export const TutorialOverlay = ({ stage, onClose, onDontShowAgain }: TutorialOve
                 <Button size="sm" variant="outline" onClick={handleReplay}>
                   {isSpeaking ? <Volume2 className="w-4 h-4 mr-1 animate-pulse" /> : <RotateCcw className="w-4 h-4 mr-1" />} Repetir
                 </Button>
-                <Button size="icon" variant="outline" onClick={handleToggleAudio} aria-label="Desativar áudio">
-                  <VolumeX className="w-4 h-4" />
+                <Button size="icon" variant="outline" onClick={handleToggleAudio} aria-label={audioEnabled ? "Desativar áudio" : "Ativar áudio"}>
+                  {audioEnabled ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
                 </Button>
               </>
             )}
