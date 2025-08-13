@@ -20,7 +20,7 @@ const useSlides = (stage: "prelogin" | "ingame") => {
     if (stage === "ingame") {
       return [
         {
-          title: "Bem-vindo(a) à sua Base",
+          title: "Bem-vindo (a) à sua spaceship 🛸!",
           description:
             "Aqui você vê seu XP, medalhas e qual missão está ativa agora. Avance missão a missão para liberar a próxima.",
           narration:
