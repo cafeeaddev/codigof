@@ -57,7 +57,7 @@ const faqs = [
   },
   {
     q: "Q4: Quem deve participar?",
-    a: "Todos os colaboradores da empresa estão convidados a jogar. Se você chegou até aqui, já está no caminho da evolução digital!",
+    a: "Todos os colaboradores da empresa devem responder o quiz.",
   },
   {
     q: "Q5: Como o quiz será aplicado?",
