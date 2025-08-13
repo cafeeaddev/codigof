@@ -234,8 +234,8 @@ export const TutorialOverlay = ({ stage, onClose, onDontShowAgain }: TutorialOve
           </div>
         </main>
 
-        <footer className="flex items-center justify-between gap-2 px-4 py-3 border-t border-border/50 bg-muted/30">
-          <div className="flex items-center gap-2">
+        <footer className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 p-4 border-t border-border/50 bg-muted/30">
+          <div className="flex items-center gap-2 justify-center sm:justify-start order-2 sm:order-1">
             <Button variant="ghost" size="sm" onClick={() => {
               // Stop audio when closing tutorial
               narrator.stop();
@@ -252,7 +252,7 @@ export const TutorialOverlay = ({ stage, onClose, onDontShowAgain }: TutorialOve
             </Button>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 justify-center order-1 sm:order-2">
             <Button variant="outline" size="sm" onClick={handlePrev} disabled={index === 0}>
               <ChevronLeft className="w-4 h-4 mr-1" /> Voltar
             </Button>
