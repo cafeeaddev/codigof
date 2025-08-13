@@ -559,6 +559,25 @@ export const mission4AreaQuestions = [
       4: { text: "Consigo usar funções intermediárias com segurança", points: 3 },
       5: { text: "Sou expert e consigo ensinar e otimizar o uso da ferramenta", points: 4 }
     }
+  },
+  {
+    id: 711,
+    question: "Queremos conhecer um pouco mais do seu conhecimento nas ferramentas que você usa na sua área.",
+    type: 'star-rating' as const,
+    criteria: {
+      areas: ['Risk & quality']
+    },
+    softwares: [
+      'Arengibox',
+      'Compliance catalyst'
+    ],
+    starLegends: {
+      1: { text: "Não utilizo/Não aplicável", points: 0 },
+      2: { text: "Nunca usei ou conheço muito pouco", points: 1 },
+      3: { text: "Sei o básico, consigo realizar tarefas simples", points: 2 },
+      4: { text: "Consigo usar funções intermediárias com segurança", points: 3 },
+      5: { text: "Sou expert e consigo ensinar e otimizar o uso da ferramenta", points: 4 }
+    }
   }
 ];
 
@@ -572,6 +591,13 @@ export const getMission4QuestionsForUser = (userArea?: string) => {
     return mission4AreaQuestions.filter(q => 
       q.criteria?.areas?.includes('AUDITORIA')
     );
+  } else if (userArea === 'Risk & quality') {
+    // Usuários de Risk & quality recebem as 9 perguntas universais + pergunta 10 (star-rating)
+    const universalQuestions = mission4GeneralQuestions;
+    const riskQualitySpecificQuestion = mission4AreaQuestions.filter(q => 
+      q.criteria?.areas?.includes('Risk & quality')
+    );
+    return [...universalQuestions, ...riskQualitySpecificQuestion];
   } else {
     // Outras áreas recebem apenas as 9 perguntas universais (mission4GeneralQuestions)
     return mission4GeneralQuestions;
