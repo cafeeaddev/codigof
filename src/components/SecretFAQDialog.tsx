@@ -65,7 +65,7 @@ const faqs = [
   },
   {
     q: "Q6: Existe tempo para concluir?",
-    a: "Reserve cerca de 8 a 10 minutos. Após iniciar, o tempo para conclusão é contínuo — então escolha um momento tranquilo para jogar.",
+    a: "Reserve cerca de 8 a 10 minutos. Você pode salvar o seu progresso e completá-lo mais tarde. Porém, àqueles que responder no primeiro dia receberão pontuação adicional e concorrerão a prêmios no programa Código F.",
   },
   {
     q: "Q7: Como serão definidos os níveis?",
