@@ -3,7 +3,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { getProfileColor } from '@/lib/digitalProfile';
 import { cn } from '@/lib/utils';
-import { Brain, Zap, Star, Target, ChevronDown, ChevronUp, Medal, Trophy, Award } from 'lucide-react';
+import { Brain, Zap, Star, Target, ChevronDown, ChevronUp, Medal, Trophy, Award, Check } from 'lucide-react';
 
 interface Medal {
   id: string | number;
@@ -146,40 +146,68 @@ export const ProfileHeroCard: React.FC<ProfileHeroCardProps> = ({
 
               {/* Completed Missions */}
               <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="p-4 rounded-lg border bg-background/20" 
-                     style={{ borderColor: `${profileColor}40` }}>
-                  <div className="flex items-center gap-3">
-                    <div className="w-3 h-3 rounded-full bg-green-400"></div>
-                    <span className="text-foreground/90 font-semibold">Missão 1</span>
+                <div className="p-6 rounded-lg border-2 bg-gradient-to-br from-green-500/10 to-green-600/5 border-green-500/30 relative overflow-hidden">
+                  <div className="absolute top-3 right-3">
+                    <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center">
+                      <Check size={16} className="text-white" />
+                    </div>
                   </div>
-                  <p className="text-sm text-muted-foreground mt-1">Fundamentos Digitais</p>
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="w-10 h-10 rounded-lg bg-green-500/20 flex items-center justify-center">
+                      <span className="text-green-400 font-bold">1</span>
+                    </div>
+                    <span className="text-foreground font-bold text-lg">Missão 1</span>
+                  </div>
+                  <p className="text-green-300/80 font-medium">Fundamentos Digitais</p>
+                  <div className="absolute bottom-0 left-0 w-full h-1 bg-green-500"></div>
                 </div>
                 
-                <div className="p-4 rounded-lg border bg-background/20" 
-                     style={{ borderColor: `${profileColor}40` }}>
-                  <div className="flex items-center gap-3">
-                    <div className="w-3 h-3 rounded-full bg-green-400"></div>
-                    <span className="text-foreground/90 font-semibold">Missão 2</span>
+                <div className="p-6 rounded-lg border-2 bg-gradient-to-br from-green-500/10 to-green-600/5 border-green-500/30 relative overflow-hidden">
+                  <div className="absolute top-3 right-3">
+                    <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center">
+                      <Check size={16} className="text-white" />
+                    </div>
                   </div>
-                  <p className="text-sm text-muted-foreground mt-1">Exploração Tecnológica</p>
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="w-10 h-10 rounded-lg bg-green-500/20 flex items-center justify-center">
+                      <span className="text-green-400 font-bold">2</span>
+                    </div>
+                    <span className="text-foreground font-bold text-lg">Missão 2</span>
+                  </div>
+                  <p className="text-green-300/80 font-medium">Exploração Tecnológica</p>
+                  <div className="absolute bottom-0 left-0 w-full h-1 bg-green-500"></div>
                 </div>
                 
-                <div className="p-4 rounded-lg border bg-background/20" 
-                     style={{ borderColor: `${profileColor}40` }}>
-                  <div className="flex items-center gap-3">
-                    <div className="w-3 h-3 rounded-full bg-green-400"></div>
-                    <span className="text-foreground/90 font-semibold">Missão 3</span>
+                <div className="p-6 rounded-lg border-2 bg-gradient-to-br from-green-500/10 to-green-600/5 border-green-500/30 relative overflow-hidden">
+                  <div className="absolute top-3 right-3">
+                    <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center">
+                      <Check size={16} className="text-white" />
+                    </div>
                   </div>
-                  <p className="text-sm text-muted-foreground mt-1">Domínio de Ferramentas</p>
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="w-10 h-10 rounded-lg bg-green-500/20 flex items-center justify-center">
+                      <span className="text-green-400 font-bold">3</span>
+                    </div>
+                    <span className="text-foreground font-bold text-lg">Missão 3</span>
+                  </div>
+                  <p className="text-green-300/80 font-medium">Domínio de Ferramentas</p>
+                  <div className="absolute bottom-0 left-0 w-full h-1 bg-green-500"></div>
                 </div>
                 
-                <div className="p-4 rounded-lg border bg-background/20" 
-                     style={{ borderColor: `${profileColor}40` }}>
-                  <div className="flex items-center gap-3">
-                    <div className="w-3 h-3 rounded-full bg-green-400"></div>
-                    <span className="text-foreground/90 font-semibold">Missão 4</span>
+                <div className="p-6 rounded-lg border-2 bg-gradient-to-br from-green-500/10 to-green-600/5 border-green-500/30 relative overflow-hidden">
+                  <div className="absolute top-3 right-3">
+                    <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center">
+                      <Check size={16} className="text-white" />
+                    </div>
                   </div>
-                  <p className="text-sm text-muted-foreground mt-1">Liderança Digital</p>
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="w-10 h-10 rounded-lg bg-green-500/20 flex items-center justify-center">
+                      <span className="text-green-400 font-bold">4</span>
+                    </div>
+                    <span className="text-foreground font-bold text-lg">Missão 4</span>
+                  </div>
+                  <p className="text-green-300/80 font-medium">Liderança Digital</p>
+                  <div className="absolute bottom-0 left-0 w-full h-1 bg-green-500"></div>
                 </div>
               </div>
             </div>
