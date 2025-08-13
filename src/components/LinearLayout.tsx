@@ -2,12 +2,12 @@ import { useState, useEffect } from 'react';
 import { VaporwaveScene } from './VaporwaveScene';
 import { HeroSection } from './HeroSection';
 import { FeatureSection } from './FeatureSection';
-import { Footer } from './Footer';
+
 import { Navigation } from './Navigation';
 import { SectionContainer } from './SectionContainer';
 import { ScrollProgress } from './ScrollProgress';
 import { FeatureFold } from './FeatureFold';
-import { ChevronDown, Target, Trophy, Medal } from 'lucide-react';
+import { ChevronDown, Target } from 'lucide-react';
 import { useInternalScroll } from '@/hooks/useInternalScroll';
 import { LoginScreen } from './LoginScreen';
 import { WelcomeScreen } from './WelcomeScreen';
@@ -212,51 +212,8 @@ export const LinearLayout = () => {
             />
           </SectionContainer>
 
-          {/* XP & Levels Fold */}
-          <SectionContainer
-            sectionId="xp-levels"
-            sectionIndex={3}
-            registerSection={registerSection}
-            unregisterSection={unregisterSection}
-            className="scroll-snap-start bg-transparent"
-          >
-            <FeatureFold
-              id="xp-levels"
-              title="XP & Levels"
-              subtitle="À medida que você avança nas missões, acumula pontos de experiência (XP) e sobe de nível. Acompanhe seu progresso, desbloqueie conquistas e acompanhe sua evolução."
-              colorClass="bg-neon-purple"
-              Icon={Trophy}
-            />
-          </SectionContainer>
 
-          {/* Medals Fold */}
-          <SectionContainer
-            sectionId="medals"
-            sectionIndex={4}
-            registerSection={registerSection}
-            unregisterSection={unregisterSection}
-            className="scroll-snap-start bg-transparent"
-          >
-            <FeatureFold
-              id="medals"
-              title="Medalhas"
-              subtitle="Conquiste medalhas exclusivas ao completar cada missão. São elas que provam sua trajetória dentro do jogo."
-              colorClass="bg-neon-purple"
-              Icon={Medal}
-              titleClass="text-neon-cyan"
-            />
-          </SectionContainer>
 
-          {/* Footer Section */}
-          <SectionContainer
-            sectionId="footer"
-            sectionIndex={5}
-            registerSection={registerSection}
-            unregisterSection={unregisterSection}
-            className="scroll-snap-start bg-transparent pb-28 sm:pb-48"
-          >
-            <Footer />
-          </SectionContainer>
         </div>
       </div>
 
