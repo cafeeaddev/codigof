@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      areas: {
+        Row: {
+          code: string
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       mission4_questions: {
         Row: {
           created_at: string
@@ -24,6 +51,7 @@ export type Database = {
           question_type: string
           softwares: string[] | null
           star_legends: Json | null
+          target_area_ids: string[] | null
           target_areas: string[] | null
           updated_at: string
         }
@@ -36,6 +64,7 @@ export type Database = {
           question_type: string
           softwares?: string[] | null
           star_legends?: Json | null
+          target_area_ids?: string[] | null
           target_areas?: string[] | null
           updated_at?: string
         }
@@ -48,6 +77,7 @@ export type Database = {
           question_type?: string
           softwares?: string[] | null
           star_legends?: Json | null
+          target_area_ids?: string[] | null
           target_areas?: string[] | null
           updated_at?: string
         }
@@ -56,6 +86,7 @@ export type Database = {
       profiles: {
         Row: {
           area: string | null
+          area_id: string | null
           cargo: string | null
           cpf: string
           created_at: string
@@ -67,6 +98,7 @@ export type Database = {
         }
         Insert: {
           area?: string | null
+          area_id?: string | null
           cargo?: string | null
           cpf: string
           created_at?: string
@@ -78,6 +110,7 @@ export type Database = {
         }
         Update: {
           area?: string | null
+          area_id?: string | null
           cargo?: string | null
           cpf?: string
           created_at?: string
@@ -87,7 +120,15 @@ export type Database = {
           updated_at?: string
           user_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_area_id_fkey"
+            columns: ["area_id"]
+            isOneToOne: false
+            referencedRelation: "areas"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       respostas: {
         Row: {

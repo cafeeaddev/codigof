@@ -164,7 +164,7 @@ export const useAdminDashboard = () => {
         supabase.from('user_progress').select('*'),
         supabase.from('profiles').select('id', { count: 'exact', head: true }),
         supabase.from('user_roles').select('user_id').eq('role', 'admin'),
-        supabase.from('profiles').select('user_id, nome, email, cargo, area')
+        supabase.from('profiles').select('user_id, nome, email, cargo, area, area_id, areas!profiles_area_id_fkey(*)')
       ]);
 
       // Define o total de profiles
@@ -178,12 +178,26 @@ export const useAdminDashboard = () => {
 
       const userProfilesByEmail = new Map((allProfiles.data || []).map(profile => [
         profile.email, 
-        { nome: profile.nome || 'Usuário', email: profile.email || '', cargo: profile.cargo, area: profile.area }
+        { 
+          nome: profile.nome || 'Usuário', 
+          email: profile.email || '', 
+          cargo: profile.cargo, 
+          area: profile.area,
+          area_id: profile.area_id,
+          areaInfo: profile.areas || null
+        }
       ]));
 
       const userProfiles = new Map((allProfiles.data || []).map(profile => [
         profile.user_id, 
-        { nome: profile.nome || 'Usuário', email: profile.email || '', cargo: profile.cargo, area: profile.area }
+        { 
+          nome: profile.nome || 'Usuário', 
+          email: profile.email || '', 
+          cargo: profile.cargo, 
+          area: profile.area,
+          area_id: profile.area_id,
+          areaInfo: profile.areas || null
+        }
       ]));
 
       // Processar respostas

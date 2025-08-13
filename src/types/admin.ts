@@ -3,6 +3,16 @@ export interface UserProfile {
   email: string;
   cargo?: string;
   area?: string;
+  area_id?: string; // UUID reference to areas table
+}
+
+export interface Area {
+  id: string;
+  name: string;
+  code: string;
+  description?: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface UserProgress {

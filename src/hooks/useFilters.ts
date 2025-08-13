@@ -48,11 +48,12 @@ export const useFilters = ({
         matchesCargo = userCargo === filters.cargoFilter;
       }
       
-      // Filtro por área
+      // Filtro por área (supports both legacy area string and new area_id)
       let matchesArea = true;
       if (filters.areaFilter && filters.areaFilter !== "todos") {
         const userArea = userProfile?.area || '';
-        matchesArea = userArea === filters.areaFilter;
+        const userAreaName = (userProfile as any)?.areaInfo?.name || userProfile?.area || '';
+        matchesArea = userArea === filters.areaFilter || userAreaName === filters.areaFilter;
       }
       
       // Filtro por perfil
@@ -83,8 +84,13 @@ export const useFilters = ({
         const cleanCargo = userProfile.cargo.replace(/^\d+-/, '').trim();
         if (cleanCargo) cargos.add(cleanCargo);
       }
+      // Support both legacy area field and new area relation
       if (userProfile?.area) {
         areas.add(userProfile.area);
+      }
+      const areaName = (userProfile as any)?.areaInfo?.name;
+      if (areaName) {
+        areas.add(areaName);
       }
     });
     

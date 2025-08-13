@@ -608,20 +608,24 @@ export const mission4AreaQuestions = [
 export const mission4Questions = mission4GeneralQuestions;
 
 // Helper function to get questions for Mission 4 based on user area
-export const getMission4QuestionsForUser = (userArea?: string) => {
-  if (userArea === 'AUDITORIA') {
+// Now supports both legacy string areas and new area objects
+export const getMission4QuestionsForUser = (userArea?: string | { name: string } | null) => {
+  // Extract area name from different input types
+  const areaName = typeof userArea === 'string' ? userArea : userArea?.name;
+  
+  if (areaName === 'AUDITORIA') {
     // Usuários de AUDITORIA recebem as 9 perguntas específicas + pergunta 10 (star-rating)
     return mission4AreaQuestions.filter(q => 
       q.criteria?.areas?.includes('AUDITORIA')
     );
-  } else if (userArea === 'Risk & quality' || userArea === 'RISK&QUALITY') {
+  } else if (areaName === 'Risk & quality' || areaName === 'RISK&QUALITY') {
     // Usuários de Risk & quality recebem as 9 perguntas universais + pergunta 10 (star-rating)
     const universalQuestions = mission4GeneralQuestions;
     const riskQualitySpecificQuestion = mission4AreaQuestions.filter(q => 
       q.criteria?.areas?.includes('Risk & quality')
     );
     return [...universalQuestions, ...riskQualitySpecificQuestion];
-  } else if (userArea === 'MARKETING') {
+  } else if (areaName === 'MARKETING') {
     // Usuários de MARKETING recebem as 9 perguntas universais + pergunta 10 (star-rating)
     const universalQuestions = mission4GeneralQuestions;
     const marketingSpecificQuestion = mission4AreaQuestions.filter(q => 

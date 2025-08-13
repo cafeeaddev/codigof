@@ -17,9 +17,11 @@ interface MissaoQuatroProps {
 export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
   const { profile, user } = useAuth();
   
-  // Get questions based on user's area
+  // Get questions based on user's area (supports both legacy area string and new area object)
   const questions = useMemo(() => {
-    const userQuestions = getMission4QuestionsForUser(profile?.area);
+    // Try to get area from different sources for backward compatibility
+    const areaInfo = (profile as any)?.areaInfo?.name || profile?.area;
+    const userQuestions = getMission4QuestionsForUser(areaInfo);
     // Convert to the format expected by the component
     return userQuestions.map(q => ({
       id: q.id,
