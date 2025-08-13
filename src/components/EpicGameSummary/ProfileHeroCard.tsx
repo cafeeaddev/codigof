@@ -145,28 +145,41 @@ export const ProfileHeroCard: React.FC<ProfileHeroCardProps> = ({
               </div>
 
               {/* Completed Missions */}
-              <div className="mt-8 p-6 rounded-lg border" 
-                   style={{ 
-                     borderColor: `${profileColor}40`,
-                     backgroundColor: 'hsl(240 100% 2%)'
-                   }}>
-                <div className="space-y-3">
+              <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="p-4 rounded-lg border bg-background/20" 
+                     style={{ borderColor: `${profileColor}40` }}>
                   <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 rounded-full bg-green-400"></div>
-                    <span className="text-foreground/90">Missão 1: Fundamentos Digitais</span>
+                    <div className="w-3 h-3 rounded-full bg-green-400"></div>
+                    <span className="text-foreground/90 font-semibold">Missão 1</span>
                   </div>
+                  <p className="text-sm text-muted-foreground mt-1">Fundamentos Digitais</p>
+                </div>
+                
+                <div className="p-4 rounded-lg border bg-background/20" 
+                     style={{ borderColor: `${profileColor}40` }}>
                   <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 rounded-full bg-green-400"></div>
-                    <span className="text-foreground/90">Missão 2: Exploração Tecnológica</span>
+                    <div className="w-3 h-3 rounded-full bg-green-400"></div>
+                    <span className="text-foreground/90 font-semibold">Missão 2</span>
                   </div>
+                  <p className="text-sm text-muted-foreground mt-1">Exploração Tecnológica</p>
+                </div>
+                
+                <div className="p-4 rounded-lg border bg-background/20" 
+                     style={{ borderColor: `${profileColor}40` }}>
                   <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 rounded-full bg-green-400"></div>
-                    <span className="text-foreground/90">Missão 3: Domínio de Ferramentas</span>
+                    <div className="w-3 h-3 rounded-full bg-green-400"></div>
+                    <span className="text-foreground/90 font-semibold">Missão 3</span>
                   </div>
+                  <p className="text-sm text-muted-foreground mt-1">Domínio de Ferramentas</p>
+                </div>
+                
+                <div className="p-4 rounded-lg border bg-background/20" 
+                     style={{ borderColor: `${profileColor}40` }}>
                   <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 rounded-full bg-green-400"></div>
-                    <span className="text-foreground/90">Missão 4: Liderança Digital</span>
+                    <div className="w-3 h-3 rounded-full bg-green-400"></div>
+                    <span className="text-foreground/90 font-semibold">Missão 4</span>
                   </div>
+                  <p className="text-sm text-muted-foreground mt-1">Liderança Digital</p>
                 </div>
               </div>
             </div>
