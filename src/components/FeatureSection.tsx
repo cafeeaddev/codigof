@@ -66,8 +66,7 @@ export const FeatureSection = ({
               <p className="text-[hsl(var(--lavender))] text-base sm:text-lg">
                 Vamos iniciar essa <span className="text-[hsl(var(--neon-cyan))] font-semibold">jornada digital</span>?
               </p>
-              <p className="text-[hsl(var(--lavender))] text-sm sm:text-base flex items-center gap-2">
-                <span className="inline-block size-2 rounded-full bg-[hsl(var(--neon-purple))]" aria-hidden></span>
+              <p className="text-[hsl(var(--lavender))] text-sm sm:text-base">
                 Descubra seu estilo digital e desbloqueie a trilha feita para você.
               </p>
             </div>
