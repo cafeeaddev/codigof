@@ -581,7 +581,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                   {currentMission === 1 && "MISSÃO 1 – Como você encara o digital?"}
                   {currentMission === 2 && "MISSÃO 2 – O digital no seu dia a dia"}
                   {currentMission === 3 && "MISSÃO 3 – Quando o desafio é maior"}
-                  {currentMission === 4 && "MISSÃO 4 – Seu Radar de Ferramentas"}
+                  {currentMission === 4 && ""}
                 </span>
               </div>
 
