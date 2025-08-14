@@ -721,10 +721,6 @@ const GameSummaryContent = ({ gameData }: { gameData: any }) => {
         </div>
 
 
-        {/* Medals */}
-        <div className="mb-6">
-          <FloatingMedals medals={achievements} />
-        </div>
 
         {/* Share Actions */}
         <div className="mb-6">
