@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { getProfileColor } from '@/lib/digitalProfile';
@@ -35,6 +35,7 @@ export const ProfileHeroCard: React.FC<ProfileHeroCardProps> = ({
 }) => {
   const profileColor = 'hsl(var(--neon-cyan))'; // Always use neon cyan
   const [isExpanded, setIsExpanded] = useState(false);
+  const cardRef = useRef<HTMLDivElement>(null);
 
   const getProfileIcon = () => {
     switch (profile.toLowerCase()) {
@@ -52,6 +53,7 @@ export const ProfileHeroCard: React.FC<ProfileHeroCardProps> = ({
     <div className={cn("relative", className)}>
 
       <Card 
+        ref={cardRef}
         className="relative overflow-hidden animate-epic-entry bg-background/95 backdrop-blur-sm border-2"
         style={{
           borderColor: profileColor,
@@ -145,6 +147,7 @@ export const ProfileHeroCard: React.FC<ProfileHeroCardProps> = ({
                     phrase={phrase}
                     profile={profile}
                     sublevel={sublevel}
+                    cardRef={cardRef}
                   />
                 </div>
               </div>

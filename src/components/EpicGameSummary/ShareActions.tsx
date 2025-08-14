@@ -1,35 +1,88 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Copy, Share2, Trophy } from 'lucide-react';
+import { Copy, Share2, Trophy, Download } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from '@/hooks/use-toast';
+import html2canvas from 'html2canvas';
 
 interface ShareActionsProps {
   phrase: string;
   profile: string;
   sublevel: string;
   className?: string;
+  cardRef?: React.RefObject<HTMLDivElement>;
 }
 
 export const ShareActions: React.FC<ShareActionsProps> = ({
   phrase,
   profile,
   sublevel,
-  className
+  className,
+  cardRef
 }) => {
-  const handleCopy = async () => {
+  const handleCopyAndScreenshot = async () => {
     try {
+      // Primeiro copia o texto
       await navigator.clipboard.writeText(`${phrase}\n#PerfilDigital #AprendizadoContínuo`);
-      toast({ 
-        title: 'Copiado!', 
-        description: 'Frase copiada para a área de transferência.',
-        duration: 3000
-      });
-    } catch {
+      
+      // Se tem referência do card, gera screenshot
+      if (cardRef?.current) {
+        toast({ 
+          title: 'Gerando imagem...', 
+          description: 'Preparando sua conquista para compartilhar.',
+          duration: 2000
+        });
+
+        const canvas = await html2canvas(cardRef.current, {
+          backgroundColor: '#0a0a0a',
+          scale: 2,
+          useCORS: true,
+          allowTaint: true,
+          removeContainer: true,
+          logging: false,
+          onclone: (clonedDoc) => {
+            // Garantir que as animações não atrapalhem
+            const clonedElement = clonedDoc.querySelector('[data-capturing]');
+            if (clonedElement) {
+              (clonedElement as HTMLElement).style.animation = 'none';
+            }
+          }
+        });
+
+        // Converte canvas para blob
+        canvas.toBlob((blob) => {
+          if (blob) {
+            // Cria link para download
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `meu-perfil-digital-${profile.toLowerCase()}.png`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+
+            toast({ 
+              title: 'Sucesso!', 
+              description: 'Frase copiada e imagem baixada para compartilhar.',
+              duration: 3000
+            });
+          }
+        }, 'image/png', 1.0);
+      } else {
+        // Se não tem ref, só copia o texto
+        toast({ 
+          title: 'Copiado!', 
+          description: 'Frase copiada para a área de transferência.',
+          duration: 3000
+        });
+      }
+    } catch (error) {
+      console.error('Erro ao copiar/capturar:', error);
       toast({ 
         title: 'Ops', 
-        description: 'Não foi possível copiar. Tente novamente.', 
+        description: 'Não foi possível completar a ação. Tente novamente.', 
         variant: 'destructive' 
       });
     }
@@ -88,7 +141,7 @@ export const ShareActions: React.FC<ShareActionsProps> = ({
       {/* Botões */}
       <div className="flex flex-col sm:flex-row gap-3">
         <Button
-          onClick={handleCopy}
+          onClick={handleCopyAndScreenshot}
           variant="outline"
           className="flex-1 group relative overflow-hidden border-2 transition-all duration-300 hover:scale-105"
           style={{ 
