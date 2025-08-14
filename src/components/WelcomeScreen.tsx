@@ -442,9 +442,9 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                       </p>
                     </div>
                   </div>
-                ) : showGameSummary ? (
+                ) : showGameSummary || (completedMissions.size === 4 && gameData) ? (
                   <GameSummaryContent gameData={gameData} />
-                ) : (
+                ) : completedMissions.size === 4 ? (
                   <div className="h-full flex flex-col items-center justify-center space-y-4 p-4">
                     <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center">
                       <svg className="w-6 h-6 text-primary" fill="currentColor" viewBox="0 0 20 20">
@@ -457,6 +457,22 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                       </h4>
                       <p className="text-sm text-muted-foreground">
                         Aguarde novas missões em breve.
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="h-full flex flex-col items-center justify-center space-y-4 p-4">
+                    <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center">
+                      <svg className="w-6 h-6 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                    <div className="text-center">
+                      <h4 className="text-lg font-bold text-primary mb-1">
+                        Aguarde...
+                      </h4>
+                      <p className="text-sm text-muted-foreground">
+                        Preparando próximas missões.
                       </p>
                     </div>
                   </div>
@@ -609,9 +625,9 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                         </p>
                       </div>
                     </div>
-                  ) : showGameSummary ? (
+                  ) : showGameSummary || (completedMissions.size === 4 && gameData) ? (
                     <GameSummaryContent gameData={gameData} />
-                  ) : (
+                  ) : completedMissions.size === 4 ? (
                     <div className="h-full flex flex-col items-center justify-center space-y-4">
                       <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center">
                         <svg className="w-8 h-8 text-primary" fill="currentColor" viewBox="0 0 20 20">
@@ -624,6 +640,22 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                         </h4>
                         <p className="text-sm text-muted-foreground">
                           Aguarde novas missões em breve.
+                        </p>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="h-full flex flex-col items-center justify-center space-y-4">
+                      <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center">
+                        <svg className="w-8 h-8 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                      <div className="text-center">
+                        <h4 className="text-lg font-bold text-primary mb-1">
+                          Aguarde...
+                        </h4>
+                        <p className="text-sm text-muted-foreground">
+                          Preparando próximas missões.
                         </p>
                       </div>
                     </div>
