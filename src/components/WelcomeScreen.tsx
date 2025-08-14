@@ -77,8 +77,9 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
       if (missionId < 4) {
         setCurrentMission((missionId + 1) as 1 | 2 | 3 | 4);
       } else {
-        // Após completar missão 4, manter currentMission em 4 para mostrar tela de conclusão
-        setCurrentMission(4);
+        // Após completar missão 4, navegar para a página final
+        navigate('/final');
+        return;
       }
       setJustCompleted(null);
     }, UNLOCK_DELAY);
