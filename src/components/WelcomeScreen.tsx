@@ -630,6 +630,13 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
 const GameSummaryContent = ({ gameData }: { gameData: any }) => {
   const profile = getDigitalProfile(gameData.score.total);
   const phrase = getProfilePhrase(profile.profile, profile.sublevel);
+  
+  console.log('DEBUG GameSummary:', { 
+    score: gameData.score.total, 
+    profile: profile.profile, 
+    sublevel: profile.sublevel, 
+    phrase 
+  });
 
   const achievementNames = ["Satélite", "Planeta", "Estrela", "Galáxia"];
   const achievements = [
@@ -665,10 +672,17 @@ const GameSummaryContent = ({ gameData }: { gameData: any }) => {
         <div className="mb-6">
           <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-4">
             <div className="text-sm text-muted-foreground leading-relaxed">
-              {phrase ? (() => {
+              {(() => {
+                if (!phrase || phrase.trim() === '') {
+                  // Fallback para casos onde phrase não existe
+                  if (profile.profile === 'Beginner') {
+                    return 'Início da jornada • Você ainda não está familiarizado com o universo digital e prefere seguir com os métodos que conhece. As mudanças tecnológicas estão acontecendo — conte conosco para apoiar seus primeiros passos no aprimoramento de competências digitais.';
+                  }
+                  return 'Descrição do perfil não disponível.';
+                }
                 // Remove the level number and dot (e.g., "🟡 Nível 1 – " or "🟠 Nível 2 – ")
                 return phrase.replace(/^[🟡🟠🔴]\s*Nível\s+\d+\s*[–-]\s*/, '');
-              })() : 'Carregando descrição do perfil...'}
+              })()}
             </div>
           </div>
         </div>
