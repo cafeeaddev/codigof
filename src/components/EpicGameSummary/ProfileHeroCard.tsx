@@ -137,6 +137,16 @@ export const ProfileHeroCard: React.FC<ProfileHeroCardProps> = ({
                 >
                   {profile}
                 </h2>
+                
+                {/* Profile Description */}
+                <div className="mt-4 p-3 bg-card/50 rounded-lg border border-secondary/30">
+                  <div className="text-sm text-muted-foreground leading-relaxed">
+                    {(() => {
+                      // Remove the level number and dot (e.g., "🟡 Nível 1 – " or "🟠 Nível 2 – ")
+                      return phrase.replace(/^[🟡🟠🔴]\s*Nível\s+\d+\s*[–-]\s*/, '');
+                    })()}
+                  </div>
+                </div>
               </div>
 
 
