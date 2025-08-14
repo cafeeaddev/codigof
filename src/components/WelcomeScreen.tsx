@@ -720,14 +720,6 @@ const GameSummaryContent = ({ gameData }: { gameData: any }) => {
           />
         </div>
 
-        {/* Stats */}
-        <div className="mb-6">
-          <AnimatedStats 
-            xp={gameData.xp} 
-            totalScore={gameData.score.total}
-            profile={profile.profile}
-          />
-        </div>
 
         {/* Medals */}
         <div className="mb-6">
