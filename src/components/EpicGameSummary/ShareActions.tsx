@@ -23,6 +23,11 @@ export const ShareActions: React.FC<ShareActionsProps> = ({
 }) => {
   const handleShareLinkedIn = async () => {
     try {
+      console.log('🔄 Iniciando compartilhamento LinkedIn');
+      console.log('📋 Dados:', { phrase, profile, sublevel });
+      console.log('🎯 cardRef:', cardRef);
+      console.log('📐 cardRef.current:', cardRef?.current);
+      
       toast({ 
         title: 'Gerando imagem...', 
         description: 'Preparando sua conquista para compartilhar.',
@@ -31,6 +36,7 @@ export const ShareActions: React.FC<ShareActionsProps> = ({
 
       // Se tem referência do card, gera screenshot primeiro
       if (cardRef?.current) {
+        console.log('📸 Gerando screenshot do card...');
         const canvas = await html2canvas(cardRef.current, {
           backgroundColor: '#0a0a0a',
           scale: 1,
