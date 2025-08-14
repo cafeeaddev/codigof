@@ -12,6 +12,12 @@ import { MissaoTres } from './MissaoTres';
 import { MissaoQuatro } from './MissaoQuatro';
 import MedalBadges from './MedalBadges';
 import TutorialOverlay from './TutorialOverlay';
+import { getDigitalProfile, getProfilePhrase } from '@/lib/digitalProfile';
+import { ProfileHeroCard } from './EpicGameSummary/ProfileHeroCard';
+import { FloatingMedals } from './EpicGameSummary/FloatingMedals';
+import { AnimatedStats } from './EpicGameSummary/AnimatedStats';
+import { CelebrationParticles } from './EpicGameSummary/CelebrationParticles';
+import { ShareActions } from './EpicGameSummary/ShareActions';
 interface WelcomeScreenProps {
   user: {
     nome: string;
@@ -33,6 +39,14 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
   const [justCompleted, setJustCompleted] = useState<1 | 2 | 3 | 4 | null>(null);
   const [showTutorial, setShowTutorial] = useState(false);
   const [codyVideoUrl, setCodyVideoUrl] = useState<string | null>(null);
+  const [isLoadingProfile, setIsLoadingProfile] = useState(false);
+  const [showGameSummary, setShowGameSummary] = useState(false);
+  const [gameData, setGameData] = useState({
+    nome: '',
+    xp: 0,
+    medals: { m1: false, m2: false, m3: false, m4: false },
+    score: { mission1: 0, mission2: 0, mission3: 0, total: 0 }
+  });
   const UNLOCK_DELAY = 1000; // ms
   useEffect(() => {
     const seen = localStorage.getItem('tutorialSeen');
@@ -77,8 +91,11 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
       if (missionId < 4) {
         setCurrentMission((missionId + 1) as 1 | 2 | 3 | 4);
       } else {
-        // Após completar missão 4, navegar para a página final
-        navigate('/final');
+        // Após completar missão 4, mostrar loading e depois resumo final
+        setIsLoadingProfile(true);
+        setTimeout(() => {
+          loadGameSummaryData();
+        }, 2000);
         return;
       }
       setJustCompleted(null);
@@ -141,6 +158,76 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
 
     loadUserProgress();
   }, [userId]);
+
+  const loadGameSummaryData = async () => {
+    try {
+      if (!userId) return;
+
+      const [{ data: prog }, { data: prof }] = await Promise.all([
+        supabase.from('user_progress').select('*').eq('user_id', userId).maybeSingle(),
+        supabase.from('profiles').select('nome').eq('user_id', userId).maybeSingle(),
+      ]);
+
+      const nome = prof?.nome || userProfile.nome || 'Você';
+      let xp = 0;
+      let medals = { m1: false, m2: false, m3: false, m4: false };
+
+      if (prog) {
+        xp = prog.total_xp || 0;
+        medals = {
+          m1: !!prog.missao_1_completed,
+          m2: !!prog.missao_2_completed,
+          m3: !!prog.missao_3_completed,
+          m4: !!prog.missao_4_completed,
+        };
+      }
+
+      // Carrega pontuações das missões
+      const [r1, r2, r3] = await Promise.all([
+        supabase.from('respostas').select('*').eq('user_id', userId).order('id', { ascending: false }),
+        supabase.from('respostas_missao2').select('*').eq('user_id', userId).order('created_at', { ascending: false }),
+        supabase.from('respostas_missao3').select('*').eq('user_id', userId).order('created_at', { ascending: false }),
+      ]);
+
+      // Calcular pontuações
+      let m1 = 0;
+      (r1.data || []).forEach((row: any) => {
+        const resp = row.respostas;
+        if (Array.isArray(resp)) {
+          m1 += resp.reduce((s: number, it: any) => s + (it?.pontuacao || 0), 0);
+        } else if (resp && typeof resp === 'object') {
+          const arr = (resp as any)?.data || (resp as any);
+          if (Array.isArray(arr)) m1 += arr.reduce((s: number, it: any) => s + (it?.pontuacao || 0), 0);
+        }
+      });
+
+      let m2 = 0;
+      (r2.data || []).forEach((row: any) => {
+        const arr = row.respostas?.data;
+        if (Array.isArray(arr)) m2 += arr.reduce((s: number, it: any) => s + (it?.pontuacao || 0), 0);
+      });
+
+      let m3 = 0;
+      (r3.data || []).forEach((row: any) => {
+        const arr = row.respostas;
+        if (Array.isArray(arr)) m3 += arr.reduce((s: number, it: any) => s + (it?.pontuacao || 0), 0);
+      });
+
+      const score = { mission1: m1, mission2: m2, mission3: m3, total: parseFloat((m1 + m2 + m3).toFixed(2)) };
+
+      setGameData({ nome, xp, medals, score });
+      setIsLoadingProfile(false);
+      setShowGameSummary(true);
+    } catch (error) {
+      console.error('Error loading game summary:', error);
+      setIsLoadingProfile(false);
+      toast({
+        title: "Erro",
+        description: "Não foi possível carregar seu resumo final.",
+        variant: "destructive"
+      });
+    }
+  };
 
   const handleLogout = () => {
     toast({
@@ -343,6 +430,20 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                   <MissaoTres onComplete={() => handleMissionComplete(3)} />
                 ) : currentMission === 4 && !completedMissions.has(4) ? (
                   <MissaoQuatro onComplete={() => handleMissionComplete(4)} />
+                ) : isLoadingProfile ? (
+                  <div className="h-full flex flex-col items-center justify-center space-y-4 p-4">
+                    <div className="w-16 h-16 border-4 border-primary/30 border-t-primary rounded-full animate-spin"></div>
+                    <div className="text-center">
+                      <h4 className="text-lg font-bold text-primary mb-1">
+                        Carregando seu Perfil Digital...
+                      </h4>
+                      <p className="text-sm text-muted-foreground">
+                        Preparando sua conquista épica!
+                      </p>
+                    </div>
+                  </div>
+                ) : showGameSummary ? (
+                  <GameSummaryContent gameData={gameData} />
                 ) : (
                   <div className="h-full flex flex-col items-center justify-center space-y-4 p-4">
                     <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center">
@@ -496,6 +597,20 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                     <MissaoTres onComplete={() => handleMissionComplete(3)} />
                   ) : currentMission === 4 && !completedMissions.has(4) ? (
                     <MissaoQuatro onComplete={() => handleMissionComplete(4)} />
+                  ) : isLoadingProfile ? (
+                    <div className="h-full flex flex-col items-center justify-center space-y-4">
+                      <div className="w-16 h-16 border-4 border-primary/30 border-t-primary rounded-full animate-spin"></div>
+                      <div className="text-center">
+                        <h4 className="text-lg font-bold text-primary mb-1">
+                          Carregando seu Perfil Digital...
+                        </h4>
+                        <p className="text-sm text-muted-foreground">
+                          Preparando sua conquista épica!
+                        </p>
+                      </div>
+                    </div>
+                  ) : showGameSummary ? (
+                    <GameSummaryContent gameData={gameData} />
                   ) : (
                     <div className="h-full flex flex-col items-center justify-center space-y-4">
                       <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center">
@@ -567,5 +682,86 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
       )}
 
     </>
+  );
+};
+
+// Internal Game Summary Component
+const GameSummaryContent = ({ gameData }: { gameData: any }) => {
+  const profile = getDigitalProfile(gameData.score.total);
+  const phrase = getProfilePhrase(profile.profile, profile.sublevel);
+
+  const achievementNames = ["Satélite", "Planeta", "Estrela", "Galáxia"];
+  const achievements = [
+    { id: 1, title: achievementNames[0], done: gameData.medals.m1 },
+    { id: 2, title: achievementNames[1], done: gameData.medals.m2 },
+    { id: 3, title: achievementNames[2], done: gameData.medals.m3 },
+    { id: 4, title: achievementNames[3], done: gameData.medals.m4 },
+  ];
+
+  return (
+    <ScrollArea className="h-full">
+      <div className="p-4 space-y-6">
+        {/* Celebration Particles */}
+        <CelebrationParticles />
+        
+        {/* Hero Section */}
+        <div className="text-center mb-6">
+          <h2 className="text-xl md:text-2xl font-bold text-primary mb-2">
+            ETAPA 1 DO CÓDIGO F
+          </h2>
+          <h3 className="text-xl md:text-2xl font-bold text-accent mb-4">
+            CONCLUÍDA!
+          </h3>
+        </div>
+
+        {/* Profile Card */}
+        <div className="mb-6">
+          <ProfileHeroCard 
+            profile={profile.profile} 
+            sublevel={profile.sublevel}
+            phrase={phrase}
+            userName={gameData.nome}
+            medals={achievements}
+            xp={gameData.xp}
+            totalScore={gameData.score.total}
+            className="max-w-none"
+          />
+        </div>
+
+        {/* Stats */}
+        <div className="mb-6">
+          <AnimatedStats 
+            xp={gameData.xp} 
+            totalScore={gameData.score.total}
+            profile={profile.profile}
+          />
+        </div>
+
+        {/* Medals */}
+        <div className="mb-6">
+          <FloatingMedals medals={achievements} />
+        </div>
+
+        {/* Share Actions */}
+        <div className="mb-6">
+          <ShareActions 
+            phrase={phrase}
+            profile={profile.profile}
+            sublevel={profile.sublevel}
+          />
+        </div>
+
+        {/* Continue Button */}
+        <div className="text-center pt-4">
+          <Button 
+            onClick={() => window.location.reload()}
+            size="lg"
+            className="bg-accent hover:bg-accent/80 text-accent-foreground font-bold px-8 py-4"
+          >
+            🚀 Explorar mais missões
+          </Button>
+        </div>
+      </div>
+    </ScrollArea>
   );
 };
