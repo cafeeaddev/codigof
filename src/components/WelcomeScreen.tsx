@@ -665,10 +665,10 @@ const GameSummaryContent = ({ gameData }: { gameData: any }) => {
         <div className="mb-6">
           <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-4">
             <div className="text-sm text-muted-foreground leading-relaxed">
-              {(() => {
+              {phrase ? (() => {
                 // Remove the level number and dot (e.g., "🟡 Nível 1 – " or "🟠 Nível 2 – ")
                 return phrase.replace(/^[🟡🟠🔴]\s*Nível\s+\d+\s*[–-]\s*/, '');
-              })()}
+              })() : 'Carregando descrição do perfil...'}
             </div>
           </div>
         </div>
