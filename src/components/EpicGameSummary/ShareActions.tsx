@@ -21,104 +21,75 @@ export const ShareActions: React.FC<ShareActionsProps> = ({
   className,
   cardRef
 }) => {
-  const handleCopyAndScreenshot = async () => {
+  const handleShareLinkedIn = async () => {
     try {
-      console.log('Iniciando processo de cópia e captura...');
-      
-      // Primeiro copia o texto
-      await navigator.clipboard.writeText(`${phrase}\n#PerfilDigital #AprendizadoContínuo`);
-      console.log('Texto copiado com sucesso');
-      
-      // Se tem referência do card, tenta gerar screenshot
-      if (cardRef?.current) {
-        console.log('Referência do card encontrada, iniciando captura...');
-        
-        toast({ 
-          title: 'Gerando imagem...', 
-          description: 'Preparando sua conquista para compartilhar.',
-          duration: 2000
-        });
-
-        try {
-          const canvas = await html2canvas(cardRef.current, {
-            backgroundColor: '#0a0a0a',
-            scale: 1,
-            useCORS: true,
-            allowTaint: true,
-            removeContainer: false,
-            logging: false,
-            height: cardRef.current.offsetHeight,
-            width: cardRef.current.offsetWidth,
-            x: 0,
-            y: 0
-          });
-
-          console.log('Canvas gerado com sucesso');
-
-          // Converte canvas para blob
-          canvas.toBlob((blob) => {
-            if (blob) {
-              console.log('Blob criado com sucesso');
-              
-              // Cria link para download
-              const url = URL.createObjectURL(blob);
-              const link = document.createElement('a');
-              link.href = url;
-              link.download = `meu-perfil-digital-${profile.toLowerCase().replace(/\s+/g, '-')}.png`;
-              document.body.appendChild(link);
-              link.click();
-              document.body.removeChild(link);
-              URL.revokeObjectURL(url);
-
-              toast({ 
-                title: 'Sucesso!', 
-                description: 'Frase copiada e imagem baixada para compartilhar.',
-                duration: 3000
-              });
-            } else {
-              throw new Error('Falha ao criar blob da imagem');
-            }
-          }, 'image/png', 0.8);
-          
-        } catch (screenshotError) {
-          console.error('Erro na captura de tela:', screenshotError);
-          
-          // Se falhar a captura, pelo menos o texto foi copiado
-          toast({ 
-            title: 'Texto copiado!', 
-            description: 'Não foi possível gerar a imagem, mas o texto foi copiado.',
-            duration: 3000
-          });
-        }
-        
-      } else {
-        console.log('Sem referência do card, apenas copiando texto');
-        
-        // Se não tem ref, só copia o texto
-        toast({ 
-          title: 'Copiado!', 
-          description: 'Frase copiada para a área de transferência.',
-          duration: 3000
-        });
-      }
-      
-    } catch (error) {
-      console.error('Erro geral:', error);
-      
       toast({ 
-        title: 'Ops', 
-        description: 'Não foi possível copiar o texto. Tente novamente.', 
-        variant: 'destructive' 
+        title: 'Gerando imagem...', 
+        description: 'Preparando sua conquista para compartilhar.',
+        duration: 2000
+      });
+
+      // Se tem referência do card, gera screenshot primeiro
+      if (cardRef?.current) {
+        const canvas = await html2canvas(cardRef.current, {
+          backgroundColor: '#0a0a0a',
+          scale: 1,
+          useCORS: true,
+          allowTaint: true,
+          removeContainer: false,
+          logging: false,
+          height: cardRef.current.offsetHeight,
+          width: cardRef.current.offsetWidth,
+          x: 0,
+          y: 0
+        });
+
+        // Gera o download da imagem
+        canvas.toBlob((blob) => {
+          if (blob) {
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `meu-perfil-digital-${profile.toLowerCase().replace(/\s+/g, '-')}.png`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+          }
+        }, 'image/png', 0.8);
+      }
+
+      // Abre o LinkedIn com o texto
+      const url = `${window.location.origin}/`;
+      const title = `Meu Perfil Digital: ${profile} (${sublevel})`;
+      const summary = `${phrase}\n\n#PerfilDigital #AprendizadoContínuo`;
+      const shareUrl = `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}&summary=${encodeURIComponent(summary)}&source=${encodeURIComponent('Gamificação Digital')}`;
+      
+      window.open(shareUrl, '_blank', 'noopener,noreferrer');
+
+      toast({ 
+        title: 'Sucesso!', 
+        description: 'Imagem baixada e LinkedIn aberto para compartilhar.',
+        duration: 3000
+      });
+
+    } catch (error) {
+      console.error('Erro ao compartilhar:', error);
+      
+      // Se falhar, pelo menos abre o LinkedIn
+      const url = `${window.location.origin}/`;
+      const title = `Meu Perfil Digital: ${profile} (${sublevel})`;
+      const summary = `${phrase}\n\n#PerfilDigital #AprendizadoContínuo`;
+      const shareUrl = `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}&summary=${encodeURIComponent(summary)}&source=${encodeURIComponent('Gamificação Digital')}`;
+      
+      window.open(shareUrl, '_blank', 'noopener,noreferrer');
+
+      toast({ 
+        title: 'LinkedIn aberto!', 
+        description: 'Não foi possível gerar a imagem, mas o LinkedIn foi aberto.',
+        duration: 3000
       });
     }
-  };
-
-  const handleShareLinkedIn = () => {
-    const url = `${window.location.origin}/`;
-    const title = `Meu Perfil Digital: ${profile} (${sublevel})`;
-    const summary = phrase;
-    const shareUrl = `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}&summary=${encodeURIComponent(summary)}&source=${encodeURIComponent('Gamificação Digital')}`;
-    window.open(shareUrl, '_blank', 'noopener,noreferrer');
   };
 
   const getProfileColor = () => {
@@ -163,26 +134,11 @@ export const ShareActions: React.FC<ShareActionsProps> = ({
         </h3>
       </div>
 
-      {/* Botões */}
-      <div className="flex flex-col sm:flex-row gap-3">
-        <Button
-          onClick={handleCopyAndScreenshot}
-          variant="outline"
-          className="flex-1 group relative overflow-hidden border-2 transition-all duration-300 hover:scale-105"
-          style={{ 
-            borderColor: profileColor,
-            color: profileColor
-          }}
-        >
-          <div className="absolute inset-0 bg-gradient-to-r opacity-0 group-hover:opacity-20 transition-opacity" 
-               style={{ background: `linear-gradient(45deg, ${profileColor}, transparent)` }} />
-          <Copy size={18} className="mr-2 relative z-10" />
-          <span className="relative z-10">Copiar frase</span>
-        </Button>
-
+      {/* Botão */}
+      <div className="flex justify-center">
         <Button
           onClick={handleShareLinkedIn}
-          className="flex-1 group relative overflow-hidden transition-all duration-300 hover:scale-105"
+          className="w-full sm:w-auto group relative overflow-hidden transition-all duration-300 hover:scale-105 px-8 py-3"
           style={{ 
             backgroundColor: profileColor,
             color: 'hsl(var(--background))'
@@ -191,7 +147,7 @@ export const ShareActions: React.FC<ShareActionsProps> = ({
           <div className="absolute inset-0 bg-gradient-to-r opacity-0 group-hover:opacity-30 transition-opacity" 
                style={{ background: 'linear-gradient(45deg, white, transparent)' }} />
           <Share2 size={18} className="mr-2 relative z-10" />
-          <span className="relative z-10">LinkedIn</span>
+          <span className="relative z-10">Compartilhar no LinkedIn</span>
         </Button>
       </div>
     </div>
