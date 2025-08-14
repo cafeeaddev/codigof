@@ -23,54 +23,77 @@ export const ShareActions: React.FC<ShareActionsProps> = ({
 }) => {
   const handleCopyAndScreenshot = async () => {
     try {
+      console.log('Iniciando processo de cópia e captura...');
+      
       // Primeiro copia o texto
       await navigator.clipboard.writeText(`${phrase}\n#PerfilDigital #AprendizadoContínuo`);
+      console.log('Texto copiado com sucesso');
       
-      // Se tem referência do card, gera screenshot
+      // Se tem referência do card, tenta gerar screenshot
       if (cardRef?.current) {
+        console.log('Referência do card encontrada, iniciando captura...');
+        
         toast({ 
           title: 'Gerando imagem...', 
           description: 'Preparando sua conquista para compartilhar.',
           duration: 2000
         });
 
-        const canvas = await html2canvas(cardRef.current, {
-          backgroundColor: '#0a0a0a',
-          scale: 2,
-          useCORS: true,
-          allowTaint: true,
-          removeContainer: true,
-          logging: false,
-          onclone: (clonedDoc) => {
-            // Garantir que as animações não atrapalhem
-            const clonedElement = clonedDoc.querySelector('[data-capturing]');
-            if (clonedElement) {
-              (clonedElement as HTMLElement).style.animation = 'none';
+        try {
+          const canvas = await html2canvas(cardRef.current, {
+            backgroundColor: '#0a0a0a',
+            scale: 1,
+            useCORS: true,
+            allowTaint: true,
+            removeContainer: false,
+            logging: false,
+            height: cardRef.current.offsetHeight,
+            width: cardRef.current.offsetWidth,
+            x: 0,
+            y: 0
+          });
+
+          console.log('Canvas gerado com sucesso');
+
+          // Converte canvas para blob
+          canvas.toBlob((blob) => {
+            if (blob) {
+              console.log('Blob criado com sucesso');
+              
+              // Cria link para download
+              const url = URL.createObjectURL(blob);
+              const link = document.createElement('a');
+              link.href = url;
+              link.download = `meu-perfil-digital-${profile.toLowerCase().replace(/\s+/g, '-')}.png`;
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+              URL.revokeObjectURL(url);
+
+              toast({ 
+                title: 'Sucesso!', 
+                description: 'Frase copiada e imagem baixada para compartilhar.',
+                duration: 3000
+              });
+            } else {
+              throw new Error('Falha ao criar blob da imagem');
             }
-          }
-        });
-
-        // Converte canvas para blob
-        canvas.toBlob((blob) => {
-          if (blob) {
-            // Cria link para download
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `meu-perfil-digital-${profile.toLowerCase()}.png`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
-
-            toast({ 
-              title: 'Sucesso!', 
-              description: 'Frase copiada e imagem baixada para compartilhar.',
-              duration: 3000
-            });
-          }
-        }, 'image/png', 1.0);
+          }, 'image/png', 0.8);
+          
+        } catch (screenshotError) {
+          console.error('Erro na captura de tela:', screenshotError);
+          
+          // Se falhar a captura, pelo menos o texto foi copiado
+          toast({ 
+            title: 'Texto copiado!', 
+            description: 'Não foi possível gerar a imagem, mas o texto foi copiado.',
+            duration: 3000
+          });
+        }
+        
       } else {
+        console.log('Sem referência do card, apenas copiando texto');
+        
         // Se não tem ref, só copia o texto
         toast({ 
           title: 'Copiado!', 
@@ -78,11 +101,13 @@ export const ShareActions: React.FC<ShareActionsProps> = ({
           duration: 3000
         });
       }
+      
     } catch (error) {
-      console.error('Erro ao copiar/capturar:', error);
+      console.error('Erro geral:', error);
+      
       toast({ 
         title: 'Ops', 
-        description: 'Não foi possível completar a ação. Tente novamente.', 
+        description: 'Não foi possível copiar o texto. Tente novamente.', 
         variant: 'destructive' 
       });
     }
