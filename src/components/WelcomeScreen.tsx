@@ -90,15 +90,15 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
       setCompletedMissions(prev => new Set([...prev, missionId]));
       if (missionId < 4) {
         setCurrentMission((missionId + 1) as 1 | 2 | 3 | 4);
+        setJustCompleted(null);
       } else {
-        // Após completar missão 4, mostrar loading e depois resumo final
+        // Após completar missão 4, limpar justCompleted e mostrar loading
+        setJustCompleted(null);
         setIsLoadingProfile(true);
         setTimeout(() => {
           loadGameSummaryData();
         }, 2000);
-        return;
       }
-      setJustCompleted(null);
     }, UNLOCK_DELAY);
   };
 
