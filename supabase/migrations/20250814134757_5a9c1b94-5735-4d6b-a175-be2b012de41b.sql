@@ -1,0 +1,1 @@
+DELETE FROM mission4_questions WHERE id = 30;
