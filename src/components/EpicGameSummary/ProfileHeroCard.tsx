@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { getProfileColor } from '@/lib/digitalProfile';
@@ -36,6 +36,17 @@ export const ProfileHeroCard: React.FC<ProfileHeroCardProps> = ({
   const profileColor = 'hsl(var(--neon-cyan))'; // Always use neon cyan
   const [isExpanded, setIsExpanded] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
+  const [isCardReady, setIsCardReady] = useState(false);
+
+  // Garante que o cardRef está pronto antes de passar para ShareActions
+  useEffect(() => {
+    if (cardRef.current) {
+      // Aguarda o próximo frame para garantir que o DOM está estável
+      requestAnimationFrame(() => {
+        setIsCardReady(true);
+      });
+    }
+  }, []);
 
   const getProfileIcon = () => {
     switch (profile.toLowerCase()) {
