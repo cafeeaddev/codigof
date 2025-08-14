@@ -705,14 +705,6 @@ const GameSummaryContent = ({ gameData }: { gameData: any }) => {
         <CelebrationParticles />
         
         {/* Hero Section */}
-        <div className="text-center mb-6">
-          <h2 className="text-xl md:text-2xl font-bold text-primary mb-2">
-            ETAPA 1 DO CÓDIGO F
-          </h2>
-          <h3 className="text-xl md:text-2xl font-bold text-accent mb-4">
-            CONCLUÍDA!
-          </h3>
-        </div>
 
         {/* Profile Card */}
         <div className="mb-6">
