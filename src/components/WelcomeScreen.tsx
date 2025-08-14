@@ -668,16 +668,6 @@ const GameSummaryContent = ({ gameData }: { gameData: any }) => {
           />
         </div>
 
-        {/* Continue Button */}
-        <div className="text-center pt-4">
-          <Button 
-            onClick={() => window.location.reload()}
-            size="lg"
-            className="bg-accent hover:bg-accent/80 text-accent-foreground font-bold px-8 py-4"
-          >
-            🚀 Explorar mais missões
-          </Button>
-        </div>
       </div>
     </ScrollArea>
   );
