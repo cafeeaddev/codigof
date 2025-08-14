@@ -668,34 +668,6 @@ const GameSummaryContent = ({ gameData }: { gameData: any }) => {
           />
         </div>
 
-        {/* Level Description */}
-        <div className="mb-6">
-          <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-4">
-            <div className="text-sm text-muted-foreground leading-relaxed">
-              {(() => {
-                if (!phrase || phrase.trim() === '') {
-                  // Fallback para casos onde phrase não existe
-                  if (profile.profile === 'Beginner') {
-                    return 'Início da jornada • Você ainda não está familiarizado com o universo digital e prefere seguir com os métodos que conhece. As mudanças tecnológicas estão acontecendo — conte conosco para apoiar seus primeiros passos no aprimoramento de competências digitais.';
-                  }
-                  return 'Descrição do perfil não disponível.';
-                }
-                // Remove the level number and dot (e.g., "🟡 Nível 1 – " or "🟠 Nível 2 – ")
-                return phrase.replace(/^[🟡🟠🔴]\s*Nível\s+\d+\s*[–-]\s*/, '');
-              })()}
-            </div>
-          </div>
-        </div>
-
-        {/* Share Actions */}
-        <div className="mb-6">
-          <ShareActions 
-            phrase={phrase}
-            profile={profile.profile}
-            sublevel={profile.sublevel}
-          />
-        </div>
-
         {/* Continue Button */}
         <div className="text-center pt-4">
           <Button 

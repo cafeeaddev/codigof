@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { getProfileColor } from '@/lib/digitalProfile';
 import { cn } from '@/lib/utils';
 import { Brain, Zap, Star, Target, ChevronDown, ChevronUp, Medal, Trophy, Award, Check } from 'lucide-react';
+import { ShareActions } from './ShareActions';
 
 interface Medal {
   id: string | number;
@@ -146,6 +147,15 @@ export const ProfileHeroCard: React.FC<ProfileHeroCardProps> = ({
                       return phrase.replace(/^[🟡🟠🔴]\s*Nível\s+\d+\s*[–-]\s*/, '');
                     })()}
                   </div>
+                </div>
+
+                {/* Share Actions */}
+                <div className="mt-4">
+                  <ShareActions 
+                    phrase={phrase}
+                    profile={profile}
+                    sublevel={sublevel}
+                  />
                 </div>
               </div>
 
