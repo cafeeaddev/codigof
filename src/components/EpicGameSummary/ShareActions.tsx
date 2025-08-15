@@ -184,7 +184,7 @@ export const ShareActions: React.FC<ShareActionsProps> = ({
     switch (profile.toLowerCase()) {
       case 'ninja': return 'hsl(var(--neon-purple))';
       case 'pro-player': return 'hsl(var(--neon-cyan))';
-      case 'explorer': return 'hsl(var(--neon-yellow))';
+      case 'explorer': return 'hsl(var(--neon-purple))';
       case 'beginner +': return 'hsl(var(--neon-green))';
       default: return 'hsl(var(--neon-pink))';
     }
