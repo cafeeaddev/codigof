@@ -190,8 +190,6 @@ const GameSummary = () => {
   return (
     <main className="min-h-screen relative overflow-hidden bg-black">
 
-      {/* Celebration Particles */}
-      <CelebrationParticles />
 
       {/* Content */}
       <div className="relative z-10 min-h-screen py-8">

@@ -658,8 +658,6 @@ const GameSummaryContent = ({ gameData }: { gameData: any }) => {
   return (
     <ScrollArea className="h-full">
       <div className="p-4 space-y-6">
-        {/* Celebration Particles */}
-        <CelebrationParticles />
         
         {/* Hero Section */}
 

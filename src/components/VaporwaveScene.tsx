@@ -84,8 +84,6 @@ export const VaporwaveScene = ({ cameraPosition, cameraFov }: VaporwaveSceneProp
               </Html>
             }
           >
-            {/* Light starfield background (temporary replacement) */}
-            <LightStarfield count={starCount} radius={260} size={1.6} twinkle />
 
             <ambientLight intensity={0.35} color="#ffffff" />
 
