@@ -273,6 +273,7 @@ export type Database = {
           created_at: string
           current_position: string | null
           final_profile: string | null
+          final_score: number | null
           id: string
           last_saved_at: string | null
           missao_1_answers: Json | null
@@ -297,6 +298,7 @@ export type Database = {
           created_at?: string
           current_position?: string | null
           final_profile?: string | null
+          final_score?: number | null
           id?: string
           last_saved_at?: string | null
           missao_1_answers?: Json | null
@@ -321,6 +323,7 @@ export type Database = {
           created_at?: string
           current_position?: string | null
           final_profile?: string | null
+          final_score?: number | null
           id?: string
           last_saved_at?: string | null
           missao_1_answers?: Json | null

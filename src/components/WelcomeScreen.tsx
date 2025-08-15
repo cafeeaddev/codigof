@@ -227,14 +227,17 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
       // Calcular e salvar perfil final
       const { profile } = getDigitalProfile(score.total);
       
-      // Salvar perfil final na tabela user_progress
+      // Salvar perfil final e pontuação total na tabela user_progress
       try {
         await supabase
           .from('user_progress')
-          .update({ final_profile: profile })
+          .update({ 
+            final_profile: profile,
+            final_score: score.total 
+          })
           .eq('user_id', userId);
       } catch (error) {
-        console.error('Erro ao salvar perfil final:', error);
+        console.error('Erro ao salvar perfil final e pontuação:', error);
       }
 
       setGameData({ nome, xp, medals, score });
