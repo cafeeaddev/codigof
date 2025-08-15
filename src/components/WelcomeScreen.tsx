@@ -177,6 +177,8 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
       let xp = 0;
       let medals = { m1: false, m2: false, m3: false, m4: false };
 
+      console.log('🎖️ Debug prog data:', prog);
+      
       if (prog) {
         xp = prog.total_xp || 0;
         medals = {
@@ -186,6 +188,8 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
           m4: !!prog.missao_4_completed,
         };
       }
+      
+      console.log('🏆 Debug medals:', medals);
 
       // Carrega pontuações das missões
       const [r1, r2, r3] = await Promise.all([
