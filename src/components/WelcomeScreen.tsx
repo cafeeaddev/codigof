@@ -152,7 +152,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
         console.error('[WelcomeScreen] Error loading user progress:', error);
       } finally {
         console.log('[WelcomeScreen] Loading complete, isLoading set to false');
-        setTimeout(() => setIsLoading(false), 500); // Reduzir tempo para 500ms
+        setIsLoading(false); // Remover timeout - definir imediatamente
       }
     };
 
