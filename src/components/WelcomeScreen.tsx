@@ -506,9 +506,164 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
             </div>
           </div>
 
+          {/* Layout Desktop: Grade com barra de missões no topo */}
+          <div className="hidden md:flex flex-col h-full gap-4">
+            {/* Barra Horizontal das Missões - Desktop */}
+            <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-4 shadow-neon">
+              <div className="grid grid-cols-4 gap-4">
+                {[1, 2, 3, 4].map((missionId) => {
+                  const isCompleted = completedMissions.has(missionId);
+                  const isCurrent = currentMission === missionId;
+                  const isLocked = missionId > currentMission && !isCompleted;
+                  
+                  return (
+                    <div
+                      key={missionId}
+                      className={`relative p-4 rounded-lg border-2 transition-all duration-300 ${
+                        isCompleted
+                          ? 'bg-primary/20 border-primary'
+                          : isCurrent
+                          ? 'bg-accent/20 border-accent animate-pulse'
+                          : isLocked
+                          ? 'bg-muted/50 border-muted opacity-50'
+                          : 'bg-card border-secondary/50'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className={`w-3 h-3 rounded-full ${
+                          isCompleted ? 'bg-primary' : isCurrent ? 'bg-accent' : 'bg-muted'
+                        }`}></div>
+                        <span className={`text-sm font-bold tracking-wider ${
+                          isCompleted ? 'text-primary' : isCurrent ? 'text-accent' : 'text-muted-foreground'
+                        }`}>
+                          MISSÃO {missionId}
+                        </span>
+                      </div>
+                      
+                      <div className={`text-xs mb-2 ${
+                        isCompleted ? 'text-primary' : isCurrent ? 'text-accent' : 'text-muted-foreground'
+                      }`}>
+                        Vale 25 XP
+                      </div>
+                      
+                      {/* Barra de Progresso */}
+                      <div className="w-full bg-muted/30 rounded-full h-2">
+                        <div
+                          className={`h-2 rounded-full transition-all duration-500 ${
+                            isCompleted ? 'bg-primary w-full' : isCurrent ? 'bg-accent w-1/2' : 'bg-muted w-0'
+                          }`}
+                        ></div>
+                      </div>
+                      
+                      {/* Ícone de Check para missões completadas */}
+                      {isCompleted && (
+                        <div className="absolute top-2 right-2 w-4 h-4 bg-primary rounded-full flex items-center justify-center">
+                          <svg className="w-2.5 h-2.5 text-primary-foreground" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
 
-          {/* Área Principal das Perguntas */}
-          <div className="flex-1 overflow-hidden min-h-0">
+            {/* Conteúdo da missão no desktop */}
+            <div className="flex-1 overflow-hidden min-h-0">
+              <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-4 h-full flex flex-col overflow-hidden min-h-0">
+                <div className="flex items-center gap-2 mb-4 p-2 bg-muted/50 rounded-lg">
+                  <span className="text-accent text-sm font-bold tracking-wider">
+                    {currentMission === 1 && "MISSÃO 1 – Como você encara o digital?"}
+                    {currentMission === 2 && "MISSÃO 2 – O digital no seu dia a dia"}
+                    {currentMission === 3 && "MISSÃO 3 – Quando o desafio é maior"}
+                    {currentMission === 4 && "MISSÃO 4 – Seu Radar de Ferramentas"}
+                  </span>
+                </div>
+
+                <ScrollArea className="flex-1">
+                  <div className="pr-3">
+                    {justCompleted !== null ? (
+                      <div className="h-full flex flex-col items-center justify-center space-y-5 animate-fade-in">
+                        <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center">
+                          <svg className="w-8 h-8 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                        </div>
+                        <div className="text-center">
+                          <h4 className="text-xl font-bold text-primary mb-1">
+                            Missão {justCompleted} concluída! +25 XP
+                          </h4>
+                          <p className="text-sm text-muted-foreground">Liberando a próxima missão...</p>
+                        </div>
+                      </div>
+                    ) : currentMission === 1 && !completedMissions.has(1) ? (
+                      <QuizDigital 
+                        userId={userId}
+                        onClose={() => handleMissionComplete(1)} />
+                    ) : currentMission === 2 && !completedMissions.has(2) ? (
+                      <MissaoDois 
+                        userId={userId}
+                        onComplete={() => handleMissionComplete(2)} />
+                    ) : currentMission === 3 && !completedMissions.has(3) ? (
+                      <MissaoTres onComplete={() => handleMissionComplete(3)} />
+                    ) : currentMission === 4 && !completedMissions.has(4) ? (
+                      <MissaoQuatro onComplete={() => handleMissionComplete(4)} />
+                    ) : isLoadingProfile ? (
+                      <div className="h-full flex flex-col items-center justify-center space-y-4">
+                        <div className="w-16 h-16 border-4 border-primary/30 border-t-primary rounded-full animate-spin"></div>
+                        <div className="text-center">
+                          <h4 className="text-lg font-bold text-primary mb-1">
+                            Carregando seu Perfil Digital...
+                          </h4>
+                          <p className="text-sm text-muted-foreground">
+                            Preparando sua conquista épica!
+                          </p>
+                        </div>
+                      </div>
+                    ) : showGameSummary || (completedMissions.size === 4 && gameData) ? (
+                      <GameSummaryContent gameData={gameData} />
+                    ) : completedMissions.size === 4 ? (
+                      <div className="h-full flex flex-col items-center justify-center space-y-4">
+                        <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center">
+                          <svg className="w-8 h-8 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                        </div>
+                        <div className="text-center">
+                          <h4 className="text-lg font-bold text-primary mb-1">
+                            Missões Completadas!
+                          </h4>
+                          <p className="text-sm text-muted-foreground">
+                            Aguarde novas missões em breve.
+                          </p>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="h-full flex flex-col items-center justify-center space-y-4">
+                        <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center">
+                          <svg className="w-8 h-8 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                        </div>
+                        <div className="text-center">
+                          <h4 className="text-lg font-bold text-primary mb-1">
+                            Aguarde...
+                          </h4>
+                          <p className="text-sm text-muted-foreground">
+                            Preparando próximas missões.
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </ScrollArea>
+              </div>
+            </div>
+          </div>
+
+          {/* Área Principal das Perguntas (mobile apenas) */}
+          <div className="md:hidden flex-1 overflow-hidden min-h-0">
             <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-4 h-full flex flex-col overflow-hidden min-h-0">
               <div className="flex items-center gap-2 mb-4 p-2 bg-muted/50 rounded-lg">
                 <span className="text-accent text-sm font-bold tracking-wider">
