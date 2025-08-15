@@ -95,7 +95,20 @@ const GameSummary = () => {
           supabase.from('profiles').select('nome').eq('user_id', user.id).maybeSingle(),
         ]);
 
-        setNome(prof?.nome || 'Você');
+        // Tentar múltiplas fontes para o nome
+        let userName = prof?.nome;
+        if (!userName) {
+          // Tentar buscar por email se não encontrou por user_id
+          const { data: profileByEmail } = await supabase
+            .from('profiles')
+            .select('nome')
+            .eq('email', user.email)
+            .maybeSingle();
+          userName = profileByEmail?.nome;
+        }
+        
+        setNome(userName || user.email?.split('@')[0] || 'Você');
+        
         if (prog) {
           setXp(prog.total_xp || 0);
           setMedals({
