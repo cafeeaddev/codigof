@@ -207,20 +207,6 @@ export const ShareActions: React.FC<ShareActionsProps> = ({
         </p>
       </div>
 
-      {/* Título Compartilhe */}
-      <div className="flex items-center gap-3 mb-2">
-        <Trophy 
-          size={20} 
-          style={{ color: profileColor }}
-          className="animate-pulse"
-        />
-        <h3 
-          className="text-lg font-bold"
-          style={{ color: profileColor }}
-        >
-          Compartilhe sua conquista!
-        </h3>
-      </div>
 
       {/* Botão */}
       <div className="flex justify-center">
