@@ -213,10 +213,9 @@ export const ShareActions: React.FC<ShareActionsProps> = ({
         <Button
           onClick={handleShareLinkedIn}
           disabled={isGenerating}
-          className="w-full sm:w-auto group relative overflow-hidden transition-all duration-300 hover:scale-105 px-8 py-3 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+          className="w-full sm:w-auto group relative overflow-hidden transition-all duration-300 hover:scale-105 px-8 py-3 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 text-white"
           style={{ 
-            backgroundColor: isGenerating ? 'hsl(var(--muted))' : profileColor,
-            color: 'hsl(var(--background))'
+            backgroundColor: isGenerating ? 'hsl(var(--muted))' : profileColor
           }}
         >
           <div className="absolute inset-0 bg-gradient-to-r opacity-0 group-hover:opacity-30 transition-opacity" 
