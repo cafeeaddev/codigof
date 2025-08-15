@@ -331,11 +331,11 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
           
 
           {/* Avatar + Nome/Área */}
-          <div className="flex items-center gap-2 ml-2 md:ml-8 mr-auto max-w-[50vw]">
+          <div className="flex items-center gap-2 ml-2 md:ml-8 mr-auto max-w-[40vw] md:max-w-[50vw]">
             <div className="w-8 h-8 md:w-10 md:h-10 bg-secondary/20 rounded-full flex items-center justify-center border border-secondary/50">
               <User className="w-4 h-4 md:w-5 md:h-5 text-secondary" />
             </div>
-            <div className="min-w-0 mr-4 md:mr-0">
+            <div className="min-w-0 mr-6 md:mr-0">
               <h1 className="text-secondary text-sm md:text-base font-bold tracking-wider truncate">{(userProfile.nome || 'Usuário').split(' ')[0]}</h1>
               <p className="text-muted-foreground text-xs md:text-sm truncate">{userProfile.cargo?.replace(/^\d+-\s*/, '').trim()}</p>
             </div>
