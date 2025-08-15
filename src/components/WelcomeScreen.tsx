@@ -103,6 +103,12 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
   };
 
   useEffect(() => {
+    console.log('[WelcomeScreen] completedMissions state:', completedMissions);
+    console.log('[WelcomeScreen] completedMissions size:', completedMissions.size);
+    console.log('[WelcomeScreen] completedMissions array:', Array.from(completedMissions));
+  }, [completedMissions]);
+
+  useEffect(() => {
     const loadUserProgress = async () => {
       try {
         console.log('[WelcomeScreen] Loading progress for userId:', userId);
