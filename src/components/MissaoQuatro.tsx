@@ -344,13 +344,7 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
                 <Button
                   type="button"
                   onClick={() => submitQuiz()}
-                  disabled={isSubmitting || (
-                    currentQuestionData.type === 'star-rating' 
-                      ? !currentQuestionData.softwares.every(software => 
-                          starRatings[currentQuestionData.id]?.[software] > 0
-                        )
-                      : !answers[currentQuestionData.id]
-                  )}
+                  disabled={isSubmitting || progress < 100}
                   size="sm"
                   className="bg-primary hover:bg-primary/90"
                 >
