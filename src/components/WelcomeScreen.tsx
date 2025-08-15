@@ -523,7 +523,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                         isCompleted
                           ? 'bg-primary/20 border-primary'
                           : isCurrent
-                          ? 'bg-accent/20 border-accent animate-pulse'
+                          ? 'bg-accent/20 border-accent'
                           : isLocked
                           ? 'bg-muted/50 border-muted opacity-50'
                           : 'bg-card border-secondary/50'
