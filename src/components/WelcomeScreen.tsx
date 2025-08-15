@@ -638,7 +638,15 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
 // Internal Game Summary Component
 const GameSummaryContent = ({ gameData }: { gameData: any }) => {
   const profile = getDigitalProfile(gameData.score.total);
-  const phrase = getProfilePhrase(profile.profile, profile.sublevel);
+  const [phrase, setPhrase] = useState<string>('');
+  
+  useEffect(() => {
+    const loadPhrase = async () => {
+      const profilePhrase = await getProfilePhrase(profile.profile, profile.sublevel);
+      setPhrase(profilePhrase);
+    };
+    loadPhrase();
+  }, [profile.profile, profile.sublevel]);
   
   console.log('DEBUG GameSummary:', { 
     score: gameData.score.total, 

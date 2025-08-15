@@ -54,9 +54,17 @@ const GameSummary = () => {
   const [xp, setXp] = useState<number>(0);
   const [medals, setMedals] = useState({ m1: false, m2: false, m3: false, m4: false });
   const [score, setScore] = useState<ScoreBreakdown>({ mission1: 0, mission2: 0, mission3: 0, total: 0 });
+  const [phrase, setPhrase] = useState<string>('');
 
   const profile = useMemo(() => getDigitalProfile(score.total), [score.total]);
-  const phrase = useMemo(() => getProfilePhrase(profile.profile, profile.sublevel), [profile]);
+  
+  useEffect(() => {
+    const loadPhrase = async () => {
+      const profilePhrase = await getProfilePhrase(profile.profile, profile.sublevel);
+      setPhrase(profilePhrase);
+    };
+    loadPhrase();
+  }, [profile.profile, profile.sublevel]);
 
   const achievementNames = [
     "Satélite",

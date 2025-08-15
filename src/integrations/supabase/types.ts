@@ -80,6 +80,33 @@ export type Database = {
         }
         Relationships: []
       }
+      profile_texts: {
+        Row: {
+          created_at: string
+          id: string
+          profile_name: string
+          sublevel: string
+          text_content: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          profile_name: string
+          sublevel: string
+          text_content: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          profile_name?: string
+          sublevel?: string
+          text_content?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           area: string | null
