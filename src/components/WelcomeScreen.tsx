@@ -224,6 +224,19 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
 
       const score = { mission1: m1, mission2: m2, mission3: m3, total: parseFloat((m1 + m2 + m3).toFixed(2)) };
 
+      // Calcular e salvar perfil final
+      const { profile } = getDigitalProfile(score.total);
+      
+      // Salvar perfil final na tabela user_progress
+      try {
+        await supabase
+          .from('user_progress')
+          .update({ final_profile: profile })
+          .eq('user_id', userId);
+      } catch (error) {
+        console.error('Erro ao salvar perfil final:', error);
+      }
+
       setGameData({ nome, xp, medals, score });
       setIsLoadingProfile(false);
       setShowGameSummary(true);

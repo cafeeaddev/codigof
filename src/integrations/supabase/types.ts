@@ -272,6 +272,7 @@ export type Database = {
         Row: {
           created_at: string
           current_position: string | null
+          final_profile: string | null
           id: string
           last_saved_at: string | null
           missao_1_answers: Json | null
@@ -295,6 +296,7 @@ export type Database = {
         Insert: {
           created_at?: string
           current_position?: string | null
+          final_profile?: string | null
           id?: string
           last_saved_at?: string | null
           missao_1_answers?: Json | null
@@ -318,6 +320,7 @@ export type Database = {
         Update: {
           created_at?: string
           current_position?: string | null
+          final_profile?: string | null
           id?: string
           last_saved_at?: string | null
           missao_1_answers?: Json | null
