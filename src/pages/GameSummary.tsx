@@ -526,17 +526,17 @@ const GameSummary = () => {
 
       {/* Bonus Screen */}
       {showBonusScreen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-md">
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
           <div className="text-center animate-scale-in">
             <div className="mb-8">
               <div className="text-6xl mb-4">⚡</div>
               <h2 className="text-3xl md:text-4xl font-bold text-neon-cyan mb-4">
                 Bônus de Agilidade!
               </h2>
-              <p className="text-xl text-white mb-6">
+              <p className="text-xl text-neon-cyan mb-6">
                 {bonusMessage}
               </p>
-              <div className="text-6xl font-bold text-neon-yellow animate-pulse">
+              <div className="text-6xl font-bold text-neon-cyan animate-pulse">
                 +{bonusAmount} XP
               </div>
             </div>

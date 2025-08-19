@@ -1013,50 +1013,39 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; u
 
   return (
     <>
-      {/* Bonus Screen Overlay - Vaporwave Style */}
+      {/* Bonus Screen Overlay - Clean Style */}
       {showBonusScreen && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center">
-          <div className="relative overflow-hidden backdrop-blur-md bg-gradient-to-br from-card/90 to-card/60 border-2 border-neon-cyan p-8 rounded-2xl shadow-neon transform animate-epic-entry">
-            {/* Holographic background effect */}
-            <div className="absolute inset-0 bg-gradient-neon opacity-10 animate-holographic" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="text-center transform animate-epic-entry">            
+            {/* Neon Lightning Icon */}
+            <div className="text-8xl mb-6 filter drop-shadow-lg" style={{ 
+              color: 'hsl(var(--neon-cyan))',
+              textShadow: `0 0 20px hsl(var(--neon-cyan)), 0 0 40px hsl(var(--neon-cyan))`
+            }}>
+              ⚡
+            </div>
             
-            {/* Glow rings */}
-            <div className="absolute -inset-4 bg-gradient-to-r from-transparent via-neon-cyan/30 to-transparent rounded-full animate-pulse-glow" />
-            <div className="absolute -inset-8 bg-gradient-to-r from-transparent via-neon-purple/20 to-transparent rounded-full animate-pulse-glow" style={{ animationDelay: '0.5s' }} />
-            
-            <div className="relative text-center z-10">
-              {/* Neon Lightning Icon */}
-              <div className="text-8xl mb-6 filter drop-shadow-lg" style={{ 
+            {/* Bonus Amount */}
+            <div 
+              className="text-4xl md:text-5xl font-bold mb-4"
+              style={{
                 color: 'hsl(var(--neon-cyan))',
-                textShadow: `0 0 20px hsl(var(--neon-cyan)), 0 0 40px hsl(var(--neon-cyan))`
-              }}>
-                ⚡
-              </div>
-              
-              {/* Bonus Amount */}
-              <div 
-                className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-neon-cyan via-neon-purple to-neon-pink bg-clip-text text-transparent"
-                style={{
-                  filter: 'drop-shadow(0 0 8px hsl(var(--neon-cyan)))'
-                }}
-              >
-                +{bonusAmount} XP
-              </div>
-              
-              {/* Bonus Message */}
-              <div 
-                className="text-lg md:text-xl font-semibold tracking-wider"
-                style={{ 
-                  color: 'hsl(var(--neon-pink))',
-                  textShadow: '0 0 10px hsl(var(--neon-pink))'
-                }}
-              >
-                🎯 {bonusMessage}
-              </div>
-              
-              {/* Decorative elements */}
-              <div className="absolute top-4 right-4 w-2 h-2 rounded-full bg-neon-cyan animate-pulse" />
-              <div className="absolute bottom-4 left-4 w-2 h-2 rounded-full bg-neon-purple animate-pulse" style={{ animationDelay: '0.3s' }} />
+                filter: 'drop-shadow(0 0 8px hsl(var(--neon-cyan)))',
+                textShadow: `0 0 20px hsl(var(--neon-cyan))`
+              }}
+            >
+              +{bonusAmount} XP
+            </div>
+            
+            {/* Bonus Message */}
+            <div 
+              className="text-lg md:text-xl font-semibold tracking-wider"
+              style={{ 
+                color: 'hsl(var(--neon-cyan))',
+                textShadow: '0 0 10px hsl(var(--neon-cyan))'
+              }}
+            >
+              {bonusMessage}
             </div>
           </div>
         </div>
