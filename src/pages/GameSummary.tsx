@@ -121,7 +121,7 @@ const GameSummary = () => {
           setTimeout(() => {
             setShowBonusScreen(false);
             console.log('🎬 Bonus screen hidden');
-          }, 5000);
+          }, 8000);
           
           return;
         }
@@ -396,7 +396,7 @@ const GameSummary = () => {
             setBonusAmount(150);
             setBonusMessage('Concluído no primeiro dia!');
             setShowBonusScreen(true);
-            setTimeout(() => setShowBonusScreen(false), 5000);
+            setTimeout(() => setShowBonusScreen(false), 8000);
           } else {
             console.error('❌ SAFETY CHECK - Failed:', safetyUpdateError);
           }
