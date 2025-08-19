@@ -427,7 +427,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                 
                 {/* Botão de Ajuda ao lado do nome da missão */}
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-full ring-2 ring-neon-cyan shadow-md overflow-hidden shrink-0">
+                  <div className="w-10 h-10 rounded-full ring-2 ring-neon-cyan shadow-md overflow-hidden shrink-0">
                     {codyVideoUrl ? (
                       <video
                         src={codyVideoUrl}
@@ -617,7 +617,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                     
                     {/* Botão de Ajuda na versão Desktop */}
                     <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-full ring-2 ring-neon-cyan shadow-md overflow-hidden shrink-0">
+                      <div className="w-10 h-10 rounded-full ring-2 ring-neon-cyan shadow-md overflow-hidden shrink-0">
                         {codyVideoUrl ? (
                           <video
                             src={codyVideoUrl}
