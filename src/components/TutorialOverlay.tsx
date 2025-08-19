@@ -31,7 +31,7 @@ const useSlides = (stage: "prelogin" | "ingame") => {
         {
           title: "Missões e Progresso",
           description:
-            "Cada missão vale 25 XPs. Seu progresso inicia em 0% e avança conforme você responde. Complete cada missão e conquiste uma nova medalha.",
+            "Você enfrentará 4 missões estratégicas, cada uma valendo 25 XP. Seu progresso é salvo automaticamente.\n\n• Missões 1-3: Avaliam sua maturidade digital\n• Missão 4: Diagnóstico para treinamentos futuros (sem pontuação)\n\nComplete todas e desbloqueie seu perfil completo!",
           narration:
             "Cada missão vale 25 XPs. Seu progresso inicia em 0% e avança conforme você responde. Complete cada missão e conquiste uma nova medalha.",
           customAudioUrl: "https://meta.cafeeadhost.com.br/Cody/audio02.mp3",
