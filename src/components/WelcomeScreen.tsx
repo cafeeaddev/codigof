@@ -454,7 +454,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                     onClick={() => setShowTutorial(true)}
                     className="px-2 py-1 h-auto text-accent border-accent/50 hover:bg-accent/20 text-xs font-semibold"
                   >
-                    Ajuda?
+                    Precisa de ajuda?
                   </Button>
                 </div>
                 {/* Botão "Próxima Missão" removido no mobile conforme solicitação */}
@@ -644,7 +644,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                         onClick={() => setShowTutorial(true)}
                         className="px-2 py-1 h-auto text-accent border-accent/50 hover:bg-accent/20 text-xs font-semibold"
                       >
-                        Ajuda?
+                        Precisa de ajuda?
                       </Button>
                     </div>
                   </div>
