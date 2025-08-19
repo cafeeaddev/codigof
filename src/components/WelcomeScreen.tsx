@@ -502,7 +502,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                     </div>
                   </div>
                 ) : showGameSummary || (completedMissions.size === 4 && gameData) ? (
-                  <GameSummaryContent gameData={gameData} />
+                  <GameSummaryContent gameData={gameData} userId={userId} />
                 ) : completedMissions.size === 4 ? (
                   <div className="h-full flex flex-col items-center justify-center space-y-4 p-4">
                     <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center">
@@ -691,7 +691,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                         </div>
                       </div>
                     ) : showGameSummary || (completedMissions.size === 4 && gameData) ? (
-                      <GameSummaryContent gameData={gameData} />
+                      <GameSummaryContent gameData={gameData} userId={userId} />
                     ) : completedMissions.size === 4 ? (
                       <div className="h-full flex flex-col items-center justify-center space-y-4">
                         <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center">
@@ -784,7 +784,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                       </div>
                     </div>
                   ) : showGameSummary || (completedMissions.size === 4 && gameData) ? (
-                    <GameSummaryContent gameData={gameData} />
+                    <GameSummaryContent gameData={gameData} userId={userId} />
                   ) : completedMissions.size === 4 ? (
                     <div className="h-full flex flex-col items-center justify-center space-y-4">
                       <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center">
@@ -842,10 +842,17 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
   );
 };
 
-// Internal Game Summary Component
-const GameSummaryContent = ({ gameData }: { gameData: any }) => {
+// Internal Game Summary Component with Bonus System
+const GameSummaryContent = ({ gameData, userId }: { gameData: any; userId: string }) => {
   const profile = getDigitalProfile(gameData.score.total);
   const [phrase, setPhrase] = useState<string>('');
+  
+  // Bonus system states
+  const [timeBonus, setTimeBonus] = useState(0);
+  const [showBonusScreen, setShowBonusScreen] = useState(false);
+  const [bonusAmount, setBonusAmount] = useState(0);
+  const [bonusMessage, setBonusMessage] = useState('');
+  const [currentXp, setCurrentXp] = useState(gameData.xp);
   
   useEffect(() => {
     const loadPhrase = async () => {
@@ -854,12 +861,106 @@ const GameSummaryContent = ({ gameData }: { gameData: any }) => {
     };
     loadPhrase();
   }, [profile.profile, profile.sublevel]);
+
+  // Bonus calculation and application function
+  const calculateAndApplyTimeBonus = async (userId: string) => {
+    console.log('🚀 [GameSummaryContent] Starting bonus calculation for user:', userId);
+    
+    try {
+      // Fetch user progress
+      const { data: prog, error } = await supabase
+        .from('user_progress')
+        .select('*')
+        .eq('user_id', userId)
+        .single();
+
+      if (error) {
+        console.error('❌ [GameSummaryContent] Error fetching progress:', error);
+        return;
+      }
+
+      console.log('📊 [GameSummaryContent] Progress data:', JSON.stringify(prog, null, 2));
+
+      // FORCE BONUS FOR COMPLETED USERS WITHOUT BONUS
+      if (
+        prog.missao_1_completed && 
+        prog.missao_2_completed && 
+        prog.missao_3_completed && 
+        prog.missao_4_completed && 
+        (!prog.time_bonus_xp || prog.time_bonus_xp === 0)
+      ) {
+        console.log('🎯 [GameSummaryContent] FORCING BONUS - All missions complete but no bonus applied!');
+        
+        const bonus = 150;
+        const newTotalXp = (prog.total_xp || 0) + bonus;
+        
+        console.log('💾 [GameSummaryContent] APPLYING BONUS:', {
+          currentXP: prog.total_xp,
+          bonusXP: bonus,
+          newTotalXP: newTotalXp
+        });
+        
+        // Update database
+        const { error: updateError } = await supabase
+          .from('user_progress')
+          .update({
+            time_bonus_xp: bonus,
+            total_xp: newTotalXp,
+            updated_at: new Date().toISOString()
+          })
+          .eq('user_id', userId);
+
+        if (updateError) {
+          console.error('❌ [GameSummaryContent] Update error:', updateError);
+          return;
+        }
+
+        console.log('✅ [GameSummaryContent] Bonus applied successfully!');
+        
+        // Update UI states
+        setTimeBonus(bonus);
+        setCurrentXp(newTotalXp);
+        
+        // Show bonus screen
+        setBonusAmount(bonus);
+        setBonusMessage('Concluído no primeiro dia!');
+        setShowBonusScreen(true);
+
+        // Hide bonus screen after animation
+        setTimeout(() => {
+          setShowBonusScreen(false);
+          console.log('🎬 [GameSummaryContent] Bonus screen hidden');
+        }, 5000);
+        
+        return;
+      } else if (prog.time_bonus_xp > 0) {
+        console.log('🎁 [GameSummaryContent] User already has bonus:', prog.time_bonus_xp);
+        setTimeBonus(prog.time_bonus_xp);
+        setCurrentXp(prog.total_xp);
+      } else {
+        console.log('⏳ [GameSummaryContent] User not eligible for bonus yet');
+      }
+      
+    } catch (error) {
+      console.error('❌ [GameSummaryContent] Exception in bonus calculation:', error);
+    }
+  };
+
+  // Execute bonus check on component mount
+  useEffect(() => {
+    if (userId) {
+      console.log('🔥 [GameSummaryContent] Executing bonus check for userId:', userId);
+      calculateAndApplyTimeBonus(userId);
+    }
+  }, [userId]);
   
   console.log('DEBUG GameSummary:', { 
     score: gameData.score.total, 
     profile: profile.profile, 
     sublevel: profile.sublevel, 
-    phrase 
+    phrase,
+    currentXp,
+    timeBonus
   });
 
   const achievementNames = ["Satélite", "Planeta", "Estrela", "Galáxia"];
@@ -871,26 +972,64 @@ const GameSummaryContent = ({ gameData }: { gameData: any }) => {
   ];
 
   return (
-    <ScrollArea className="h-full">
-      <div className="p-4 space-y-6">
-        
-        {/* Hero Section */}
-
-        {/* Profile Card */}
-        <div className="mb-6">
-          <ProfileHeroCard 
-            profile={profile.profile} 
-            sublevel={profile.sublevel}
-            phrase={phrase}
-            userName={gameData.nome}
-            medals={achievements}
-            xp={gameData.xp}
-            totalScore={gameData.score.total}
-            className="max-w-none"
-          />
+    <>
+      {/* Bonus Screen Overlay */}
+      {showBonusScreen && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center">
+          <div className="bg-gradient-to-br from-yellow-400 to-orange-500 p-8 rounded-2xl shadow-2xl transform animate-bounce">
+            <div className="text-center">
+              <div className="text-6xl mb-4">⚡</div>
+              <div className="text-3xl font-bold text-black mb-2">
+                +{bonusAmount} XP
+              </div>
+              <div className="text-lg text-black/80">
+                {bonusMessage}
+              </div>
+            </div>
+          </div>
         </div>
+      )}
 
-      </div>
-    </ScrollArea>
+      <ScrollArea className="h-full">
+        <div className="p-4 space-y-6">
+          
+          {/* Celebration Effects */}
+          <CelebrationParticles />
+
+          {/* Animated Stats */}
+          <AnimatedStats 
+            xp={currentXp}
+            totalScore={gameData.score.total}
+            timeBonus={timeBonus}
+            profile={profile.profile}
+          />
+
+          {/* Floating Medals */}
+          <FloatingMedals medals={achievements} />
+
+          {/* Profile Card */}
+          <div className="mb-6">
+            <ProfileHeroCard 
+              profile={profile.profile} 
+              sublevel={profile.sublevel}
+              phrase={phrase}
+              userName={gameData.nome}
+              medals={achievements}
+              xp={currentXp}
+              totalScore={gameData.score.total}
+              className="max-w-none"
+            />
+          </div>
+
+          {/* Share Actions */}
+          <ShareActions 
+            phrase={phrase}
+            profile={profile.profile}
+            sublevel={profile.sublevel}
+          />
+
+        </div>
+      </ScrollArea>
+    </>
   );
 };
