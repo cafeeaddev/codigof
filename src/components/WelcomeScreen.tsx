@@ -1025,6 +1025,17 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; u
               ⚡
             </div>
             
+            {/* "Você Ganhou" */}
+            <div 
+              className="text-2xl md:text-3xl font-bold mb-4"
+              style={{
+                color: 'hsl(var(--neon-cyan))',
+                textShadow: `0 0 20px hsl(var(--neon-cyan))`
+              }}
+            >
+              Você Ganhou
+            </div>
+            
             {/* Bonus Amount */}
             <div 
               className="text-4xl md:text-5xl font-bold mb-4"
@@ -1034,10 +1045,10 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; u
                 textShadow: `0 0 20px hsl(var(--neon-cyan))`
               }}
             >
-              +{bonusAmount} XP
+              +{bonusAmount} XPs
             </div>
             
-            {/* Bonus Message */}
+            {/* "Por ter concluído no primeiro dia!" */}
             <div 
               className="text-lg md:text-xl font-semibold tracking-wider"
               style={{ 
@@ -1045,7 +1056,7 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; u
                 textShadow: '0 0 10px hsl(var(--neon-cyan))'
               }}
             >
-              {bonusMessage}
+              Por ter concluído no primeiro dia!
             </div>
           </div>
         </div>

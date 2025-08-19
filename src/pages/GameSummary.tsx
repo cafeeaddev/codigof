@@ -530,15 +530,21 @@ const GameSummary = () => {
           <div className="text-center animate-scale-in">
             <div className="mb-8">
               <div className="text-6xl mb-4">⚡</div>
-              <h2 className="text-3xl md:text-4xl font-bold text-neon-cyan mb-4">
-                Bônus de Agilidade!
-              </h2>
-              <p className="text-xl text-neon-cyan mb-6">
-                {bonusMessage}
-              </p>
-              <div className="text-6xl font-bold text-neon-cyan animate-pulse">
-                +{bonusAmount} XP
+              
+              {/* "Você Ganhou" */}
+              <div className="text-2xl md:text-3xl font-bold text-neon-cyan mb-4">
+                Você Ganhou
               </div>
+              
+              {/* Bonus Amount */}
+              <div className="text-6xl font-bold text-neon-cyan animate-pulse mb-6">
+                +{bonusAmount} XPs
+              </div>
+              
+              {/* "Por ter concluído no primeiro dia!" */}
+              <p className="text-xl text-neon-cyan">
+                Por ter concluído no primeiro dia!
+              </p>
             </div>
           </div>
         </div>
