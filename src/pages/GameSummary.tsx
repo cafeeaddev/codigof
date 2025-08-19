@@ -72,13 +72,7 @@ const GameSummary = () => {
 
   const calculateAndApplyTimeBonus = async (prog: any) => {
     try {
-      // Check if bonus has already been applied
-      if (prog.time_bonus_xp && prog.time_bonus_xp > 0) {
-        setTimeBonus(prog.time_bonus_xp);
-        return;
-      }
-
-      // Get game settings
+      // Get game settings first
       const { data: gameSettings, error: gameError } = await supabase
         .from('game_settings')
         .select('game_start_date')
@@ -91,10 +85,32 @@ const GameSummary = () => {
         return;
       }
 
-      // Calculate days between game start and completion
+      // Normalize dates to only consider the day (ignore time)
       const gameStart = new Date(gameSettings.game_start_date);
+      gameStart.setHours(0, 0, 0, 0);
+      
       const completionDate = new Date(prog.updated_at || prog.created_at);
+      completionDate.setHours(0, 0, 0, 0);
+      
       const daysDiff = Math.floor((completionDate.getTime() - gameStart.getTime()) / (1000 * 60 * 60 * 24));
+
+       // Check if we should calculate bonus
+      // Only skip if bonus is already applied AND greater than 0
+      if (prog.time_bonus_xp && prog.time_bonus_xp > 0) {
+        console.log('✅ Bonus already applied:', prog.time_bonus_xp);
+        setTimeBonus(prog.time_bonus_xp);
+        return;
+      }
+
+      console.log('🔄 Calculating time bonus...');
+      console.log('🎯 Bonus calculation debug:', {
+        gameStartDate: gameSettings.game_start_date,
+        gameStartNormalized: gameStart.toISOString(),
+        completionDateOriginal: prog.updated_at || prog.created_at,
+        completionDateNormalized: completionDate.toISOString(),
+        daysDiff,
+        currentBonusXP: prog.time_bonus_xp
+      });
 
       let bonus = 0;
       let bonusMessage = '';
