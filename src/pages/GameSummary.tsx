@@ -227,7 +227,7 @@ const GameSummary = () => {
         setScore({ mission1: m1, mission2: m2, mission3: m3, total: parseFloat((m1 + m2 + m3).toFixed(2)) });
 
         // Calculate and apply time bonus if all missions are completed
-        if (prog && prog.missao_1_completed && prog.missao_2_completed && prog.missao_3_completed) {
+        if (prog && prog.missao_1_completed && prog.missao_2_completed && prog.missao_3_completed && prog.missao_4_completed) {
           await calculateAndApplyTimeBonus(prog);
         }
       } catch (e) {
