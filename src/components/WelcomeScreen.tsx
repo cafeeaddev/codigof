@@ -80,8 +80,46 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
     }));
   };
 
+  // Função para atualizar progresso ao completar missão
+  const updateProgressOnMissionComplete = async (missionId: number) => {
+    const newXp = userProgress.total_xp + 25;
+    const newCompletedCount = userProgress.completedMissionsCount + 1;
+    
+    // Atualizar estado local imediatamente
+    setUserProgress(prev => ({
+      total_xp: newXp,
+      completedMissionsCount: newCompletedCount
+    }));
+
+    // Salvar no banco de dados
+    try {
+      const missionColumn = `missao_${missionId}_completed`;
+      const { error } = await supabase
+        .from('user_progress')
+        .update({
+          [missionColumn]: true,
+          total_xp: newXp,
+          updated_at: new Date().toISOString()
+        })
+        .eq('user_id', userId);
+
+      if (error) {
+        console.error('Erro ao salvar progresso da missão:', error);
+      } else {
+        console.log(`✅ Missão ${missionId} salva com sucesso! Novo XP: ${newXp}`);
+      }
+    } catch (error) {
+      console.error('Erro ao atualizar progresso:', error);
+    }
+  };
+
   // Fluxo ao finalizar missão: mostra tela de concluída e libera a próxima após curto atraso
   const handleMissionComplete = (missionId: 1 | 2 | 3 | 4) => {
+    // Só atualizar se a missão ainda não foi completada
+    if (!completedMissions.has(missionId)) {
+      updateProgressOnMissionComplete(missionId);
+    }
+    
     setJustCompleted(missionId);
     setTimeout(() => {
       setCompletedMissions(prev => new Set([...prev, missionId]));
