@@ -1068,36 +1068,16 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; u
           {/* Celebration Effects */}
           <CelebrationParticles />
 
-          {/* Animated Stats */}
-          <AnimatedStats 
+          {/* Profile Card */}
+          <ProfileHeroCard 
+            profile={profile.profile} 
+            sublevel={profile.sublevel}
+            phrase={phrase}
+            userName={gameData.nome}
+            medals={achievements}
             xp={currentXp}
             totalScore={gameData.score.total}
-            timeBonus={timeBonus}
-            profile={profile.profile}
-          />
-
-          {/* Floating Medals */}
-          <FloatingMedals medals={achievements} />
-
-          {/* Profile Card */}
-          <div className="mb-6">
-            <ProfileHeroCard 
-              profile={profile.profile} 
-              sublevel={profile.sublevel}
-              phrase={phrase}
-              userName={gameData.nome}
-              medals={achievements}
-              xp={currentXp}
-              totalScore={gameData.score.total}
-              className="max-w-none"
-            />
-          </div>
-
-          {/* Share Actions */}
-          <ShareActions 
-            phrase={phrase}
-            profile={profile.profile}
-            sublevel={profile.sublevel}
+            className="max-w-none"
           />
 
         </div>
