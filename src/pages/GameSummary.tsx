@@ -56,6 +56,9 @@ const GameSummary = () => {
   const [score, setScore] = useState<ScoreBreakdown>({ mission1: 0, mission2: 0, mission3: 0, total: 0 });
   const [phrase, setPhrase] = useState<string>('');
   const [timeBonus, setTimeBonus] = useState<number>(0);
+  const [showBonusScreen, setShowBonusScreen] = useState(false);
+  const [bonusAmount, setBonusAmount] = useState(0);
+  const [bonusMessage, setBonusMessage] = useState('');
 
   const profile = useMemo(() => getDigitalProfile(score.total), [score.total]);
   
@@ -109,27 +112,35 @@ const GameSummary = () => {
       }
 
       if (bonus > 0) {
-        // Apply bonus to user progress
-        const { error: updateError } = await supabase
-          .from('user_progress')
-          .update({
-            time_bonus_xp: bonus,
-            total_xp: (prog.total_xp || 0) + bonus,
-            updated_at: new Date().toISOString()
-          })
-          .eq('user_id', user?.id);
+        // Show bonus screen first
+        setBonusAmount(bonus);
+        setBonusMessage(bonusMessage);
+        setShowBonusScreen(true);
 
-        if (updateError) {
-          console.error('Error applying time bonus:', updateError);
-        } else {
-          setTimeBonus(bonus);
-          setXp((prev) => prev + bonus);
-          toast({
-            title: `🎉 Bônus de Tempo: ${bonus} XP!`,
-            description: bonusMessage,
-            duration: 5000
-          });
-        }
+        // Wait for bonus screen animation then apply bonus
+        setTimeout(async () => {
+          // Apply bonus to user progress
+          const { error: updateError } = await supabase
+            .from('user_progress')
+            .update({
+              time_bonus_xp: bonus,
+              total_xp: (prog.total_xp || 0) + bonus,
+              updated_at: new Date().toISOString()
+            })
+            .eq('user_id', user?.id);
+
+          if (updateError) {
+            console.error('Error applying time bonus:', updateError);
+          } else {
+            setTimeBonus(bonus);
+            setXp((prev) => prev + bonus);
+          }
+
+          // Hide bonus screen and show final summary
+          setTimeout(() => {
+            setShowBonusScreen(false);
+          }, 2000);
+        }, 3000);
       }
     } catch (error) {
       console.error('Error calculating time bonus:', error);
@@ -357,6 +368,26 @@ const GameSummary = () => {
 
         </div>
       </div>
+
+      {/* Bonus Screen */}
+      {showBonusScreen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-md">
+          <div className="text-center animate-scale-in">
+            <div className="mb-8">
+              <div className="text-6xl mb-4">⚡</div>
+              <h2 className="text-3xl md:text-4xl font-bold text-neon-cyan mb-4">
+                Bônus de Agilidade!
+              </h2>
+              <p className="text-xl text-white mb-6">
+                {bonusMessage}
+              </p>
+              <div className="text-6xl font-bold text-neon-yellow animate-pulse">
+                +{bonusAmount} XP
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Loading Overlay */}
       {loading && (
