@@ -449,10 +449,10 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                     )}
                   </div>
                   <Button
-                    variant="link"
+                    variant="outline"
                     size="sm"
                     onClick={() => setShowTutorial(true)}
-                    className="px-0 h-auto text-secondary text-xs font-semibold"
+                    className="px-2 py-1 h-auto text-accent border-accent/50 hover:bg-accent/20 text-xs font-semibold"
                   >
                     Ajuda?
                   </Button>
