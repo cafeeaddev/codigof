@@ -994,8 +994,12 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; u
         console.log('🎁 [GameSummaryContent] User already has bonus:', prog.time_bonus_xp);
         setTimeBonus(prog.time_bonus_xp);
         setCurrentXp(prog.total_xp);
+        // Show final screen immediately since bonus was already applied
+        setShowFinalScreen(true);
       } else {
         console.log('⏳ [GameSummaryContent] User not eligible for bonus yet');
+        // Show final screen immediately since no bonus will be applied
+        setShowFinalScreen(true);
       }
       
     } catch (error) {
