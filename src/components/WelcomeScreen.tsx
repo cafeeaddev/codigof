@@ -607,13 +607,46 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
             <div className="flex-1 overflow-hidden min-h-0">
               <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-4 h-full flex flex-col overflow-hidden min-h-0">
                 {completedMissions.size < 4 && (
-                  <div className="flex items-center gap-2 mb-4 p-2 bg-muted/50 rounded-lg">
+                  <div className="flex items-center justify-between mb-4 p-2 bg-muted/50 rounded-lg">
                     <span className="text-accent text-sm font-bold tracking-wider">
                       {currentMission === 1 && "MISSÃO 1 – Como você encara o digital?"}
                       {currentMission === 2 && "MISSÃO 2 – O digital no seu dia a dia"}
                       {currentMission === 3 && "MISSÃO 3 – Quando o desafio é maior"}
                       {currentMission === 4 && "MISSÃO 4 – Seu Radar de Ferramentas"}
                     </span>
+                    
+                    {/* Botão de Ajuda na versão Desktop */}
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-full ring-2 ring-neon-cyan shadow-md overflow-hidden shrink-0">
+                        {codyVideoUrl ? (
+                          <video
+                            src={codyVideoUrl}
+                            autoPlay
+                            loop
+                            muted
+                            playsInline
+                            className="w-full h-full object-cover"
+                            aria-label="Cody, IA mentora"
+                          />
+                        ) : (
+                          <img
+                            src="/lovable-uploads/ead95ee7-bc88-4e43-88ad-3ae3499162d4.png"
+                            alt="Cody, assistente IA"
+                            className="w-full h-full object-cover"
+                            loading="lazy"
+                            decoding="async"
+                          />
+                        )}
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setShowTutorial(true)}
+                        className="px-2 py-1 h-auto text-accent border-accent/50 hover:bg-accent/20 text-xs font-semibold"
+                      >
+                        Ajuda?
+                      </Button>
+                    </div>
                   </div>
                 )}
 
