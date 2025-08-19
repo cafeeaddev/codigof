@@ -424,6 +424,39 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                     MISSÃO {currentMission} ATIVADA
                   </span>
                 </div>
+                
+                {/* Botão de Ajuda ao lado do nome da missão */}
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-full ring-2 ring-neon-cyan shadow-md overflow-hidden shrink-0">
+                    {codyVideoUrl ? (
+                      <video
+                        src={codyVideoUrl}
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        className="w-full h-full object-cover"
+                        aria-label="Cody, IA mentora"
+                      />
+                    ) : (
+                      <img
+                        src="/lovable-uploads/ead95ee7-bc88-4e43-88ad-3ae3499162d4.png"
+                        alt="Cody, assistente IA"
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    )}
+                  </div>
+                  <Button
+                    variant="link"
+                    size="sm"
+                    onClick={() => setShowTutorial(true)}
+                    className="px-0 h-auto text-secondary text-xs font-semibold"
+                  >
+                    Ajuda?
+                  </Button>
+                </div>
                 {/* Botão "Próxima Missão" removido no mobile conforme solicitação */}
               </div>
 
@@ -758,39 +791,6 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
           </div>
         </div>
         </div>
-      </div>
-
-      {/* Botão de Ajuda dentro do jogo */}
-      <div className="fixed bottom-4 right-4 z-[90] flex items-center">
-        <div className="mr-3 -ml-px w-12 h-12 rounded-full ring-2 ring-neon-cyan shadow-md overflow-hidden shrink-0">
-          {codyVideoUrl ? (
-            <video
-              src={codyVideoUrl}
-              autoPlay
-              loop
-              muted
-              playsInline
-              className="w-full h-full object-cover"
-              aria-label="Cody, IA mentora"
-            />
-          ) : (
-            <img
-              src="/lovable-uploads/ead95ee7-bc88-4e43-88ad-3ae3499162d4.png"
-              alt="Cody, assistente IA"
-              className="w-full h-full object-cover"
-              loading="lazy"
-              decoding="async"
-            />
-          )}
-        </div>
-        <Button
-          variant="link"
-          size="sm"
-          onClick={() => setShowTutorial(true)}
-          className="px-0 h-auto text-secondary text-sm font-semibold -ml-2"
-        >
-          Precisa de ajuda?
-        </Button>
       </div>
 
       {/* Tutorial somente in-game */}
