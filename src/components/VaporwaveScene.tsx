@@ -97,7 +97,7 @@ export const VaporwaveScene = ({ cameraPosition, cameraFov }: VaporwaveSceneProp
             </mesh>
 
             {/* Stars */}
-            <LightStarfield count={starCount} radius={120} size={2.5} twinkle={true} />
+            <LightStarfield count={starCount} radius={120} size={1.2} twinkle={true} />
             
             {/* Main terrain */}
             <VaporwaveTerrain cameraPosition={cameraPosition} />
