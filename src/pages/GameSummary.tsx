@@ -95,21 +95,25 @@ const GameSummary = () => {
       const daysDiff = Math.floor((completionDate.getTime() - gameStart.getTime()) / (1000 * 60 * 60 * 24));
 
        // Check if we should calculate bonus
-      // Only skip if bonus is already applied AND greater than 0
-      if (prog.time_bonus_xp && prog.time_bonus_xp > 0) {
+      // Force calculation if completed on eligible day but bonus is 0
+      const shouldCalculateBonus = !prog.time_bonus_xp || prog.time_bonus_xp === 0;
+      const alreadyHasBonus = prog.time_bonus_xp && prog.time_bonus_xp > 0;
+      
+      if (alreadyHasBonus) {
         console.log('✅ Bonus already applied:', prog.time_bonus_xp);
         setTimeBonus(prog.time_bonus_xp);
         return;
       }
 
-      console.log('🔄 Calculating time bonus...');
+      console.log('🔄 Calculating time bonus...', { shouldCalculateBonus, daysDiff });
       console.log('🎯 Bonus calculation debug:', {
         gameStartDate: gameSettings.game_start_date,
         gameStartNormalized: gameStart.toISOString(),
         completionDateOriginal: prog.updated_at || prog.created_at,
         completionDateNormalized: completionDate.toISOString(),
         daysDiff,
-        currentBonusXP: prog.time_bonus_xp
+        currentBonusXP: prog.time_bonus_xp,
+        shouldCalculateBonus
       });
 
       let bonus = 0;
@@ -260,7 +264,22 @@ const GameSummary = () => {
 
         // Calculate and apply time bonus if all missions are completed
         if (prog && prog.missao_1_completed && prog.missao_2_completed && prog.missao_3_completed && prog.missao_4_completed) {
+          console.log('🎯 All missions completed, calculating time bonus...', {
+            m1: prog.missao_1_completed,
+            m2: prog.missao_2_completed, 
+            m3: prog.missao_3_completed,
+            m4: prog.missao_4_completed,
+            currentTimeBonus: prog.time_bonus_xp,
+            totalXP: prog.total_xp
+          });
           await calculateAndApplyTimeBonus(prog);
+        } else {
+          console.log('❌ Not all missions completed:', {
+            m1: prog?.missao_1_completed,
+            m2: prog?.missao_2_completed, 
+            m3: prog?.missao_3_completed,
+            m4: prog?.missao_4_completed
+          });
         }
       } catch (e) {
         console.error(e);
