@@ -1052,24 +1052,26 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; u
       )}
 
       <ScrollArea className="h-full">
-        <div className="p-4 space-y-6">
-          
-          {/* Celebration Effects */}
-          <CelebrationParticles />
+        {!showBonusScreen && (
+          <div className="p-4 space-y-6">
+            
+            {/* Celebration Effects */}
+            <CelebrationParticles />
 
-          {/* Profile Card */}
-          <ProfileHeroCard 
-            profile={profile.profile} 
-            sublevel={profile.sublevel}
-            phrase={phrase}
-            userName={gameData.nome}
-            medals={achievements}
-            xp={currentXp}
-            totalScore={gameData.score.total}
-            className="max-w-none"
-          />
+            {/* Profile Card */}
+            <ProfileHeroCard 
+              profile={profile.profile} 
+              sublevel={profile.sublevel}
+              phrase={phrase}
+              userName={gameData.nome}
+              medals={achievements}
+              xp={currentXp}
+              totalScore={gameData.score.total}
+              className="max-w-none"
+            />
 
-        </div>
+          </div>
+        )}
       </ScrollArea>
     </>
   );
