@@ -16,7 +16,7 @@ import { getDigitalProfile, getProfilePhrase } from '@/lib/digitalProfile';
 import { ProfileHeroCard } from './EpicGameSummary/ProfileHeroCard';
 import { FloatingMedals } from './EpicGameSummary/FloatingMedals';
 import { AnimatedStats } from './EpicGameSummary/AnimatedStats';
-import { CelebrationParticles } from './EpicGameSummary/CelebrationParticles';
+import { AnimatedXP } from './AnimatedXP';
 import { ShareActions } from './EpicGameSummary/ShareActions';
 interface WelcomeScreenProps {
   user: {
@@ -41,6 +41,8 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
   const [codyVideoUrl, setCodyVideoUrl] = useState<string | null>(null);
   const [isLoadingProfile, setIsLoadingProfile] = useState(false);
   const [showGameSummary, setShowGameSummary] = useState(false);
+  const [xpBeforeBonus, setXpBeforeBonus] = useState(0);
+  const [shouldAnimateXP, setShouldAnimateXP] = useState(false);
   const [gameData, setGameData] = useState({
     nome: '',
     xp: 0,
@@ -379,7 +381,13 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
           {/* Estatísticas compactas no Header Desktop (à direita) */}
           <div className="hidden lg:flex items-center gap-4 mx-4">
             <div className="text-center">
-              <div className="text-sm font-bold text-primary">{userProgress.total_xp}</div>
+              <AnimatedXP 
+                startValue={xpBeforeBonus || userProgress.total_xp}
+                endValue={userProgress.total_xp}
+                triggerAnimation={shouldAnimateXP}
+                onAnimationComplete={() => setShouldAnimateXP(false)}
+                className="text-sm font-bold text-primary"
+              />
               <div className="text-muted-foreground text-xs">XP</div>
             </div>
             <div className="text-center">
@@ -420,7 +428,13 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
       <div className="block lg:hidden bg-card/80 backdrop-blur-xl border-b border-secondary/30 px-4 py-2">
         <div className="flex items-center gap-4 px-3 overflow-x-auto whitespace-nowrap">
           <div className="text-center shrink-0">
-            <div className="text-sm font-bold text-primary">{userProgress.total_xp}</div>
+            <AnimatedXP 
+              startValue={xpBeforeBonus || userProgress.total_xp}
+              endValue={userProgress.total_xp}
+              triggerAnimation={shouldAnimateXP}
+              onAnimationComplete={() => setShouldAnimateXP(false)}
+              className="text-sm font-bold text-primary"
+            />
             <div className="text-muted-foreground text-xs">XP</div>
           </div>
           <div className="text-center shrink-0">
@@ -887,6 +901,9 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; u
   const [showBonusScreen, setShowBonusScreen] = useState(false);
   const [bonusAmount, setBonusAmount] = useState(0);
   const [bonusMessage, setBonusMessage] = useState('');
+  const [showFinalScreen, setShowFinalScreen] = useState(false);
+  const [xpBeforeBonus, setXpBeforeBonus] = useState(0);
+  const [shouldAnimateXP, setShouldAnimateXP] = useState(false);
   const [currentXp, setCurrentXp] = useState(gameData.xp);
   
   useEffect(() => {
@@ -1063,14 +1080,11 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; u
       )}
 
       <ScrollArea className="h-full">
-        {!showBonusScreen && (
+        {!showBonusScreen && showFinalScreen && (
           <div className="p-4 space-y-6">
-            
-            {/* Celebration Effects */}
-            <CelebrationParticles />
 
             {/* Profile Card */}
-            <ProfileHeroCard 
+            <ProfileHeroCard
               profile={profile.profile} 
               sublevel={profile.sublevel}
               phrase={phrase}

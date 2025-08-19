@@ -12,7 +12,7 @@ import { Link } from 'react-router-dom';
 import { ProfileHeroCard } from '@/components/EpicGameSummary/ProfileHeroCard';
 import { FloatingMedals } from '@/components/EpicGameSummary/FloatingMedals';
 import { AnimatedStats } from '@/components/EpicGameSummary/AnimatedStats';
-import { CelebrationParticles } from '@/components/EpicGameSummary/CelebrationParticles';
+import { AnimatedXP } from '@/components/AnimatedXP';
 import { ShareActions } from '@/components/EpicGameSummary/ShareActions';
 
 // 3D Components
@@ -59,6 +59,7 @@ const GameSummary = () => {
   const [showBonusScreen, setShowBonusScreen] = useState(false);
   const [bonusAmount, setBonusAmount] = useState(0);
   const [bonusMessage, setBonusMessage] = useState('');
+  const [showFinalScreen, setShowFinalScreen] = useState(false);
 
   const profile = useMemo(() => getDigitalProfile(score.total), [score.total]);
   
