@@ -71,7 +71,22 @@ const GameSummary = () => {
   }, [profile.profile, profile.sublevel]);
 
   const calculateAndApplyTimeBonus = async (prog: any) => {
+    console.log('🚀 Starting calculateAndApplyTimeBonus for user:', user?.id);
+    console.log('📊 Progress data received:', {
+      userId: prog.user_id,
+      totalXp: prog.total_xp,
+      timeBonusXp: prog.time_bonus_xp,
+      updatedAt: prog.updated_at,
+      createdAt: prog.created_at
+    });
+    
     try {
+      // Get current date in Brazil timezone
+      const today = new Date();
+      const todayStr = today.toISOString().split('T')[0]; // YYYY-MM-DD format
+      
+      console.log('📅 Today is:', todayStr);
+      
       // Get game settings first
       const { data: gameSettings, error: gameError } = await supabase
         .from('game_settings')
@@ -81,89 +96,113 @@ const GameSummary = () => {
         .maybeSingle();
 
       if (gameError || !gameSettings?.game_start_date) {
-        console.log('No game settings found, skipping bonus calculation');
+        console.log('❌ No game settings found, skipping bonus calculation');
         return;
       }
 
-      // Normalize dates to only consider the day (ignore time)
-      const gameStart = new Date(gameSettings.game_start_date);
-      gameStart.setHours(0, 0, 0, 0);
-      
-      const completionDate = new Date(prog.updated_at || prog.created_at);
-      completionDate.setHours(0, 0, 0, 0);
-      
-      const daysDiff = Math.floor((completionDate.getTime() - gameStart.getTime()) / (1000 * 60 * 60 * 24));
+      console.log('🎮 Game settings found:', gameSettings);
 
-       // Check if we should calculate bonus
-      // Force calculation if completed on eligible day but bonus is 0
-      const shouldCalculateBonus = !prog.time_bonus_xp || prog.time_bonus_xp === 0;
-      const alreadyHasBonus = prog.time_bonus_xp && prog.time_bonus_xp > 0;
+      // Extract just the date part for comparison
+      const gameStartDateStr = gameSettings.game_start_date.split('T')[0];
+      const completionDateStr = (prog.updated_at || prog.created_at).split('T')[0];
       
-      if (alreadyHasBonus) {
+      console.log('📅 Date comparison:', {
+        gameStartDate: gameStartDateStr,
+        completionDate: completionDateStr,
+        isToday: completionDateStr === todayStr
+      });
+      
+      // Calculate days difference
+      const gameStartDate = new Date(gameStartDateStr);
+      const completionDate = new Date(completionDateStr);
+      const daysDiff = Math.floor((completionDate.getTime() - gameStartDate.getTime()) / (1000 * 60 * 60 * 24));
+      
+      console.log('⏱️ Days difference calculated:', daysDiff);
+      
+      // Check if bonus already applied
+      if (prog.time_bonus_xp && prog.time_bonus_xp > 0) {
         console.log('✅ Bonus already applied:', prog.time_bonus_xp);
         setTimeBonus(prog.time_bonus_xp);
         return;
       }
-
-      console.log('🔄 Calculating time bonus...', { shouldCalculateBonus, daysDiff });
-      console.log('🎯 Bonus calculation debug:', {
-        gameStartDate: gameSettings.game_start_date,
-        gameStartNormalized: gameStart.toISOString(),
-        completionDateOriginal: prog.updated_at || prog.created_at,
-        completionDateNormalized: completionDate.toISOString(),
+      
+      // Force bonus for users who completed today (same as game start) but don't have bonus
+      const shouldForceBonus = (
+        completionDateStr === gameStartDateStr && // Completed on game start date
+        (!prog.time_bonus_xp || prog.time_bonus_xp === 0) // No bonus applied yet
+      );
+      
+      console.log('🔍 Bonus eligibility check:', {
         daysDiff,
-        currentBonusXP: prog.time_bonus_xp,
-        shouldCalculateBonus
+        shouldForceBonus,
+        currentBonus: prog.time_bonus_xp
       });
 
       let bonus = 0;
       let bonusMessage = '';
 
-      // Calculate bonus based on completion day
-      if (daysDiff === 0) {
+      // Calculate bonus based on completion day or force if eligible
+      if (shouldForceBonus || daysDiff === 0) {
         bonus = 150;
         bonusMessage = 'Concluído no primeiro dia!';
+        console.log('🎉 Applying Day 1 bonus:', bonus);
       } else if (daysDiff === 1) {
         bonus = 100;
         bonusMessage = 'Concluído no segundo dia!';
+        console.log('🎉 Applying Day 2 bonus:', bonus);
       } else if (daysDiff === 2) {
         bonus = 50;
         bonusMessage = 'Concluído no terceiro dia!';
+        console.log('🎉 Applying Day 3 bonus:', bonus);
+      } else {
+        console.log('❌ No bonus eligible for daysDiff:', daysDiff);
       }
 
       if (bonus > 0) {
-        // Show bonus screen first
+        console.log('💰 Applying bonus:', { bonus, message: bonusMessage });
+        
+        // Apply bonus to database immediately
+        const newTotalXp = (prog.total_xp || 0) + bonus;
+        
+        console.log('💾 Updating database with:', {
+          timeBonusXp: bonus,
+          newTotalXp,
+          oldTotalXp: prog.total_xp
+        });
+        
+        const { error: updateError } = await supabase
+          .from('user_progress')
+          .update({
+            time_bonus_xp: bonus,
+            total_xp: newTotalXp,
+            updated_at: new Date().toISOString()
+          })
+          .eq('user_id', user?.id);
+
+        if (updateError) {
+          console.error('❌ Error applying time bonus:', updateError);
+          return;
+        }
+        
+        console.log('✅ Bonus successfully applied to database');
+        
+        // Update UI states
+        setTimeBonus(bonus);
+        setXp(newTotalXp);
+        
+        // Show bonus screen
         setBonusAmount(bonus);
         setBonusMessage(bonusMessage);
         setShowBonusScreen(true);
 
-        // Wait for bonus screen animation then apply bonus
-        setTimeout(async () => {
-          // Apply bonus to user progress
-          const { error: updateError } = await supabase
-            .from('user_progress')
-            .update({
-              time_bonus_xp: bonus,
-              total_xp: (prog.total_xp || 0) + bonus,
-              updated_at: new Date().toISOString()
-            })
-            .eq('user_id', user?.id);
-
-          if (updateError) {
-            console.error('Error applying time bonus:', updateError);
-          } else {
-            setTimeBonus(bonus);
-            setXp((prev) => prev + bonus);
-          }
-
-          // Hide bonus screen and show final summary
-          setTimeout(() => {
-            setShowBonusScreen(false);
-          }, 2000);
-        }, 3000);
+        // Hide bonus screen after animation
+        setTimeout(() => {
+          setShowBonusScreen(false);
+          console.log('🎬 Bonus screen hidden');
+        }, 5000);
       }
     } catch (error) {
-      console.error('Error calculating time bonus:', error);
+      console.error('❌ Error in calculateAndApplyTimeBonus:', error);
     }
   };
 
