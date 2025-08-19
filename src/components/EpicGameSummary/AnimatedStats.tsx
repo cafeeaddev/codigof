@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils';
 interface AnimatedStatsProps {
   xp: number;
   totalScore: number;
+  timeBonus: number;
   profile: string;
   className?: string;
 }
@@ -12,11 +13,12 @@ interface AnimatedStatsProps {
 export const AnimatedStats: React.FC<AnimatedStatsProps> = ({ 
   xp, 
   totalScore, 
+  timeBonus,
   profile,
   className 
 }) => {
   const [animatedXP, setAnimatedXP] = useState(0);
-  const [animatedScore, setAnimatedScore] = useState(0);
+  const [animatedBonus, setAnimatedBonus] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -30,13 +32,13 @@ export const AnimatedStats: React.FC<AnimatedStatsProps> = ({
     const duration = 2000;
     const steps = 60;
     const xpIncrement = xp / steps;
-    const scoreIncrement = totalScore / steps;
+    const bonusIncrement = timeBonus / steps;
     let currentStep = 0;
 
     const timer = setInterval(() => {
       currentStep++;
       setAnimatedXP(Math.min(Math.round(xpIncrement * currentStep), xp));
-      setAnimatedScore(Math.min(parseFloat((scoreIncrement * currentStep).toFixed(2)), totalScore));
+      setAnimatedBonus(Math.min(Math.round(bonusIncrement * currentStep), timeBonus));
 
       if (currentStep >= steps) {
         clearInterval(timer);
@@ -44,7 +46,7 @@ export const AnimatedStats: React.FC<AnimatedStatsProps> = ({
     }, duration / steps);
 
     return () => clearInterval(timer);
-  }, [isVisible, xp, totalScore]);
+  }, [isVisible, xp, timeBonus]);
 
   const getProfileColor = () => {
     switch (profile.toLowerCase()) {
@@ -134,7 +136,7 @@ export const AnimatedStats: React.FC<AnimatedStatsProps> = ({
              className="text-lg font-semibold mb-4"
              style={{ color: profileColor }}
            >
-             Bonus
+             Bônus Tempo
            </h3>
           <div 
             className={cn(
@@ -143,10 +145,13 @@ export const AnimatedStats: React.FC<AnimatedStatsProps> = ({
             )}
             style={{ color: profileColor }}
           >
-            {animatedScore.toFixed(1)}
+            {animatedBonus}
           </div>
            <p className="text-muted-foreground text-sm">
-             Pontos de bonus
+             {timeBonus > 0 
+               ? `+${timeBonus} XP por velocidade` 
+               : 'Nenhum bônus de tempo'
+             }
            </p>
           
           {/* Decorative elements */}

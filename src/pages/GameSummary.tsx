@@ -55,6 +55,7 @@ const GameSummary = () => {
   const [medals, setMedals] = useState({ m1: false, m2: false, m3: false, m4: false });
   const [score, setScore] = useState<ScoreBreakdown>({ mission1: 0, mission2: 0, mission3: 0, total: 0 });
   const [phrase, setPhrase] = useState<string>('');
+  const [timeBonus, setTimeBonus] = useState<number>(0);
 
   const profile = useMemo(() => getDigitalProfile(score.total), [score.total]);
   
@@ -65,6 +66,75 @@ const GameSummary = () => {
     };
     loadPhrase();
   }, [profile.profile, profile.sublevel]);
+
+  const calculateAndApplyTimeBonus = async (prog: any) => {
+    try {
+      // Check if bonus has already been applied
+      if (prog.time_bonus_xp && prog.time_bonus_xp > 0) {
+        setTimeBonus(prog.time_bonus_xp);
+        return;
+      }
+
+      // Get game settings
+      const { data: gameSettings, error: gameError } = await supabase
+        .from('game_settings')
+        .select('game_start_date')
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (gameError || !gameSettings?.game_start_date) {
+        console.log('No game settings found, skipping bonus calculation');
+        return;
+      }
+
+      // Calculate days between game start and completion
+      const gameStart = new Date(gameSettings.game_start_date);
+      const completionDate = new Date(prog.updated_at || prog.created_at);
+      const daysDiff = Math.floor((completionDate.getTime() - gameStart.getTime()) / (1000 * 60 * 60 * 24));
+
+      let bonus = 0;
+      let bonusMessage = '';
+
+      // Calculate bonus based on completion day
+      if (daysDiff === 0) {
+        bonus = 150;
+        bonusMessage = 'Concluído no primeiro dia!';
+      } else if (daysDiff === 1) {
+        bonus = 100;
+        bonusMessage = 'Concluído no segundo dia!';
+      } else if (daysDiff === 2) {
+        bonus = 50;
+        bonusMessage = 'Concluído no terceiro dia!';
+      }
+
+      if (bonus > 0) {
+        // Apply bonus to user progress
+        const { error: updateError } = await supabase
+          .from('user_progress')
+          .update({
+            time_bonus_xp: bonus,
+            total_xp: (prog.total_xp || 0) + bonus,
+            updated_at: new Date().toISOString()
+          })
+          .eq('user_id', user?.id);
+
+        if (updateError) {
+          console.error('Error applying time bonus:', updateError);
+        } else {
+          setTimeBonus(bonus);
+          setXp((prev) => prev + bonus);
+          toast({
+            title: `🎉 Bônus de Tempo: ${bonus} XP!`,
+            description: bonusMessage,
+            duration: 5000
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Error calculating time bonus:', error);
+    }
+  };
 
   const achievementNames = [
     "Satélite",
@@ -111,6 +181,7 @@ const GameSummary = () => {
         
         if (prog) {
           setXp(prog.total_xp || 0);
+          setTimeBonus(prog.time_bonus_xp || 0);
           setMedals({
             m1: !!prog.missao_1_completed,
             m2: !!prog.missao_2_completed,
@@ -154,6 +225,11 @@ const GameSummary = () => {
         });
 
         setScore({ mission1: m1, mission2: m2, mission3: m3, total: parseFloat((m1 + m2 + m3).toFixed(2)) });
+
+        // Calculate and apply time bonus if all missions are completed
+        if (prog && prog.missao_1_completed && prog.missao_2_completed && prog.missao_3_completed) {
+          await calculateAndApplyTimeBonus(prog);
+        }
       } catch (e) {
         console.error(e);
         toast({ title: 'Erro', description: 'Não foi possível carregar seu resumo.', variant: 'destructive' });
@@ -244,6 +320,7 @@ const GameSummary = () => {
             <AnimatedStats 
               xp={xp} 
               totalScore={score.total}
+              timeBonus={timeBonus}
               profile={profile.profile}
             />
           </section>

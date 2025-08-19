@@ -41,6 +41,30 @@ export type Database = {
         }
         Relationships: []
       }
+      game_settings: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          game_start_date: string
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          game_start_date: string
+          id?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          game_start_date?: string
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       mission4_questions: {
         Row: {
           created_at: string
@@ -289,6 +313,7 @@ export type Database = {
           missao_4_completed: boolean | null
           missao_4_current_question: number | null
           session_start_time: string | null
+          time_bonus_xp: number | null
           total_play_time: number | null
           total_xp: number | null
           updated_at: string
@@ -314,6 +339,7 @@ export type Database = {
           missao_4_completed?: boolean | null
           missao_4_current_question?: number | null
           session_start_time?: string | null
+          time_bonus_xp?: number | null
           total_play_time?: number | null
           total_xp?: number | null
           updated_at?: string
@@ -339,6 +365,7 @@ export type Database = {
           missao_4_completed?: boolean | null
           missao_4_current_question?: number | null
           session_start_time?: string | null
+          time_bonus_xp?: number | null
           total_play_time?: number | null
           total_xp?: number | null
           updated_at?: string

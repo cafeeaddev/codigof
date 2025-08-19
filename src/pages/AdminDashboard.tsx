@@ -16,6 +16,7 @@ import { StatsCards } from '@/components/admin/StatsCards';
 import { ProfileChart } from '@/components/admin/ProfileChart';
 import { UserTable } from '@/components/admin/UserTable';
 import { ExportDialog } from '@/components/admin/ExportDialog';
+import { GameSettings } from '@/components/admin/GameSettings';
 import { useAdminDashboard } from '@/hooks/useAdminDashboard';
 import { useFilters } from '@/hooks/useFilters';
 import { ResponseData } from '@/types/admin';
@@ -295,6 +296,9 @@ const AdminDashboard = () => {
             adminStats={stats.adminStats}
             missionStats={stats.missionStats}
           />
+
+          {/* Game Settings */}
+          <GameSettings className="mb-8 animate-fade-in" />
 
           {/* Profile Charts */}
           <ProfileChart adminStats={stats.adminStats} />
