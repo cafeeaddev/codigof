@@ -180,8 +180,13 @@ const GameSummary = () => {
         setNome(userName || user.email?.split('@')[0] || 'Você');
         
         if (prog) {
-          setXp(prog.total_xp || 0);
-          setTimeBonus(prog.time_bonus_xp || 0);
+          const baseXP = prog.total_xp || 0;
+          const bonusXP = prog.time_bonus_xp || 0;
+          
+          // Always ensure XP includes any existing bonus
+          setXp(baseXP);
+          setTimeBonus(bonusXP);
+          
           setMedals({
             m1: !!prog.missao_1_completed,
             m2: !!prog.missao_2_completed,
