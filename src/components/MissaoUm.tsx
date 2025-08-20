@@ -9,14 +9,14 @@ import { ScrollArea } from './ui/scroll-area';
 import { useAuth } from '@/contexts/AuthContext';
 import { useMissionQuestions } from '@/hooks/useMissionQuestions';
 
-interface MissaoDoisProps {
+interface MissaoUmProps {
   onComplete: () => void;
   userId?: string;
 }
 
-export const MissaoDois = ({ onComplete, userId }: MissaoDoisProps) => {
+export const MissaoUm = ({ onComplete, userId }: MissaoUmProps) => {
   const { user: authUser, profile } = useAuth();
-  const { questions, isLoading: questionsLoading, error: questionsError } = useMissionQuestions(2);
+  const { questions, isLoading: questionsLoading, error: questionsError } = useMissionQuestions(1);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [isCompleted, setIsCompleted] = useState(false);
@@ -28,7 +28,7 @@ export const MissaoDois = ({ onComplete, userId }: MissaoDoisProps) => {
     const loadProgress = async () => {
       try {
         const currentUserId = authUser?.id || userId;
-        console.log('[MissaoDois] Loading progress for userId:', currentUserId);
+        console.log('[MissaoUm] Loading progress for userId:', currentUserId);
         
         if (currentUserId) {
           const { data: progress } = await supabase
@@ -38,14 +38,14 @@ export const MissaoDois = ({ onComplete, userId }: MissaoDoisProps) => {
             .maybeSingle();
 
           if (progress) {
-            console.log('[MissaoDois] Progress loaded:', progress);
-            setCurrentQuestion(progress.missao_2_current_question || 0);
-            setAnswers((progress.missao_2_answers as Record<number, string>) || {});
-            setIsCompleted(progress.missao_2_completed || false);
+            console.log('[MissaoUm] Progress loaded:', progress);
+            setCurrentQuestion(progress.missao_1_current_question || 0);
+            setAnswers((progress.missao_1_answers as Record<number, string>) || {});
+            setIsCompleted(progress.missao_1_completed || false);
           }
         }
       } catch (error) {
-        console.error('[MissaoDois] Error loading progress:', error);
+        console.error('[MissaoUm] Error loading progress:', error);
       } finally {
         setIsLoading(false);
       }
@@ -62,7 +62,7 @@ export const MissaoDois = ({ onComplete, userId }: MissaoDoisProps) => {
       const currentUserId = authUser?.id || userId;
       if (!currentUserId) return;
 
-      console.log('[MissaoDois] Saving progress:', {
+      console.log('[MissaoUm] Saving progress:', {
         currentQuestion,
         answers,
         userId: currentUserId
@@ -72,20 +72,20 @@ export const MissaoDois = ({ onComplete, userId }: MissaoDoisProps) => {
         .from('user_progress')
         .upsert({
           user_id: currentUserId,
-          missao_2_current_question: currentQuestion,
-          missao_2_answers: answers,
+          missao_1_current_question: currentQuestion,
+          missao_1_answers: answers,
           last_saved_at: new Date().toISOString()
         });
 
       if (error) throw error;
-      console.log('[MissaoDois] Progress saved successfully');
+      console.log('[MissaoUm] Progress saved successfully');
     } catch (error) {
-      console.error('[MissaoDois] Error saving progress:', error);
+      console.error('[MissaoUm] Error saving progress:', error);
     }
   };
 
   const handleAnswerSelect = (questionId: number, answer: string) => {
-    console.log('[MissaoDois] Answer selected:', { questionId, answer });
+    console.log('[MissaoUm] Answer selected:', { questionId, answer });
     setAnswers(prev => ({ ...prev, [questionId]: answer }));
     saveProgress();
   };
@@ -132,7 +132,7 @@ export const MissaoDois = ({ onComplete, userId }: MissaoDoisProps) => {
         };
       });
 
-      console.log('[MissaoDois] Submitting quiz:', responseData);
+      console.log('[MissaoUm] Submitting quiz:', responseData);
 
       // Buscar informações do perfil
       const userProfile = profile || (await supabase
@@ -147,7 +147,7 @@ export const MissaoDois = ({ onComplete, userId }: MissaoDoisProps) => {
 
       // Salvar respostas na tabela de respostas
       const { error: responseError } = await supabase
-        .from('respostas_missao2')
+        .from('respostas')
         .insert({
           user_id: currentUserId,
           nome: userProfile.nome || 'Nome não informado',
@@ -157,15 +157,15 @@ export const MissaoDois = ({ onComplete, userId }: MissaoDoisProps) => {
 
       if (responseError) throw responseError;
 
-      // Atualizar progresso do usuário - marcar missão 2 como completada e dar XP
+      // Atualizar progresso do usuário - marcar missão 1 como completada e dar XP
       const { error: progressError } = await supabase
         .from('user_progress')
         .upsert({
           user_id: currentUserId,
-          missao_2_completed: true,
-          total_xp: 125, // XP acumulado (100 missão 1 + 25 missão 2)
-          missao_2_current_question: currentQuestion,
-          missao_2_answers: answers,
+          missao_1_completed: true,
+          total_xp: 100, // XP por completar missão 1
+          missao_1_current_question: currentQuestion,
+          missao_1_answers: answers,
           last_saved_at: new Date().toISOString()
         });
 
@@ -174,13 +174,13 @@ export const MissaoDois = ({ onComplete, userId }: MissaoDoisProps) => {
       setIsCompleted(true);
       
       toast({
-        title: "Práticas Digitais concluída!",
-        description: "Você ganhou 25 XP. Parabéns!",
+        title: "Quiz Digital concluído!",
+        description: "Você ganhou 100 XP. Parabéns!",
       });
 
       onComplete();
     } catch (error) {
-      console.error('[MissaoDois] Error submitting quiz:', error);
+      console.error('[MissaoUm] Error submitting quiz:', error);
       toast({
         title: "Erro ao enviar quiz",
         description: "Tente novamente mais tarde.",
@@ -232,7 +232,7 @@ export const MissaoDois = ({ onComplete, userId }: MissaoDoisProps) => {
         <div className="bg-green-50 border border-green-200 rounded-lg p-4 flex items-center space-x-3">
           <CheckCircle className="h-6 w-6 text-green-600" />
           <div>
-            <h3 className="font-semibold text-green-800">Práticas Digitais Concluída!</h3>
+            <h3 className="font-semibold text-green-800">Quiz Digital Concluído!</h3>
             <p className="text-green-700">Você completou todas as perguntas com sucesso.</p>
           </div>
         </div>
@@ -240,7 +240,7 @@ export const MissaoDois = ({ onComplete, userId }: MissaoDoisProps) => {
 
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold">Práticas Digitais - Missão 2</h2>
+          <h2 className="text-2xl font-bold">Quiz Digital - Missão 1</h2>
           <div className="text-sm text-muted-foreground">
             Pergunta {currentQuestion + 1} de {questions.length}
           </div>
@@ -301,7 +301,7 @@ export const MissaoDois = ({ onComplete, userId }: MissaoDoisProps) => {
               disabled={isSubmitting || isCompleted || !answers[currentQuestionData.id]}
               className="flex items-center space-x-2"
             >
-              {isSubmitting ? 'Enviando...' : 'Finalizar Missão 2'}
+              {isSubmitting ? 'Enviando...' : 'Finalizar Quiz'}
             </Button>
           ) : (
             <Button 

@@ -65,45 +65,6 @@ export type Database = {
         }
         Relationships: []
       }
-      mission4_questions: {
-        Row: {
-          created_at: string
-          id: number
-          options: Json | null
-          question_id: number
-          question_text: string
-          question_type: string
-          softwares: string[] | null
-          star_legends: Json | null
-          target_area_ids: string[] | null
-          updated_at: string
-        }
-        Insert: {
-          created_at?: string
-          id?: number
-          options?: Json | null
-          question_id: number
-          question_text: string
-          question_type: string
-          softwares?: string[] | null
-          star_legends?: Json | null
-          target_area_ids?: string[] | null
-          updated_at?: string
-        }
-        Update: {
-          created_at?: string
-          id?: number
-          options?: Json | null
-          question_id?: number
-          question_text?: string
-          question_type?: string
-          softwares?: string[] | null
-          star_legends?: Json | null
-          target_area_ids?: string[] | null
-          updated_at?: string
-        }
-        Relationships: []
-      }
       profile_texts: {
         Row: {
           created_at: string
@@ -177,6 +138,57 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      questions: {
+        Row: {
+          created_at: string
+          id: number
+          is_active: boolean
+          legacy_question_id: number | null
+          mission_number: number
+          options: Json | null
+          order_position: number
+          points_mapping: Json | null
+          question_text: string
+          question_type: string
+          softwares: string[] | null
+          star_legends: Json | null
+          target_area_ids: string[] | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          is_active?: boolean
+          legacy_question_id?: number | null
+          mission_number?: number
+          options?: Json | null
+          order_position?: number
+          points_mapping?: Json | null
+          question_text: string
+          question_type: string
+          softwares?: string[] | null
+          star_legends?: Json | null
+          target_area_ids?: string[] | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          is_active?: boolean
+          legacy_question_id?: number | null
+          mission_number?: number
+          options?: Json | null
+          order_position?: number
+          points_mapping?: Json | null
+          question_text?: string
+          question_type?: string
+          softwares?: string[] | null
+          star_legends?: Json | null
+          target_area_ids?: string[] | null
+          updated_at?: string
+        }
+        Relationships: []
       }
       respostas: {
         Row: {

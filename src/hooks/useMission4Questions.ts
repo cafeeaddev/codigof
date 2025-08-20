@@ -1,5 +1,7 @@
-import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+// Este arquivo agora está obsoleto - use useMissionQuestions para todas as missões
+// Mantido temporariamente para compatibilidade
+
+import { useMissionQuestions } from './useMissionQuestions';
 
 export interface Mission4Question {
   id: number;
@@ -11,74 +13,19 @@ export interface Mission4Question {
 }
 
 export const useMission4Questions = (userAreaId?: string | null) => {
-  const [questions, setQuestions] = useState<Mission4Question[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchQuestions = async () => {
-      try {
-        setIsLoading(true);
-        
-        console.log('useMission4Questions - userAreaId:', userAreaId);
-        
-        // Buscar perguntas universais (target_area_ids é null ou vazio)
-        const { data: universalQuestions, error: universalError } = await supabase
-          .from('mission4_questions')
-          .select('*')
-          .or('target_area_ids.is.null,target_area_ids.eq.{}')
-          .order('id');
-
-        if (universalError) throw universalError;
-        
-        console.log('universalQuestions:', universalQuestions);
-
-        let specificQuestions: any[] = [];
-        
-        // Se há área do usuário, buscar perguntas específicas
-        if (userAreaId) {
-          const { data: areaQuestions, error: areaError } = await supabase
-            .from('mission4_questions')
-            .select('*')
-            .contains('target_area_ids', [userAreaId])
-            .order('id');
-
-          if (areaError) throw areaError;
-          specificQuestions = areaQuestions || [];
-          
-          console.log('specificQuestions for area', userAreaId, ':', specificQuestions);
-        }
-
-        // Combinar perguntas universais e específicas
-        const allQuestions = [...(universalQuestions || []), ...specificQuestions];
-        
-        console.log('allQuestions combined:', allQuestions);
-        
-        // Transformar para o formato esperado
-        const formattedQuestions: Mission4Question[] = allQuestions.map(q => ({
-          id: q.id,
-          question_text: q.question_text,
-          question_type: q.question_type as 'multiple-choice' | 'star-rating',
-          options: q.options,
-          softwares: q.softwares,
-          star_legends: q.star_legends
-        }));
-
-        setQuestions(formattedQuestions);
-      } catch (err) {
-        console.error('Error fetching Mission 4 questions:', err);
-        setError(err instanceof Error ? err.message : 'Unknown error');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchQuestions();
-  }, [userAreaId]);
-
+  // Usar o hook genérico para missão 4
+  const result = useMissionQuestions(4, userAreaId);
+  
   return {
-    questions,
-    isLoading,
-    error
+    questions: result.questions.map(q => ({
+      id: q.id,
+      question_text: q.question_text,
+      question_type: q.question_type,
+      options: q.options,
+      softwares: q.softwares,
+      star_legends: q.star_legends
+    })),
+    isLoading: result.isLoading,
+    error: result.error
   };
 };
