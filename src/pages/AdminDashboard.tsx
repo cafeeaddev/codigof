@@ -17,6 +17,7 @@ import { ProfileChart } from '@/components/admin/ProfileChart';
 import { UserTable } from '@/components/admin/UserTable';
 import { ExportDialog } from '@/components/admin/ExportDialog';
 import { GameSettings } from '@/components/admin/GameSettings';
+import { QuestionManager } from '@/components/admin/QuestionManager';
 import { useAdminDashboard } from '@/hooks/useAdminDashboard';
 import { useFilters } from '@/hooks/useFilters';
 import { ResponseData } from '@/types/admin';
@@ -324,14 +325,15 @@ const AdminDashboard = () => {
             </CardContent>
           </Card>
 
-          {/* Respostas por Missão */}
+          {/* Question Manager and Responses */}
           <Card className="animate-fade-in">
             <CardHeader>
-              <CardTitle>Respostas Detalhadas por Missão</CardTitle>
+              <CardTitle>Gestão de Conteúdo</CardTitle>
             </CardHeader>
             <CardContent>
-              <Tabs defaultValue="mission1" className="w-full">
-                <TabsList className="grid w-full grid-cols-4">
+              <Tabs defaultValue="questions" className="w-full">
+                <TabsList className="grid w-full grid-cols-5">
+                  <TabsTrigger value="questions">Perguntas</TabsTrigger>
                   <TabsTrigger value="mission1" className="flex items-center gap-2">
                     <span className="w-2 h-2 rounded-full" style={{ backgroundColor: 'hsl(var(--profile-beginner))' }}></span>
                     Missão 1
@@ -349,6 +351,9 @@ const AdminDashboard = () => {
                     Missão 4
                   </TabsTrigger>
                 </TabsList>
+                <TabsContent value="questions" className="mt-6">
+                  <QuestionManager />
+                </TabsContent>
                 <TabsContent value="mission1" className="mt-6">
                   {renderResponses(responses1, 'Missão 1 - Quiz Digital')}
                 </TabsContent>

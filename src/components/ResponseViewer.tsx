@@ -1,6 +1,8 @@
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
-import { getQuestionById, getOptionText } from '@/data/questions';
+
+// Note: Questions are now managed via database, so this component displays raw response data
+// For full question text integration, a database lookup would be needed
 
 interface ResponseViewerProps {
   respostas: any;
@@ -21,8 +23,7 @@ const ResponseViewer = ({ respostas, missionType }: ResponseViewerProps) => {
     return (
       <div className="space-y-3">
         {respostas.data.map((resposta: any, index: number) => {
-          const question = getQuestionById('mission2', resposta.pergunta);
-          const optionText = getOptionText('mission2', resposta.pergunta, resposta.resposta);
+          // Questions are now in database - showing response data directly
           
           return (
             <Card key={index} className="border-border/40">
@@ -38,10 +39,10 @@ const ResponseViewer = ({ respostas, missionType }: ResponseViewerProps) => {
                   )}
                 </div>
                 <p className="text-sm mb-2">
-                  <strong>Pergunta:</strong> {question?.question || `Pergunta ${resposta.pergunta}`}
+                  <strong>Pergunta:</strong> Pergunta {resposta.pergunta}
                 </p>
                 <p className="text-sm">
-                  <strong>Resposta {resposta.resposta}:</strong> {optionText}
+                  <strong>Resposta {resposta.resposta}</strong>
                 </p>
               </CardContent>
             </Card>
@@ -58,8 +59,7 @@ const ResponseViewer = ({ respostas, missionType }: ResponseViewerProps) => {
       <div className="space-y-3">
         {respostas.map((resposta: any, index: number) => {
           if (typeof resposta === 'object' && resposta.pergunta !== undefined) {
-            const question = getQuestionById(missionType || 'mission1', resposta.pergunta);
-            const optionText = getOptionText(missionType || 'mission1', resposta.pergunta, resposta.resposta);
+            // Questions are now in database - showing response data directly
             
             return (
               <Card key={index} className="border-border/40">
@@ -75,10 +75,10 @@ const ResponseViewer = ({ respostas, missionType }: ResponseViewerProps) => {
                     )}
                   </div>
                   <p className="text-sm mb-2">
-                    <strong>Pergunta:</strong> {question?.question || `Pergunta ${resposta.pergunta}`}
+                    <strong>Pergunta:</strong> Pergunta {resposta.pergunta}
                   </p>
                   <p className="text-sm">
-                    <strong>Resposta {resposta.resposta}:</strong> {optionText}
+                    <strong>Resposta {resposta.resposta}</strong>
                   </p>
                 </CardContent>
               </Card>
@@ -111,17 +111,7 @@ const ResponseViewer = ({ respostas, missionType }: ResponseViewerProps) => {
     return (
       <div className="space-y-3">
         {Object.entries(respostas.answers).map(([questionId, answer]) => {
-          const question = getQuestionById('mission4', parseInt(questionId));
-          const optionText = getOptionText('mission4', parseInt(questionId), String(answer).toUpperCase());
-          
-          // Calculate individual points for this answer
-          let individualPoints = 0;
-          if (question && question.options) {
-            const answerKey = String(answer).toUpperCase() as keyof typeof question.options;
-            if (question.options[answerKey]) {
-              individualPoints = question.options[answerKey].points;
-            }
-          }
+          // Questions are now in database - showing response data directly
           
           return (
             <Card key={questionId} className="border-border/40">
@@ -131,14 +121,14 @@ const ResponseViewer = ({ respostas, missionType }: ResponseViewerProps) => {
                     Questão {questionId}
                   </span>
                   <Badge variant="secondary">
-                    {individualPoints} {individualPoints === 1 ? 'ponto' : 'pontos'}
+                    Resposta {String(answer).toUpperCase()}
                   </Badge>
                 </div>
                 <p className="text-sm mb-2">
-                  <strong>Pergunta:</strong> {question?.question || `Pergunta ${questionId}`}
+                  <strong>Pergunta:</strong> Pergunta {questionId}
                 </p>
                 <p className="text-sm">
-                  <strong>Resposta {String(answer).toUpperCase()}:</strong> {optionText}
+                  <strong>Resposta:</strong> {String(answer).toUpperCase()}
                 </p>
               </CardContent>
             </Card>
@@ -168,8 +158,7 @@ const ResponseViewer = ({ respostas, missionType }: ResponseViewerProps) => {
             const questionId = parseInt(questionNumber);
             
             if (questionId && missionType) {
-              const question = getQuestionById(missionType, questionId);
-              const optionText = getOptionText(missionType, questionId, String(value));
+              // Questions are now in database - showing response data directly
               
               return (
                 <Card key={key} className="border-border/40">
@@ -180,10 +169,10 @@ const ResponseViewer = ({ respostas, missionType }: ResponseViewerProps) => {
                       </span>
                     </div>
                     <p className="text-sm mb-2">
-                      <strong>Pergunta:</strong> {question?.question || `Pergunta ${questionId}`}
+                      <strong>Pergunta:</strong> Pergunta {questionId}
                     </p>
                     <p className="text-sm">
-                      <strong>Resposta {String(value)}:</strong> {optionText}
+                      <strong>Resposta:</strong> {String(value)}
                     </p>
                   </CardContent>
                 </Card>
