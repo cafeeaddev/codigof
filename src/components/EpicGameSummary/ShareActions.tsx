@@ -21,17 +21,8 @@ export const ShareActions: React.FC<ShareActionsProps> = ({
     window.open('https://www.linkedin.com', '_blank', 'noopener,noreferrer');
   };
 
-  const getProfileColor = () => {
-    switch (profile.toLowerCase()) {
-      case 'ninja': return 'hsl(var(--neon-purple))';
-      case 'pro-player': return 'hsl(var(--neon-cyan))';
-      case 'explorer': return 'hsl(var(--neon-purple))';
-      case 'beginner +': return 'hsl(var(--neon-green))';
-      default: return 'hsl(var(--neon-pink))';
-    }
-  };
-
-  const profileColor = getProfileColor();
+  // Cor única do LinkedIn para todos os usuários
+  const linkedinColor = '#0077B5'; // Cor oficial do LinkedIn
 
   return (
     <div className={cn("space-y-4", className)}>
@@ -40,7 +31,7 @@ export const ShareActions: React.FC<ShareActionsProps> = ({
         <div 
           className="absolute inset-0 bg-gradient-to-r opacity-10 blur-sm rounded-lg"
           style={{ 
-            background: `linear-gradient(45deg, ${profileColor}20, transparent, ${profileColor}20)` 
+            background: 'linear-gradient(45deg, hsl(var(--primary))20, transparent, hsl(var(--primary))20)' 
           }}
         />
         <p className="relative text-foreground/90 leading-relaxed p-4 rounded-lg border border-border/50 bg-background/30">
@@ -69,7 +60,7 @@ export const ShareActions: React.FC<ShareActionsProps> = ({
           onClick={handleShareLinkedIn}
           className="w-full sm:w-auto group relative overflow-hidden transition-all duration-300 hover:scale-105 px-8 py-3 text-white"
           style={{ 
-            backgroundColor: profileColor
+            backgroundColor: linkedinColor
           }}
         >
           <div className="absolute inset-0 bg-gradient-to-r opacity-0 group-hover:opacity-30 transition-opacity" 
