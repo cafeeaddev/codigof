@@ -270,15 +270,24 @@ const GameSummary = () => {
 
         // Tentar múltiplas fontes para o nome
         let userName = prof?.nome;
+        let profileByEmail = null;
         if (!userName) {
           // Tentar buscar por email se não encontrou por user_id
-          const { data: profileByEmail } = await supabase
+          const { data: emailProfile } = await supabase
             .from('profiles')
             .select('nome')
             .eq('email', user.email)
             .maybeSingle();
-          userName = profileByEmail?.nome;
+          profileByEmail = emailProfile;
+          userName = emailProfile?.nome;
         }
+        
+        console.log('🔍 [GameSummary] Debug nome:', { 
+          profNome: prof?.nome, 
+          profileByEmailNome: profileByEmail?.nome, 
+          finalNome: userName || user.email?.split('@')[0] || 'Você',
+          userEmail: user.email
+        });
         
         setNome(userName || user.email?.split('@')[0] || 'Você');
         

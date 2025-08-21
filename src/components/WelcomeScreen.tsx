@@ -253,10 +253,12 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
       ]);
 
       const nome = prof?.nome || userProfile.nome || 'Você';
-      console.log('🔍 Debug nome:', { 
+      console.log('🔍 [WelcomeScreen] Debug nome:', { 
         profNome: prof?.nome, 
         userProfileNome: userProfile.nome, 
-        finalNome: nome 
+        finalNome: nome,
+        userId,
+        gameDataNome: gameData?.nome
       });
       let xp = 0;
       let medals = { m1: false, m2: false, m3: false, m4: false };
