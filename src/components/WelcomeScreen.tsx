@@ -626,6 +626,15 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                       <div className={`text-xs mb-2 ${
                         isCompleted ? 'text-primary' : isCurrent ? 'text-accent' : 'text-muted-foreground'
                       }`}>
+                        {missionId === 1 && "Como você encara o digital?"}
+                        {missionId === 2 && "O digital no seu dia a dia"}
+                        {missionId === 3 && "Quando o desafio é maior"}
+                        {missionId === 4 && "Seu Radar de Ferramentas"}
+                      </div>
+                      
+                      <div className={`text-xs mb-2 ${
+                        isCompleted ? 'text-primary' : isCurrent ? 'text-accent' : 'text-muted-foreground'
+                      }`}>
                         Vale 25 XP
                       </div>
                       
@@ -655,15 +664,9 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
             {/* Conteúdo da missão no desktop */}
             <div className="flex-1 overflow-hidden min-h-0">
               <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-4 h-full flex flex-col overflow-hidden min-h-0">
+                {/* Desktop mission content without title for more space */}
                 {completedMissions.size < 4 && (
-                  <div className="flex items-center justify-between mb-4 p-2 bg-muted/50 rounded-lg">
-                    <span className="text-accent text-sm font-bold tracking-wider">
-                      {currentMission === 1 && "MISSÃO 1 – Como você encara o digital?"}
-                      {currentMission === 2 && "MISSÃO 2 – O digital no seu dia a dia"}
-                      {currentMission === 3 && "MISSÃO 3 – Quando o desafio é maior"}
-                      {currentMission === 4 && "MISSÃO 4 – Seu Radar de Ferramentas"}
-                    </span>
-                    
+                  <div className="flex items-center justify-end mb-4 p-2 bg-muted/50 rounded-lg">
                     {/* Botão de Ajuda na versão Desktop */}
                     <div className="flex items-center gap-2">
                       <div className="w-10 h-10 rounded-full ring-2 ring-neon-cyan shadow-md overflow-hidden shrink-0">
@@ -783,14 +786,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
           {/* Área Principal das Perguntas (mobile apenas) */}
           <div className="md:hidden flex-1 overflow-hidden min-h-0">
             <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-4 h-full flex flex-col overflow-hidden min-h-0">
-              <div className="flex items-center gap-2 mb-4 p-2 bg-muted/50 rounded-lg">
-                <span className="text-accent text-sm font-bold tracking-wider">
-                  {currentMission === 1 && "MISSÃO 1 – Como você encara o digital?"}
-                  {currentMission === 2 && "MISSÃO 2 – O digital no seu dia a dia"}
-                  {currentMission === 3 && "MISSÃO 3 – Quando o desafio é maior"}
-                  {currentMission === 4 && ""}
-                </span>
-              </div>
+              {/* Mobile mission content without title for more space */}
 
               <ScrollArea className="flex-1">
                 <div className="pr-3">
