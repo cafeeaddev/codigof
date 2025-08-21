@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { UserProgress, UserProfile } from '@/types/admin';
 import { CheckCircle, Clock, Target } from 'lucide-react';
+import { useQuestionOptions } from '@/hooks/useQuestionOptions';
 
 interface MissionAnalysisProps {
   user: UserProgress;
@@ -21,6 +22,9 @@ export const MissionAnalysis = ({
   allResponses,
   totalScore
 }: MissionAnalysisProps) => {
+  // Hook para buscar perguntas e opções reais do banco
+  const { questions, isLoading, getOptionText, getOptionPoints } = useQuestionOptions([1, 2, 3]);
+
   // Encontrar respostas do usuário
   const getUserResponse = (responses: any[], userId: string, email: string) => {
     return responses.find(r => r.user_id === userId || r.email === email);
@@ -198,53 +202,78 @@ export const MissionAnalysis = ({
                     <Target className="w-4 h-4" />
                     Respostas e Análise
                   </h4>
-                  <div className="grid gap-3">
-                    {mission.questions.map((question, idx) => {
-                      let answer = null;
-                      
-                      // Processar dados baseados na estrutura real
-                      if (mission.response?.respostas) {
-                        if (Array.isArray(mission.response.respostas)) {
-                          // Estrutura de array: [{pergunta: 53, resposta: "E", pontuacao: 5}]
-                          let baseQuestionId = 53; // Missão 1 começa em 53
-                          if (mission.number === 2) baseQuestionId = 56; // Missão 2 começa em 56
-                          if (mission.number === 3) baseQuestionId = 59; // Missão 3 começa em 59
-                          
-                          const questionItem = mission.response.respostas.find((item: any) => 
-                            item.pergunta === (baseQuestionId + idx)
-                          );
-                          answer = questionItem?.resposta;
-                        } else {
-                          // Estrutura de objeto (formato antigo)
-                          const questionKey = `pergunta_${idx + 1}`;
-                          answer = mission.response.respostas[questionKey];
-                        }
-                      }
-                      
-                      return (
-                        <div key={idx} className="border rounded-lg p-4 space-y-2">
-                          <p className="text-sm font-medium">
-                            {idx + 1}. {question}
-                          </p>
-                          {answer && (
-                            <div className="flex items-center gap-2">
-                              <Badge 
-                                variant="outline"
-                                style={{ 
-                                  borderColor: getAnswerColor(answer),
-                                  color: getAnswerColor(answer)
-                                }}
-                              >
-                                {answer}
-                              </Badge>
-                              <span className="text-sm text-muted-foreground">
-                                {getAnswerText(answer)}
-                              </span>
-                            </div>
-                          )}
-                        </div>
-                      );
-                    })}
+                   <div className="grid gap-3">
+                     {(() => {
+                       // Buscar perguntas reais do banco para esta missão
+                       const missionQuestions = questions.filter(q => q.mission_number === mission.number);
+                       
+                       // Usar perguntas do banco se disponíveis, senão usar estáticas
+                       const questionsToShow = missionQuestions.length > 0 ? missionQuestions : 
+                         mission.questions.map((q, i) => ({ question_text: q, id: i + 1 }));
+                       
+                       return questionsToShow.map((question, idx) => {
+                         let answer = null;
+                         let points = 0;
+                         
+                         // Processar dados baseados na estrutura real
+                         if (mission.response?.respostas) {
+                           if (Array.isArray(mission.response.respostas)) {
+                             // Estrutura de array: [{pergunta: 53, resposta: "E", pontuacao: 5}]
+                             let baseQuestionId = 53; // Missão 1 começa em 53
+                             if (mission.number === 2) baseQuestionId = 56; // Missão 2 começa em 56
+                             if (mission.number === 3) baseQuestionId = 59; // Missão 3 começa em 59
+                             
+                             const questionItem = mission.response.respostas.find((item: any) => 
+                               item.pergunta === (baseQuestionId + idx)
+                             );
+                             answer = questionItem?.resposta;
+                             points = questionItem?.pontuacao || 0;
+                           } else {
+                             // Estrutura de objeto (formato antigo)
+                             const questionKey = `pergunta_${idx + 1}`;
+                             answer = mission.response.respostas[questionKey];
+                             // Calcular pontos usando o banco de dados
+                             if (answer && question.id && !isLoading) {
+                               points = getOptionPoints(question.id, answer);
+                             }
+                           }
+                         }
+                         
+                         // Buscar texto real da opção se temos a pergunta do banco
+                         const answerText = (answer && question.id && !isLoading) 
+                           ? getOptionText(question.id, answer)
+                           : getAnswerText(answer || '');
+                         
+                         return (
+                           <div key={idx} className="border rounded-lg p-4 space-y-2">
+                             <p className="text-sm font-medium">
+                               {idx + 1}. {question.question_text}
+                             </p>
+                             {answer && (
+                               <div className="flex items-center gap-2">
+                                 <Badge 
+                                   variant="outline"
+                                   style={{ 
+                                     borderColor: getAnswerColor(answer),
+                                     color: getAnswerColor(answer)
+                                   }}
+                                 >
+                                   {answer}
+                                 </Badge>
+                                 <span className="text-sm text-muted-foreground flex-1">
+                                   {answerText}
+                                 </span>
+                                 {points > 0 && (
+                                   <span className="text-xs font-medium text-primary">
+                                     {points} pts
+                                   </span>
+                                 )}
+                               </div>
+                             )}
+                           </div>
+                         );
+                       });
+                     })()}
                   </div>
 
                   {/* Análise do padrão de respostas */}
