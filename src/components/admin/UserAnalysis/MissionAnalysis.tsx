@@ -203,29 +203,17 @@ export const MissionAnalysis = ({
                     Respostas e Análise
                   </h4>
                   
-                  {/* Loading state para missão 1 */}
-                  {mission.number === 1 && isLoading && (
+                  {/* Renderizar conteúdo baseado no estado de loading da missão 1 */}
+                  {mission.number === 1 && isLoading ? (
                     <div className="text-center py-4">
                       <p className="text-muted-foreground">Carregando opções das perguntas...</p>
                     </div>
-                  )}
-                  
-                  {/* Só renderizar conteúdo quando não estiver carregando ou não for missão 1 */}
-                  {(mission.number !== 1 || !isLoading) && (
+                  ) : (
                     <div className="grid gap-3">
                       {(() => {
                         // Para missão 1: usar perguntas do banco + buscar texto das opções
                         if (mission.number === 1) {
                           const missionQuestions = questions.filter(q => q.mission_number === 1);
-                          
-                          // Só renderizar se temos as perguntas do banco carregadas
-                          if (missionQuestions.length === 0) {
-                            return (
-                              <div className="text-center py-4">
-                                <p className="text-muted-foreground">Aguardando carregamento das perguntas...</p>
-                              </div>
-                            );
-                          }
                           
                           return mission.questions.map((questionText, idx) => {
                             let answer = null;
