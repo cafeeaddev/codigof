@@ -272,9 +272,9 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
 
   return (
     <div className="h-full flex flex-col bg-background">
-      <div className="flex-1 flex flex-col max-w-4xl mx-auto w-full p-4">
+      <div className="flex-1 flex flex-col max-w-4xl mx-auto w-full p-2 pt-2">
         {/* Progress Header */}
-        <div className="mb-4">
+        <div className="mb-3">
           <div className="flex justify-between items-center mb-3">
             <span className="text-sm text-muted-foreground">
               Pergunta {currentQuestion + 1} de {quizQuestions.length}

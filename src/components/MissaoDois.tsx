@@ -229,9 +229,9 @@ export const MissaoDois = ({ onComplete, userId }: MissaoDoisProps) => {
 
   return (
     <div className="h-full flex flex-col bg-background">
-      <div className="flex-1 flex flex-col max-w-4xl mx-auto w-full p-4">
+      <div className="flex-1 flex flex-col max-w-4xl mx-auto w-full p-2 pt-2">
         {isCompleted && (
-          <div className="bg-green-50 border border-green-200 rounded-lg p-4 flex items-center space-x-3 mb-4">
+          <div className="bg-green-50 border border-green-200 rounded-lg p-4 flex items-center space-x-3 mb-3">
             <CheckCircle className="h-6 w-6 text-green-600" />
             <div>
               <h3 className="font-semibold text-green-800">Práticas Digitais Concluída!</h3>
@@ -241,8 +241,8 @@ export const MissaoDois = ({ onComplete, userId }: MissaoDoisProps) => {
         )}
 
         {/* Progress Header */}
-        <div className="mb-4">
-          <div className="flex justify-between items-center mb-3">
+        <div className="mb-3">
+          <div className="flex justify-between items-center mb-2">
             <span className="text-sm text-muted-foreground">
               Pergunta {currentQuestion + 1} de {questions.length}
             </span>
