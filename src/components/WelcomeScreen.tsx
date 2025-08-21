@@ -84,18 +84,28 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
 
   // Função para atualizar progresso ao completar missão
   const updateProgressOnMissionComplete = async (missionId: number) => {
+    console.log(`[WelcomeScreen] updateProgressOnMissionComplete iniciado para missão ${missionId}`);
+    
     const newXp = userProgress.total_xp + 25;
     const newCompletedCount = userProgress.completedMissionsCount + 1;
     
+    console.log(`[WelcomeScreen] Calculando novos valores: XP ${userProgress.total_xp} + 25 = ${newXp}, missões completadas: ${userProgress.completedMissionsCount} + 1 = ${newCompletedCount}`);
+    
     // Atualizar estado local imediatamente
-    setUserProgress(prev => ({
-      total_xp: newXp,
-      completedMissionsCount: newCompletedCount
-    }));
+    setUserProgress(prev => {
+      const updated = {
+        total_xp: newXp,
+        completedMissionsCount: newCompletedCount
+      };
+      console.log(`[WelcomeScreen] Estado local atualizado:`, updated);
+      return updated;
+    });
 
     // Salvar no banco de dados
     try {
       const missionColumn = `missao_${missionId}_completed`;
+      console.log(`[WelcomeScreen] Salvando no banco: coluna ${missionColumn} = true, total_xp = ${newXp}`);
+      
       const { error } = await supabase
         .from('user_progress')
         .update({
@@ -106,30 +116,66 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
         .eq('user_id', userId);
 
       if (error) {
-        console.error('Erro ao salvar progresso da missão:', error);
+        console.error(`[WelcomeScreen] Erro ao salvar progresso da missão ${missionId}:`, error);
+        // Reverter estado local em caso de erro
+        setUserProgress(prev => ({
+          total_xp: prev.total_xp - 25,
+          completedMissionsCount: prev.completedMissionsCount - 1
+        }));
+        toast({
+          title: "Erro ao salvar progresso",
+          description: "Houve um problema ao salvar seu progresso. Tente novamente.",
+          variant: "destructive"
+        });
       } else {
-        console.log(`✅ Missão ${missionId} salva com sucesso! Novo XP: ${newXp}`);
+        console.log(`[WelcomeScreen] ✅ Missão ${missionId} salva com sucesso! Novo XP: ${newXp}`);
       }
     } catch (error) {
-      console.error('Erro ao atualizar progresso:', error);
+      console.error(`[WelcomeScreen] Erro ao atualizar progresso da missão ${missionId}:`, error);
+      // Reverter estado local em caso de erro
+      setUserProgress(prev => ({
+        total_xp: prev.total_xp - 25,
+        completedMissionsCount: prev.completedMissionsCount - 1
+      }));
+      toast({
+        title: "Erro ao salvar progresso",
+        description: "Houve um problema ao salvar seu progresso. Tente novamente.",
+        variant: "destructive"
+      });
     }
   };
 
   // Fluxo ao finalizar missão: mostra tela de concluída e libera a próxima após curto atraso
   const handleMissionComplete = (missionId: 1 | 2 | 3 | 4) => {
+    console.log(`[WelcomeScreen] Missão ${missionId} completada!`);
+    
     // Só atualizar se a missão ainda não foi completada
     if (!completedMissions.has(missionId)) {
+      console.log(`[WelcomeScreen] Atualizando progresso da missão ${missionId}`);
       updateProgressOnMissionComplete(missionId);
+    } else {
+      console.log(`[WelcomeScreen] Missão ${missionId} já estava completada`);
     }
     
     setJustCompleted(missionId);
+    console.log(`[WelcomeScreen] Definindo justCompleted como ${missionId}`);
+    
     setTimeout(() => {
-      setCompletedMissions(prev => new Set([...prev, missionId]));
+      console.log(`[WelcomeScreen] Timeout executado para missão ${missionId}`);
+      setCompletedMissions(prev => {
+        const newCompleted = new Set([...prev, missionId]);
+        console.log(`[WelcomeScreen] Missões completadas atualizadas:`, Array.from(newCompleted));
+        return newCompleted;
+      });
+      
       if (missionId < 4) {
-        setCurrentMission((missionId + 1) as 1 | 2 | 3 | 4);
+        const nextMission = (missionId + 1) as 1 | 2 | 3 | 4;
+        console.log(`[WelcomeScreen] Mudando para missão ${nextMission}`);
+        setCurrentMission(nextMission);
         setJustCompleted(null);
       } else {
         // Após completar missão 4, limpar justCompleted e mostrar loading
+        console.log(`[WelcomeScreen] Todas as missões completadas, carregando resumo do jogo`);
         setJustCompleted(null);
         setIsLoadingProfile(true);
         setTimeout(() => {
@@ -702,7 +748,10 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                         </div>
                         <div className="text-center">
                           <h4 className="text-xl font-bold text-primary mb-1">
-                            Missão {justCompleted} concluída! +25 XP
+                            {justCompleted === 1 && "Missão 1 concluída! +25 XP"}
+                            {justCompleted === 2 && "Missão 2 concluída! +25 XP"}
+                            {justCompleted === 3 && "Missão 3 concluída! +25 XP"}
+                            {justCompleted === 4 && "Missão 4 concluída! +25 XP"}
                           </h4>
                           <p className="text-sm text-muted-foreground">Liberando a próxima missão...</p>
                         </div>
@@ -795,7 +844,10 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                       </div>
                       <div className="text-center">
                         <h4 className="text-xl font-bold text-primary mb-1">
-                          Missão {justCompleted} concluída! +25 XP
+                          {justCompleted === 1 && "Missão 1 concluída! +25 XP"}
+                          {justCompleted === 2 && "Missão 2 concluída! +25 XP"}
+                          {justCompleted === 3 && "Missão 3 concluída! +25 XP"}
+                          {justCompleted === 4 && "Missão 4 concluída! +25 XP"}
                         </h4>
                         <p className="text-sm text-muted-foreground">Liberando a próxima missão...</p>
                       </div>

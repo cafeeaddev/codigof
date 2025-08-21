@@ -158,15 +158,26 @@ export const MissaoUm = ({ onComplete, userId }: MissaoUmProps) => {
       if (responseError) throw responseError;
 
       // Atualizar progresso do usuário - marcar missão 1 como completada e dar XP
+      // Buscar progresso existente para calcular XP corretamente
+      const { data: existingProgress } = await supabase
+        .from('user_progress')
+        .select('*')
+        .eq('user_id', currentUserId)
+        .maybeSingle();
+
+      const currentXP = existingProgress?.total_xp || 0;
+
       const { error: progressError } = await supabase
         .from('user_progress')
         .upsert({
           user_id: currentUserId,
           missao_1_completed: true,
-          total_xp: 100, // XP por completar missão 1
+          total_xp: currentXP + 25, // Adicionar 25 XP da missão 1
           missao_1_current_question: currentQuestion,
           missao_1_answers: answers,
           last_saved_at: new Date().toISOString()
+        }, {
+          onConflict: 'user_id'
         });
 
       if (progressError) throw progressError;
@@ -175,7 +186,7 @@ export const MissaoUm = ({ onComplete, userId }: MissaoUmProps) => {
       
       toast({
         title: "Quiz Digital concluído!",
-        description: "Você ganhou 100 XP. Parabéns!",
+        description: "Você ganhou 25 XP. Parabéns!",
       });
 
       onComplete();
