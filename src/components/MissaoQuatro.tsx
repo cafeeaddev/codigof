@@ -290,7 +290,7 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
                     <div className="text-xs text-muted-foreground space-y-1">
                       {Object.entries(currentQuestionData.starLegends).map(([stars, legend]) => (
                         <div key={stars}>
-                          <strong>{stars} estrela{stars !== '1' ? 's' : ''}:</strong> {(legend as any).text}
+                          <strong>{stars} estrela{stars !== '1' ? 's' : ''}:</strong> {(legend as { text: string }).text}
                         </div>
                       ))}
                     </div>
