@@ -22,15 +22,18 @@ export const useMissionQuestions = (missionNumber: number, userAreaId?: string |
   const [questions, setQuestions] = useState<MissionQuestion[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
         setIsLoading(true);
+        setError(null); // Reset error state
         
         console.log('useMissionQuestions - missionNumber:', missionNumber, 'userAreaId:', userAreaId);
         
         // Buscar perguntas universais para a missão específica
+        // Adicionar timestamp para evitar cache
         const { data: universalQuestions, error: universalError } = await supabase
           .from('questions')
           .select(`
@@ -48,9 +51,13 @@ export const useMissionQuestions = (missionNumber: number, userAreaId?: string |
           .or('target_area_ids.is.null,target_area_ids.eq.{}')
           .order('order_position');
 
-        if (universalError) throw universalError;
+        if (universalError) {
+          console.error('Error fetching universal questions:', universalError);
+          throw universalError;
+        }
         
-        console.log('universalQuestions:', universalQuestions);
+        console.log('universalQuestions fetched:', universalQuestions?.length || 0, 'questions');
+        console.log('First question data:', universalQuestions?.[0]);
 
         let specificQuestions: any[] = [];
         
@@ -115,11 +122,16 @@ export const useMissionQuestions = (missionNumber: number, userAreaId?: string |
     };
 
     fetchQuestions();
-  }, [missionNumber, userAreaId]);
+  }, [missionNumber, userAreaId, refreshKey]);
+
+  const refetch = () => {
+    setRefreshKey(prev => prev + 1);
+  };
 
   return {
     questions,
     isLoading,
-    error
+    error,
+    refetch
   };
 };

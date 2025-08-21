@@ -16,7 +16,7 @@ interface MissaoUmProps {
 
 export const MissaoUm = ({ onComplete, userId }: MissaoUmProps) => {
   const { user: authUser, profile } = useAuth();
-  const { questions, isLoading: questionsLoading, error: questionsError } = useMissionQuestions(1);
+  const { questions, isLoading: questionsLoading, error: questionsError, refetch } = useMissionQuestions(1);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [isCompleted, setIsCompleted] = useState(false);
@@ -241,8 +241,18 @@ export const MissaoUm = ({ onComplete, userId }: MissaoUmProps) => {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="text-2xl font-bold">Quiz Digital - Missão 1</h2>
-          <div className="text-sm text-muted-foreground">
-            Pergunta {currentQuestion + 1} de {questions.length}
+          <div className="flex items-center gap-4">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={refetch}
+              disabled={questionsLoading}
+            >
+              🔄 Recarregar Perguntas
+            </Button>
+            <div className="text-sm text-muted-foreground">
+              Pergunta {currentQuestion + 1} de {questions.length}
+            </div>
           </div>
         </div>
 
