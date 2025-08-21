@@ -829,6 +829,30 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
         />
       )}
 
+      {/* Assistente IA Flutuante */}
+      <div className="fixed bottom-6 right-6 z-50">
+        <Button
+          onClick={() => setShowTutorial(true)}
+          className="bg-card/90 backdrop-blur-xl border border-secondary/50 text-secondary hover:bg-secondary/20 hover:text-secondary shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-3 px-4 py-3 rounded-full"
+        >
+          <div className="relative flex items-center justify-center w-8 h-8 rounded-full overflow-hidden bg-gradient-to-br from-primary/20 to-secondary/20 border border-primary/30">
+            {codyVideoUrl && (
+              <video
+                src={codyVideoUrl}
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="w-full h-full object-cover"
+              />
+            )}
+            {/* Bolinha indicadora de IA ativa */}
+            <div className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-green-400 rounded-full animate-pulse border border-background"></div>
+          </div>
+          <span className="text-sm font-medium">Precisa de ajuda?</span>
+        </Button>
+      </div>
+
     </>
   );
 };
@@ -1044,6 +1068,7 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; u
           </div>
         )}
       </ScrollArea>
+
     </>
   );
 };
