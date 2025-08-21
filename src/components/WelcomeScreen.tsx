@@ -411,6 +411,27 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                 "Galáxia",
               ]}
             />
+            
+            {/* Assistente IA integrado */}
+            <Button
+              onClick={() => setShowTutorial(true)}
+              className="bg-transparent border border-secondary/30 text-secondary hover:bg-secondary/10 hover:text-secondary transition-all duration-200 p-2 rounded-full w-10 h-10 flex items-center justify-center ml-3"
+            >
+              <div className="relative flex items-center justify-center w-6 h-6 rounded-full overflow-hidden bg-gradient-to-br from-primary/20 to-secondary/20 border border-primary/30">
+                {codyVideoUrl && (
+                  <video
+                    src={codyVideoUrl}
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className="w-full h-full object-cover"
+                  />
+                )}
+                {/* Bolinha indicadora de IA ativa */}
+                <div className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse border border-background"></div>
+              </div>
+            </Button>
           </div>
           
           
@@ -829,32 +850,6 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
         />
       )}
 
-      {/* Assistente IA Flutuante - Compacto */}
-      <div className="fixed bottom-4 right-4 z-40">
-        <Button
-          onClick={() => setShowTutorial(true)}
-          className="bg-card/95 backdrop-blur-sm border border-secondary/30 text-secondary hover:bg-secondary/10 hover:text-secondary shadow-md hover:shadow-lg transition-all duration-200 p-2 rounded-full w-12 h-12 flex items-center justify-center group"
-        >
-          <div className="relative flex items-center justify-center w-6 h-6 rounded-full overflow-hidden bg-gradient-to-br from-primary/20 to-secondary/20 border border-primary/30">
-            {codyVideoUrl && (
-              <video
-                src={codyVideoUrl}
-                autoPlay
-                loop
-                muted
-                playsInline
-                className="w-full h-full object-cover"
-              />
-            )}
-            {/* Bolinha indicadora de IA ativa */}
-            <div className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse border border-background"></div>
-          </div>
-          {/* Tooltip on hover */}
-          <div className="absolute bottom-full right-0 mb-2 px-2 py-1 bg-card/90 backdrop-blur-sm border border-secondary/30 rounded text-xs text-secondary opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
-            Precisa de ajuda?
-          </div>
-        </Button>
-      </div>
 
     </>
   );
