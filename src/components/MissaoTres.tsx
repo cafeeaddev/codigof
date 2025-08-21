@@ -231,7 +231,7 @@ export const MissaoTres = ({ onComplete }: MissaoTresProps) => {
                       />
                       <Label
                         htmlFor={`${currentQuestionData.id}-${option.option_letter}`}
-                        className="text-sm md:text-base text-foreground cursor-pointer flex-1 leading-relaxed"
+                        className="text-xs md:text-sm text-foreground cursor-pointer flex-1 leading-relaxed"
                       >
                         <span className="font-medium mr-2">{option.option_letter})</span>
                         {option.option_text}

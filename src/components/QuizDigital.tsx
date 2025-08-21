@@ -317,7 +317,7 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
                       />
                       <Label
                         htmlFor={`q${currentQuestionData.id}-${option.letter}`}
-                        className="text-sm md:text-base text-foreground cursor-pointer flex-1 leading-relaxed"
+                        className="text-xs md:text-sm text-foreground cursor-pointer flex-1 leading-relaxed"
                       >
                         <span className="font-medium mr-2">{option.letter})</span>
                         {option.text}

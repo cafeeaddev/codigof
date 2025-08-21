@@ -271,7 +271,7 @@ export const MissaoUm = ({ onComplete, userId }: MissaoUmProps) => {
                   <RadioGroupItem value={option.option_letter} id={`${currentQuestionData.id}-${option.option_letter}`} className="mt-1" />
                   <Label 
                     htmlFor={`${currentQuestionData.id}-${option.option_letter}`} 
-                    className="flex-1 cursor-pointer leading-relaxed"
+                    className="text-xs md:text-sm cursor-pointer leading-relaxed"
                   >
                     <span className="font-medium mr-2">{option.option_letter})</span>
                     {option.option_text}
