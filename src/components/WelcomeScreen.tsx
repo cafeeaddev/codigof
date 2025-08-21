@@ -716,7 +716,14 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
           {/* Área Principal das Perguntas (mobile apenas) */}
           <div className="md:hidden flex-1 overflow-hidden min-h-0">
             <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-4 h-full flex flex-col overflow-hidden min-h-0">
-              {/* Mobile mission content without title for more space */}
+              <div className="flex items-center gap-2 mb-4 p-2 bg-muted/50 rounded-lg">
+                <span className="text-accent text-sm font-bold tracking-wider">
+                  {currentMission === 1 && "MISSÃO 1 – Como você encara o digital?"}
+                  {currentMission === 2 && "MISSÃO 2 – O digital no seu dia a dia"}
+                  {currentMission === 3 && "MISSÃO 3 – Quando o desafio é maior"}
+                  {currentMission === 4 && "MISSÃO 4 – Seu Radar de Ferramentas"}
+                </span>
+              </div>
 
               <ScrollArea className="flex-1">
                 <div className="pr-3">
