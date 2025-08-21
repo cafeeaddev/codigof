@@ -230,7 +230,7 @@ export const MissaoDois = ({ onComplete, userId }: MissaoDoisProps) => {
   return (
     <div className="h-full flex flex-col bg-background overflow-hidden">
       <ScrollArea className="flex-1">
-        <div className="flex flex-col max-w-4xl mx-auto w-full p-3 pb-20 min-h-full">
+        <div className="flex flex-col max-w-4xl mx-auto w-full p-3 pb-24 min-h-full">
           {isCompleted && (
             <div className="bg-green-50 border border-green-200 rounded-lg p-4 flex items-center space-x-3 mb-3">
               <CheckCircle className="h-6 w-6 text-green-600" />
@@ -299,23 +299,23 @@ export const MissaoDois = ({ onComplete, userId }: MissaoDoisProps) => {
       </ScrollArea>
 
       {/* Fixed Navigation Buttons */}
-      <div className="border-t bg-background p-3">
+      <div className="border-t bg-background p-4 mt-auto">
         <div className="max-w-4xl mx-auto flex justify-between items-center gap-4">
           <Button
             variant="outline"
             onClick={goToPreviousQuestion}
             disabled={currentQuestion === 0}
-            className="flex items-center space-x-2"
+            className="flex items-center space-x-2 min-w-[100px]"
           >
             <ChevronLeft className="h-4 w-4" />
-            <span className="hidden sm:inline">Anterior</span>
+            <span>Anterior</span>
           </Button>
 
           {currentQuestion === questions.length - 1 ? (
             <Button
               onClick={submitQuiz}
               disabled={isSubmitting || isCompleted || !answers[currentQuestionData.id]}
-              className="flex items-center space-x-2"
+              className="flex items-center space-x-2 min-w-[100px]"
             >
               {isSubmitting ? 'Enviando...' : 'Finalizar'}
             </Button>
@@ -323,9 +323,9 @@ export const MissaoDois = ({ onComplete, userId }: MissaoDoisProps) => {
             <Button
               onClick={goToNextQuestion}
               disabled={!answers[currentQuestionData.id]}
-              className="flex items-center space-x-2"
+              className="flex items-center space-x-2 min-w-[100px]"
             >
-              <span className="hidden sm:inline">Próxima</span>
+              <span>Próxima</span>
               <ChevronRight className="h-4 w-4" />
             </Button>
           )}
