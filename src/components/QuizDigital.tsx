@@ -272,28 +272,134 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
 
   return (
     <div className="h-full flex flex-col bg-background">
-      <ScrollArea className="flex-1">
-        <div className="max-w-4xl mx-auto w-full p-4 pb-20 min-h-full">
-          {/* Progress Header - compacto */}
-          <div className="mb-6 sticky top-0 bg-background z-10 pb-3">
-            <div className="flex justify-between items-center mb-2">
-              <span className="text-sm text-muted-foreground">
-                Pergunta {currentQuestion + 1} de {quizQuestions.length}
-              </span>
+      {/* Mobile: Fixed buttons with scrollable content */}
+      <div className="md:hidden h-full flex flex-col">
+        <ScrollArea className="flex-1">
+          <div className="p-4 pb-24">
+            {/* Progress Header */}
+            <div className="mb-6 sticky top-0 bg-background z-10 pb-3">
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-sm text-muted-foreground">
+                  Pergunta {currentQuestion + 1} de {quizQuestions.length}
+                </span>
+              </div>
+              
+              <div className="w-full bg-secondary rounded-full h-2">
+                <div
+                  className="bg-gradient-to-r from-primary to-accent h-2 rounded-full transition-all duration-500"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
             </div>
-            
-            {/* Progress Bar with gradient */}
-            <div className="w-full bg-secondary rounded-full h-2">
-              <div
-                className="bg-gradient-to-r from-primary to-accent h-2 rounded-full transition-all duration-500"
-                style={{ width: `${progress}%` }}
-              />
-            </div>
-          </div>
 
-          {/* Question Card - reduzido espaçamento */}
-          <div className="flex-1">
+            {/* Question Card */}
             <Card className="border shadow-sm">
+              <CardContent className="p-4">
+                <h3 className="text-base font-semibold text-foreground mb-4 leading-relaxed">
+                  {currentQuestionData.question}
+                </h3>
+
+                <RadioGroup
+                  value={answers[currentQuestionData.id] || ""}
+                  onValueChange={(value) => handleAnswerSelect(currentQuestionData.id, value)}
+                  className="space-y-3"
+                >
+                  {currentQuestionData.options.map((option) => (
+                    <div 
+                      key={option.letter} 
+                      className="flex items-start space-x-3 p-3 rounded-lg hover:bg-primary/5 border border-transparent hover:border-primary/20 cursor-pointer transition-all duration-200" 
+                      onClick={() => handleAnswerSelect(currentQuestionData.id, option.letter)}
+                    >
+                      <RadioGroupItem
+                        value={option.letter}
+                        id={`q${currentQuestionData.id}-${option.letter}`}
+                        className="mt-1 h-4 w-4"
+                      />
+                      <Label
+                        htmlFor={`q${currentQuestionData.id}-${option.letter}`}
+                        className="text-sm text-foreground cursor-pointer flex-1 leading-relaxed"
+                      >
+                        <span className="font-semibold mr-2 text-primary">{option.letter})</span>
+                        {option.text}
+                      </Label>
+                    </div>
+                  ))}
+                </RadioGroup>
+              </CardContent>
+            </Card>
+          </div>
+        </ScrollArea>
+
+        {/* Mobile Fixed Buttons */}
+        <div className="fixed bottom-0 left-0 right-0 bg-background border-t border-border/50 p-3 shadow-[0_-4px_20px_rgba(0,0,0,0.15)] z-50">
+          <div className="flex justify-between items-center gap-3">
+            <Button
+              type="button"
+              onClick={() => goToPreviousQuestion()}
+              disabled={currentQuestion === 0}
+              variant="outline"
+              size="sm"
+              className="flex items-center space-x-1 min-w-[80px] h-10 px-3 bg-background hover:bg-muted/50 border-border text-xs font-medium"
+            >
+              <ChevronLeft className="w-3 h-3" />
+              <span>Ant.</span>
+            </Button>
+
+            {currentQuestion === quizQuestions.length - 1 ? (
+              <Button
+                type="button"
+                onClick={() => submitQuiz()}
+                disabled={!answers[currentQuestionData.id] || isSubmitting}
+                size="sm"
+                className="flex items-center space-x-1 min-w-[80px] h-10 px-3 bg-primary hover:bg-primary/90 text-xs font-medium"
+              >
+                {isSubmitting ? (
+                  <>
+                    <div className="w-3 h-3 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin mr-1" />
+                    <span>...</span>
+                  </>
+                ) : (
+                  <span>Finalizar</span>
+                )}
+              </Button>
+            ) : (
+              <Button
+                type="button"
+                onClick={() => goToNextQuestion()}
+                disabled={!answers[currentQuestionData.id]}
+                size="sm"
+                className="flex items-center space-x-1 min-w-[80px] h-10 px-3 bg-primary hover:bg-primary/90 text-xs font-medium"
+              >
+                <span>Próx.</span>
+                <ChevronRight className="w-3 h-3" />
+              </Button>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Tablet and Desktop */}
+      <div className="hidden md:flex h-full flex-col">
+        <ScrollArea className="flex-1">
+          <div className="max-w-4xl mx-auto w-full p-4 pb-6">
+            {/* Progress Header */}
+            <div className="mb-6 sticky top-0 bg-background z-10 pb-3">
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-sm text-muted-foreground">
+                  Pergunta {currentQuestion + 1} de {quizQuestions.length}
+                </span>
+              </div>
+              
+              <div className="w-full bg-secondary rounded-full h-2">
+                <div
+                  className="bg-gradient-to-r from-primary to-accent h-2 rounded-full transition-all duration-500"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+            </div>
+
+            {/* Question Card */}
+            <Card className="border shadow-sm mb-6">
               <CardContent className="p-4 md:p-6">
                 <h3 className="text-lg font-semibold text-foreground mb-6 leading-relaxed">
                   {currentQuestionData.question}
@@ -328,56 +434,53 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
               </CardContent>
             </Card>
           </div>
-        </div>
-      </ScrollArea>
+        </ScrollArea>
 
-      {/* Fixed Navigation Buttons - sempre visíveis */}
-      <div className="bg-background border-t border-border/50 p-3 md:p-4 shadow-[0_-4px_20px_rgba(0,0,0,0.15)]">
-        <div className="max-w-4xl mx-auto flex justify-between items-center gap-3 md:gap-4">
-          <Button
-            type="button"
-            onClick={() => goToPreviousQuestion()}
-            disabled={currentQuestion === 0}
-            variant="outline"
-            size="sm"
-            className="flex items-center space-x-1 md:space-x-2 min-w-[80px] md:min-w-[110px] h-10 md:h-11 px-3 md:px-4 bg-background hover:bg-muted/50 border-border text-xs md:text-sm font-medium"
-          >
-            <ChevronLeft className="w-3 h-3 md:w-4 md:h-4" />
-            <span className="hidden sm:inline">Anterior</span>
-            <span className="sm:hidden">Ant.</span>
-          </Button>
-
-          {currentQuestion === quizQuestions.length - 1 ? (
+        {/* Tablet/Desktop Navigation Buttons */}
+        <div className="bg-background border-t border-border/50 p-4 shadow-[0_-4px_20px_rgba(0,0,0,0.15)]">
+          <div className="max-w-4xl mx-auto flex justify-between items-center gap-4">
             <Button
               type="button"
-              onClick={() => submitQuiz()}
-              disabled={!answers[currentQuestionData.id] || isSubmitting}
+              onClick={() => goToPreviousQuestion()}
+              disabled={currentQuestion === 0}
+              variant="outline"
               size="sm"
-              className="flex items-center space-x-1 md:space-x-2 min-w-[80px] md:min-w-[110px] h-10 md:h-11 px-3 md:px-4 bg-primary hover:bg-primary/90 text-xs md:text-sm font-medium"
+              className="flex items-center space-x-2 min-w-[110px] h-11 px-4 bg-background hover:bg-muted/50 border-border text-sm font-medium"
             >
-              {isSubmitting ? (
-                <>
-                  <div className="w-3 h-3 md:w-4 md:h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin mr-1" />
-                  <span className="hidden sm:inline">Enviando...</span>
-                  <span className="sm:hidden">...</span>
-                </>
-              ) : (
-                <span>Finalizar</span>
-              )}
+              <ChevronLeft className="w-4 h-4" />
+              <span>Anterior</span>
             </Button>
-          ) : (
-            <Button
-              type="button"
-              onClick={() => goToNextQuestion()}
-              disabled={!answers[currentQuestionData.id]}
-              size="sm"
-              className="flex items-center space-x-1 md:space-x-2 min-w-[80px] md:min-w-[110px] h-10 md:h-11 px-3 md:px-4 bg-primary hover:bg-primary/90 text-xs md:text-sm font-medium"
-            >
-              <span className="hidden sm:inline">Próxima</span>
-              <span className="sm:hidden">Próx.</span>
-              <ChevronRight className="w-3 h-3 md:w-4 md:h-4" />
-            </Button>
-          )}
+
+            {currentQuestion === quizQuestions.length - 1 ? (
+              <Button
+                type="button"
+                onClick={() => submitQuiz()}
+                disabled={!answers[currentQuestionData.id] || isSubmitting}
+                size="sm"
+                className="flex items-center space-x-2 min-w-[110px] h-11 px-4 bg-primary hover:bg-primary/90 text-sm font-medium"
+              >
+                {isSubmitting ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin mr-1" />
+                    <span>Enviando...</span>
+                  </>
+                ) : (
+                  <span>Finalizar</span>
+                )}
+              </Button>
+            ) : (
+              <Button
+                type="button"
+                onClick={() => goToNextQuestion()}
+                disabled={!answers[currentQuestionData.id]}
+                size="sm"
+                className="flex items-center space-x-2 min-w-[110px] h-11 px-4 bg-primary hover:bg-primary/90 text-sm font-medium"
+              >
+                <span>Próxima</span>
+                <ChevronRight className="w-4 h-4" />
+              </Button>
+            )}
+          </div>
         </div>
       </div>
     </div>
