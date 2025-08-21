@@ -36,7 +36,7 @@ export const UserHeader: React.FC<UserHeaderProps> = ({ name, level, breadcrumb 
       <div className="flex items-center gap-3 flex-wrap">
         <Badge
           variant="secondary"
-          className="text-background font-medium shadow-sm"
+          className="text-background font-medium shadow-sm max-w-[55vw] md:max-w-[45vw] lg:max-w-none truncate"
           style={{
             background: `hsl(${levelColor})`,
             color: 'hsl(var(--background))',
@@ -46,7 +46,7 @@ export const UserHeader: React.FC<UserHeaderProps> = ({ name, level, breadcrumb 
         >
           Seu Perfil: {level}
         </Badge>
-        <span className="text-sm sm:text-base text-[hsl(var(--lavender))]">
+        <span className="text-sm sm:text-base text-[hsl(var(--lavender))] flex-shrink-0">
           — {breadcrumb}
         </span>
       </div>

@@ -187,7 +187,7 @@ export const MissaoTres = ({ onComplete }: MissaoTresProps) => {
   return (
     <div className="h-full flex flex-col bg-background overflow-hidden">
       <ScrollArea className="flex-1">
-        <div className="flex flex-col max-w-4xl mx-auto w-full p-3 pb-20 min-h-full">
+        <div className="flex flex-col max-w-4xl mx-auto w-full p-3 pb-[calc(80px+env(safe-area-inset-bottom,0px))] min-h-full">
           {/* Progress Header - mais compacto */}
           <div className="mb-4 sticky top-0 bg-background z-10 pb-2">
             <div className="flex justify-between items-center mb-2">
@@ -246,13 +246,13 @@ export const MissaoTres = ({ onComplete }: MissaoTresProps) => {
       </ScrollArea>
 
       {/* Fixed Navigation Buttons */}
-      <div className="border-t bg-background p-4 pb-6 md:pb-4 lg:pb-4 mt-auto">
+      <div className="fixed bottom-0 left-0 right-0 border-t bg-background/95 backdrop-blur-sm p-4 pb-[calc(env(safe-area-inset-bottom,0px)+16px)] z-50 shadow-lg">
         <div className="max-w-4xl mx-auto flex justify-between items-center gap-4">
           <Button
             variant="outline"
             onClick={goToPreviousQuestion}
             disabled={currentQuestion === 0}
-            className="flex items-center space-x-2 min-w-[100px]"
+            className="flex items-center space-x-2 min-w-[100px] h-11"
           >
             <ChevronLeft className="h-4 w-4" />
             <span>Anterior</span>
@@ -262,7 +262,7 @@ export const MissaoTres = ({ onComplete }: MissaoTresProps) => {
             <Button
               onClick={submitQuiz}
               disabled={isSubmitting || isCompleted || !answers[currentQuestionData.id]}
-              className="flex items-center space-x-2 min-w-[100px]"
+              className="flex items-center space-x-2 min-w-[100px] h-11"
             >
               {isSubmitting ? 'Enviando...' : 'Finalizar'}
             </Button>
@@ -270,7 +270,7 @@ export const MissaoTres = ({ onComplete }: MissaoTresProps) => {
             <Button
               onClick={goToNextQuestion}
               disabled={!answers[currentQuestionData.id]}
-              className="flex items-center space-x-2 min-w-[100px]"
+              className="flex items-center space-x-2 min-w-[100px] h-11"
             >
               <span>Próxima</span>
               <ChevronRight className="h-4 w-4" />

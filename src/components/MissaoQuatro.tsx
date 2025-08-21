@@ -252,7 +252,7 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
   return (
     <div className="h-full flex flex-col min-h-0">
       <ScrollArea className="flex-1">
-        <div className="p-2 pb-20" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 80px)' }}>
+        <div className="p-2 pb-[calc(80px+env(safe-area-inset-bottom,0px))]">
 
           <div className="mb-4">
             <div className="flex justify-between items-center mb-2">
@@ -328,50 +328,51 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
               </RadioGroup>
             )}
 
-            <div className="mt-4 pt-4 pb-6 md:pb-4 lg:pb-4 flex justify-between items-center border-t bg-background">
-              <Button
-                type="button"
-                onClick={() => goToPreviousQuestion()}
-                disabled={currentQuestion === 0}
-                variant="outline"
-                size="sm"
-                className="border-secondary text-secondary hover:bg-secondary hover:text-secondary-foreground"
-              >
-                <ChevronLeft className="w-3 h-3 mr-1" />
-                Anterior
-              </Button>
-              {currentQuestion === questions.length - 1 ? (
-                <Button
-                  type="button"
-                  onClick={() => submitQuiz()}
-                  disabled={isSubmitting || progress < 100}
-                  size="sm"
-                  className="bg-primary hover:bg-primary/90"
-                >
-                  {isSubmitting ? 'Enviando...' : 'Finalizar Missão 4'}
-                </Button>
-              ) : (
-                <Button
-                  type="button"
-                  onClick={() => goToNextQuestion()}
-                  disabled={
-                    currentQuestionData.type === 'star-rating' 
-                      ? !currentQuestionData.softwares.every(software => 
-                          starRatings[currentQuestionData.id]?.[software] > 0
-                        )
-                      : !answers[currentQuestionData.id]
-                  }
-                  size="sm"
-                  className="bg-primary hover:bg-primary/90"
-                >
-                  Próxima
-                  <ChevronRight className="w-3 h-3 ml-1" />
-                </Button>
-              )}
-            </div>
           </div>
         </div>
       </ScrollArea>
+
+      {/* Fixed Navigation Buttons */}
+      <div className="fixed bottom-0 left-0 right-0 border-t bg-background/95 backdrop-blur-sm p-4 pb-[calc(env(safe-area-inset-bottom,0px)+16px)] z-50 shadow-lg">
+        <div className="max-w-4xl mx-auto flex justify-between items-center gap-4">
+          <Button
+            type="button"
+            onClick={() => goToPreviousQuestion()}
+            disabled={currentQuestion === 0}
+            variant="outline"
+            className="flex items-center space-x-2 min-w-[100px] h-11"
+          >
+            <ChevronLeft className="w-4 h-4" />
+            <span>Anterior</span>
+          </Button>
+          {currentQuestion === questions.length - 1 ? (
+            <Button
+              type="button"
+              onClick={() => submitQuiz()}
+              disabled={isSubmitting || progress < 100}
+              className="flex items-center space-x-2 min-w-[100px] h-11"
+            >
+              {isSubmitting ? 'Enviando...' : 'Finalizar Missão 4'}
+            </Button>
+          ) : (
+            <Button
+              type="button"
+              onClick={() => goToNextQuestion()}
+              disabled={
+                currentQuestionData.type === 'star-rating' 
+                  ? !currentQuestionData.softwares.every(software => 
+                      starRatings[currentQuestionData.id]?.[software] > 0
+                    )
+                  : !answers[currentQuestionData.id]
+              }
+              className="flex items-center space-x-2 min-w-[100px] h-11"
+            >
+              <span>Próxima</span>
+              <ChevronRight className="w-4 h-4" />
+            </Button>
+          )}
+        </div>
+      </div>
     </div>
   );
 };
