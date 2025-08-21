@@ -112,80 +112,30 @@ export const ProfileHeroCard: React.FC<ProfileHeroCardProps> = ({
             
             {/* Left side - Enhanced Cody Avatar */}
             <div className="flex-shrink-0 text-center lg:text-left">
-              {/* Large Avatar Circle with enhanced effects and double border */}
+              {/* Large Avatar Circle with FeatureSection styling */}
               <div className="relative mb-6">
-                {/* Outer purple/magenta ring */}
-                <div 
-                  className="w-56 h-56 mx-auto lg:mx-0 rounded-full flex items-center justify-center absolute inset-0 transform -translate-x-2 -translate-y-2"
-                  style={{
-                    border: `6px solid #8B5CF6`,
-                    boxShadow: `
-                      0 0 40px #8B5CF650,
-                      0 0 80px #8B5CF630
-                    `
-                  }}
-                />
-                
-                {/* Main avatar container */}
-                <div 
-                  className="w-48 h-48 mx-auto lg:mx-0 rounded-full flex items-center justify-center relative animate-float-medal overflow-hidden z-10"
-                  style={{
-                    background: `radial-gradient(circle at center, ${profileColor}40, ${profileColor}20, transparent 70%)`,
-                    border: `6px solid ${profileColor}`,
-                    boxShadow: `
-                      0 0 60px ${profileColor}60,
-                      inset 0 0 40px ${profileColor}20,
-                      0 0 100px ${profileColor}30
-                    `
-                  }}
-                >
-                  {/* Avatar Video */}
-                  <video 
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    className="w-full h-full object-cover rounded-full"
-                    style={{
-                      filter: `drop-shadow(0 0 30px ${profileColor}) brightness(1.1) contrast(1.1)`
-                    }}
-                  >
-                    <source src="https://meta.cafeeadhost.com.br/Cody/hero-animation.mp4" type="video/mp4" />
-                  </video>
-                  
-                  {/* Multiple orbiting elements */}
-                  <div 
-                    className="absolute w-4 h-4 rounded-full animate-orbit"
-                    style={{ 
-                      backgroundColor: profileColor,
-                      boxShadow: `0 0 20px ${profileColor}`,
-                      animationDuration: '4s'
-                    }}
-                  />
-                  <div 
-                    className="absolute w-3 h-3 rounded-full animate-orbit"
-                    style={{ 
-                      backgroundColor: profileColor,
-                      boxShadow: `0 0 15px ${profileColor}`,
-                      animationDuration: '6s',
-                      animationDirection: 'reverse'
-                    }}
-                  />
-                  
-                  {/* Enhanced pulse rings */}
-                  <div 
-                    className="absolute inset-0 rounded-full border-4 animate-ping opacity-30"
-                    style={{ borderColor: profileColor }}
-                  />
-                  <div 
-                    className="absolute inset-[-10px] rounded-full border-2 animate-ping opacity-20"
-                    style={{ 
-                      borderColor: profileColor,
-                      animationDuration: '3s',
-                      animationDelay: '1s'
-                    }}
-                  />
+                {/* Glowing circle border - exact same as FeatureSection */}
+                <div className="w-80 h-80 rounded-full bg-gradient-to-r from-neon-purple via-neon-purple to-neon-cyan p-1 shadow-glow">
+                  <div className="w-full h-full rounded-full bg-background/20 backdrop-blur-xl overflow-hidden relative">
+                    <video 
+                      className="w-full h-full object-cover rounded-full"
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                      preload="auto"
+                    >
+                      <source src="https://meta.cafeeadhost.com.br/Cody/hero-animation.mp4" type="video/mp4" />
+                    </video>
+                    {/* Additional glow effect */}
+                    <div className="absolute inset-0 rounded-full bg-gradient-to-t from-transparent via-transparent to-neon-cyan/10"></div>
+                  </div>
                 </div>
+                
+                {/* Floating particles effect - exact same as FeatureSection */}
+                <div className="absolute -top-2 -right-2 w-4 h-4 bg-neon-cyan rounded-full opacity-60 animate-pulse"></div>
+                <div className="absolute top-8 -left-3 w-2 h-2 bg-neon-purple rounded-full opacity-40 animate-pulse delay-500"></div>
+                <div className="absolute -bottom-1 left-8 w-3 h-3 bg-neon-purple rounded-full opacity-50 animate-pulse delay-1000"></div>
               </div>
 
               {/* Enhanced announcement text */}
