@@ -292,83 +292,121 @@ const AdminDashboard = () => {
             </div>
           </div>
 
-          {/* Stats Cards */}
-          <StatsCards 
-            adminStats={stats.adminStats}
-            missionStats={stats.missionStats}
-          />
+          {/* Main Dashboard Tabs */}
+          <Tabs defaultValue="dashboard" className="w-full">
+            <TabsList className="grid w-full grid-cols-3 mb-8">
+              <TabsTrigger value="dashboard" className="flex items-center gap-2">
+                <User className="w-4 h-4" />
+                Dashboard
+              </TabsTrigger>
+              <TabsTrigger value="configuracoes" className="flex items-center gap-2">
+                <Calendar className="w-4 h-4" />
+                Configurações
+              </TabsTrigger>
+              <TabsTrigger value="relatorios" className="flex items-center gap-2">
+                <FileText className="w-4 h-4" />
+                Relatórios
+              </TabsTrigger>
+            </TabsList>
 
-          {/* Game Settings */}
-          <GameSettings className="mb-8 animate-fade-in" />
+            {/* Dashboard Tab */}
+            <TabsContent value="dashboard" className="space-y-8">
+              {/* Stats Cards */}
+              <StatsCards 
+                adminStats={stats.adminStats}
+                missionStats={stats.missionStats}
+              />
 
-          {/* Profile Charts */}
-          <ProfileChart adminStats={stats.adminStats} />
+              {/* Profile Charts */}
+              <ProfileChart adminStats={stats.adminStats} />
 
-          {/* Progresso Detalhado dos Usuários */}
-          <Card className="mb-8 animate-fade-in">
-            <CardHeader>
-              <CardTitle>Progresso Detalhado dos Usuários</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {progressData && (
-                <UserTable
-                  filteredUsers={filteredUsers}
-                  progressData={progressData}
-                  filters={filters}
-                  updateFilter={updateFilter}
-                  filterOptions={filterOptions}
-                  calculateUserTotalScore={calculateUserTotalScore}
-                  getDigitalProfile={getDigitalProfile}
-                  getProfileColor={getProfileColor}
-                />
-              )}
-            </CardContent>
-          </Card>
+              {/* Progresso Detalhado dos Usuários */}
+              <Card className="animate-fade-in">
+                <CardHeader>
+                  <CardTitle>Progresso Detalhado dos Usuários</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {progressData && (
+                    <UserTable
+                      filteredUsers={filteredUsers}
+                      progressData={progressData}
+                      filters={filters}
+                      updateFilter={updateFilter}
+                      filterOptions={filterOptions}
+                      calculateUserTotalScore={calculateUserTotalScore}
+                      getDigitalProfile={getDigitalProfile}
+                      getProfileColor={getProfileColor}
+                    />
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
 
-          {/* Question Manager and Responses */}
-          <Card className="animate-fade-in">
-            <CardHeader>
-              <CardTitle>Gestão de Conteúdo</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Tabs defaultValue="questions" className="w-full">
-                <TabsList className="grid w-full grid-cols-5">
-                  <TabsTrigger value="questions">Perguntas</TabsTrigger>
-                  <TabsTrigger value="mission1" className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full" style={{ backgroundColor: 'hsl(var(--profile-beginner))' }}></span>
-                    Missão 1
-                  </TabsTrigger>
-                  <TabsTrigger value="mission2" className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full" style={{ backgroundColor: 'hsl(var(--profile-explorer))' }}></span>
-                    Missão 2
-                  </TabsTrigger>
-                  <TabsTrigger value="mission3" className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full" style={{ backgroundColor: 'hsl(var(--profile-pro-player))' }}></span>
-                    Missão 3
-                  </TabsTrigger>
-                  <TabsTrigger value="mission4" className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full" style={{ backgroundColor: 'hsl(var(--profile-ninja))' }}></span>
-                    Missão 4
-                  </TabsTrigger>
-                </TabsList>
-                <TabsContent value="questions" className="mt-6">
+            {/* Configurações Tab */}
+            <TabsContent value="configuracoes" className="space-y-8">
+              {/* Game Settings */}
+              <GameSettings className="animate-fade-in" />
+
+              {/* Question Manager */}
+              <Card className="animate-fade-in">
+                <CardHeader>
+                  <CardTitle>Gerenciar Questões</CardTitle>
+                  <p className="text-muted-foreground">
+                    Adicione, edite ou remova questões das missões
+                  </p>
+                </CardHeader>
+                <CardContent>
                   <QuestionManager />
-                </TabsContent>
-                <TabsContent value="mission1" className="mt-6">
-                  {renderResponses(responses1, 'Missão 1 - Quiz Digital')}
-                </TabsContent>
-                <TabsContent value="mission2" className="mt-6">
-                  {renderResponses(responses2, 'Missão 2 - Práticas Digitais')}
-                </TabsContent>
-                <TabsContent value="mission3" className="mt-6">
-                  {renderResponses(responses3, 'Missão 3 - Desafios e Inovação')}
-                </TabsContent>
-                <TabsContent value="mission4" className="mt-6">
-                  {renderResponses(responses4, 'Missão 4 - Ferramentas Digitais')}
-                </TabsContent>
-              </Tabs>
-            </CardContent>
-          </Card>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* Relatórios Tab */}
+            <TabsContent value="relatorios" className="space-y-8">
+              <Card className="animate-fade-in">
+                <CardHeader>
+                  <CardTitle>Respostas das Missões</CardTitle>
+                  <p className="text-muted-foreground">
+                    Visualize e exporte as respostas de cada missão
+                  </p>
+                </CardHeader>
+                <CardContent>
+                  <Tabs defaultValue="mission1" className="w-full">
+                    <TabsList className="grid w-full grid-cols-4">
+                      <TabsTrigger value="mission1" className="flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full" style={{ backgroundColor: 'hsl(var(--profile-beginner))' }}></span>
+                        Missão 1
+                      </TabsTrigger>
+                      <TabsTrigger value="mission2" className="flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full" style={{ backgroundColor: 'hsl(var(--profile-explorer))' }}></span>
+                        Missão 2
+                      </TabsTrigger>
+                      <TabsTrigger value="mission3" className="flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full" style={{ backgroundColor: 'hsl(var(--profile-pro-player))' }}></span>
+                        Missão 3
+                      </TabsTrigger>
+                      <TabsTrigger value="mission4" className="flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full" style={{ backgroundColor: 'hsl(var(--profile-ninja))' }}></span>
+                        Missão 4
+                      </TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="mission1" className="mt-6">
+                      {renderResponses(responses1, 'Missão 1 - Quiz Digital')}
+                    </TabsContent>
+                    <TabsContent value="mission2" className="mt-6">
+                      {renderResponses(responses2, 'Missão 2 - Práticas Digitais')}
+                    </TabsContent>
+                    <TabsContent value="mission3" className="mt-6">
+                      {renderResponses(responses3, 'Missão 3 - Desafios e Inovação')}
+                    </TabsContent>
+                    <TabsContent value="mission4" className="mt-6">
+                      {renderResponses(responses4, 'Missão 4 - Ferramentas Digitais')}
+                    </TabsContent>
+                  </Tabs>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
     );
