@@ -61,8 +61,8 @@ export const Footer = () => {
   }
 
   return (
-    <footer className="relative py-16 px-4 sm:px-6 lg:px-8 pb-[env(safe-area-inset-bottom)]">
-      <div className="max-w-md mx-auto">
+    <footer className="relative min-h-[100svh] flex items-center justify-center px-4 sm:px-6 lg:px-8 pb-[env(safe-area-inset-bottom)]">
+      <div className="max-w-md mx-auto w-full">
         <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-8 shadow-neon">
 
           <div className="text-center mb-6">
@@ -149,7 +149,6 @@ export const Footer = () => {
             </div>
           </div>
         </div>
-        <div aria-hidden className="h-24 sm:h-40" />
       </div>
     </footer>
   );
