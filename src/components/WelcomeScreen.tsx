@@ -381,18 +381,22 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
           {/* Estatísticas compactas no Header Desktop (à direita) */}
           <div className="hidden lg:flex items-center gap-4 mx-4">
             <div className="text-center">
-              <AnimatedXP 
-                startValue={xpBeforeBonus || userProgress.total_xp}
-                endValue={userProgress.total_xp}
-                triggerAnimation={shouldAnimateXP}
-                onAnimationComplete={() => setShouldAnimateXP(false)}
-                className="text-sm font-bold text-primary"
-              />
-              <div className="text-muted-foreground text-xs">XP</div>
+              <div className="bg-gradient-to-br from-primary/20 to-primary/10 border border-primary/30 rounded-lg px-4 py-2 shadow-lg">
+                <AnimatedXP 
+                  startValue={xpBeforeBonus || userProgress.total_xp}
+                  endValue={userProgress.total_xp}
+                  triggerAnimation={shouldAnimateXP}
+                  onAnimationComplete={() => setShouldAnimateXP(false)}
+                  className="text-lg font-bold text-primary"
+                />
+                <div className="text-primary/80 text-xs font-medium">XP</div>
+              </div>
             </div>
             <div className="text-center">
-              <div className="text-sm font-bold text-accent">{userProgress.completedMissionsCount}/4</div>
-              <div className="text-muted-foreground text-xs">Missões</div>
+              <div className="bg-gradient-to-br from-accent/20 to-accent/10 border border-accent/30 rounded-lg px-4 py-2 shadow-lg">
+                <div className="text-lg font-bold text-accent">{userProgress.completedMissionsCount}/4</div>
+                <div className="text-accent/80 text-xs font-medium">Missões</div>
+              </div>
             </div>
             <MedalBadges
               completed={{
@@ -452,19 +456,23 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
       <div className="block lg:hidden bg-card/80 backdrop-blur-xl border-b border-secondary/30 px-3 py-2">
         <div className="flex items-start justify-between gap-2 w-full">
           <div className="text-center shrink-0 flex flex-col items-center">
-            <AnimatedXP 
-              startValue={xpBeforeBonus || userProgress.total_xp}
-              endValue={userProgress.total_xp}
-              triggerAnimation={shouldAnimateXP}
-              onAnimationComplete={() => setShouldAnimateXP(false)}
-              className="text-sm font-bold text-primary leading-none"
-            />
-            <div className="text-muted-foreground text-xs leading-none mt-0.5">XP</div>
+            <div className="bg-gradient-to-br from-primary/20 to-primary/10 border border-primary/30 rounded-lg px-3 py-2 shadow-md">
+              <AnimatedXP 
+                startValue={xpBeforeBonus || userProgress.total_xp}
+                endValue={userProgress.total_xp}
+                triggerAnimation={shouldAnimateXP}
+                onAnimationComplete={() => setShouldAnimateXP(false)}
+                className="text-lg font-bold text-primary leading-none"
+              />
+              <div className="text-primary/80 text-xs leading-none mt-1 font-medium">XP</div>
+            </div>
           </div>
           
           <div className="text-center shrink-0 flex flex-col items-center">
-            <div className="text-sm font-bold text-accent leading-none">{userProgress.completedMissionsCount}/4</div>
-            <div className="text-muted-foreground text-xs leading-none mt-0.5">Missões</div>
+            <div className="bg-gradient-to-br from-accent/20 to-accent/10 border border-accent/30 rounded-lg px-3 py-2 shadow-md">
+              <div className="text-lg font-bold text-accent leading-none">{userProgress.completedMissionsCount}/4</div>
+              <div className="text-accent/80 text-xs leading-none mt-1 font-medium">Missões</div>
+            </div>
           </div>
           
           <div className="flex-1 min-w-0">
