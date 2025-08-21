@@ -1088,6 +1088,7 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; u
               medals={achievements}
               xp={currentXp}
               totalScore={gameData.score.total}
+              timeBonus={timeBonus}
               className="max-w-none"
             />
 

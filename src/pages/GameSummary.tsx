@@ -462,6 +462,7 @@ const GameSummary = () => {
               medals={achievements}
               xp={xp}
               totalScore={score.total}
+              timeBonus={timeBonus}
             />
           </section>
 

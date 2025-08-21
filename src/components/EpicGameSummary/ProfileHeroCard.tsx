@@ -20,6 +20,7 @@ interface ProfileHeroCardProps {
   medals: Medal[];
   xp: number;
   totalScore: number;
+  timeBonus?: number;
   className?: string;
 }
 
@@ -31,6 +32,7 @@ export const ProfileHeroCard: React.FC<ProfileHeroCardProps> = ({
   medals,
   xp,
   totalScore,
+  timeBonus = 0,
   className
 }) => {
   const profileColor = 'hsl(var(--neon-cyan))'; // Always use neon cyan
@@ -149,6 +151,15 @@ export const ProfileHeroCard: React.FC<ProfileHeroCardProps> = ({
                 <p className="text-lg sm:text-xl lg:text-2xl text-foreground/90 font-medium">
                   Chegamos ao final dessa primeira etapa
                 </p>
+                
+                {/* Mensagem de bônus por agilidade */}
+                {timeBonus > 0 && (
+                  <div className="bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border border-yellow-500/30 rounded-lg p-3 sm:p-4">
+                    <p className="text-sm sm:text-base lg:text-lg font-semibold text-yellow-400 text-center">
+                      🚀 Você ganhou {timeBonus} XPs Bonus por agilidade
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
 
