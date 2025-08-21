@@ -38,6 +38,8 @@ const AdminDashboard = () => {
     responses4,
     progressData,
     adminUsers,
+    allProfiles,
+    totalProfiles,
     isLoading: dashboardLoading,
     stats,
     calculateUserTotalScore,
@@ -352,7 +354,7 @@ const AdminDashboard = () => {
               <StarRatingsAnalytics 
                 responses={responses4 || []} 
                 questions={[]} 
-                profiles={adminUsers?.data || []} 
+                profiles={allProfiles || []} 
               />
             </TabsContent>
 

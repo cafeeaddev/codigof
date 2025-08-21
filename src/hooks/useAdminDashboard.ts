@@ -10,6 +10,7 @@ export const useAdminDashboard = () => {
   const [responses4, setResponses4] = useState<ResponseData[]>([]);
   const [progressData, setProgressData] = useState<{ data: UserProgress[], userProfiles: Map<string, UserProfile>, userProfilesByEmail: Map<string, UserProfile> } | null>(null);
   const [adminUsers, setAdminUsers] = useState<{ data: any[] } | null>(null);
+  const [allProfiles, setAllProfiles] = useState<any[]>([]);
   const [totalProfiles, setTotalProfiles] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -273,6 +274,7 @@ export const useAdminDashboard = () => {
         userProfilesByEmail 
       });
       setAdminUsers(adminUsers);
+      setAllProfiles(allProfiles.data || []);
 
     } catch (error) {
       console.error('Error loading responses:', error);
@@ -297,6 +299,8 @@ export const useAdminDashboard = () => {
     responses4,
     progressData,
     adminUsers,
+    allProfiles,
+    totalProfiles,
     isLoading,
     stats,
     calculateUserTotalScore,

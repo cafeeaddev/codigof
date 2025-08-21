@@ -18,22 +18,47 @@ export const StarRatingsAnalytics = ({ responses, questions, profiles }: StarRat
   const [selectedSoftware, setSelectedSoftware] = useState<string>("all");
 
   const competencyData = useMemo(() => {
-    if (!responses || !questions) return [];
+    console.log('Processing competency data...');
+    console.log('Responses:', responses);
+    console.log('Profiles:', profiles);
+    
+    if (!responses || !Array.isArray(responses) || responses.length === 0) {
+      console.log('No responses data available');
+      return [];
+    }
 
-    return responses.flatMap(response => {
-      const starRatings = response.respostas?.starRatings || {};
-      const userProfile = profiles.find(p => p.user_id === response.user_id);
+    const data = responses.flatMap(response => {
+      if (!response.respostas?.starRatings) {
+        console.log('No starRatings for response:', response.nome);
+        return [];
+      }
+
+      const starRatings = response.respostas.starRatings;
+      const userProfile = profiles.find(p => p.email === response.email);
       
-      return Object.entries(starRatings).map(([software, rating]) => ({
-        userId: response.user_id,
-        userName: response.nome,
-        userEmail: response.email,
-        userArea: userProfile?.area || 'Não informado',
-        software: software,
-        rating: Number(rating),
-        ratingLabel: getRatingLabel(Number(rating))
-      }));
+      // Processar star ratings aninhados por pergunta
+      const ratings = [];
+      Object.values(starRatings).forEach((questionRatings: any) => {
+        if (typeof questionRatings === 'object') {
+          Object.entries(questionRatings).forEach(([software, rating]) => {
+            ratings.push({
+              userId: response.user_id,
+              userName: response.nome,
+              userEmail: response.email,
+              userArea: userProfile?.area || 'Não informado',
+              software: software,
+              rating: Number(rating),
+              ratingLabel: getRatingLabel(Number(rating))
+            });
+          });
+        }
+      });
+
+      return ratings;
     });
+
+    console.log('Processed competency data:', data);
+    return data;
   }, [responses, questions, profiles]);
 
   const softwareList = useMemo(() => {
@@ -58,8 +83,8 @@ export const StarRatingsAnalytics = ({ responses, questions, profiles }: StarRat
     if (filteredData.length === 0) return { average: 0, total: 0, distribution: {} };
 
     const total = filteredData.length;
-    const sum = filteredData.reduce((acc, item) => acc + item.rating, 0);
-    const average = sum / total;
+    const sum = filteredData.reduce((acc, item) => acc + (item.rating || 0), 0);
+    const average = total > 0 ? sum / total : 0;
 
     const distribution = filteredData.reduce((acc, item) => {
       const label = item.ratingLabel;
@@ -67,6 +92,7 @@ export const StarRatingsAnalytics = ({ responses, questions, profiles }: StarRat
       return acc;
     }, {} as Record<string, number>);
 
+    console.log('Overall stats:', { average, total, distribution });
     return { average, total, distribution };
   }, [filteredData]);
 
@@ -144,11 +170,11 @@ export const StarRatingsAnalytics = ({ responses, questions, profiles }: StarRat
         </CardHeader>
         <CardContent>
           <div className="flex flex-wrap gap-2">
-            {Object.entries(overallStats.distribution).map(([level, count]) => (
-              <Badge key={level} variant="outline" className="text-sm">
-                {level}: {count} ({((count / overallStats.total) * 100).toFixed(1)}%)
-              </Badge>
-            ))}
+             {Object.entries(overallStats.distribution).map(([level, count]) => (
+               <Badge key={level} variant="outline" className="text-sm">
+                 {level}: {Number(count)} ({overallStats.total > 0 ? ((Number(count) / overallStats.total) * 100).toFixed(1) : 0}%)
+               </Badge>
+             ))}
           </div>
         </CardContent>
       </Card>
