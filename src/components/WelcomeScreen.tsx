@@ -368,11 +368,11 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
           
 
           {/* Avatar + Nome/Área */}
-          <div className="flex items-center gap-2 ml-2 md:ml-8 mr-auto max-w-[45vw] sm:max-w-[40vw] md:max-w-[50vw]">
+          <div className="flex items-center gap-2 ml-2 md:ml-8 mr-auto max-w-[35vw] sm:max-w-[30vw] md:max-w-[40vw]">
             <div className="w-8 h-8 md:w-10 md:h-10 bg-secondary/20 rounded-full flex items-center justify-center border border-secondary/50">
               <User className="w-4 h-4 md:w-5 md:h-5 text-secondary" />
             </div>
-            <div className="min-w-0 mr-6 sm:mr-8 md:mr-12 lg:mr-0">
+            <div className="min-w-0 mr-8 sm:mr-12 md:mr-16 lg:mr-0">
               <h1 className="text-secondary text-sm md:text-base font-bold tracking-wider truncate">{userProfile.nome || 'Usuário'}</h1>
               <p className="text-muted-foreground text-xs md:text-sm truncate">{userProfile.cargo?.replace(/^\d+-\s*/, '').trim()}</p>
             </div>
@@ -417,25 +417,28 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
             />
             
             {/* Assistente IA integrado */}
-            <Button
-              onClick={() => setShowTutorial(true)}
-              className="bg-transparent border border-secondary/30 text-secondary hover:bg-secondary/10 hover:text-secondary transition-all duration-200 p-2 rounded-full w-10 h-10 flex items-center justify-center ml-3"
-            >
-              <div className="relative flex items-center justify-center w-6 h-6 rounded-full overflow-hidden bg-gradient-to-br from-primary/20 to-secondary/20 border border-primary/30">
-                {codyVideoUrl && (
-                  <video
-                    src={codyVideoUrl}
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    className="w-full h-full object-cover"
-                  />
-                )}
-                {/* Bolinha indicadora de IA ativa */}
-                <div className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse border border-background"></div>
+            <div className="flex flex-col items-center ml-3">
+              <Button
+                onClick={() => setShowTutorial(true)}
+                className="bg-transparent border border-secondary/30 text-secondary hover:bg-secondary/10 hover:text-secondary transition-all duration-200 p-2 rounded-full w-12 h-12 flex items-center justify-center"
+              >
+                <div className="relative flex items-center justify-center w-8 h-8 rounded-full overflow-hidden bg-gradient-to-br from-primary/20 to-secondary/20 border border-primary/30">
+                  {codyVideoUrl && (
+                    <video
+                      src={codyVideoUrl}
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      className="w-full h-full object-cover"
+                    />
+                  )}
+                </div>
+              </Button>
+              <div className="text-secondary/90 text-xs mt-1 text-center leading-none font-medium">
+                Precisa de<br/>Ajuda?
               </div>
-            </Button>
+            </div>
           </div>
           
           
@@ -453,34 +456,34 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
       </div>
 
       {/* Estatísticas Mobile/Tablet - Layout otimizado */}
-      <div className="block lg:hidden bg-card/95 backdrop-blur-xl border-b border-secondary/30 px-3 py-3">
-        <div className="flex items-center justify-between gap-3 w-full">
+      <div className="block lg:hidden bg-card/95 backdrop-blur-xl border-b border-secondary/30 px-2 py-3">
+        <div className="flex items-center justify-between gap-2 w-full">
           
           {/* XP Card */}
           <div className="flex flex-col items-center">
-            <div className="bg-gradient-to-br from-primary/25 to-primary/15 border border-primary/40 rounded-xl px-4 py-2.5 shadow-lg min-w-[70px] text-center">
+            <div className="bg-gradient-to-br from-primary/25 to-primary/15 border border-primary/40 rounded-lg px-2.5 py-2 shadow-lg min-w-[60px] text-center">
               <AnimatedXP 
                 startValue={xpBeforeBonus || userProgress.total_xp}
                 endValue={userProgress.total_xp}
                 triggerAnimation={shouldAnimateXP}
                 onAnimationComplete={() => setShouldAnimateXP(false)}
-                className="text-xl font-bold text-primary leading-none"
+                className="text-lg font-bold text-primary leading-none"
               />
-              <div className="text-primary/90 text-xs leading-none mt-1 font-semibold tracking-wide">XP</div>
+              <div className="text-primary/90 text-xs leading-none mt-0.5 font-semibold">XP</div>
             </div>
           </div>
           
           {/* Missões Card */}
           <div className="flex flex-col items-center">
-            <div className="bg-gradient-to-br from-accent/25 to-accent/15 border border-accent/40 rounded-xl px-4 py-2.5 shadow-lg min-w-[70px] text-center">
-              <div className="text-xl font-bold text-accent leading-none">{userProgress.completedMissionsCount}/4</div>
-              <div className="text-accent/90 text-xs leading-none mt-1 font-semibold tracking-wide">Missões</div>
+            <div className="bg-gradient-to-br from-accent/25 to-accent/15 border border-accent/40 rounded-lg px-2.5 py-2 shadow-lg min-w-[60px] text-center">
+              <div className="text-lg font-bold text-accent leading-none">{userProgress.completedMissionsCount}/4</div>
+              <div className="text-accent/90 text-xs leading-none mt-0.5 font-semibold">Missões</div>
             </div>
           </div>
           
           {/* Medalhas Section */}
-          <div className="flex-1 flex justify-center">
-            <div className="bg-card/50 border border-secondary/30 rounded-xl px-3 py-2 shadow-md">
+          <div className="flex-1 flex justify-center px-1">
+            <div className="bg-card/40 border border-secondary/20 rounded-lg px-2 py-1.5 shadow-sm">
               <MedalBadges
                 completed={{
                   m1: completedMissions.has(1),
@@ -503,12 +506,12 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
           
           {/* Assistente IA */}
           <div className="flex flex-col items-center">
-            <div className="bg-gradient-to-br from-secondary/20 to-secondary/10 border border-secondary/40 rounded-xl p-2 shadow-lg">
+            <div className="bg-gradient-to-br from-secondary/20 to-secondary/10 border border-secondary/30 rounded-lg p-1.5 shadow-md">
               <Button
                 onClick={() => setShowTutorial(true)}
-                className="bg-transparent hover:bg-secondary/10 transition-all duration-200 p-1 rounded-full w-10 h-10 flex items-center justify-center"
+                className="bg-transparent hover:bg-secondary/10 transition-all duration-200 p-1 rounded-full w-8 h-8 flex items-center justify-center"
               >
-                <div className="relative flex items-center justify-center w-8 h-8 rounded-full overflow-hidden bg-gradient-to-br from-primary/30 to-secondary/30 border border-primary/40">
+                <div className="relative flex items-center justify-center w-6 h-6 rounded-full overflow-hidden bg-gradient-to-br from-primary/30 to-secondary/30 border border-primary/40">
                   {codyVideoUrl && (
                     <video
                       src={codyVideoUrl}
@@ -522,7 +525,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                 </div>
               </Button>
             </div>
-            <div className="text-secondary/90 text-xs mt-1.5 text-center leading-none font-medium">
+            <div className="text-secondary/90 text-xs mt-1 text-center leading-none font-medium">
               Precisa de<br/>Ajuda?
             </div>
           </div>
