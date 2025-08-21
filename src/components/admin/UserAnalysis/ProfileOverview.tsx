@@ -1,8 +1,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { UserProgress, UserProfile } from '@/types/admin';
+import { UserProgress, UserProfile, ResponseData } from '@/types/admin';
 import { Trophy, Clock, Zap, Target } from 'lucide-react';
+import { useMissionScores } from '@/hooks/useMissionScores';
 
 interface ProfileOverviewProps {
   user: UserProgress;
@@ -10,6 +11,11 @@ interface ProfileOverviewProps {
   totalScore: number;
   profile: { profile: string; sublevel: string };
   profileColor: string;
+  allResponses: {
+    missao1: ResponseData[];
+    missao2: ResponseData[];
+    missao3: ResponseData[];
+  };
 }
 
 export const ProfileOverview = ({
@@ -17,8 +23,21 @@ export const ProfileOverview = ({
   userProfile,
   totalScore,
   profile,
-  profileColor
+  profileColor,
+  allResponses
 }: ProfileOverviewProps) => {
+  // Calcular pontuações individuais das missões
+  const missionScores = useMissionScores(
+    userProfile.email,
+    allResponses.missao1,
+    allResponses.missao2,
+    allResponses.missao3,
+    {
+      missao_1_completed: user.missao_1_completed,
+      missao_2_completed: user.missao_2_completed,
+      missao_3_completed: user.missao_3_completed
+    }
+  );
   const completedMissions = [
     user.missao_1_completed,
     user.missao_2_completed,
@@ -30,10 +49,10 @@ export const ProfileOverview = ({
   const playTimeMinutes = Math.floor(((user.total_play_time || 0) % 3600) / 60);
 
   const getScoreColor = (score: number) => {
-    if (score >= 25) return 'hsl(var(--profile-ninja))';
-    if (score >= 21) return 'hsl(var(--profile-pro-player))';
-    if (score >= 18) return 'hsl(var(--profile-explorer))';
-    if (score >= 14) return 'hsl(var(--profile-beginner-plus))';
+    if (score >= 42) return 'hsl(var(--profile-ninja))';
+    if (score >= 31) return 'hsl(var(--profile-pro-player))';
+    if (score >= 25) return 'hsl(var(--profile-explorer))';
+    if (score >= 18) return 'hsl(var(--profile-beginner-plus))';
     return 'hsl(var(--profile-beginner))';
   };
 
@@ -62,12 +81,12 @@ export const ProfileOverview = ({
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
                 <span>Pontuação Total</span>
-                <span className="font-medium" style={{ color: getScoreColor(totalScore) }}>
-                  {totalScore.toFixed(1)}/30 pts
+                <span className="font-medium" style={{ color: getScoreColor(missionScores.total.score) }}>
+                  {missionScores.total.score}/60 pts
                 </span>
               </div>
               <Progress 
-                value={(totalScore / 30) * 100} 
+                value={(missionScores.total.score / 60) * 100} 
                 className="h-2"
               />
             </div>
@@ -147,9 +166,9 @@ export const ProfileOverview = ({
         <CardContent>
           <div className="grid grid-cols-3 gap-8">
             {[
-              { name: 'Mindset Digital', score: user.missao_1_completed ? totalScore * 0.33 : 0, max: 10 },
-              { name: 'Comportamento', score: user.missao_2_completed ? totalScore * 0.25 : 0, max: 7.5 },
-              { name: 'Aplicação Prática', score: user.missao_3_completed ? totalScore * 0.42 : 0, max: 12.5 }
+              { name: 'Mindset Digital', score: missionScores.mission1.score, max: missionScores.mission1.maxScore },
+              { name: 'Comportamento', score: missionScores.mission2.score, max: missionScores.mission2.maxScore },
+              { name: 'Aplicação Prática', score: missionScores.mission3.score, max: missionScores.mission3.maxScore }
             ].map((mission, idx) => (
               <div key={idx} className="text-center space-y-2">
                 <h4 className="font-medium text-sm">{mission.name}</h4>
@@ -176,7 +195,7 @@ export const ProfileOverview = ({
                   </svg>
                   <div className="absolute inset-0 flex items-center justify-center">
                     <span className="text-sm font-bold">
-                      {mission.score.toFixed(1)}
+                      {mission.score}
                     </span>
                   </div>
                 </div>

@@ -78,13 +78,18 @@ export const UserAnalysisDialog = ({
 
           <TabsContent value="overview" className="flex-1 overflow-hidden">
             <div className="h-full max-h-[60vh] overflow-y-auto">
-              <ProfileOverview
-                user={user}
-                userProfile={userProfile}
-                totalScore={totalScore}
-                profile={profile}
-                profileColor={profileColor}
-              />
+                <ProfileOverview
+                  user={user}
+                  userProfile={userProfile}
+                  totalScore={totalScore}
+                  profile={profile}
+                  profileColor={profileColor}
+                  allResponses={{
+                    missao1: allResponses.missao1,
+                    missao2: allResponses.missao2,
+                    missao3: allResponses.missao3
+                  }}
+                />
             </div>
           </TabsContent>
 
