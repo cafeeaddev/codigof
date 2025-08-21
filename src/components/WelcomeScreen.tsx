@@ -413,7 +413,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
             />
           </div>
           
-          {/* Botão Precisa de Ajuda Desktop */}
+          {/* Botão Precisa de Ajuda - Responsivo */}
           <Button
             onClick={() => setShowTutorial(true)}
             variant="outline"
@@ -472,15 +472,6 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
             ]}
           />
           
-          {/* Botão Precisa de Ajuda Mobile */}
-          <Button
-            onClick={() => setShowTutorial(true)}
-            variant="outline"
-            size="sm"
-            className="bg-transparent border-secondary text-secondary hover:bg-secondary hover:text-secondary-foreground shrink-0 ml-4"
-          >
-            <HelpCircle className="w-3 h-3" />
-          </Button>
         </div>
         </div>
 
