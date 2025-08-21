@@ -34,13 +34,25 @@ export const InsightsPanel = ({
 
   // Analisar padrões de resposta
   const analyzeResponsePattern = (responses: any) => {
-    if (!responses) return { A: 0, B: 0, C: 0 };
-    const pattern = { A: 0, B: 0, C: 0 };
-    Object.values(responses).forEach((answer: any) => {
-      if (answer === 'A' || answer === 'B' || answer === 'C') {
-        pattern[answer]++;
-      }
-    });
+    if (!responses) return { A: 0, B: 0, C: 0, D: 0, E: 0 };
+    const pattern = { A: 0, B: 0, C: 0, D: 0, E: 0 };
+    
+    if (Array.isArray(responses)) {
+      // Estrutura de array: [{pergunta: 53, resposta: "E", pontuacao: 5}]
+      responses.forEach((item: any) => {
+        const answer = item.resposta;
+        if (answer && pattern.hasOwnProperty(answer)) {
+          pattern[answer as keyof typeof pattern]++;
+        }
+      });
+    } else {
+      // Estrutura de objeto
+      Object.values(responses).forEach((answer: any) => {
+        if (answer && pattern.hasOwnProperty(answer)) {
+          pattern[answer as keyof typeof pattern]++;
+        }
+      });
+    }
     return pattern;
   };
 
@@ -53,7 +65,9 @@ export const InsightsPanel = ({
     return {
       A: mission1Pattern.A + mission2Pattern.A + mission3Pattern.A,
       B: mission1Pattern.B + mission2Pattern.B + mission3Pattern.B,
-      C: mission1Pattern.C + mission2Pattern.C + mission3Pattern.C
+      C: mission1Pattern.C + mission2Pattern.C + mission3Pattern.C,
+      D: mission1Pattern.D + mission2Pattern.D + mission3Pattern.D,
+      E: mission1Pattern.E + mission2Pattern.E + mission3Pattern.E
     };
   };
 
@@ -222,30 +236,37 @@ export const InsightsPanel = ({
           <CardTitle>Análise de Padrões</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            <div className="grid grid-cols-3 gap-4">
-              {[
-                { letter: 'A', label: 'Conservador', count: totalPattern.A, color: 'hsl(var(--profile-beginner))' },
-                { letter: 'B', label: 'Moderado', count: totalPattern.B, color: 'hsl(var(--profile-explorer))' },
-                { letter: 'C', label: 'Progressivo', count: totalPattern.C, color: 'hsl(var(--profile-ninja))' }
-              ].map(pattern => (
-                <div key={pattern.letter} className="text-center p-3 border rounded-lg">
-                  <div 
-                    className="w-8 h-8 rounded-full mx-auto mb-2 flex items-center justify-center text-white font-bold"
-                    style={{ backgroundColor: pattern.color }}
-                  >
-                    {pattern.letter}
+            <div className="space-y-4">
+              <div className="grid grid-cols-5 gap-2">
+                {[
+                  { letter: 'A', label: 'Conservador', count: totalPattern.A, color: 'hsl(var(--profile-beginner))' },
+                  { letter: 'B', label: 'Moderado', count: totalPattern.B, color: 'hsl(var(--profile-explorer))' },
+                  { letter: 'C', label: 'Progressivo', count: totalPattern.C, color: 'hsl(var(--profile-ninja))' },
+                  { letter: 'D', label: 'Avançado', count: totalPattern.D, color: 'hsl(var(--profile-pro-player))' },
+                  { letter: 'E', label: 'Especialista', count: totalPattern.E, color: 'hsl(var(--primary))' }
+                ].filter(pattern => pattern.count > 0).map(pattern => (
+                  <div key={pattern.letter} className="text-center p-2 border rounded-lg">
+                    <div 
+                      className="w-6 h-6 rounded-full mx-auto mb-1 flex items-center justify-center text-white font-bold text-xs"
+                      style={{ backgroundColor: pattern.color }}
+                    >
+                      {pattern.letter}
+                    </div>
+                    <p className="text-xs font-medium">{pattern.label}</p>
+                    <p className="text-sm font-bold">{pattern.count}</p>
+                    <p className="text-xs text-muted-foreground">respostas</p>
                   </div>
-                  <p className="text-sm font-medium">{pattern.label}</p>
-                  <p className="text-lg font-bold">{pattern.count}</p>
-                  <p className="text-xs text-muted-foreground">respostas</p>
-                </div>
-              ))}
+                ))}
             </div>
             
             <div className="bg-muted/50 rounded-lg p-4">
               <p className="text-sm">
-                <strong>Padrão Dominante:</strong> {dominantPattern === 'A' ? 'Conservador' : dominantPattern === 'B' ? 'Moderado' : 'Progressivo'}
+                <strong>Padrão Dominante:</strong> {
+                  dominantPattern === 'A' ? 'Conservador' : 
+                  dominantPattern === 'B' ? 'Moderado' : 
+                  dominantPattern === 'C' ? 'Progressivo' :
+                  dominantPattern === 'D' ? 'Avançado' : 'Especialista'
+                }
               </p>
               <p className="text-xs text-muted-foreground mt-1">
                 Baseado no conjunto de respostas das missões 1, 2 e 3.

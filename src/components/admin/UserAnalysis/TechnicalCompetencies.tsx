@@ -49,21 +49,49 @@ export const TechnicalCompetencies = ({
   }> = [];
 
   // Extrair competências das respostas
-  Object.entries(responses).forEach(([questionId, answer]: [string, any]) => {
-    const question = questions.find(q => q.id.toString() === questionId);
-    if (question && question.softwares && typeof answer === 'object' && answer.ratings) {
-      question.softwares.forEach((software: string, index: number) => {
-        const rating = answer.ratings[index];
-        if (rating > 0) {
-          competencyData.push({
-            software,
-            rating,
-            category: question.question_text || 'Geral'
-          });
-        }
-      });
-    }
-  });
+  if (responses.starRatings) {
+    // Nova estrutura: starRatings: {"19": {"Atlas": 5, "Audit Report": 5}}
+    Object.entries(responses.starRatings).forEach(([questionId, softwares]: [string, any]) => {
+      if (typeof softwares === 'object' && softwares) {
+        Object.entries(softwares).forEach(([software, rating]: [string, any]) => {
+          if (rating > 0) {
+            // Mapear categoria baseada no questionId ou software
+            let category = 'Ferramentas Gerais';
+            if (software.toLowerCase().includes('excel') || software.toLowerCase().includes('power')) {
+              category = 'Análise de Dados';
+            } else if (software.toLowerCase().includes('atlas') || software.toLowerCase().includes('audit')) {
+              category = 'Auditoria e Compliance';
+            } else if (software.toLowerCase().includes('tableau') || software.toLowerCase().includes('qlik')) {
+              category = 'Business Intelligence';
+            }
+            
+            competencyData.push({
+              software,
+              rating: Number(rating),
+              category
+            });
+          }
+        });
+      }
+    });
+  } else {
+    // Estrutura antiga compatível
+    Object.entries(responses).forEach(([questionId, answer]: [string, any]) => {
+      const question = questions.find(q => q.id.toString() === questionId);
+      if (question && question.softwares && typeof answer === 'object' && answer.ratings) {
+        question.softwares.forEach((software: string, index: number) => {
+          const rating = answer.ratings[index];
+          if (rating > 0) {
+            competencyData.push({
+              software,
+              rating,
+              category: question.question_text || 'Geral'
+            });
+          }
+        });
+      }
+    });
+  }
 
   // Agrupar por categoria
   const categories = [...new Set(competencyData.map(item => item.category))];

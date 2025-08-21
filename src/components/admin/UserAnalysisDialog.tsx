@@ -44,7 +44,7 @@ export const UserAnalysisDialog = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-6xl max-h-[90vh] overflow-hidden">
+      <DialogContent className="max-w-6xl max-h-[90vh] overflow-hidden flex flex-col">
         <DialogHeader className="border-b pb-4">
           <div className="flex items-center justify-between">
             <div>
@@ -68,16 +68,16 @@ export const UserAnalysisDialog = ({
           </div>
         </DialogHeader>
 
-        <div className="overflow-y-auto flex-1">
-          <Tabs defaultValue="overview" className="w-full">
-            <TabsList className="grid w-full grid-cols-4 mb-6">
-              <TabsTrigger value="overview">Visão Geral</TabsTrigger>
-              <TabsTrigger value="missions">Análise por Missão</TabsTrigger>
-              <TabsTrigger value="technical">Competências Técnicas</TabsTrigger>
-              <TabsTrigger value="insights">Insights & Recomendações</TabsTrigger>
-            </TabsList>
+        <Tabs defaultValue="overview" className="w-full flex-1 flex flex-col overflow-hidden">
+          <TabsList className="grid w-full grid-cols-4 mb-6 flex-shrink-0">
+            <TabsTrigger value="overview">Visão Geral</TabsTrigger>
+            <TabsTrigger value="missions">Análise por Missão</TabsTrigger>
+            <TabsTrigger value="technical">Competências Técnicas</TabsTrigger>
+            <TabsTrigger value="insights">Insights & Recomendações</TabsTrigger>
+          </TabsList>
 
-            <TabsContent value="overview" className="space-y-6">
+          <TabsContent value="overview" className="flex-1 overflow-hidden">
+            <div className="h-full max-h-[60vh] overflow-y-auto">
               <ProfileOverview
                 user={user}
                 userProfile={userProfile}
@@ -85,27 +85,33 @@ export const UserAnalysisDialog = ({
                 profile={profile}
                 profileColor={profileColor}
               />
-            </TabsContent>
+            </div>
+          </TabsContent>
 
-            <TabsContent value="missions" className="space-y-6">
+          <TabsContent value="missions" className="flex-1 overflow-hidden">
+            <div className="h-full max-h-[60vh] overflow-y-auto">
               <MissionAnalysis
                 user={user}
                 userProfile={userProfile}
                 allResponses={allResponses}
                 totalScore={totalScore}
               />
-            </TabsContent>
+            </div>
+          </TabsContent>
 
-            <TabsContent value="technical" className="space-y-6">
+          <TabsContent value="technical" className="flex-1 overflow-hidden">
+            <div className="h-full max-h-[60vh] overflow-y-auto">
               <TechnicalCompetencies
                 user={user}
                 userProfile={userProfile}
                 allResponses={allResponses}
                 questions={questions}
               />
-            </TabsContent>
+            </div>
+          </TabsContent>
 
-            <TabsContent value="insights" className="space-y-6">
+          <TabsContent value="insights" className="flex-1 overflow-hidden">
+            <div className="h-full max-h-[60vh] overflow-y-auto">
               <InsightsPanel
                 user={user}
                 userProfile={userProfile}
@@ -113,9 +119,9 @@ export const UserAnalysisDialog = ({
                 profile={profile}
                 allResponses={allResponses}
               />
-            </TabsContent>
-          </Tabs>
-        </div>
+            </div>
+          </TabsContent>
+        </Tabs>
       </DialogContent>
     </Dialog>
   );

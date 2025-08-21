@@ -97,7 +97,9 @@ export const MissionAnalysis = ({
     const answerMap: Record<string, string> = {
       'A': 'Opção A - Abordagem conservadora',
       'B': 'Opção B - Abordagem moderada', 
-      'C': 'Opção C - Abordagem progressiva'
+      'C': 'Opção C - Abordagem progressiva',
+      'D': 'Opção D - Abordagem avançada',
+      'E': 'Opção E - Abordagem especialista'
     };
     return answerMap[answer] || answer;
   };
@@ -106,37 +108,36 @@ export const MissionAnalysis = ({
     const colorMap: Record<string, string> = {
       'A': 'hsl(var(--profile-beginner))',
       'B': 'hsl(var(--profile-explorer))',
-      'C': 'hsl(var(--profile-ninja))'
+      'C': 'hsl(var(--profile-ninja))',
+      'D': 'hsl(var(--profile-pro-player))',
+      'E': 'hsl(var(--primary))'
     };
     return colorMap[answer] || 'hsl(var(--muted-foreground))';
   };
 
   const calculateMissionScore = (missionNumber: number) => {
-    if (missionNumber === 1 && mission1Response) {
-      return Object.values(mission1Response.respostas || {}).reduce((acc: number, ans: any) => {
-        if (ans === 'C') return acc + 2.5;
-        if (ans === 'B') return acc + 1.5;
-        if (ans === 'A') return acc + 0.5;
-        return acc;
+    let response = null;
+    
+    if (missionNumber === 1) response = mission1Response;
+    else if (missionNumber === 2) response = mission2Response;
+    else if (missionNumber === 3) response = mission3Response;
+    
+    if (!response || !response.respostas) return 0;
+    
+    // Se respostas for um array
+    if (Array.isArray(response.respostas)) {
+      return response.respostas.reduce((acc: number, item: any) => {
+        return acc + (item.pontuacao || item.points || 0);
       }, 0);
     }
-    if (missionNumber === 2 && mission2Response) {
-      return Object.values(mission2Response.respostas || {}).reduce((acc: number, ans: any) => {
-        if (ans === 'C') return acc + 2.5;
-        if (ans === 'B') return acc + 1.5;
-        if (ans === 'A') return acc + 0.5;
-        return acc;
-      }, 0);
-    }
-    if (missionNumber === 3 && mission3Response) {
-      return Object.values(mission3Response.respostas || {}).reduce((acc: number, ans: any) => {
-        if (ans === 'C') return acc + 2.5;
-        if (ans === 'B') return acc + 1.5;
-        if (ans === 'A') return acc + 0.5;
-        return acc;
-      }, 0);
-    }
-    return 0;
+    
+    // Se respostas for um objeto (formato antigo)
+    return Object.values(response.respostas).reduce((acc: number, ans: any) => {
+      if (ans === 'C') return acc + 2.5;
+      if (ans === 'B') return acc + 1.5;
+      if (ans === 'A') return acc + 0.5;
+      return acc;
+    }, 0);
   };
 
   return (
@@ -199,8 +200,26 @@ export const MissionAnalysis = ({
                   </h4>
                   <div className="grid gap-3">
                     {mission.questions.map((question, idx) => {
-                      const questionKey = `pergunta_${idx + 1}`;
-                      const answer = mission.response?.respostas?.[questionKey];
+                      let answer = null;
+                      
+                      // Processar dados baseados na estrutura real
+                      if (mission.response?.respostas) {
+                        if (Array.isArray(mission.response.respostas)) {
+                          // Estrutura de array: [{pergunta: 53, resposta: "E", pontuacao: 5}]
+                          let baseQuestionId = 53; // Missão 1 começa em 53
+                          if (mission.number === 2) baseQuestionId = 56; // Missão 2 começa em 56
+                          if (mission.number === 3) baseQuestionId = 59; // Missão 3 começa em 59
+                          
+                          const questionItem = mission.response.respostas.find((item: any) => 
+                            item.pergunta === (baseQuestionId + idx)
+                          );
+                          answer = questionItem?.resposta;
+                        } else {
+                          // Estrutura de objeto (formato antigo)
+                          const questionKey = `pergunta_${idx + 1}`;
+                          answer = mission.response.respostas[questionKey];
+                        }
+                      }
                       
                       return (
                         <div key={idx} className="border rounded-lg p-4 space-y-2">
@@ -233,8 +252,21 @@ export const MissionAnalysis = ({
                     <div className="bg-muted/50 rounded-lg p-4 mt-4">
                       <h5 className="font-medium mb-2">Padrão de Respostas</h5>
                       <div className="flex gap-4 text-sm">
-                        {['A', 'B', 'C'].map(option => {
-                          const count = Object.values(mission.response.respostas || {}).filter(ans => ans === option).length;
+                        {['A', 'B', 'C', 'D', 'E'].map(option => {
+                          let count = 0;
+                          
+                          if (mission.response?.respostas) {
+                            if (Array.isArray(mission.response.respostas)) {
+                              // Contar respostas em array
+                              count = mission.response.respostas.filter((item: any) => item.resposta === option).length;
+                            } else {
+                              // Contar respostas em objeto
+                              count = Object.values(mission.response.respostas).filter(ans => ans === option).length;
+                            }
+                          }
+                          
+                          if (count === 0) return null;
+                          
                           return (
                             <div key={option} className="flex items-center gap-1">
                               <span 
