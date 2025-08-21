@@ -473,40 +473,6 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                     MISSÃO {currentMission} ATIVADA
                   </span>
                 </div>
-                
-                {/* Botão de Ajuda ao lado do nome da missão */}
-                <div className="flex items-center gap-2">
-                  <div className="w-10 h-10 rounded-full ring-2 ring-neon-cyan shadow-md overflow-hidden shrink-0">
-                    {codyVideoUrl ? (
-                      <video
-                        src={codyVideoUrl}
-                        autoPlay
-                        loop
-                        muted
-                        playsInline
-                        className="w-full h-full object-cover"
-                        aria-label="Cody, IA mentora"
-                      />
-                    ) : (
-                      <img
-                        src="/lovable-uploads/ead95ee7-bc88-4e43-88ad-3ae3499162d4.png"
-                        alt="Cody, assistente IA"
-                        className="w-full h-full object-cover"
-                        loading="lazy"
-                        decoding="async"
-                      />
-                    )}
-                  </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setShowTutorial(true)}
-                    className="px-2 py-1 h-auto text-accent border-accent/50 hover:bg-accent/20 text-xs font-semibold"
-                  >
-                    Precisa de ajuda?
-                  </Button>
-                </div>
-                {/* Botão "Próxima Missão" removido no mobile conforme solicitação */}
               </div>
 
               <div className="flex-1 overflow-hidden min-h-0">
@@ -664,43 +630,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
             {/* Conteúdo da missão no desktop */}
             <div className="flex-1 overflow-hidden min-h-0">
               <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-4 h-full flex flex-col overflow-hidden min-h-0">
-                {/* Desktop mission content without title for more space */}
-                {completedMissions.size < 4 && (
-                  <div className="flex items-center justify-end mb-4 p-2 bg-muted/50 rounded-lg">
-                    {/* Botão de Ajuda na versão Desktop */}
-                    <div className="flex items-center gap-2">
-                      <div className="w-10 h-10 rounded-full ring-2 ring-neon-cyan shadow-md overflow-hidden shrink-0">
-                        {codyVideoUrl ? (
-                          <video
-                            src={codyVideoUrl}
-                            autoPlay
-                            loop
-                            muted
-                            playsInline
-                            className="w-full h-full object-cover"
-                            aria-label="Cody, IA mentora"
-                          />
-                        ) : (
-                          <img
-                            src="/lovable-uploads/ead95ee7-bc88-4e43-88ad-3ae3499162d4.png"
-                            alt="Cody, assistente IA"
-                            className="w-full h-full object-cover"
-                            loading="lazy"
-                            decoding="async"
-                          />
-                        )}
-                      </div>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setShowTutorial(true)}
-                        className="px-2 py-1 h-auto text-accent border-accent/50 hover:bg-accent/20 text-xs font-semibold"
-                      >
-                        Precisa de ajuda?
-                      </Button>
-                    </div>
-                  </div>
-                )}
+                {/* Desktop mission content - more space without help button */}
 
                 <ScrollArea className="flex-1">
                   <div className="pr-3">
