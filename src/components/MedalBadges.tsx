@@ -1,5 +1,5 @@
 import React from "react";
-import { Medal } from "lucide-react";
+import { Medal, Lock } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
 import { cn } from "@/lib/utils";
 
@@ -65,7 +65,11 @@ export const MedalBadges: React.FC<MedalBadgesProps> = ({ completed, size = "md"
                   )}
                 >
                   <div className="relative flex items-center justify-center">
-                    <Medal size={iconSize} strokeWidth={2} />
+                    {item.done ? (
+                      <Medal size={iconSize} strokeWidth={2} />
+                    ) : (
+                      <Lock size={iconSize} strokeWidth={2} />
+                    )}
                     <span
                       className={cn(
                         "absolute -bottom-0.5 -right-0.5 rounded-full",
