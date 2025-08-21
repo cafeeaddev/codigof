@@ -80,6 +80,15 @@ export const MissaoTres = ({ onComplete }: MissaoTresProps) => {
       setIsSubmitting(true);
       const currentUserId = authUser?.id;
 
+      if (!currentUserId) {
+        toast({
+          title: "Erro de autenticação",
+          description: "Não foi possível identificar o usuário. Faça login novamente.",
+          variant: "destructive"
+        });
+        return;
+      }
+
       // Verificar se todas as perguntas foram respondidas
       const unansweredQuestions = questions.filter(q => !answers[q.id]);
       if (unansweredQuestions.length > 0) {
@@ -117,14 +126,27 @@ export const MissaoTres = ({ onComplete }: MissaoTresProps) => {
 
       if (responseError) throw responseError;
 
+      // Buscar progresso existente para calcular XP corretamente
+      const { data: existingProgress } = await supabase
+        .from('user_progress')
+        .select('*')
+        .eq('user_id', currentUserId)
+        .maybeSingle();
+
+      const currentXP = existingProgress?.total_xp || 0;
+
       // Atualizar progresso do usuário
       const { error: progressError } = await supabase
         .from('user_progress')
         .upsert({
           user_id: currentUserId,
           missao_3_completed: true,
-          total_xp: 150, // XP acumulado
+          total_xp: currentXP + 25, // Adicionar 25 XP da missão 3
+          missao_3_current_question: currentQuestion + 1,
+          missao_3_answers: answers,
           last_saved_at: new Date().toISOString()
+        }, {
+          onConflict: 'user_id'
         });
 
       if (progressError) throw progressError;

@@ -159,15 +159,25 @@ export const MissaoDois = ({ onComplete, userId }: MissaoDoisProps) => {
       if (responseError) throw responseError;
 
       // Atualizar progresso do usuário - marcar missão 2 como completada e dar XP
+      const { data: existingProgress } = await supabase
+        .from('user_progress')
+        .select('*')
+        .eq('user_id', currentUserId)
+        .maybeSingle();
+
+      const currentXP = existingProgress?.total_xp || 0;
+      
       const { error: progressError } = await supabase
         .from('user_progress')
         .upsert({
           user_id: currentUserId,
           missao_2_completed: true,
-          total_xp: 125, // XP acumulado (100 missão 1 + 25 missão 2)
-          missao_2_current_question: currentQuestion,
+          total_xp: currentXP + 25, // Adicionar 25 XP da missão 2
+          missao_2_current_question: currentQuestion + 1,
           missao_2_answers: answers,
           last_saved_at: new Date().toISOString()
+        }, {
+          onConflict: 'user_id'
         });
 
       if (progressError) throw progressError;

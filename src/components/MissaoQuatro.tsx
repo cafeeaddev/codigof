@@ -150,7 +150,7 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
         return;
       }
 
-      await supabase
+      const { error: responseError } = await supabase
         .from('respostas_missao4')
         .insert({
           nome: profile?.nome || 'Usuário',
@@ -163,6 +163,8 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
           }
         });
 
+      if (responseError) throw responseError;
+
       // Update user progress to mark mission 4 as completed and add XP
       if (user) {
         const { data: existingProgress } = await supabase
@@ -171,23 +173,22 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
           .eq('user_id', user.id)
           .maybeSingle();
 
-        if (existingProgress) {
-          await supabase
-            .from('user_progress')
-            .update({
-              missao_4_completed: true,
-              total_xp: (existingProgress.total_xp || 0) + 25
-            })
-            .eq('user_id', user.id);
-        } else {
-          await supabase
-            .from('user_progress')
-            .insert({
-              user_id: user.id,
-              missao_4_completed: true,
-              total_xp: 25
-            });
-        }
+        const currentXP = existingProgress?.total_xp || 0;
+
+        const { error: progressError } = await supabase
+          .from('user_progress')
+          .upsert({
+            user_id: user.id,
+            missao_4_completed: true,
+            total_xp: currentXP + 25, // Adicionar 25 XP da missão 4
+            missao_4_current_question: currentQuestion + 1,
+            missao_4_answers: answers,
+            last_saved_at: new Date().toISOString()
+          }, {
+            onConflict: 'user_id'
+          });
+
+        if (progressError) throw progressError;
       }
 
       toast({
