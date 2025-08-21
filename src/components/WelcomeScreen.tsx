@@ -450,21 +450,21 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
 
       {/* Estatísticas Mobile compactas */}
       <div className="block lg:hidden bg-card/80 backdrop-blur-xl border-b border-secondary/30 px-3 py-2">
-        <div className="flex items-center justify-between gap-2 w-full">
-          <div className="text-center shrink-0">
+        <div className="flex items-start justify-between gap-2 w-full">
+          <div className="text-center shrink-0 flex flex-col items-center">
             <AnimatedXP 
               startValue={xpBeforeBonus || userProgress.total_xp}
               endValue={userProgress.total_xp}
               triggerAnimation={shouldAnimateXP}
               onAnimationComplete={() => setShouldAnimateXP(false)}
-              className="text-sm font-bold text-primary"
+              className="text-sm font-bold text-primary leading-none"
             />
-            <div className="text-muted-foreground text-xs">XP</div>
+            <div className="text-muted-foreground text-xs leading-none mt-0.5">XP</div>
           </div>
           
-          <div className="text-center shrink-0">
-            <div className="text-sm font-bold text-accent">{userProgress.completedMissionsCount}/4</div>
-            <div className="text-muted-foreground text-xs">Missões</div>
+          <div className="text-center shrink-0 flex flex-col items-center">
+            <div className="text-sm font-bold text-accent leading-none">{userProgress.completedMissionsCount}/4</div>
+            <div className="text-muted-foreground text-xs leading-none mt-0.5">Missões</div>
           </div>
           
           <div className="flex-1 min-w-0">
