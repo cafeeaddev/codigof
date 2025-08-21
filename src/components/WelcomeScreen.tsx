@@ -413,14 +413,27 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
             />
           </div>
           
-          {/* Botão Precisa de Ajuda */}
+          {/* Botão Precisa de Ajuda com IA */}
           <Button
             onClick={() => setShowTutorial(true)}
             variant="outline"
             size="sm"
-            className="bg-transparent border-secondary/50 text-secondary hover:bg-secondary/20 hover:text-secondary mr-2 flex items-center gap-2"
+            className="bg-transparent border-secondary/50 text-secondary hover:bg-secondary/20 hover:text-secondary mr-2 flex items-center gap-2 relative"
           >
-            <HelpCircle className="w-4 h-4" />
+            <div className="relative flex items-center justify-center w-6 h-6 rounded-full overflow-hidden bg-gradient-to-br from-primary/20 to-secondary/20 border border-primary/30">
+              {codyVideoUrl && (
+                <video
+                  src={codyVideoUrl}
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="w-full h-full object-cover"
+                />
+              )}
+              {/* Bolinha indicadora de IA ativa */}
+              <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-green-400 rounded-full animate-pulse border border-background"></div>
+            </div>
             <span className="text-sm">Precisa de ajuda?</span>
           </Button>
           
