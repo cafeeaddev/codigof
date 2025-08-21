@@ -829,13 +829,13 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
         />
       )}
 
-      {/* Assistente IA Flutuante */}
-      <div className="fixed bottom-6 right-6 z-50">
+      {/* Assistente IA Flutuante - Compacto */}
+      <div className="fixed bottom-4 right-4 z-40">
         <Button
           onClick={() => setShowTutorial(true)}
-          className="bg-card/90 backdrop-blur-xl border border-secondary/50 text-secondary hover:bg-secondary/20 hover:text-secondary shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-3 px-4 py-3 rounded-full"
+          className="bg-card/95 backdrop-blur-sm border border-secondary/30 text-secondary hover:bg-secondary/10 hover:text-secondary shadow-md hover:shadow-lg transition-all duration-200 p-2 rounded-full w-12 h-12 flex items-center justify-center group"
         >
-          <div className="relative flex items-center justify-center w-8 h-8 rounded-full overflow-hidden bg-gradient-to-br from-primary/20 to-secondary/20 border border-primary/30">
+          <div className="relative flex items-center justify-center w-6 h-6 rounded-full overflow-hidden bg-gradient-to-br from-primary/20 to-secondary/20 border border-primary/30">
             {codyVideoUrl && (
               <video
                 src={codyVideoUrl}
@@ -847,9 +847,12 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
               />
             )}
             {/* Bolinha indicadora de IA ativa */}
-            <div className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-green-400 rounded-full animate-pulse border border-background"></div>
+            <div className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse border border-background"></div>
           </div>
-          <span className="text-sm font-medium">Precisa de ajuda?</span>
+          {/* Tooltip on hover */}
+          <div className="absolute bottom-full right-0 mb-2 px-2 py-1 bg-card/90 backdrop-blur-sm border border-secondary/30 rounded text-xs text-secondary opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
+            Precisa de ajuda?
+          </div>
         </Button>
       </div>
 
