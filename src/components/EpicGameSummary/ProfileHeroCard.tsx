@@ -110,12 +110,12 @@ export const ProfileHeroCard: React.FC<ProfileHeroCardProps> = ({
 
           <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12 relative z-10">
             
-            {/* Left side - Enhanced Cody Avatar */}
+            {/* Enhanced Cody Avatar - Responsive sizes */}
             <div className="flex-shrink-0 text-center lg:text-left">
-              {/* Large Avatar Circle with FeatureSection styling */}
+              {/* Large Avatar Circle with FeatureSection styling - Responsive */}
               <div className="relative mb-6">
-                {/* Glowing circle border - exact same as FeatureSection */}
-                <div className="w-80 h-80 rounded-full bg-gradient-to-r from-neon-purple via-neon-purple to-neon-cyan p-1 shadow-glow">
+                {/* Glowing circle border - responsive sizes */}
+                <div className="w-56 h-56 sm:w-72 sm:h-72 lg:w-80 lg:h-80 rounded-full bg-gradient-to-r from-neon-purple via-neon-purple to-neon-cyan p-1 shadow-glow mx-auto lg:mx-0">
                   <div className="w-full h-full rounded-full bg-background/20 backdrop-blur-xl overflow-hidden relative">
                     <video 
                       className="w-full h-full object-cover rounded-full"
@@ -132,37 +132,37 @@ export const ProfileHeroCard: React.FC<ProfileHeroCardProps> = ({
                   </div>
                 </div>
                 
-                {/* Floating particles effect - exact same as FeatureSection */}
-                <div className="absolute -top-2 -right-2 w-4 h-4 bg-neon-cyan rounded-full opacity-60 animate-pulse"></div>
-                <div className="absolute top-8 -left-3 w-2 h-2 bg-neon-purple rounded-full opacity-40 animate-pulse delay-500"></div>
-                <div className="absolute -bottom-1 left-8 w-3 h-3 bg-neon-purple rounded-full opacity-50 animate-pulse delay-1000"></div>
+                {/* Floating particles effect - responsive positioning */}
+                <div className="absolute -top-1 -right-1 sm:-top-2 sm:-right-2 w-3 h-3 sm:w-4 sm:h-4 bg-neon-cyan rounded-full opacity-60 animate-pulse"></div>
+                <div className="absolute top-6 -left-2 sm:top-8 sm:-left-3 w-1.5 h-1.5 sm:w-2 sm:h-2 bg-neon-purple rounded-full opacity-40 animate-pulse delay-500"></div>
+                <div className="absolute -bottom-0.5 left-6 sm:-bottom-1 sm:left-8 w-2 h-2 sm:w-3 sm:h-3 bg-neon-purple rounded-full opacity-50 animate-pulse delay-1000"></div>
               </div>
 
-              {/* Enhanced announcement text */}
-              <div className="space-y-4">
-                <p className="text-2xl md:text-3xl font-bold tracking-wide" style={{ 
+              {/* Enhanced announcement text - responsive */}
+              <div className="space-y-3 sm:space-y-4">
+                <p className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-wide" style={{ 
                   color: profileColor,
                   textShadow: `0 0 20px ${profileColor}50`
                 }}>
                   Parabéns, {userName}!
                 </p>
-                <p className="text-xl md:text-2xl text-foreground/90 font-medium">
+                <p className="text-lg sm:text-xl lg:text-2xl text-foreground/90 font-medium">
                   Chegamos ao final dessa primeira etapa
                 </p>
               </div>
             </div>
 
-            {/* Right side - Profile results with enhanced styling */}
-            <div className="flex-1 text-center lg:text-left space-y-6">
-            {/* Profile Achievement */}
+            {/* Profile results with enhanced styling - responsive */}
+            <div className="flex-1 text-center lg:text-left space-y-4 sm:space-y-6 w-full">
+            {/* Profile Achievement - responsive */}
             <div>
-              <div className="inline-flex items-center gap-2 mb-4 px-6 py-3 rounded-full border-2" 
+              <div className="inline-flex items-center gap-2 mb-4 px-4 sm:px-6 py-2 sm:py-3 rounded-full border-2" 
                    style={{ 
                      borderColor: profileColor,
                      backgroundColor: `${profileColor}20`
                    }}>
-                <Trophy size={20} style={{ color: profileColor }} />
-                <span className="text-2xl md:text-3xl font-bold" style={{ color: profileColor }}>
+                <Trophy size={16} className="sm:w-5 sm:h-5" style={{ color: profileColor }} />
+                <span className="text-lg sm:text-xl lg:text-2xl xl:text-3xl font-bold" style={{ color: profileColor }}>
                   Seu Perfil é: {profile}
                 </span>
               </div>
