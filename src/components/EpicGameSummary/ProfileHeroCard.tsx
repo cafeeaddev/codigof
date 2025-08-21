@@ -117,7 +117,7 @@ export const ProfileHeroCard: React.FC<ProfileHeroCardProps> = ({
               {/* Large Avatar Circle with FeatureSection styling - Responsive */}
               <div className="relative mb-6">
                 {/* Glowing circle border - responsive sizes */}
-                <div className="w-56 h-56 sm:w-72 sm:h-72 lg:w-80 lg:h-80 rounded-full bg-gradient-to-r from-neon-purple via-neon-purple to-neon-cyan p-1 shadow-glow mx-auto lg:mx-0">
+                <div className="w-48 h-48 sm:w-64 sm:h-64 lg:w-72 lg:h-72 rounded-full bg-gradient-to-r from-neon-purple via-neon-purple to-neon-cyan p-1 shadow-glow mx-auto lg:mx-0">
                   <div className="w-full h-full rounded-full bg-background/20 backdrop-blur-xl overflow-hidden relative">
                     <video 
                       className="w-full h-full object-cover rounded-full"
