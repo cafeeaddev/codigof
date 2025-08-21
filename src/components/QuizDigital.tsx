@@ -272,21 +272,17 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
 
   return (
     <div className="h-full flex flex-col bg-background">
-      <div className="flex-1 flex flex-col max-w-4xl mx-auto w-full p-4 md:p-6">
-        {/* Header */}
-        <div className="mb-6">
-          <h2 className="text-xl md:text-2xl font-bold text-center mb-4 text-foreground">
-            Práticas Digitais - Missão 1
-          </h2>
-          
+      <div className="flex-1 flex flex-col max-w-4xl mx-auto w-full p-4">
+        {/* Progress Header */}
+        <div className="mb-4">
           <div className="flex justify-between items-center mb-3">
             <span className="text-sm text-muted-foreground">
               Pergunta {currentQuestion + 1} de {quizQuestions.length}
             </span>
           </div>
           
-          {/* Progress Bar */}
-          <div className="w-full bg-secondary/20 rounded-full h-2">
+          {/* Progress Bar with gradient */}
+          <div className="w-full bg-secondary rounded-full h-2">
             <div
               className="bg-gradient-to-r from-primary to-accent h-2 rounded-full transition-all duration-500"
               style={{ width: `${progress}%` }}
@@ -296,9 +292,9 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
 
         {/* Question Card */}
         <div className="flex-1 flex flex-col">
-          <Card className="flex-1 border-border/50 bg-card/50 backdrop-blur-sm">
-            <CardContent className="p-4 md:p-6 h-full flex flex-col">
-              <h3 className="text-lg md:text-xl font-semibold text-foreground mb-6 leading-relaxed">
+          <Card className="flex-1 border shadow-sm">
+            <CardContent className="p-6 h-full flex flex-col">
+              <h3 className="text-lg font-medium text-foreground mb-4 leading-relaxed">
                 {currentQuestionData.question}
               </h3>
 
@@ -310,19 +306,19 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
                 {currentQuestionData.options.map((option) => (
                   <div 
                     key={option.letter} 
-                    className="flex items-start space-x-3 p-3 rounded-lg border border-border/30 hover:border-primary/50 hover:bg-muted/30 cursor-pointer transition-all duration-200" 
+                    className="flex items-start space-x-3 p-3 rounded-lg hover:bg-purple-500/20 cursor-pointer transition-colors duration-200" 
                     onClick={() => handleAnswerSelect(currentQuestionData.id, option.letter)}
                   >
                     <RadioGroupItem
                       value={option.letter}
                       id={`q${currentQuestionData.id}-${option.letter}`}
-                      className="mt-0.5 h-4 w-4"
+                      className="mt-1 h-4 w-4"
                     />
                     <Label
                       htmlFor={`q${currentQuestionData.id}-${option.letter}`}
                       className="text-sm md:text-base text-foreground cursor-pointer flex-1 leading-relaxed"
                     >
-                      <span className="font-semibold text-primary mr-2">{option.letter})</span>
+                      <span className="font-medium mr-2">{option.letter})</span>
                       {option.text}
                     </Label>
                   </div>
@@ -339,11 +335,10 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
             onClick={() => goToPreviousQuestion()}
             disabled={currentQuestion === 0}
             variant="outline"
-            size="sm"
-            className="min-w-[80px]"
+            className="flex items-center space-x-2"
           >
-            <ChevronLeft className="w-3 h-3 mr-1" />
-            Anterior
+            <ChevronLeft className="w-4 h-4" />
+            <span>Anterior</span>
           </Button>
 
           {currentQuestion === quizQuestions.length - 1 ? (
@@ -351,8 +346,7 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
               type="button"
               onClick={() => submitQuiz()}
               disabled={!answers[currentQuestionData.id] || isSubmitting}
-              size="sm"
-              className="min-w-[80px] bg-primary hover:bg-primary/90"
+              className="flex items-center space-x-2"
             >
               {isSubmitting ? 'Enviando...' : 'Finalizar'}
             </Button>
@@ -361,11 +355,10 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
               type="button"
               onClick={() => goToNextQuestion()}
               disabled={!answers[currentQuestionData.id]}
-              size="sm"
-              className="min-w-[80px] bg-primary hover:bg-primary/90"
+              className="flex items-center space-x-2"
             >
-              Próxima
-              <ChevronRight className="w-3 h-3 ml-1" />
+              <span>Próxima</span>
+              <ChevronRight className="w-4 h-4" />
             </Button>
           )}
         </div>
