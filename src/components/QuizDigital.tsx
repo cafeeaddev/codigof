@@ -271,94 +271,102 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
   const progress = (answeredCount / quizQuestions.length) * 100;
 
   return (
-    <div className="h-full flex flex-col min-h-0">
-      <ScrollArea className="flex-1">
-        <div className="p-2 pb-28" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 96px)' }}>
-
-          <div className="mb-5">
-            <div className="flex justify-between items-center mb-1">
-              <span className="text-xs text-muted-foreground">
-                Pergunta {currentQuestion + 1} de {quizQuestions.length}
-              </span>
-              <span className="text-xs text-muted-foreground">
-                {Math.round(progress)}%
-              </span>
-            </div>
-            <div className="w-full bg-secondary/20 rounded-full h-1.5 md:h-1">
-              <div
-                className="bg-primary h-1.5 md:h-1 rounded-full transition-all duration-300"
-                style={{ width: `${progress}%` }}
-              />
-            </div>
+    <div className="h-full flex flex-col bg-background">
+      <div className="flex-1 flex flex-col max-w-4xl mx-auto w-full p-4 md:p-8">
+        {/* Header */}
+        <div className="mb-8">
+          <h2 className="text-2xl md:text-3xl font-bold text-center mb-6 text-foreground">
+            Práticas Digitais - Missão 1
+          </h2>
+          
+          <div className="flex justify-between items-center mb-4">
+            <span className="text-sm md:text-base text-muted-foreground">
+              Pergunta {currentQuestion + 1} de {quizQuestions.length}
+            </span>
           </div>
-
-          <div className="mb-2">
-            <h4 className="text-lg md:text-base font-medium text-foreground mb-2">
-              {currentQuestionData.question}
-            </h4>
-
-            <RadioGroup
-              value={answers[currentQuestionData.id] || ""}
-              onValueChange={(value) => handleAnswerSelect(currentQuestionData.id, value)}
-              className="space-y-3"
-            >
-              {currentQuestionData.options.map((option) => (
-                <div key={option.letter} className="flex items-start space-x-2 p-3 md:p-1 rounded hover:bg-muted/20 cursor-pointer" onClick={() => handleAnswerSelect(currentQuestionData.id, option.letter)}>
-                  <RadioGroupItem
-                    value={option.letter}
-                    id={`q${currentQuestionData.id}-${option.letter}`}
-                    className="border-secondary mt-0.5 h-5 w-5 md:h-4 md:w-4"
-                  />
-                  <Label
-                    htmlFor={`q${currentQuestionData.id}-${option.letter}`}
-                    className="text-base md:text-sm text-foreground cursor-pointer flex-1 leading-relaxed"
-                  >
-                    <span className="font-medium text-primary mr-1">{option.letter})</span>
-                    {option.text}
-                  </Label>
-                </div>
-              ))}
-            </RadioGroup>
-          </div>
-
-          <div className="mt-4 pt-2 flex justify-between items-center">
-            <Button
-              type="button"
-              onClick={() => goToPreviousQuestion()}
-              disabled={currentQuestion === 0}
-              variant="outline"
-              size="sm"
-              className="border-secondary text-secondary hover:bg-secondary hover:text-secondary-foreground"
-            >
-              <ChevronLeft className="w-3 h-3 mr-1" />
-              Anterior
-            </Button>
-
-            {currentQuestion === quizQuestions.length - 1 ? (
-              <Button
-                type="button"
-                onClick={() => submitQuiz()}
-                disabled={!answers[currentQuestionData.id] || isSubmitting}
-                size="sm"
-                className="bg-primary hover:bg-primary/90"
-              >
-                {isSubmitting ? 'Enviando...' : 'Finalizar'}
-              </Button>
-            ) : (
-              <Button
-                type="button"
-                onClick={() => goToNextQuestion()}
-                disabled={!answers[currentQuestionData.id]}
-                size="sm"
-                className="bg-primary hover:bg-primary/90"
-              >
-                Próxima
-                <ChevronRight className="w-3 h-3 ml-1" />
-              </Button>
-            )}
+          
+          {/* Progress Bar */}
+          <div className="w-full bg-secondary/20 rounded-full h-2">
+            <div
+              className="bg-gradient-to-r from-primary to-accent h-2 rounded-full transition-all duration-500"
+              style={{ width: `${progress}%` }}
+            />
           </div>
         </div>
-      </ScrollArea>
+
+        {/* Question Card */}
+        <div className="flex-1 flex flex-col">
+          <Card className="flex-1 border-border/50 bg-card/50 backdrop-blur-sm">
+            <CardContent className="p-6 md:p-8 h-full flex flex-col">
+              <h3 className="text-xl md:text-2xl font-semibold text-foreground mb-8 leading-relaxed">
+                {currentQuestionData.question}
+              </h3>
+
+              <RadioGroup
+                value={answers[currentQuestionData.id] || ""}
+                onValueChange={(value) => handleAnswerSelect(currentQuestionData.id, value)}
+                className="space-y-4 flex-1"
+              >
+                {currentQuestionData.options.map((option) => (
+                  <div 
+                    key={option.letter} 
+                    className="flex items-start space-x-4 p-4 rounded-lg border border-border/30 hover:border-primary/50 hover:bg-muted/30 cursor-pointer transition-all duration-200" 
+                    onClick={() => handleAnswerSelect(currentQuestionData.id, option.letter)}
+                  >
+                    <RadioGroupItem
+                      value={option.letter}
+                      id={`q${currentQuestionData.id}-${option.letter}`}
+                      className="mt-1 h-5 w-5"
+                    />
+                    <Label
+                      htmlFor={`q${currentQuestionData.id}-${option.letter}`}
+                      className="text-base md:text-lg text-foreground cursor-pointer flex-1 leading-relaxed"
+                    >
+                      <span className="font-semibold text-primary mr-2">{option.letter})</span>
+                      {option.text}
+                    </Label>
+                  </div>
+                ))}
+              </RadioGroup>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Navigation Buttons */}
+        <div className="mt-6 flex justify-between items-center gap-4">
+          <Button
+            type="button"
+            onClick={() => goToPreviousQuestion()}
+            disabled={currentQuestion === 0}
+            variant="outline"
+            className="min-w-[100px]"
+          >
+            <ChevronLeft className="w-4 h-4 mr-2" />
+            Anterior
+          </Button>
+
+          {currentQuestion === quizQuestions.length - 1 ? (
+            <Button
+              type="button"
+              onClick={() => submitQuiz()}
+              disabled={!answers[currentQuestionData.id] || isSubmitting}
+              className="min-w-[100px] bg-primary hover:bg-primary/90"
+            >
+              {isSubmitting ? 'Enviando...' : 'Finalizar'}
+            </Button>
+          ) : (
+            <Button
+              type="button"
+              onClick={() => goToNextQuestion()}
+              disabled={!answers[currentQuestionData.id]}
+              className="min-w-[100px] bg-primary hover:bg-primary/90"
+            >
+              Próxima
+              <ChevronRight className="w-4 h-4 ml-2" />
+            </Button>
+          )}
+        </div>
+      </div>
     </div>
   );
 };
