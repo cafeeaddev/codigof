@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Edit, Trash2, Save, X } from 'lucide-react';
+import { Plus, Edit, Trash2, Save, X, ChevronDown, ChevronUp } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -37,6 +37,7 @@ export const QuestionManager = () => {
   const [isCreating, setIsCreating] = useState(false);
   const [selectedMission, setSelectedMission] = useState<number>(1);
   const [isLoading, setIsLoading] = useState(true);
+  const [expandedQuestions, setExpandedQuestions] = useState<Set<number>>(new Set());
 
   const newQuestion: Omit<Question, 'id'> = {
     question_text: '',
@@ -159,6 +160,65 @@ export const QuestionManager = () => {
         variant: "destructive"
       });
     }
+  };
+
+  const toggleQuestionExpansion = (questionId: number) => {
+    setExpandedQuestions(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(questionId)) {
+        newSet.delete(questionId);
+      } else {
+        newSet.add(questionId);
+      }
+      return newSet;
+    });
+  };
+
+  const renderQuestionOptions = (question: Question) => {
+    if (question.question_type === 'multiple-choice' && question.options) {
+      return (
+        <div className="mt-3 p-3 bg-muted/30 rounded-lg">
+          <h4 className="text-sm font-medium mb-2 text-muted-foreground">Opções:</h4>
+          <div className="grid gap-2">
+            {Object.entries(question.options).map(([letter, option]: [string, any]) => (
+              <div key={letter} className="flex items-center justify-between text-sm">
+                <span className="flex items-center gap-2">
+                  <Badge variant="outline" className="w-6 h-6 flex items-center justify-center text-xs">
+                    {letter}
+                  </Badge>
+                  <span>{option?.text || 'Sem texto'}</span>
+                </span>
+                <Badge variant="secondary" className="text-xs">
+                  {option?.points !== undefined ? `${option.points} pts` : '0 pts'}
+                </Badge>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    if (question.question_type === 'star-rating' && question.star_legends) {
+      return (
+        <div className="mt-3 p-3 bg-muted/30 rounded-lg">
+          <h4 className="text-sm font-medium mb-2 text-muted-foreground">Legendas das Estrelas:</h4>
+          <div className="grid gap-2">
+            {Object.entries(question.star_legends).map(([star, legend]: [string, any]) => (
+              <div key={star} className="flex items-center justify-between text-sm">
+                <span className="flex items-center gap-2">
+                  <Badge variant="outline" className="text-xs">
+                    {star} ⭐
+                  </Badge>
+                  <span>{legend || 'Sem legenda'}</span>
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    return null;
   };
 
   const QuestionForm = ({ question, onSave, onCancel }: {
@@ -313,53 +373,78 @@ export const QuestionManager = () => {
         <div className="text-center py-8">Carregando perguntas...</div>
       ) : (
         <div className="space-y-4">
-          {questions.map((question) => (
-            <Card key={question.id}>
-              <CardContent className="p-4">
-                <div className="flex justify-between items-start">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Badge variant="outline">#{question.order_position}</Badge>
-                      <Badge variant={question.question_type === 'multiple-choice' ? 'default' : 'secondary'}>
-                        {question.question_type === 'multiple-choice' ? 'Múltipla Escolha' : 'Estrelas'}
-                      </Badge>
-                      {!question.is_active && <Badge variant="destructive">Inativa</Badge>}
-                    </div>
-                    <p className="text-sm font-medium">{question.question_text}</p>
-                    {question.target_area_ids && question.target_area_ids.length > 0 && (
-                      <div className="mt-2">
-                        <span className="text-xs text-muted-foreground">Áreas específicas: </span>
-                        {question.target_area_ids.map(areaId => {
-                          const area = areas.find(a => a.id === areaId);
-                          return area ? (
-                            <Badge key={areaId} variant="outline" className="ml-1 text-xs">
-                              {area.name}
-                            </Badge>
-                          ) : null;
-                        })}
+          {questions.map((question) => {
+            const isExpanded = expandedQuestions.has(question.id);
+            const hasOptions = (question.question_type === 'multiple-choice' && question.options) ||
+                              (question.question_type === 'star-rating' && question.star_legends);
+            
+            return (
+              <Card key={question.id}>
+                <CardContent className="p-4">
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Badge variant="outline">#{question.order_position}</Badge>
+                        <Badge variant={question.question_type === 'multiple-choice' ? 'default' : 'secondary'}>
+                          {question.question_type === 'multiple-choice' ? 'Múltipla Escolha' : 'Estrelas'}
+                        </Badge>
+                        {!question.is_active && <Badge variant="destructive">Inativa</Badge>}
+                        {hasOptions && (
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => toggleQuestionExpansion(question.id)}
+                            className="h-6 px-2"
+                          >
+                            {isExpanded ? (
+                              <ChevronUp className="w-3 h-3" />
+                            ) : (
+                              <ChevronDown className="w-3 h-3" />
+                            )}
+                            <span className="ml-1 text-xs">
+                              {isExpanded ? 'Ocultar' : 'Ver'} opções
+                            </span>
+                          </Button>
+                        )}
                       </div>
-                    )}
+                      <p className="text-sm font-medium">{question.question_text}</p>
+                      {question.target_area_ids && question.target_area_ids.length > 0 && (
+                        <div className="mt-2">
+                          <span className="text-xs text-muted-foreground">Áreas específicas: </span>
+                          {question.target_area_ids.map(areaId => {
+                            const area = areas.find(a => a.id === areaId);
+                            return area ? (
+                              <Badge key={areaId} variant="outline" className="ml-1 text-xs">
+                                {area.name}
+                              </Badge>
+                            ) : null;
+                          })}
+                        </div>
+                      )}
+                      
+                      {isExpanded && renderQuestionOptions(question)}
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setEditingQuestion(question)}
+                      >
+                        <Edit className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        onClick={() => deleteQuestion(question.id)}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
                   </div>
-                  <div className="flex gap-2">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => setEditingQuestion(question)}
-                    >
-                      <Edit className="w-4 h-4" />
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="destructive"
-                      onClick={() => deleteQuestion(question.id)}
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                </CardContent>
+              </Card>
+            );
+          })}
         </div>
       )}
     </div>
