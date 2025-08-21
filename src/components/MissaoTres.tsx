@@ -216,12 +216,12 @@ export const MissaoTres = ({ onComplete }: MissaoTresProps) => {
                 <RadioGroup
                   value={answers[currentQuestionData.id] || ""}
                   onValueChange={(value) => handleAnswerSelect(currentQuestionData.id, value)}
-                  className="space-y-3"
+                  className="space-y-2"
                 >
                   {currentQuestionData.options.map((option) => (
                     <div 
                       key={option.option_letter} 
-                      className="flex items-start space-x-3 p-3 rounded-lg hover:bg-purple-500/20 cursor-pointer transition-colors duration-200" 
+                      className="flex items-start space-x-3 p-2 rounded-lg hover:bg-purple-500/20 cursor-pointer transition-colors duration-200" 
                       onClick={() => handleAnswerSelect(currentQuestionData.id, option.option_letter)}
                     >
                       <RadioGroupItem
