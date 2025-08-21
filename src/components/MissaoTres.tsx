@@ -238,7 +238,7 @@ export const MissaoTres = ({ onComplete }: MissaoTresProps) => {
                 <RadioGroup
                   value={answers[currentQuestionData.id] || ""}
                   onValueChange={(value) => handleAnswerSelect(currentQuestionData.id, value)}
-                  className="space-y-2"
+                  className="space-y-0.5"
                 >
                   {currentQuestionData.options.map((option) => (
                     <div 

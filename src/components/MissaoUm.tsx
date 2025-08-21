@@ -227,87 +227,100 @@ export const MissaoUm = ({ onComplete, userId }: MissaoUmProps) => {
   const progress = ((currentQuestion + 1) / questions.length) * 100;
 
   return (
-    <div className="w-full max-w-4xl mx-auto p-6 space-y-6">
-      {isCompleted && (
-        <div className="bg-green-50 border border-green-200 rounded-lg p-4 flex items-center space-x-3">
-          <CheckCircle className="h-6 w-6 text-green-600" />
-          <div>
-            <h3 className="font-semibold text-green-800">Quiz Digital Concluído!</h3>
-            <p className="text-green-700">Você completou todas as perguntas com sucesso.</p>
+    <div className="h-full flex flex-col bg-background overflow-hidden">
+      <ScrollArea className="flex-1">
+        <div className="flex flex-col max-w-4xl mx-auto w-full p-3 pb-[calc(60px+env(safe-area-inset-bottom,0px))] min-h-full">
+          {isCompleted && (
+            <div className="bg-green-50 border border-green-200 rounded-lg p-4 flex items-center space-x-3 mb-3">
+              <CheckCircle className="h-6 w-6 text-green-600" />
+              <div>
+                <h3 className="font-semibold text-green-800">Quiz Digital Concluído!</h3>
+                <p className="text-green-700">Você completou todas as perguntas com sucesso.</p>
+              </div>
+            </div>
+          )}
+
+          {/* Progress Header - mais compacto */}
+          <div className="mb-4 sticky top-0 bg-background z-10 pb-2">
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-sm text-muted-foreground">
+                Pergunta {currentQuestion + 1} de {questions.length}
+              </span>
+            </div>
+            
+            {/* Progress Bar with gradient */}
+            <div className="w-full bg-secondary rounded-full h-2">
+              <div
+                className="bg-gradient-to-r from-primary to-accent h-2 rounded-full transition-all duration-500"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
           </div>
-        </div>
-      )}
 
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold">Quiz Digital - Missão 1</h2>
-          <div className="text-sm text-muted-foreground">
-            Pergunta {currentQuestion + 1} de {questions.length}
-          </div>
-        </div>
+          {/* Question Card */}
+          <div className="flex-1 min-h-0">
+            <div className="bg-card rounded-lg p-4 md:p-6 border shadow-sm">
+              <h3 className="text-base md:text-lg font-medium text-foreground mb-4 leading-relaxed">
+                {currentQuestionData.question_text}
+              </h3>
 
-        <div className="w-full bg-secondary rounded-full h-2">
-          <div 
-            className="bg-primary h-2 rounded-full transition-all duration-300" 
-            style={{ width: `${progress}%` }}
-          />
-        </div>
-      </div>
-
-      <ScrollArea className="h-[500px]">
-        <div className="space-y-6 pr-4">
-          <div className="bg-card rounded-lg p-6 border shadow-sm">
-            <h3 className="text-lg font-medium mb-4">
-              {currentQuestionData.question_text}
-            </h3>
-
-            <RadioGroup 
-              value={answers[currentQuestionData.id] || ''} 
-              onValueChange={(value) => handleAnswerSelect(currentQuestionData.id, value)}
-              className="space-y-3"
-            >
-              {currentQuestionData.options.map((option) => (
-                <div key={option.option_letter} className="flex items-start space-x-3 p-3 rounded-lg hover:bg-accent transition-colors">
-                  <RadioGroupItem value={option.option_letter} id={`${currentQuestionData.id}-${option.option_letter}`} className="mt-1" />
-                  <Label 
-                    htmlFor={`${currentQuestionData.id}-${option.option_letter}`} 
-                    className="text-xs md:text-sm cursor-pointer leading-relaxed"
+              <RadioGroup 
+                value={answers[currentQuestionData.id] || ''} 
+                onValueChange={(value) => handleAnswerSelect(currentQuestionData.id, value)}
+                className="space-y-0.5"
+              >
+                {currentQuestionData.options.map((option) => (
+                  <div 
+                    key={option.option_letter} 
+                    className="flex items-start space-x-3 p-2 rounded-lg hover:bg-purple-500/20 cursor-pointer transition-colors duration-200"
+                    onClick={() => handleAnswerSelect(currentQuestionData.id, option.option_letter)}
                   >
-                    <span className="font-medium mr-2">{option.option_letter})</span>
-                    {option.option_text}
-                  </Label>
-                </div>
-              ))}
-            </RadioGroup>
+                    <RadioGroupItem 
+                      value={option.option_letter} 
+                      id={`${currentQuestionData.id}-${option.option_letter}`} 
+                      className="mt-1 h-4 w-4" 
+                    />
+                    <Label 
+                      htmlFor={`${currentQuestionData.id}-${option.option_letter}`} 
+                      className="text-xs md:text-sm text-foreground cursor-pointer flex-1 leading-relaxed"
+                    >
+                      <span className="font-medium mr-2">{option.option_letter})</span>
+                      {option.option_text}
+                    </Label>
+                  </div>
+                ))}
+              </RadioGroup>
+            </div>
           </div>
         </div>
       </ScrollArea>
 
-      <div className="flex items-center justify-between pt-3 border-t">
-        <Button 
-          variant="outline" 
-          onClick={goToPreviousQuestion}
-          disabled={currentQuestion === 0}
-          className="flex items-center space-x-2"
-        >
-          <ChevronLeft className="h-4 w-4" />
-          <span>Anterior</span>
-        </Button>
+      {/* Fixed Navigation Buttons */}
+      <div className="fixed bottom-0 left-0 right-0 border-t bg-background/95 backdrop-blur-sm p-3 pb-[calc(env(safe-area-inset-bottom,0px)+12px)] z-50 shadow-lg">
+        <div className="max-w-4xl mx-auto flex justify-between items-center gap-4">
+          <Button 
+            variant="outline" 
+            onClick={goToPreviousQuestion}
+            disabled={currentQuestion === 0}
+            className="flex items-center space-x-2 min-w-[100px] h-11"
+          >
+            <ChevronLeft className="h-4 w-4" />
+            <span>Anterior</span>
+          </Button>
 
-        <div className="flex items-center space-x-2">
           {currentQuestion === questions.length - 1 ? (
             <Button 
               onClick={submitQuiz}
               disabled={isSubmitting || isCompleted || !answers[currentQuestionData.id]}
-              className="flex items-center space-x-2"
+              className="flex items-center space-x-2 min-w-[100px] h-11"
             >
-              {isSubmitting ? 'Enviando...' : 'Finalizar Quiz'}
+              {isSubmitting ? 'Enviando...' : 'Finalizar'}
             </Button>
           ) : (
             <Button 
               onClick={goToNextQuestion}
               disabled={!answers[currentQuestionData.id]}
-              className="flex items-center space-x-2"
+              className="flex items-center space-x-2 min-w-[100px] h-11"
             >
               <span>Próxima</span>
               <ChevronRight className="h-4 w-4" />
