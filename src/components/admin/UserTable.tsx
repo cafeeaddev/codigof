@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ChevronLeft, ChevronRight, Search, Users } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Search, Users, Eye } from 'lucide-react';
 import { UserProgress, UserProfile, AdminFilters } from '@/types/admin';
 
 interface UserTableProps {
@@ -18,6 +18,14 @@ interface UserTableProps {
   calculateUserTotalScore: (userId: string) => number;
   getDigitalProfile: (score: number) => { profile: string; sublevel: string };
   getProfileColor: (profile: string) => string;
+  allResponses: {
+    missao1: any[];
+    missao2: any[];
+    missao3: any[];
+    missao4: any[];
+  };
+  questions: any[];
+  onUserAnalysis: (user: UserProgress, userProfile: UserProfile) => void;
 }
 
 export const UserTable = ({
@@ -28,7 +36,10 @@ export const UserTable = ({
   filterOptions,
   calculateUserTotalScore,
   getDigitalProfile,
-  getProfileColor
+  getProfileColor,
+  allResponses,
+  questions,
+  onUserAnalysis
 }: UserTableProps) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortColumn, setSortColumn] = useState<string>('');
@@ -233,6 +244,7 @@ export const UserTable = ({
               <TableHead>Missão 2</TableHead>
               <TableHead>Missão 3</TableHead>
               <TableHead>Missão 4</TableHead>
+              <TableHead>Ações</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -317,12 +329,22 @@ export const UserTable = ({
                       </span>
                     </div>
                   </TableCell>
+                  <TableCell>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => onUserAnalysis(progress, userProfile)}
+                      className="h-8 w-8 p-0"
+                    >
+                      <Eye className="h-4 w-4" />
+                    </Button>
+                  </TableCell>
                 </TableRow>
               );
             })}
             {paginatedUsers.length === 0 && (
               <TableRow>
-                <TableCell colSpan={12} className="text-center py-8 text-muted-foreground">
+                <TableCell colSpan={13} className="text-center py-8 text-muted-foreground">
                   <Users className="w-12 h-12 mx-auto mb-4 opacity-50" />
                   <p>Nenhum usuário encontrado.</p>
                 </TableCell>

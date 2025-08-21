@@ -306,6 +306,7 @@ export const useAdminDashboard = () => {
     calculateUserTotalScore,
     getDigitalProfile,
     getProfileColor,
-    loadAllResponses
+    loadAllResponses,
+    questions: []
   };
 };

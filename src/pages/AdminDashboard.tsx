@@ -19,9 +19,10 @@ import { ExportDialog } from '@/components/admin/ExportDialog';
 import { GameSettings } from '@/components/admin/GameSettings';
 import { QuestionManager } from '@/components/admin/QuestionManager';
 import { StarRatingsAnalytics } from '@/components/admin/StarRatingsAnalytics';
+import { UserAnalysisDialog } from '@/components/admin/UserAnalysisDialog';
 import { useAdminDashboard } from '@/hooks/useAdminDashboard';
 import { useFilters } from '@/hooks/useFilters';
-import { ResponseData } from '@/types/admin';
+import { ResponseData, UserProgress, UserProfile } from '@/types/admin';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -30,6 +31,9 @@ const AdminDashboard = () => {
   const [email, setEmail] = useState('cafeead@cafeead.com.br');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<UserProgress | null>(null);
+  const [selectedUserProfile, setSelectedUserProfile] = useState<UserProfile | null>(null);
+  const [isAnalysisDialogOpen, setIsAnalysisDialogOpen] = useState(false);
 
   const {
     responses1,
@@ -44,7 +48,8 @@ const AdminDashboard = () => {
     stats,
     calculateUserTotalScore,
     getDigitalProfile,
-    getProfileColor
+    getProfileColor,
+    questions
   } = useAdminDashboard();
 
   const {
@@ -138,6 +143,14 @@ const AdminDashboard = () => {
         description: "Erro durante logout",
         variant: "destructive",
       });
+    }
+  };
+
+  const handleUserAnalysis = (user: UserProgress, userProfile: UserProfile | undefined) => {
+    if (userProfile) {
+      setSelectedUser(user);
+      setSelectedUserProfile(userProfile);
+      setIsAnalysisDialogOpen(true);
     }
   };
 
@@ -343,6 +356,14 @@ const AdminDashboard = () => {
                       calculateUserTotalScore={calculateUserTotalScore}
                       getDigitalProfile={getDigitalProfile}
                       getProfileColor={getProfileColor}
+                      allResponses={{
+                        missao1: responses1,
+                        missao2: responses2,
+                        missao3: responses3,
+                        missao4: responses4
+                      }}
+                      questions={questions || []}
+                      onUserAnalysis={handleUserAnalysis}
                     />
                   )}
                 </CardContent>
@@ -423,6 +444,28 @@ const AdminDashboard = () => {
               </Card>
             </TabsContent>
           </Tabs>
+
+          {/* Modal de Análise Individual */}
+          <UserAnalysisDialog
+            user={selectedUser}
+            userProfile={selectedUserProfile}
+            isOpen={isAnalysisDialogOpen}
+            onClose={() => {
+              setIsAnalysisDialogOpen(false);
+              setSelectedUser(null);
+              setSelectedUserProfile(null);
+            }}
+            calculateUserTotalScore={calculateUserTotalScore}
+            getDigitalProfile={getDigitalProfile}
+            getProfileColor={getProfileColor}
+            allResponses={{
+              missao1: responses1,
+              missao2: responses2,
+              missao3: responses3,
+              missao4: responses4
+            }}
+            questions={questions || []}
+          />
         </div>
       </div>
     );
