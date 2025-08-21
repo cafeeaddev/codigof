@@ -293,7 +293,7 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
           </div>
 
           <div className="mb-2">
-            <h4 className="text-base md:text-sm font-medium text-foreground mb-2">
+            <h4 className="text-lg md:text-base font-medium text-foreground mb-2">
               {currentQuestionData.question}
             </h4>
 
