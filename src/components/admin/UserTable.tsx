@@ -249,7 +249,7 @@ export const UserTable = ({
               
               const profile = hasCompletedRequiredMissions 
                 ? getDigitalProfile(totalScore)
-                : { profile: 'Não Concluído', sublevel: 'Complete as missões 1, 2 e 3' };
+                : { profile: "Não Concluído", sublevel: "" };
               
               const profileColor = hasCompletedRequiredMissions 
                 ? getProfileColor(profile.profile)
