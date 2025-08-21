@@ -246,7 +246,7 @@ export const MissaoTres = ({ onComplete }: MissaoTresProps) => {
       </ScrollArea>
 
       {/* Fixed Navigation Buttons */}
-      <div className="border-t bg-background p-4 mt-auto">
+      <div className="border-t bg-background p-4 pb-6 md:pb-4 lg:pb-4 mt-auto">
         <div className="max-w-4xl mx-auto flex justify-between items-center gap-4">
           <Button
             variant="outline"

@@ -328,7 +328,7 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
               </RadioGroup>
             )}
 
-            <div className="mt-4 pt-2 flex justify-between items-center">
+            <div className="mt-4 pt-4 pb-6 md:pb-4 lg:pb-4 flex justify-between items-center border-t bg-background">
               <Button
                 type="button"
                 onClick={() => goToPreviousQuestion()}

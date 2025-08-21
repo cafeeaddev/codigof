@@ -368,12 +368,12 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
           
 
           {/* Avatar + Nome/Área */}
-          <div className="flex items-center gap-2 ml-2 md:ml-8 mr-auto max-w-[40vw] sm:max-w-[35vw] md:max-w-[50vw]">
+          <div className="flex items-center gap-2 ml-2 md:ml-8 mr-auto max-w-[50vw] sm:max-w-[45vw] md:max-w-[60vw]">
             <div className="w-8 h-8 md:w-10 md:h-10 bg-secondary/20 rounded-full flex items-center justify-center border border-secondary/50">
               <User className="w-4 h-4 md:w-5 md:h-5 text-secondary" />
             </div>
-            <div className="min-w-0 mr-6 sm:mr-10 md:mr-0">
-              <h1 className="text-secondary text-sm md:text-base font-bold tracking-wider truncate">{(userProfile.nome || 'Usuário').split(' ')[0]}</h1>
+            <div className="min-w-0 mr-4 sm:mr-6 md:mr-0">
+              <h1 className="text-secondary text-sm md:text-base font-bold tracking-wider truncate">{userProfile.nome || 'Usuário'}</h1>
               <p className="text-muted-foreground text-xs md:text-sm truncate">{userProfile.cargo?.replace(/^\d+-\s*/, '').trim()}</p>
             </div>
           </div>
@@ -566,31 +566,31 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                   const isLocked = missionId > currentMission && !isCompleted;
                   
                   return (
-                    <div
+                     <div
                       key={missionId}
                       className={`relative p-4 rounded-lg border-2 transition-all duration-300 ${
                         isCompleted
-                          ? 'bg-primary/20 border-primary'
+                          ? 'bg-primary/20 border-primary shadow-sm'
                           : isCurrent
-                          ? 'bg-accent/20 border-accent'
+                          ? 'bg-accent/20 border-accent shadow-sm'
                           : isLocked
-                          ? 'bg-muted/50 border-muted opacity-50'
+                          ? 'bg-muted/30 border-muted-foreground/30 opacity-60'
                           : 'bg-card border-secondary/50'
                       }`}
                     >
                       <div className="flex items-center gap-2 mb-2">
                         <div className={`w-3 h-3 rounded-full ${
-                          isCompleted ? 'bg-primary' : isCurrent ? 'bg-accent' : 'bg-muted'
+                          isCompleted ? 'bg-primary' : isCurrent ? 'bg-accent' : isLocked ? 'bg-muted-foreground/50' : 'bg-muted'
                         }`}></div>
                         <span className={`text-sm font-bold tracking-wider ${
-                          isCompleted ? 'text-primary' : isCurrent ? 'text-accent' : 'text-muted-foreground'
+                          isCompleted ? 'text-primary' : isCurrent ? 'text-accent' : isLocked ? 'text-muted-foreground/70' : 'text-foreground'
                         }`}>
                           MISSÃO {missionId}
                         </span>
                       </div>
                       
-                      <div className={`text-xs mb-2 ${
-                        isCompleted ? 'text-primary' : isCurrent ? 'text-accent' : 'text-muted-foreground'
+                      <div className={`text-xs mb-2 font-medium ${
+                        isCompleted ? 'text-primary/80' : isCurrent ? 'text-accent/80' : isLocked ? 'text-muted-foreground/60' : 'text-foreground/70'
                       }`}>
                         {missionId === 1 && "Como você encara o digital?"}
                         {missionId === 2 && "O digital no seu dia a dia"}
