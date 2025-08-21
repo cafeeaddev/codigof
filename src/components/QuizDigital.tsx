@@ -272,15 +272,15 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
 
   return (
     <div className="h-full flex flex-col bg-background">
-      <div className="flex-1 flex flex-col max-w-4xl mx-auto w-full p-4 md:p-8">
+      <div className="flex-1 flex flex-col max-w-4xl mx-auto w-full p-4 md:p-6">
         {/* Header */}
-        <div className="mb-8">
-          <h2 className="text-2xl md:text-3xl font-bold text-center mb-6 text-foreground">
+        <div className="mb-6">
+          <h2 className="text-xl md:text-2xl font-bold text-center mb-4 text-foreground">
             Práticas Digitais - Missão 1
           </h2>
           
-          <div className="flex justify-between items-center mb-4">
-            <span className="text-sm md:text-base text-muted-foreground">
+          <div className="flex justify-between items-center mb-3">
+            <span className="text-sm text-muted-foreground">
               Pergunta {currentQuestion + 1} de {quizQuestions.length}
             </span>
           </div>
@@ -297,30 +297,30 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
         {/* Question Card */}
         <div className="flex-1 flex flex-col">
           <Card className="flex-1 border-border/50 bg-card/50 backdrop-blur-sm">
-            <CardContent className="p-6 md:p-8 h-full flex flex-col">
-              <h3 className="text-xl md:text-2xl font-semibold text-foreground mb-8 leading-relaxed">
+            <CardContent className="p-4 md:p-6 h-full flex flex-col">
+              <h3 className="text-lg md:text-xl font-semibold text-foreground mb-6 leading-relaxed">
                 {currentQuestionData.question}
               </h3>
 
               <RadioGroup
                 value={answers[currentQuestionData.id] || ""}
                 onValueChange={(value) => handleAnswerSelect(currentQuestionData.id, value)}
-                className="space-y-4 flex-1"
+                className="space-y-3 flex-1"
               >
                 {currentQuestionData.options.map((option) => (
                   <div 
                     key={option.letter} 
-                    className="flex items-start space-x-4 p-4 rounded-lg border border-border/30 hover:border-primary/50 hover:bg-muted/30 cursor-pointer transition-all duration-200" 
+                    className="flex items-start space-x-3 p-3 rounded-lg border border-border/30 hover:border-primary/50 hover:bg-muted/30 cursor-pointer transition-all duration-200" 
                     onClick={() => handleAnswerSelect(currentQuestionData.id, option.letter)}
                   >
                     <RadioGroupItem
                       value={option.letter}
                       id={`q${currentQuestionData.id}-${option.letter}`}
-                      className="mt-1 h-5 w-5"
+                      className="mt-0.5 h-4 w-4"
                     />
                     <Label
                       htmlFor={`q${currentQuestionData.id}-${option.letter}`}
-                      className="text-base md:text-lg text-foreground cursor-pointer flex-1 leading-relaxed"
+                      className="text-sm md:text-base text-foreground cursor-pointer flex-1 leading-relaxed"
                     >
                       <span className="font-semibold text-primary mr-2">{option.letter})</span>
                       {option.text}
@@ -333,15 +333,16 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
         </div>
 
         {/* Navigation Buttons */}
-        <div className="mt-6 flex justify-between items-center gap-4">
+        <div className="mt-4 flex justify-between items-center gap-4">
           <Button
             type="button"
             onClick={() => goToPreviousQuestion()}
             disabled={currentQuestion === 0}
             variant="outline"
-            className="min-w-[100px]"
+            size="sm"
+            className="min-w-[80px]"
           >
-            <ChevronLeft className="w-4 h-4 mr-2" />
+            <ChevronLeft className="w-3 h-3 mr-1" />
             Anterior
           </Button>
 
@@ -350,7 +351,8 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
               type="button"
               onClick={() => submitQuiz()}
               disabled={!answers[currentQuestionData.id] || isSubmitting}
-              className="min-w-[100px] bg-primary hover:bg-primary/90"
+              size="sm"
+              className="min-w-[80px] bg-primary hover:bg-primary/90"
             >
               {isSubmitting ? 'Enviando...' : 'Finalizar'}
             </Button>
@@ -359,10 +361,11 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
               type="button"
               onClick={() => goToNextQuestion()}
               disabled={!answers[currentQuestionData.id]}
-              className="min-w-[100px] bg-primary hover:bg-primary/90"
+              size="sm"
+              className="min-w-[80px] bg-primary hover:bg-primary/90"
             >
               Próxima
-              <ChevronRight className="w-4 h-4 ml-2" />
+              <ChevronRight className="w-3 h-3 ml-1" />
             </Button>
           )}
         </div>
