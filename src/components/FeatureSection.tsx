@@ -109,26 +109,22 @@ export const FeatureSection = ({
           {/* Desktop layout with flex-row */}
           <div className="hidden lg:flex lg:flex-row items-center justify-between gap-16 w-full">
             {/* Left side - Content */}
-            <div 
-              ref={titleReveal.elementRef}
-              style={titleReveal.style}
-              className="flex-1"
-            >
-              <div className="mb-6 space-y-3 text-center lg:text-left">
-                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-[hsl(var(--near-white))]">
+            <div className="flex-1">
+              <div className="mb-6 space-y-3 text-left">
+                <h2 className="text-4xl font-extrabold tracking-tight text-[hsl(var(--near-white))]">
                   Sou a <span className="bg-gradient-to-r from-[hsl(var(--neon-cyan))] to-[hsl(var(--neon-purple))] bg-clip-text text-transparent">Cody</span>, sua IA mentora.
                 </h2>
-                <p className="text-[hsl(var(--lavender))] text-base sm:text-lg lg:text-xl">
+                <p className="text-[hsl(var(--lavender))] text-xl">
                   Vamos iniciar essa <span className="text-[hsl(var(--neon-cyan))] font-semibold">jornada digital</span>?
                 </p>
-                <p className="text-[hsl(var(--lavender))] text-sm sm:text-base lg:text-lg">
+                <p className="text-[hsl(var(--lavender))] text-lg">
                   Descubra seu estilo digital e desbloqueie a trilha feita para você.
                 </p>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+              <div className="grid grid-cols-3 gap-6">
                 {/* Card: Missões */}
                 <div className="group relative rounded-2xl bg-gradient-to-br from-[hsl(var(--neon-cyan))] to-[hsl(var(--neon-purple))] p-[1px]">
-                  <article className="rounded-2xl h-full bg-[hsl(var(--background)/0.6)] backdrop-blur-md border border-border/60 p-4 sm:p-6 transition-transform duration-200 hover:scale-[1.03] shadow-md hover:shadow-glow" aria-label="4 MISSÕES — Desafios interativos">
+                  <article className="rounded-2xl h-full bg-[hsl(var(--background)/0.6)] backdrop-blur-md border border-border/60 p-6 transition-transform duration-200 hover:scale-[1.03] shadow-md hover:shadow-glow" aria-label="4 MISSÕES — Desafios interativos">
                     <div className="flex flex-col items-start gap-3">
                       <Flag
                         size={28}
@@ -136,15 +132,15 @@ export const FeatureSection = ({
                         style={{ filter: 'drop-shadow(0 0 12px hsl(var(--neon-cyan)))' }}
                         aria-hidden
                       />
-                      <h3 className="text-[hsl(var(--heading-readable))] text-sm sm:text-base font-extrabold tracking-wide uppercase">4 Missões</h3>
-                      <p className="text-[hsl(var(--body-readable))] text-xs sm:text-sm">Desafios interativos</p>
+                      <h3 className="text-[hsl(var(--heading-readable))] text-base font-extrabold tracking-wide uppercase">4 Missões</h3>
+                      <p className="text-[hsl(var(--body-readable))] text-sm">Desafios interativos</p>
                     </div>
                   </article>
                 </div>
 
                 {/* Card: XP & Levels */}
                 <div className="group relative rounded-2xl bg-gradient-to-br from-[hsl(var(--neon-cyan))] to-[hsl(var(--neon-purple))] p-[1px]">
-                  <article className="rounded-2xl h-full bg-[hsl(var(--background)/0.6)] backdrop-blur-md border border-border/60 p-4 sm:p-6 transition-transform duration-200 hover:scale-[1.03] shadow-md hover:shadow-glow" aria-label="XP & LEVELS — Pontuação e progresso">
+                  <article className="rounded-2xl h-full bg-[hsl(var(--background)/0.6)] backdrop-blur-md border border-border/60 p-6 transition-transform duration-200 hover:scale-[1.03] shadow-md hover:shadow-glow" aria-label="XP & LEVELS — Pontuação e progresso">
                     <div className="flex flex-col items-start gap-3">
                       <ArrowUpCircle
                         size={28}
@@ -152,15 +148,15 @@ export const FeatureSection = ({
                         style={{ filter: 'drop-shadow(0 0 12px hsl(var(--neon-cyan)))' }}
                         aria-hidden
                       />
-                      <h3 className="text-[hsl(var(--heading-readable))] text-sm sm:text-base font-extrabold tracking-wide uppercase">XP & Levels</h3>
-                      <p className="text-[hsl(var(--body-readable))] text-xs sm:text-sm">Pontuação e progresso</p>
+                      <h3 className="text-[hsl(var(--heading-readable))] text-base font-extrabold tracking-wide uppercase">XP & Levels</h3>
+                      <p className="text-[hsl(var(--body-readable))] text-sm">Pontuação e progresso</p>
                     </div>
                   </article>
                 </div>
 
                 {/* Card: Medalhas */}
                 <div className="group relative rounded-2xl bg-gradient-to-br from-[hsl(var(--neon-cyan))] to-[hsl(var(--neon-purple))] p-[1px]">
-                  <article className="rounded-2xl h-full bg-[hsl(var(--background)/0.6)] backdrop-blur-md border border-border/60 p-4 sm:p-6 transition-transform duration-200 hover:scale-[1.03] shadow-md hover:shadow-glow" aria-label="MEDALHAS — Perfis de habilidade">
+                  <article className="rounded-2xl h-full bg-[hsl(var(--background)/0.6)] backdrop-blur-md border border-border/60 p-6 transition-transform duration-200 hover:scale-[1.03] shadow-md hover:shadow-glow" aria-label="MEDALHAS — Perfis de habilidade">
                     <div className="flex flex-col items-start gap-3">
                       <Trophy
                         size={28}
@@ -168,8 +164,8 @@ export const FeatureSection = ({
                         style={{ filter: 'drop-shadow(0 0 12px hsl(var(--neon-cyan)))' }}
                         aria-hidden
                       />
-                      <h3 className="text-[hsl(var(--heading-readable))] text-sm sm:text-base font-extrabold tracking-wide uppercase">Medalhas</h3>
-                      <p className="text-[hsl(var(--body-readable))] text-xs sm:text-sm">Perfis de habilidade</p>
+                      <h3 className="text-[hsl(var(--heading-readable))] text-base font-extrabold tracking-wide uppercase">Medalhas</h3>
+                      <p className="text-[hsl(var(--body-readable))] text-sm">Perfis de habilidade</p>
                     </div>
                   </article>
                 </div>
@@ -188,9 +184,6 @@ export const FeatureSection = ({
                     loop
                     playsInline
                     preload="auto"
-                    onLoadStart={() => console.log('Video loading started')}
-                    onCanPlay={() => console.log('Video can play')}
-                    onError={(e) => console.error('Video error:', e)}
                   >
                     <source src="https://meta.cafeeadhost.com.br/Cody/hero-animation.mp4" type="video/mp4" />
                     <div className="w-full h-full rounded-full bg-gradient-to-br from-neon-purple/20 via-neon-cyan/10 to-neon-purple/20 flex items-center justify-center">
