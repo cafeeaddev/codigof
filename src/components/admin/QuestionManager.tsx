@@ -148,8 +148,10 @@ export const QuestionManager = () => {
 
   const getAreaNames = (areaIds: string[] | null): string => {
     if (!areaIds || areaIds.length === 0) return '';
+    console.log('getAreaNames - areaIds:', areaIds);
+    console.log('getAreaNames - areas:', areas);
     return areaIds
-      .map(id => areas.find(area => area.id === id)?.name || id)
+      .map(id => areas.find(area => area.id === id)?.name || `ID: ${id}`)
       .join(', ');
   };
 
