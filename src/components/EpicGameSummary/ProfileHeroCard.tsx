@@ -163,7 +163,7 @@ export const ProfileHeroCard: React.FC<ProfileHeroCardProps> = ({
                    }}>
                 <Trophy size={16} className="sm:w-5 sm:h-5" style={{ color: profileColor }} />
                 <span className="text-lg sm:text-xl lg:text-2xl xl:text-3xl font-bold" style={{ color: profileColor }}>
-                  Seu Perfil é: {profile}
+                  Seu Level é: {profile}
                 </span>
               </div>
               
