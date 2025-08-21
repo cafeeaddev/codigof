@@ -173,7 +173,6 @@ export const ProfileHeroCard: React.FC<ProfileHeroCardProps> = ({
                   phrase={phrase}
                   profile={profile}
                   sublevel={sublevel}
-                  cardRef={cardRef}
                 />
               </div>
             </div>
