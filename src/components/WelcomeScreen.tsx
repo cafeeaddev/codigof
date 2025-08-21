@@ -369,7 +369,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
 
           {/* Avatar + Nome/Área */}
           <div className="flex items-center gap-2 ml-2 md:ml-8 mr-auto max-w-[25vw] sm:max-w-[20vw] md:max-w-[30vw]">
-            <div className="w-8 h-8 md:w-10 md:h-10 bg-secondary/20 rounded-full flex items-center justify-center border border-secondary/50">
+            <div className="hidden sm:flex w-8 h-8 md:w-10 md:h-10 bg-secondary/20 rounded-full items-center justify-center border border-secondary/50">
               <User className="w-4 h-4 md:w-5 md:h-5 text-secondary" />
             </div>
             <div className="min-w-0 mr-6 sm:mr-12 md:mr-20 lg:mr-0 flex-1">
