@@ -483,6 +483,26 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
             ]}
           />
           
+          {/* Assistente IA mobile */}
+          <Button
+            onClick={() => setShowTutorial(true)}
+            className="bg-transparent border border-secondary/30 text-secondary hover:bg-secondary/10 hover:text-secondary transition-all duration-200 p-1.5 rounded-full w-8 h-8 flex items-center justify-center ml-3 shrink-0"
+          >
+            <div className="relative flex items-center justify-center w-5 h-5 rounded-full overflow-hidden bg-gradient-to-br from-primary/20 to-secondary/20 border border-primary/30">
+              {codyVideoUrl && (
+                <video
+                  src={codyVideoUrl}
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="w-full h-full object-cover"
+                />
+              )}
+              {/* Bolinha indicadora de IA ativa */}
+              <div className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse border border-background"></div>
+            </div>
+          </Button>
         </div>
         </div>
 
