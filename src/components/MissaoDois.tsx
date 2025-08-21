@@ -241,8 +241,8 @@ export const MissaoDois = ({ onComplete, userId }: MissaoDoisProps) => {
             </div>
           )}
 
-          {/* Progress Header */}
-          <div className="mb-3 sticky top-0 bg-background z-10 pb-2">
+          {/* Progress Header - mais compacto */}
+          <div className="mb-4 sticky top-0 bg-background z-10 pb-2">
             <div className="flex justify-between items-center mb-2">
               <span className="text-sm text-muted-foreground">
                 Pergunta {currentQuestion + 1} de {questions.length}
