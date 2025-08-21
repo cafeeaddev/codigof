@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { ArrowLeft, User, Lock, FileText, Calendar, LogOut } from 'lucide-react';
+import { ArrowLeft, User, Lock, FileText, Calendar, LogOut, Award } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { ForgotPasswordDialog } from '@/components/ForgotPasswordDialog';
@@ -18,6 +18,7 @@ import { UserTable } from '@/components/admin/UserTable';
 import { ExportDialog } from '@/components/admin/ExportDialog';
 import { GameSettings } from '@/components/admin/GameSettings';
 import { QuestionManager } from '@/components/admin/QuestionManager';
+import { StarRatingsAnalytics } from '@/components/admin/StarRatingsAnalytics';
 import { useAdminDashboard } from '@/hooks/useAdminDashboard';
 import { useFilters } from '@/hooks/useFilters';
 import { ResponseData } from '@/types/admin';
@@ -294,10 +295,14 @@ const AdminDashboard = () => {
 
           {/* Main Dashboard Tabs */}
           <Tabs defaultValue="dashboard" className="w-full">
-            <TabsList className="grid w-full grid-cols-3 mb-8">
+            <TabsList className="grid w-full grid-cols-4 mb-8">
               <TabsTrigger value="dashboard" className="flex items-center gap-2">
                 <User className="w-4 h-4" />
                 Dashboard
+              </TabsTrigger>
+              <TabsTrigger value="competencias" className="flex items-center gap-2">
+                <Award className="w-4 h-4" />
+                Competências
               </TabsTrigger>
               <TabsTrigger value="configuracoes" className="flex items-center gap-2">
                 <Calendar className="w-4 h-4" />
@@ -340,6 +345,15 @@ const AdminDashboard = () => {
                   )}
                 </CardContent>
               </Card>
+            </TabsContent>
+
+            {/* Competências Tab */}
+            <TabsContent value="competencias" className="space-y-8">
+              <StarRatingsAnalytics 
+                responses={responses4 || []} 
+                questions={[]} 
+                profiles={adminUsers?.data || []} 
+              />
             </TabsContent>
 
             {/* Configurações Tab */}
