@@ -203,7 +203,7 @@ export const TutorialOverlay = ({ stage, onClose, onDontShowAgain }: TutorialOve
           <div className="grid grid-cols-1 md:grid-cols-[1fr,136px] gap-4 items-start">
             <div className="space-y-2">
               <h2 className="text-xl md:text-2xl font-bold text-primary">{slides[index].title}</h2>
-              <p className="text-sm md:text-base text-muted-foreground">{slides[index].description}</p>
+              <div className="text-sm md:text-base text-muted-foreground whitespace-pre-line">{slides[index].description}</div>
 
               <div className="mt-4 flex items-center justify-between text-xs text-muted-foreground">
                 <span>
