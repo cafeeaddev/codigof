@@ -154,8 +154,8 @@ export const ProfileHeroCard: React.FC<ProfileHeroCardProps> = ({
                 
                 {/* Mensagem de bônus por agilidade */}
                 {timeBonus > 0 && (
-                  <div className="bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border border-yellow-500/30 rounded-lg p-3 sm:p-4">
-                    <p className="text-sm sm:text-base lg:text-lg font-semibold text-yellow-400 text-center">
+                  <div className="bg-gradient-to-r from-neon-cyan/20 to-neon-purple/20 border border-neon-cyan/30 rounded-lg p-3 sm:p-4">
+                    <p className="text-sm sm:text-base lg:text-lg font-semibold text-neon-cyan text-center">
                       🚀 Você ganhou {timeBonus} XPs Bonus por agilidade
                     </p>
                   </div>
