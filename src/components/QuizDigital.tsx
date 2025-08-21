@@ -271,28 +271,27 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
   const progress = (answeredCount / quizQuestions.length) * 100;
 
   return (
-    <div className="h-full flex flex-col bg-background">
-      {/* Mobile: Fixed buttons with scrollable content */}
-      <div className="md:hidden h-full flex flex-col">
-        <ScrollArea className="flex-1">
-          <div className="p-4 pb-24">
-            {/* Progress Header */}
-            <div className="mb-6 sticky top-0 bg-background z-10 pb-3">
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-sm text-muted-foreground">
-                  Pergunta {currentQuestion + 1} de {quizQuestions.length}
-                </span>
-              </div>
-              
-              <div className="w-full bg-secondary rounded-full h-2">
-                <div
-                  className="bg-gradient-to-r from-primary to-accent h-2 rounded-full transition-all duration-500"
-                  style={{ width: `${progress}%` }}
-                />
-              </div>
-            </div>
+    <>
+      {/* Mobile Layout */}
+      <div className="flex md:hidden h-full flex-col">
+        {/* Progress Header */}
+        <div className="p-4 bg-background border-b border-border/50">
+          <div className="flex justify-between items-center mb-2">
+            <span className="text-sm text-muted-foreground">
+              Pergunta {currentQuestion + 1} de {quizQuestions.length}
+            </span>
+          </div>
+          <div className="w-full bg-secondary rounded-full h-2">
+            <div
+              className="bg-gradient-to-r from-primary to-accent h-2 rounded-full transition-all duration-500"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+        </div>
 
-            {/* Question Card */}
+        {/* Scrollable Content */}
+        <ScrollArea className="flex-1">
+          <div className="p-4">
             <Card className="border shadow-sm">
               <CardContent className="p-4">
                 <h3 className="text-base font-semibold text-foreground mb-4 leading-relaxed">
@@ -330,8 +329,8 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
           </div>
         </ScrollArea>
 
-        {/* Mobile Fixed Buttons */}
-        <div className="fixed bottom-0 left-0 right-0 bg-background border-t border-border/50 p-3 shadow-[0_-4px_20px_rgba(0,0,0,0.15)] z-50">
+        {/* Fixed Mobile Buttons */}
+        <div className="p-4 bg-background border-t border-border/50 shadow-[0_-4px_20px_rgba(0,0,0,0.15)]">
           <div className="flex justify-between items-center gap-3">
             <Button
               type="button"
@@ -378,8 +377,8 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
         </div>
       </div>
 
-      {/* Tablet and Desktop */}
-      <div className="hidden md:flex h-full flex-col">
+      {/* Desktop Layout */}
+      <div className="hidden md:flex h-full flex-col bg-background">
         <ScrollArea className="flex-1">
           <div className="max-w-4xl mx-auto w-full p-4 pb-6">
             {/* Progress Header */}
@@ -436,7 +435,7 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
           </div>
         </ScrollArea>
 
-        {/* Tablet/Desktop Navigation Buttons */}
+        {/* Desktop Navigation Buttons */}
         <div className="bg-background border-t border-border/50 p-4 shadow-[0_-4px_20px_rgba(0,0,0,0.15)]">
           <div className="max-w-4xl mx-auto flex justify-between items-center gap-4">
             <Button
@@ -483,6 +482,6 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
