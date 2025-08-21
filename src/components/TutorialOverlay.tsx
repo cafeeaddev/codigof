@@ -31,7 +31,7 @@ const useSlides = (stage: "prelogin" | "ingame") => {
         {
           title: "Missões e Progresso",
           description:
-            "Você enfrentará 4 missões estratégicas, cada uma valendo 25 XP. Seu progresso é salvo automaticamente.\n\n• Missões 1-3: Avaliam sua maturidade digital\n• Missão 4: Diagnóstico para treinamentos futuros (sem pontuação)\n\nComplete todas e desbloqueie seu perfil completo!",
+            "Nesse jogo, você encontrará 4 missões estratégicas, cada uma valendo 25 XPs. Não se preocupe: seu progresso é salvo automaticamente.\n\nMissões 1 a 3: medem seu nível de maturidade digital.\nMissão 4: não interfere no seu nível de maturidade digital; ela avalia seu conhecimento das ferramentas Forvis Mazars e ajuda a mapear treinamentos futuros.\n\nComplete todas as etapas e desbloqueie seu perfil completo. Vamos juntos nessa?",
           narration:
             "Cada missão vale 25 XPs. Seu progresso inicia em 0% e avança conforme você responde. Complete cada missão e conquiste uma nova medalha.",
           customAudioUrl: "https://meta.cafeeadhost.com.br/Cody/audio02.mp3",
