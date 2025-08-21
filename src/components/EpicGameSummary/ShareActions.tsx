@@ -207,6 +207,20 @@ export const ShareActions: React.FC<ShareActionsProps> = ({
         </p>
       </div>
 
+      {/* Texto explicativo para LinkedIn */}
+      <div className="text-center space-y-3">
+        <p className="text-foreground/90 font-medium text-lg">
+          Que tal compartilhar sua conquista no LinkedIn?
+        </p>
+        <div className="text-foreground/80 text-sm leading-relaxed">
+          <p className="mb-2">
+            Basta tirar um print desta página e publicar marcando a Forvis Mazars Brasil, usando as hashtags:
+          </p>
+          <p className="font-mono text-primary">
+            #GrowBelongImpact #DesperteSeuCodigoF #CafeEAD
+          </p>
+        </div>
+      </div>
 
       {/* Botão */}
       <div className="flex justify-center">
