@@ -93,7 +93,7 @@ export const AnimatedStats: React.FC<AnimatedStatsProps> = ({
             className="text-lg font-semibold mb-4"
             style={{ color: profileColor }}
           >
-            Total XP
+            Total XPs
           </h3>
           <div 
             className={cn(
@@ -149,7 +149,7 @@ export const AnimatedStats: React.FC<AnimatedStatsProps> = ({
           </div>
            <p className="text-muted-foreground text-sm">
              {timeBonus > 0 
-               ? `+${timeBonus} XP por velocidade` 
+               ? `+${timeBonus} XPs por velocidade` 
                : 'Nenhum bônus de tempo'
              }
            </p>
