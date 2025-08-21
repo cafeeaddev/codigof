@@ -273,9 +273,9 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
   return (
     <div className="h-full flex flex-col bg-background overflow-hidden">
       <ScrollArea className="flex-1">
-        <div className="flex flex-col max-w-4xl mx-auto w-full p-3 pb-[calc(60px+env(safe-area-inset-bottom,0px))] min-h-full">
-          {/* Progress Header - mais compacto */}
-          <div className="mb-4 sticky top-0 bg-background z-10 pb-2">
+        <div className="flex flex-col max-w-4xl mx-auto w-full p-4 pb-[80px] min-h-full">
+          {/* Progress Header - compacto */}
+          <div className="mb-6 sticky top-0 bg-background z-10 pb-3">
             <div className="flex justify-between items-center mb-2">
               <span className="text-sm text-muted-foreground">
                 Pergunta {currentQuestion + 1} de {quizQuestions.length}
@@ -291,23 +291,23 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
             </div>
           </div>
 
-          {/* Question Card */}
-          <div className="flex-1 min-h-0">
+          {/* Question Card - reduzido espaçamento */}
+          <div className="flex-1">
             <Card className="border shadow-sm">
               <CardContent className="p-4 md:p-6">
-                <h3 className="text-base md:text-lg font-medium text-foreground mb-4 leading-relaxed">
+                <h3 className="text-lg font-semibold text-foreground mb-6 leading-relaxed">
                   {currentQuestionData.question}
                 </h3>
 
                 <RadioGroup
                   value={answers[currentQuestionData.id] || ""}
                   onValueChange={(value) => handleAnswerSelect(currentQuestionData.id, value)}
-                  className="space-y-2"
+                  className="space-y-3"
                 >
                   {currentQuestionData.options.map((option) => (
                     <div 
                       key={option.letter} 
-                      className="flex items-start space-x-3 p-2 rounded-lg hover:bg-purple-500/20 cursor-pointer transition-colors duration-200" 
+                      className="flex items-start space-x-3 p-3 rounded-lg hover:bg-primary/5 border border-transparent hover:border-primary/20 cursor-pointer transition-all duration-200" 
                       onClick={() => handleAnswerSelect(currentQuestionData.id, option.letter)}
                     >
                       <RadioGroupItem
@@ -317,9 +317,9 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
                       />
                       <Label
                         htmlFor={`q${currentQuestionData.id}-${option.letter}`}
-                        className="text-xs md:text-sm text-foreground cursor-pointer flex-1 leading-relaxed"
+                        className="text-sm text-foreground cursor-pointer flex-1 leading-relaxed"
                       >
-                        <span className="font-medium mr-2">{option.letter})</span>
+                        <span className="font-semibold mr-2 text-primary">{option.letter})</span>
                         {option.text}
                       </Label>
                     </div>
@@ -331,15 +331,15 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
         </div>
       </ScrollArea>
 
-      {/* Fixed Navigation Buttons */}
-      <div className="border-t bg-background/98 backdrop-blur-md p-3 pb-5 md:pb-3 lg:pb-3 mt-auto fixed bottom-0 left-0 right-0 z-[100]">
+      {/* Fixed Navigation Buttons - sempre visíveis */}
+      <div className="bg-background/98 backdrop-blur-md border-t border-border/50 p-4 fixed bottom-0 left-0 right-0 z-[999] shadow-lg">
         <div className="max-w-4xl mx-auto flex justify-between items-center gap-4">
           <Button
             type="button"
             onClick={() => goToPreviousQuestion()}
             disabled={currentQuestion === 0}
             variant="outline"
-            className="flex items-center space-x-2 min-w-[100px] bg-background/98 backdrop-blur-sm border-secondary/50 hover:bg-secondary/10 relative z-[100] shadow-lg"
+            className="flex items-center space-x-2 min-w-[110px] bg-background hover:bg-muted/50 border-border shadow-sm"
           >
             <ChevronLeft className="w-4 h-4" />
             <span>Anterior</span>
@@ -350,7 +350,7 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
               type="button"
               onClick={() => submitQuiz()}
               disabled={!answers[currentQuestionData.id] || isSubmitting}
-              className="flex items-center space-x-2 min-w-[100px] bg-primary/98 hover:bg-primary/90 relative z-[100] shadow-lg"
+              className="flex items-center space-x-2 min-w-[110px] bg-primary hover:bg-primary/90 shadow-sm"
             >
               {isSubmitting ? 'Enviando...' : 'Finalizar'}
             </Button>
@@ -359,7 +359,7 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
               type="button"
               onClick={() => goToNextQuestion()}
               disabled={!answers[currentQuestionData.id]}
-              className="flex items-center space-x-2 min-w-[100px] bg-primary/98 hover:bg-primary/90 relative z-[100] shadow-lg"
+              className="flex items-center space-x-2 min-w-[110px] bg-primary hover:bg-primary/90 shadow-sm"
             >
               <span>Próxima</span>
               <ChevronRight className="w-4 h-4" />
