@@ -75,7 +75,7 @@ const GameSummary = () => {
     console.log('🚀 BONUS FUNCTION CALLED - Starting calculateAndApplyTimeBonus for user:', user?.id);
     console.log('📊 Full progress data received:', JSON.stringify(prog, null, 2));
     
-    // FORCE BONUS FOR ADRIANO - IMMEDIATE CHECK
+    // Remove FORCE BONUS logic - use proper date calculation
     if (
       prog.missao_1_completed && 
       prog.missao_2_completed && 
@@ -83,43 +83,16 @@ const GameSummary = () => {
       prog.missao_4_completed && 
       (!prog.time_bonus_xp || prog.time_bonus_xp === 0)
     ) {
-      console.log('🎯 FORCING BONUS - All missions complete but no bonus applied!');
+      console.log('🎯 All missions complete, calculating proper date-based bonus');
       
-      const bonus = 150;
-      const newTotalXp = (prog.total_xp || 0) + bonus;
+      // Use proper date calculation logic instead of forcing 150
       
-      console.log('💾 FORCE UPDATE - Applying bonus:', {
-        currentXP: prog.total_xp,
-        bonusXP: bonus,
-        newTotalXP: newTotalXp
-      });
-      
-      try {
-        const { error: updateError } = await supabase
-          .from('user_progress')
-          .update({
-            time_bonus_xp: bonus,
-            total_xp: newTotalXp,
-            updated_at: new Date().toISOString()
-          })
-          .eq('user_id', user?.id);
-
-        if (updateError) {
-          console.error('❌ FORCE UPDATE ERROR:', updateError);
-        } else {
-            console.log('✅ FORCE UPDATE SUCCESS - Bonus applied!');
-            
-            // Update UI states immediately
-            setTimeBonus(bonus);
-            setXp(newTotalXp);
-            
-            console.log('✅ Force bonus applied, showing final screen directly');
-          
-          return;
-        }
-      } catch (error) {
-        console.error('❌ FORCE UPDATE EXCEPTION:', error);
-      }
+      // Continue to proper date calculation below
+      // Don't return here, let the proper logic calculate the bonus
+    } else if (prog.time_bonus_xp && prog.time_bonus_xp > 0) {
+      console.log('✅ Bonus already applied:', prog.time_bonus_xp);
+      setTimeBonus(prog.time_bonus_xp);
+      return;
     }
     
     try {
@@ -368,26 +341,10 @@ const GameSummary = () => {
           });
         }
         
-        // ADDITIONAL SAFETY CHECK - Force bonus for completed users without bonus
+        // ADDITIONAL SAFETY CHECK - Force bonus for completed users without bonus using proper date logic
         if (prog && prog.missao_1_completed && prog.missao_2_completed && prog.missao_3_completed && prog.missao_4_completed && (!prog.time_bonus_xp || prog.time_bonus_xp === 0)) {
-          console.log('🆘 SAFETY CHECK - User has all missions but no bonus, forcing...');
-          
-          const { error: safetyUpdateError } = await supabase
-            .from('user_progress')
-            .update({
-              time_bonus_xp: 150,
-              total_xp: (prog.total_xp || 0) + 150,
-              updated_at: new Date().toISOString()
-            })
-            .eq('user_id', user?.id);
-            
-          if (!safetyUpdateError) {
-            console.log('✅ SAFETY CHECK - Bonus applied successfully!');
-            setTimeBonus(150);
-            setXp((prog.total_xp || 0) + 150);
-          } else {
-            console.error('❌ SAFETY CHECK - Failed:', safetyUpdateError);
-          }
+          console.log('🆘 SAFETY CHECK - User has all missions but no bonus, applying proper date-based bonus...');
+          await calculateAndApplyTimeBonus(prog);
         }
       } catch (e) {
         console.error(e);
