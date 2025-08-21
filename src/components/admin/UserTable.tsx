@@ -241,8 +241,19 @@ export const UserTable = ({
               const userName = userProfile?.nome || 'Usuário';
               const userCargo = formatCargo(userProfile?.cargo);
               const totalScore = calculateUserTotalScore(progress.user_id);
-              const profile = getDigitalProfile(totalScore);
-              const profileColor = getProfileColor(profile.profile);
+              
+              // Verifica se completou as missões necessárias para definir perfil (1, 2 e 3)
+              const hasCompletedRequiredMissions = progress.missao_1_completed && 
+                                                   progress.missao_2_completed && 
+                                                   progress.missao_3_completed;
+              
+              const profile = hasCompletedRequiredMissions 
+                ? getDigitalProfile(totalScore)
+                : { profile: 'Não Concluído', sublevel: 'Complete as missões 1, 2 e 3' };
+              
+              const profileColor = hasCompletedRequiredMissions 
+                ? getProfileColor(profile.profile)
+                : 'hsl(var(--muted-foreground))';
               
               return (
                 <TableRow key={progress.user_id} className="hover:bg-muted/50 transition-colors">
