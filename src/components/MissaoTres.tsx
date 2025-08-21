@@ -187,7 +187,7 @@ export const MissaoTres = ({ onComplete }: MissaoTresProps) => {
   return (
     <div className="h-full flex flex-col bg-background overflow-hidden">
       <ScrollArea className="flex-1">
-        <div className="flex flex-col max-w-4xl mx-auto w-full p-3 pb-24 min-h-full">
+        <div className="flex flex-col max-w-4xl mx-auto w-full p-3 pb-20 min-h-full">
           {/* Progress Header - mais compacto */}
           <div className="mb-4 sticky top-0 bg-background z-10 pb-2">
             <div className="flex justify-between items-center mb-2">

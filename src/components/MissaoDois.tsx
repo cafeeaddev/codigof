@@ -230,7 +230,7 @@ export const MissaoDois = ({ onComplete, userId }: MissaoDoisProps) => {
   return (
     <div className="h-full flex flex-col bg-background overflow-hidden">
       <ScrollArea className="flex-1">
-        <div className="flex flex-col max-w-4xl mx-auto w-full p-3 pb-24 min-h-full">
+        <div className="flex flex-col max-w-4xl mx-auto w-full p-3 pb-20 min-h-full">
           {isCompleted && (
             <div className="bg-green-50 border border-green-200 rounded-lg p-4 flex items-center space-x-3 mb-3">
               <CheckCircle className="h-6 w-6 text-green-600" />
