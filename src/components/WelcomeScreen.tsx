@@ -450,27 +450,29 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
               ]}
             />
             
-            {/* Assistente IA integrado */}
-            <div className="flex flex-col items-center ml-3">
-              <Button
-                onClick={() => setShowTutorial(true)}
-                className="bg-transparent border-2 border-cyan-400 rounded-full p-1 shadow-none hover:opacity-95 hover:scale-105 hover:border-cyan-300 transition-all duration-300 w-14 h-14 flex items-center justify-center"
-              >
-                {codyVideoUrl && (
-                  <video
-                    src={codyVideoUrl}
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    className="w-10 h-10 rounded-full object-cover"
-                  />
-                )}
-              </Button>
-              <div className="text-secondary/90 text-xs mt-1 text-center leading-none font-medium">
-                Precisa de<br/>Ajuda?
+            {/* Assistente IA integrado - ocultar na tela final */}
+            {!(showGameSummary || (completedMissions.size === 4 && gameData)) && (
+              <div className="flex flex-col items-center ml-3">
+                <Button
+                  onClick={() => setShowTutorial(true)}
+                  className="bg-transparent border-2 border-cyan-400 rounded-full p-1 shadow-none hover:opacity-95 hover:scale-105 hover:border-cyan-300 transition-all duration-300 w-14 h-14 flex items-center justify-center"
+                >
+                  {codyVideoUrl && (
+                    <video
+                      src={codyVideoUrl}
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      className="w-10 h-10 rounded-full object-cover"
+                    />
+                  )}
+                </Button>
+                <div className="text-secondary/90 text-xs mt-1 text-center leading-none font-medium">
+                  Precisa de<br/>Ajuda?
+                </div>
               </div>
-            </div>
+            )}
           </div>
           
           
