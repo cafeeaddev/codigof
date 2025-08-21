@@ -72,7 +72,9 @@ const GameSummary = () => {
   }, [profile.profile, profile.sublevel]);
 
   const calculateAndApplyTimeBonus = async (prog: any) => {
-    console.log('🚀 Starting bonus calculation for user:', user?.id);
+    console.log('🚀 [BONUS DEBUG] Starting bonus calculation');
+    console.log('🚀 [BONUS DEBUG] User ID:', user?.id);
+    console.log('🚀 [BONUS DEBUG] Progress data:', JSON.stringify(prog, null, 2));
     
     try {
       // Get game settings
@@ -83,8 +85,10 @@ const GameSummary = () => {
         .limit(1)
         .maybeSingle();
 
+      console.log('🚀 [BONUS DEBUG] Game settings query result:', { gameSettings, gameError });
+
       if (gameError || !gameSettings?.game_start_date) {
-        console.log('❌ No game settings found');
+        console.log('❌ [BONUS DEBUG] No game settings found');
         return;
       }
 
@@ -95,23 +99,30 @@ const GameSummary = () => {
       const completionDate = new Date(completionDateStr);
       const daysDiff = Math.floor((completionDate.getTime() - gameStartDate.getTime()) / (1000 * 60 * 60 * 24));
       
+      console.log('🚀 [BONUS DEBUG] Date calculations:', {
+        gameStartDateStr,
+        completionDateStr,
+        gameStartDate: gameStartDate.toISOString(),
+        completionDate: completionDate.toISOString(),
+        daysDiff
+      });
+      
       // Calculate expected bonus
       let expectedBonus = 0;
       if (daysDiff === 0) expectedBonus = 150;
       else if (daysDiff === 1) expectedBonus = 100;
       else if (daysDiff === 2) expectedBonus = 50;
       
-      console.log('📊 Bonus calculation:', {
-        gameStartDate: gameStartDateStr,
-        completionDate: completionDateStr,
+      console.log('🚀 [BONUS DEBUG] Bonus calculation:', {
         daysDiff,
         expectedBonus,
-        currentBonus: prog.time_bonus_xp || 0
+        currentBonus: prog.time_bonus_xp || 0,
+        needsUpdate: (prog.time_bonus_xp || 0) !== expectedBonus
       });
 
       // Check if bonus needs updating
       if ((prog.time_bonus_xp || 0) === expectedBonus) {
-        console.log('✅ Bonus already correct');
+        console.log('✅ [BONUS DEBUG] Bonus already correct, setting UI state');
         setTimeBonus(prog.time_bonus_xp || 0);
         return;
       }
@@ -121,10 +132,11 @@ const GameSummary = () => {
         const baseXP = (prog.total_xp || 0) - (prog.time_bonus_xp || 0);
         const newTotalXp = baseXP + expectedBonus;
         
-        console.log('💾 Updating bonus:', {
+        console.log('💾 [BONUS DEBUG] Database update calculation:', {
           oldBonus: prog.time_bonus_xp || 0,
           newBonus: expectedBonus,
           oldTotal: prog.total_xp || 0,
+          baseXP,
           newTotal: newTotalXp
         });
         
@@ -136,17 +148,22 @@ const GameSummary = () => {
           })
           .eq('user_id', user?.id);
 
+        console.log('💾 [BONUS DEBUG] Database update result:', { updateError });
+
         if (updateError) {
-          console.error('❌ Error updating bonus:', updateError);
+          console.error('❌ [BONUS DEBUG] Error updating bonus:', updateError);
           return;
         }
         
+        console.log('✅ [BONUS DEBUG] Setting UI state:', { timeBonus: expectedBonus, xp: newTotalXp });
         setTimeBonus(expectedBonus);
         setXp(newTotalXp);
-        console.log('✅ Bonus updated successfully');
+        console.log('✅ [BONUS DEBUG] Bonus updated successfully');
+      } else {
+        console.log('⚠️ [BONUS DEBUG] No bonus eligible for this completion date');
       }
     } catch (error) {
-      console.error('❌ Error in bonus calculation:', error);
+      console.error('❌ [BONUS DEBUG] Error in bonus calculation:', error);
     }
   };
 
