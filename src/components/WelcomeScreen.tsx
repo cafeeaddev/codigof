@@ -12,7 +12,6 @@ import { MissaoTres } from './MissaoTres';
 import { MissaoQuatro } from './MissaoQuatro';
 import MedalBadges from './MedalBadges';
 import TutorialOverlay from './TutorialOverlay';
-import { SecretFAQDialog } from './SecretFAQDialog';
 import { getDigitalProfile, getProfilePhrase } from '@/lib/digitalProfile';
 import { ProfileHeroCard } from './EpicGameSummary/ProfileHeroCard';
 import { FloatingMedals } from './EpicGameSummary/FloatingMedals';
@@ -415,16 +414,15 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
           </div>
           
           {/* Botão Precisa de Ajuda Desktop */}
-          <SecretFAQDialog>
-            <Button
-              variant="outline"
-              size="sm"
-              className="bg-transparent border-secondary text-secondary hover:bg-secondary hover:text-secondary-foreground mr-2"
-            >
-              <HelpCircle className="w-3 h-3 md:w-4 md:h-4 md:mr-2" />
-              <span className="hidden md:inline">Precisa de Ajuda</span>
-            </Button>
-          </SecretFAQDialog>
+          <Button
+            onClick={() => setShowTutorial(true)}
+            variant="outline"
+            size="sm"
+            className="bg-transparent border-secondary text-secondary hover:bg-secondary hover:text-secondary-foreground mr-2"
+          >
+            <HelpCircle className="w-3 h-3 md:w-4 md:h-4 md:mr-2" />
+            <span className="hidden md:inline">Precisa de Ajuda</span>
+          </Button>
           
           <Button
             onClick={handleLogout}
@@ -475,15 +473,14 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
           />
           
           {/* Botão Precisa de Ajuda Mobile */}
-          <SecretFAQDialog>
-            <Button
-              variant="outline"
-              size="sm"
-              className="bg-transparent border-secondary text-secondary hover:bg-secondary hover:text-secondary-foreground shrink-0 ml-4"
-            >
-              <HelpCircle className="w-3 h-3" />
-            </Button>
-          </SecretFAQDialog>
+          <Button
+            onClick={() => setShowTutorial(true)}
+            variant="outline"
+            size="sm"
+            className="bg-transparent border-secondary text-secondary hover:bg-secondary hover:text-secondary-foreground shrink-0 ml-4"
+          >
+            <HelpCircle className="w-3 h-3" />
+          </Button>
         </div>
         </div>
 
