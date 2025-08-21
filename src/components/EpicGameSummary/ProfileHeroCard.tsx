@@ -72,98 +72,93 @@ export const ProfileHeroCard: React.FC<ProfileHeroCardProps> = ({
         }}
       >
         <CardContent className="relative p-6 md:p-8">
-          <div className="flex flex-col lg:flex-row items-center gap-6 lg:gap-8">
-            
-            {/* Left side - Avatar and announcement */}
-            <div className="flex-shrink-0 text-center lg:text-left">
-              {/* Avatar Circle */}
-              <div className="relative mb-4">
-                <div 
-                  className="w-28 h-28 mx-auto lg:mx-0 rounded-full flex items-center justify-center relative animate-float-medal overflow-hidden"
+          {/* Centered congratulations section */}
+          <div className="text-center mb-8 lg:mb-12">
+            {/* Avatar Circle */}
+            <div className="relative mb-6">
+              <div 
+                className="w-32 h-32 mx-auto rounded-full flex items-center justify-center relative animate-float-medal overflow-hidden"
+                style={{
+                  background: `radial-gradient(circle, ${profileColor}30, ${profileColor}10)`,
+                  border: `4px solid ${profileColor}`,
+                  boxShadow: `0 0 50px ${profileColor}50`
+                }}
+              >
+                {/* Avatar Video */}
+                <video 
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="w-full h-full object-cover rounded-full"
                   style={{
-                    background: `radial-gradient(circle, ${profileColor}30, ${profileColor}10)`,
-                    border: `4px solid ${profileColor}`,
-                    boxShadow: `0 0 50px ${profileColor}50`
+                    filter: `drop-shadow(0 0 20px ${profileColor})`
                   }}
                 >
-                  {/* Avatar Video */}
-                  <video 
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    className="w-full h-full object-cover rounded-full"
-                    style={{
-                      filter: `drop-shadow(0 0 20px ${profileColor})`
-                    }}
-                  >
-                    <source src="https://meta.cafeeadhost.com.br/Cody/hero-animation.mp4" type="video/mp4" />
-                  </video>
-                  
-                  {/* Orbiting dots */}
-                  <div 
-                    className="absolute w-3 h-3 rounded-full animate-orbit"
-                    style={{ 
-                      backgroundColor: profileColor,
-                      boxShadow: `0 0 15px ${profileColor}`
-                    }}
-                  />
-                  
-                  {/* Pulse ring */}
-                  <div 
-                    className="absolute inset-0 rounded-full border-2 animate-ping opacity-20"
-                    style={{ borderColor: profileColor }}
-                  />
-                </div>
-              </div>
-
-              {/* Announcement text */}
-              <div className="space-y-2">
-                <p className="text-lg md:text-xl font-bold" style={{ color: profileColor }}>
-                  Parabéns, {userName}!
-                </p>
-                <p className="text-base md:text-lg text-foreground/90">
-                  Chegamos ao final dessa primeira etapa
-                </p>
+                  <source src="https://meta.cafeeadhost.com.br/Cody/hero-animation.mp4" type="video/mp4" />
+                </video>
+                
+                {/* Orbiting dots */}
+                <div 
+                  className="absolute w-3 h-3 rounded-full animate-orbit"
+                  style={{ 
+                    backgroundColor: profileColor,
+                    boxShadow: `0 0 15px ${profileColor}`
+                  }}
+                />
+                
+                {/* Pulse ring */}
+                <div 
+                  className="absolute inset-0 rounded-full border-2 animate-ping opacity-20"
+                  style={{ borderColor: profileColor }}
+                />
               </div>
             </div>
 
-            {/* Right side - Profile results */}
-            <div className="flex-1 text-center lg:text-left space-y-4">
-              {/* Profile Achievement */}
-              <div>
-                <div className="inline-flex items-center gap-2 mb-4 px-6 py-3 rounded-full border-2" 
-                     style={{ 
-                       borderColor: profileColor,
-                       backgroundColor: `${profileColor}20`
-                     }}>
-                  <Trophy size={20} style={{ color: profileColor }} />
-                  <span className="text-base font-bold" style={{ color: profileColor }}>
-                    Seu Perfil é:
-                  </span>
-                </div>
+            {/* Announcement text */}
+            <div className="space-y-3">
+              <p className="text-xl md:text-2xl font-bold" style={{ color: profileColor }}>
+                Parabéns, {userName}!
+              </p>
+              <p className="text-lg md:text-xl text-foreground/90">
+                Chegamos ao final dessa primeira etapa
+              </p>
+            </div>
+          </div>
 
-                <h2 
-                  className="text-2xl md:text-3xl font-bold mb-2"
-                  style={{ 
-                    color: profileColor
-                  }}
-                >
-                  {profile}
-                </h2>
-                
-                {/* Share Actions */}
-                <div className="mt-4">
-                  <ShareActions 
-                    phrase={phrase}
-                    profile={profile}
-                    sublevel={sublevel}
-                    cardRef={cardRef}
-                  />
-                </div>
+          {/* Profile results section */}
+          <div className="text-center space-y-6">
+            {/* Profile Achievement */}
+            <div>
+              <div className="inline-flex items-center gap-2 mb-4 px-6 py-3 rounded-full border-2" 
+                   style={{ 
+                     borderColor: profileColor,
+                     backgroundColor: `${profileColor}20`
+                   }}>
+                <Trophy size={20} style={{ color: profileColor }} />
+                <span className="text-base font-bold" style={{ color: profileColor }}>
+                  Seu Perfil é:
+                </span>
               </div>
 
-
+              <h2 
+                className="text-2xl md:text-3xl font-bold mb-2"
+                style={{ 
+                  color: profileColor
+                }}
+              >
+                {profile}
+              </h2>
+              
+              {/* Share Actions */}
+              <div className="mt-4">
+                <ShareActions 
+                  phrase={phrase}
+                  profile={profile}
+                  sublevel={sublevel}
+                  cardRef={cardRef}
+                />
+              </div>
             </div>
           </div>
           
