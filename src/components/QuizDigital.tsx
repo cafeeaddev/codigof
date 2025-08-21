@@ -486,7 +486,7 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
       {/* Desktop Layout */}
       <div className="hidden lg:flex h-full flex-col">
         <ScrollArea className="flex-1">
-          <div className="max-w-4xl mx-auto w-full p-4 pb-6">
+          <div className="max-w-4xl mx-auto w-full p-4 pb-24">
             {/* Progress Header */}
             <div className="mb-6 sticky top-0 bg-background z-10 pb-3">
               <div className="flex justify-between items-center mb-2">
@@ -541,8 +541,8 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
           </div>
         </ScrollArea>
 
-        {/* Desktop Navigation Buttons */}
-        <div className="bg-background border-t border-border/50 p-4 shadow-[0_-4px_20px_rgba(0,0,0,0.15)]">
+        {/* Desktop Fixed Buttons */}
+        <div className="fixed bottom-12 left-0 right-0 bg-background border-t border-border/50 p-4 shadow-[0_-4px_20px_rgba(0,0,0,0.15)]">
           <div className="max-w-4xl mx-auto flex justify-between items-center gap-4">
             <Button
               type="button"
