@@ -61,7 +61,7 @@ export const StarRating = ({ software, value, onChange, legends }: StarRatingPro
       <div className="text-xs text-muted-foreground min-h-[2.5rem]">
         {currentLegend && (
           <span className="leading-relaxed">
-            <strong>({getDisplayValue()} estrela{getDisplayValue() !== 1 ? 's' : ''}):</strong> {currentLegend.text}
+            <strong>({getDisplayValue()} estrela{getDisplayValue() !== 1 ? 's' : ''}):</strong> {typeof currentLegend === 'object' ? currentLegend.text : currentLegend}
           </span>
         )}
       </div>
