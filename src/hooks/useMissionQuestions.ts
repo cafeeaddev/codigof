@@ -22,18 +22,16 @@ export const useMissionQuestions = (missionNumber: number, userAreaId?: string |
   const [questions, setQuestions] = useState<MissionQuestion[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
         setIsLoading(true);
-        setError(null); // Reset error state
+        setError(null);
         
         console.log('useMissionQuestions - missionNumber:', missionNumber, 'userAreaId:', userAreaId);
         
         // Buscar perguntas universais para a missão específica
-        // Adicionar timestamp para evitar cache
         const { data: universalQuestions, error: universalError } = await supabase
           .from('questions')
           .select(`
@@ -122,16 +120,45 @@ export const useMissionQuestions = (missionNumber: number, userAreaId?: string |
     };
 
     fetchQuestions();
-  }, [missionNumber, userAreaId, refreshKey]);
 
-  const refetch = () => {
-    setRefreshKey(prev => prev + 1);
-  };
+    // Implementar real-time subscription para atualizações automáticas
+    const questionsChannel = supabase
+      .channel('questions-realtime')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'questions',
+          filter: `mission_number=eq.${missionNumber}`
+        },
+        () => {
+          console.log('Questions table changed, refetching...');
+          fetchQuestions();
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'question_options'
+        },
+        () => {
+          console.log('Question options table changed, refetching...');
+          fetchQuestions();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(questionsChannel);
+    };
+  }, [missionNumber, userAreaId]);
 
   return {
     questions,
     isLoading,
-    error,
-    refetch
+    error
   };
 };
