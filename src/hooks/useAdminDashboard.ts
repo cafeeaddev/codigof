@@ -28,16 +28,14 @@ export const useAdminDashboard = () => {
 
       // Pontuação da Missão 2 (3 perguntas, máximo 5 pontos cada = 15 pontos)
       const mission2Response = responses2.find(r => r.email === progressData.userProfiles?.get(userId)?.email);
-      if (mission2Response) {
-        if (mission2Response.respostas?.data && Array.isArray(mission2Response.respostas.data)) {
-          totalScore += mission2Response.respostas.data.reduce((sum: number, resp: any) => sum + (resp.pontuacao || 0), 0);
-        }
+      if (mission2Response && Array.isArray(mission2Response.respostas)) {
+        totalScore += mission2Response.respostas.reduce((sum: number, resp: any) => sum + (resp.points || 0), 0);
       }
 
       // Pontuação da Missão 3 (5 perguntas, máximo 5 pontos cada = 25 pontos)
       const mission3Response = responses3.find(r => r.email === progressData.userProfiles?.get(userId)?.email);
       if (mission3Response && Array.isArray(mission3Response.respostas)) {
-        totalScore += mission3Response.respostas.reduce((sum: number, resp: any) => sum + (resp.pontuacao || 0), 0);
+        totalScore += mission3Response.respostas.reduce((sum: number, resp: any) => sum + (resp.points || 0), 0);
       }
 
       return parseFloat(totalScore.toFixed(2));
