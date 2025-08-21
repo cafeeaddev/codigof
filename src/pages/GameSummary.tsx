@@ -75,24 +75,47 @@ const GameSummary = () => {
     console.log('🚀 BONUS FUNCTION CALLED - Starting calculateAndApplyTimeBonus for user:', user?.id);
     console.log('📊 Full progress data received:', JSON.stringify(prog, null, 2));
     
-    // Remove FORCE BONUS logic - use proper date calculation
-    if (
-      prog.missao_1_completed && 
-      prog.missao_2_completed && 
-      prog.missao_3_completed && 
-      prog.missao_4_completed && 
-      (!prog.time_bonus_xp || prog.time_bonus_xp === 0)
-    ) {
-      console.log('🎯 All missions complete, calculating proper date-based bonus');
+    // Check if bonus already correctly applied - only return if bonus seems correct
+    if (prog.time_bonus_xp && prog.time_bonus_xp > 0) {
+      console.log('⚠️ Bonus already applied:', prog.time_bonus_xp, '- checking if it is correct...');
       
-      // Use proper date calculation logic instead of forcing 150
-      
-      // Continue to proper date calculation below
-      // Don't return here, let the proper logic calculate the bonus
-    } else if (prog.time_bonus_xp && prog.time_bonus_xp > 0) {
-      console.log('✅ Bonus already applied:', prog.time_bonus_xp);
-      setTimeBonus(prog.time_bonus_xp);
-      return;
+      // Get game start date to verify if bonus is correct
+      const { data: gameSettings } = await supabase
+        .from('game_settings')
+        .select('game_start_date')
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (gameSettings?.game_start_date) {
+        const gameStartDateStr = gameSettings.game_start_date.split('T')[0];
+        const completionDateStr = (prog.updated_at || prog.created_at).split('T')[0];
+        const gameStartDate = new Date(gameStartDateStr);
+        const completionDate = new Date(completionDateStr);
+        const daysDiff = Math.floor((completionDate.getTime() - gameStartDate.getTime()) / (1000 * 60 * 60 * 24));
+        
+        let expectedBonus = 0;
+        if (daysDiff === 0) expectedBonus = 150;
+        else if (daysDiff === 1) expectedBonus = 100;
+        else if (daysDiff === 2) expectedBonus = 50;
+        
+        console.log('🔍 Bonus verification:', {
+          currentBonus: prog.time_bonus_xp,
+          expectedBonus,
+          daysDiff,
+          gameStartDate: gameStartDateStr,
+          completionDate: completionDateStr
+        });
+        
+        if (prog.time_bonus_xp === expectedBonus) {
+          console.log('✅ Bonus is correct, no recalculation needed');
+          setTimeBonus(prog.time_bonus_xp);
+          return;
+        } else {
+          console.log('❌ Bonus is incorrect! Recalculating...');
+          // Continue to recalculation below
+        }
+      }
     }
     
     try {
@@ -134,52 +157,45 @@ const GameSummary = () => {
       
       console.log('⏱️ Days difference calculated:', daysDiff);
       
-      // Check if bonus already applied
-      if (prog.time_bonus_xp && prog.time_bonus_xp > 0) {
-        console.log('✅ Bonus already applied:', prog.time_bonus_xp);
-        setTimeBonus(prog.time_bonus_xp);
-        return;
-      }
+      // We already validated above if the bonus needs recalculation
+      // If we reach here, either no bonus was applied or it was incorrect
       
-      // Check if bonus calculation is needed (no forcing, only proper date calculation)
-      const shouldCalculateBonus = (!prog.time_bonus_xp || prog.time_bonus_xp === 0);
-      
-      console.log('🔍 Bonus eligibility check:', {
+      console.log('🔍 Bonus calculation needed:', {
         daysDiff,
-        shouldCalculateBonus,
         currentBonus: prog.time_bonus_xp
       });
 
       let bonus = 0;
       let bonusMessage = '';
 
-      // Calculate bonus based on completion day only if needed
-      if (shouldCalculateBonus) {
-        if (daysDiff === 0) {
-          bonus = 150;
-          bonusMessage = 'Concluído no primeiro dia!';
-          console.log('🎉 Applying Day 1 bonus:', bonus);
-        } else if (daysDiff === 1) {
-          bonus = 100;
-          bonusMessage = 'Concluído no segundo dia!';
-          console.log('🎉 Applying Day 2 bonus:', bonus);
-        } else if (daysDiff === 2) {
-          bonus = 50;
-          bonusMessage = 'Concluído no terceiro dia!';
-          console.log('🎉 Applying Day 3 bonus:', bonus);
-        } else {
-          console.log('❌ No bonus eligible for daysDiff:', daysDiff);
-        }
+      // Calculate bonus based on completion day
+      if (daysDiff === 0) {
+        bonus = 150;
+        bonusMessage = 'Concluído no primeiro dia!';
+        console.log('🎉 Applying Day 1 bonus:', bonus);
+      } else if (daysDiff === 1) {
+        bonus = 100;
+        bonusMessage = 'Concluído no segundo dia!';
+        console.log('🎉 Applying Day 2 bonus:', bonus);
+      } else if (daysDiff === 2) {
+        bonus = 50;
+        bonusMessage = 'Concluído no terceiro dia!';
+        console.log('🎉 Applying Day 3 bonus:', bonus);
+      } else {
+        console.log('❌ No bonus eligible for daysDiff:', daysDiff);
       }
 
       if (bonus > 0) {
         console.log('💰 Applying bonus:', { bonus, message: bonusMessage });
         
-        // Apply bonus to database immediately
-        const newTotalXp = (prog.total_xp || 0) + bonus;
+        // Calculate new total XP (remove old bonus first, then add new one)
+        const baseXP = (prog.total_xp || 0) - (prog.time_bonus_xp || 0);
+        const newTotalXp = baseXP + bonus;
         
         console.log('💾 Updating database with:', {
-          timeBonusXp: bonus,
+          baseXP,
+          oldBonusXP: prog.time_bonus_xp,
+          newBonusXP: bonus,
           newTotalXp,
           oldTotalXp: prog.total_xp
         });
