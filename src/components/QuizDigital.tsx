@@ -301,7 +301,7 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
                 <RadioGroup
                   value={answers[currentQuestionData.id] || ""}
                   onValueChange={(value) => handleAnswerSelect(currentQuestionData.id, value)}
-                  className="space-y-1"
+                  className="space-y-0.5"
                 >
                   {currentQuestionData.options.map((option) => (
                     <div 
@@ -407,7 +407,7 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
                 <RadioGroup
                   value={answers[currentQuestionData.id] || ""}
                   onValueChange={(value) => handleAnswerSelect(currentQuestionData.id, value)}
-                  className="space-y-1"
+                  className="space-y-0.5"
                 >
                   {currentQuestionData.options.map((option) => (
                     <div 
@@ -513,7 +513,7 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
                 <RadioGroup
                   value={answers[currentQuestionData.id] || ""}
                   onValueChange={(value) => handleAnswerSelect(currentQuestionData.id, value)}
-                  className="space-y-1"
+                  className="space-y-0.5"
                 >
                   {currentQuestionData.options.map((option) => (
                     <div 
