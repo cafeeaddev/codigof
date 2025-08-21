@@ -107,22 +107,13 @@ const GameSummary = () => {
         if (updateError) {
           console.error('❌ FORCE UPDATE ERROR:', updateError);
         } else {
-          console.log('✅ FORCE UPDATE SUCCESS - Bonus applied!');
-          
-          // Update UI states immediately
-          setTimeBonus(bonus);
-          setXp(newTotalXp);
-          
-          // Show bonus screen
-          setBonusAmount(bonus);
-          setBonusMessage('Concluído no primeiro dia!');
-          setShowBonusScreen(true);
-
-          // Hide bonus screen after animation
-          setTimeout(() => {
-            setShowBonusScreen(false);
-            console.log('🎬 Bonus screen hidden');
-          }, 8000);
+            console.log('✅ FORCE UPDATE SUCCESS - Bonus applied!');
+            
+            // Update UI states immediately
+            setTimeBonus(bonus);
+            setXp(newTotalXp);
+            
+            console.log('✅ Force bonus applied, showing final screen directly');
           
           return;
         }
@@ -237,20 +228,11 @@ const GameSummary = () => {
         
         console.log('✅ Bonus successfully applied to database');
         
-        // Update UI states
-        setTimeBonus(bonus);
-        setXp(newTotalXp);
-        
-        // Show bonus screen
-        setBonusAmount(bonus);
-        setBonusMessage(bonusMessage);
-        setShowBonusScreen(true);
-
-        // Hide bonus screen after animation
-        setTimeout(() => {
-          setShowBonusScreen(false);
-          console.log('🎬 Bonus screen hidden');
-        }, 5000);
+          // Update UI states
+          setTimeBonus(bonus);
+          setXp(newTotalXp);
+          
+          console.log('✅ Bonus applied, showing final screen directly');
       }
     } catch (error) {
       console.error('❌ Error in calculateAndApplyTimeBonus:', error);
@@ -394,10 +376,6 @@ const GameSummary = () => {
             console.log('✅ SAFETY CHECK - Bonus applied successfully!');
             setTimeBonus(150);
             setXp((prog.total_xp || 0) + 150);
-            setBonusAmount(150);
-            setBonusMessage('Concluído no primeiro dia!');
-            setShowBonusScreen(true);
-            setTimeout(() => setShowBonusScreen(false), 8000);
           } else {
             console.error('❌ SAFETY CHECK - Failed:', safetyUpdateError);
           }

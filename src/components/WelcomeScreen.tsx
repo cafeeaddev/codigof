@@ -1023,16 +1023,9 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; u
           onXpUpdate(newTotalXp);
         }
         
-        // Show bonus screen
-        setBonusAmount(bonus);
-        setBonusMessage('Concluído no primeiro dia!');
-        setShowBonusScreen(true);
-
-        // Hide bonus screen after animation
-        setTimeout(() => {
-          setShowBonusScreen(false);
-          console.log('🎬 [GameSummaryContent] Bonus screen hidden');
-        }, 5000);
+        // Show final screen immediately with bonus applied
+        setShowFinalScreen(true);
+        console.log('✅ [GameSummaryContent] Bonus applied, showing final screen directly');
         
         return;
       } else if (prog.time_bonus_xp > 0) {
@@ -1079,54 +1072,6 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; u
 
   return (
     <>
-      {/* Bonus Screen Overlay - Clean Style */}
-      {showBonusScreen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
-          <div className="text-center transform animate-epic-entry">            
-            {/* Neon Lightning Icon */}
-            <div className="text-8xl mb-6 filter drop-shadow-lg" style={{ 
-              color: 'hsl(var(--neon-cyan))',
-              textShadow: `0 0 20px hsl(var(--neon-cyan)), 0 0 40px hsl(var(--neon-cyan))`
-            }}>
-              ⚡
-            </div>
-            
-            {/* "Você Ganhou" */}
-            <div 
-              className="text-2xl md:text-3xl font-bold mb-4"
-              style={{
-                color: 'hsl(var(--neon-cyan))',
-                textShadow: `0 0 20px hsl(var(--neon-cyan))`
-              }}
-            >
-              Você Ganhou
-            </div>
-            
-            {/* Bonus Amount */}
-            <div 
-              className="text-4xl md:text-5xl font-bold mb-4"
-              style={{
-                color: 'hsl(var(--neon-cyan))',
-                filter: 'drop-shadow(0 0 8px hsl(var(--neon-cyan)))',
-                textShadow: `0 0 20px hsl(var(--neon-cyan))`
-              }}
-            >
-              +{bonusAmount} XPs
-            </div>
-            
-            {/* "Por ter concluído no primeiro dia!" */}
-            <div 
-              className="text-lg md:text-xl font-semibold tracking-wider"
-              style={{ 
-                color: 'hsl(var(--neon-cyan))',
-                textShadow: '0 0 10px hsl(var(--neon-cyan))'
-              }}
-            >
-              Por ter concluído no primeiro dia!
-            </div>
-          </div>
-        </div>
-      )}
 
       <ScrollArea className="h-full">
         {!showBonusScreen && showFinalScreen && (
