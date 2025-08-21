@@ -121,13 +121,13 @@ export const MissaoUm = ({ onComplete, userId }: MissaoUmProps) => {
       // Preparar dados das respostas
       const responseData = questions.map(question => {
         const selectedAnswer = answers[question.id];
-        const points = question.points_mapping ? question.points_mapping[selectedAnswer] || 0 : 0;
+        const points = question.options.find(opt => opt.option_letter === selectedAnswer)?.points || 0;
         
         return {
           questionId: question.id,
           question: question.question_text,
           selectedAnswer,
-          selectedText: question.options ? question.options[selectedAnswer] : '',
+          selectedText: question.options.find(opt => opt.option_letter === selectedAnswer)?.option_text || '',
           points
         };
       });
@@ -266,15 +266,15 @@ export const MissaoUm = ({ onComplete, userId }: MissaoUmProps) => {
               onValueChange={(value) => handleAnswerSelect(currentQuestionData.id, value)}
               className="space-y-3"
             >
-              {currentQuestionData.options && Object.entries(currentQuestionData.options).map(([letter, text]) => (
-                <div key={letter} className="flex items-start space-x-3 p-3 rounded-lg hover:bg-accent transition-colors">
-                  <RadioGroupItem value={letter} id={`${currentQuestionData.id}-${letter}`} className="mt-1" />
+              {currentQuestionData.options.map((option) => (
+                <div key={option.option_letter} className="flex items-start space-x-3 p-3 rounded-lg hover:bg-accent transition-colors">
+                  <RadioGroupItem value={option.option_letter} id={`${currentQuestionData.id}-${option.option_letter}`} className="mt-1" />
                   <Label 
-                    htmlFor={`${currentQuestionData.id}-${letter}`} 
+                    htmlFor={`${currentQuestionData.id}-${option.option_letter}`} 
                     className="flex-1 cursor-pointer leading-relaxed"
                   >
-                    <span className="font-medium mr-2">{letter})</span>
-                    {text as string}
+                    <span className="font-medium mr-2">{option.option_letter})</span>
+                    {option.option_text}
                   </Label>
                 </div>
               ))}

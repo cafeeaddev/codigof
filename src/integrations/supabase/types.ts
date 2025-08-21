@@ -139,6 +139,47 @@ export type Database = {
           },
         ]
       }
+      question_options: {
+        Row: {
+          created_at: string
+          id: string
+          option_letter: string
+          option_text: string
+          order_position: number
+          points: number
+          question_id: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          option_letter: string
+          option_text: string
+          order_position?: number
+          points?: number
+          question_id: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          option_letter?: string
+          option_text?: string
+          order_position?: number
+          points?: number
+          question_id?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "question_options_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       questions: {
         Row: {
           created_at: string

@@ -1,15 +1,21 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
+export interface QuestionOption {
+  id: string;
+  option_letter: string;
+  option_text: string;
+  points: number;
+  order_position: number;
+}
+
 export interface MissionQuestion {
   id: number;
   question_text: string;
   question_type: 'multiple-choice' | 'star-rating';
-  options?: any;
-  points_mapping?: any;
   softwares?: string[];
-  star_legends?: any;
   order_position: number;
+  options: QuestionOption[];
 }
 
 export const useMissionQuestions = (missionNumber: number, userAreaId?: string | null) => {
@@ -27,7 +33,16 @@ export const useMissionQuestions = (missionNumber: number, userAreaId?: string |
         // Buscar perguntas universais para a missão específica
         const { data: universalQuestions, error: universalError } = await supabase
           .from('questions')
-          .select('*')
+          .select(`
+            *,
+            question_options (
+              id,
+              option_letter,
+              option_text,
+              points,
+              order_position
+            )
+          `)
           .eq('mission_number', missionNumber)
           .eq('is_active', true)
           .or('target_area_ids.is.null,target_area_ids.eq.{}')
@@ -43,7 +58,16 @@ export const useMissionQuestions = (missionNumber: number, userAreaId?: string |
         if (userAreaId && missionNumber === 4) {
           const { data: areaQuestions, error: areaError } = await supabase
             .from('questions')
-            .select('*')
+            .select(`
+              *,
+              question_options (
+                id,
+                option_letter,
+                option_text,
+                points,
+                order_position
+              )
+            `)
             .eq('mission_number', missionNumber)
             .eq('is_active', true)
             .contains('target_area_ids', [userAreaId])
@@ -65,11 +89,17 @@ export const useMissionQuestions = (missionNumber: number, userAreaId?: string |
           id: q.id,
           question_text: q.question_text,
           question_type: q.question_type as 'multiple-choice' | 'star-rating',
-          options: q.options,
-          points_mapping: q.points_mapping,
           softwares: q.softwares,
-          star_legends: q.star_legends,
-          order_position: q.order_position
+          order_position: q.order_position,
+          options: (q.question_options || [])
+            .sort((a: any, b: any) => a.order_position - b.order_position)
+            .map((opt: any) => ({
+              id: opt.id,
+              option_letter: opt.option_letter,
+              option_text: opt.option_text,
+              points: opt.points,
+              order_position: opt.order_position
+            }))
         }));
 
         // Ordenar por order_position

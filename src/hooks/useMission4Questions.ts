@@ -21,9 +21,17 @@ export const useMission4Questions = (userAreaId?: string | null) => {
       id: q.id,
       question_text: q.question_text,
       question_type: q.question_type,
-      options: q.options,
+      options: q.options.reduce((acc, opt) => {
+        acc[opt.option_letter] = opt.option_text;
+        return acc;
+      }, {} as any),
       softwares: q.softwares,
-      star_legends: q.star_legends
+      star_legends: q.options
+        .filter(opt => q.question_type === 'star-rating')
+        .reduce((acc, opt) => {
+          acc[opt.option_letter] = opt.option_text;
+          return acc;
+        }, {} as any)
     })),
     isLoading: result.isLoading,
     error: result.error
