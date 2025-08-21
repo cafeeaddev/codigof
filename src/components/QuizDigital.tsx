@@ -291,7 +291,7 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
 
         {/* Scrollable Content */}
         <ScrollArea className="flex-1">
-          <div className="p-4 pb-40">
+          <div className="p-4 pb-24">
             <Card className="border shadow-sm">
               <CardContent className="p-4">
                 <h3 className="text-base font-semibold text-foreground mb-4 leading-relaxed">
@@ -330,7 +330,7 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
         </ScrollArea>
 
         {/* Fixed Mobile Buttons */}
-        <div className="p-3 bg-background border-t border-border/50 shadow-[0_-4px_20px_rgba(0,0,0,0.15)]">
+        <div className="fixed bottom-6 left-0 right-0 p-3 bg-background border-t border-border/50 shadow-[0_-4px_20px_rgba(0,0,0,0.15)]">
           <div className="flex justify-between items-center gap-2">
             <Button
               type="button"
