@@ -112,10 +112,23 @@ export const ProfileHeroCard: React.FC<ProfileHeroCardProps> = ({
             
             {/* Left side - Enhanced Cody Avatar */}
             <div className="flex-shrink-0 text-center lg:text-left">
-              {/* Large Avatar Circle with enhanced effects */}
+              {/* Large Avatar Circle with enhanced effects and double border */}
               <div className="relative mb-6">
+                {/* Outer purple/magenta ring */}
                 <div 
-                  className="w-48 h-48 mx-auto lg:mx-0 rounded-full flex items-center justify-center relative animate-float-medal overflow-hidden"
+                  className="w-56 h-56 mx-auto lg:mx-0 rounded-full flex items-center justify-center absolute inset-0 transform -translate-x-2 -translate-y-2"
+                  style={{
+                    border: `6px solid #8B5CF6`,
+                    boxShadow: `
+                      0 0 40px #8B5CF650,
+                      0 0 80px #8B5CF630
+                    `
+                  }}
+                />
+                
+                {/* Main avatar container */}
+                <div 
+                  className="w-48 h-48 mx-auto lg:mx-0 rounded-full flex items-center justify-center relative animate-float-medal overflow-hidden z-10"
                   style={{
                     background: `radial-gradient(circle at center, ${profileColor}40, ${profileColor}20, transparent 70%)`,
                     border: `6px solid ${profileColor}`,
