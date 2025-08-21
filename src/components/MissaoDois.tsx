@@ -40,15 +40,20 @@ export const MissaoDois = ({ onComplete, userId }: MissaoDoisProps) => {
 
           if (progress) {
             console.log('[MissaoDois] Progress loaded:', progress);
-            // Se a missão já foi completada, começar do início
+            // Se a missão já foi completada, sempre começar do início
             if (progress.missao_2_completed) {
               setCurrentQuestion(0);
               setAnswers({});
             } else {
-              setCurrentQuestion(progress.missao_2_current_question ?? 0);
+              // Garantir que sempre comece na pergunta 0 se não há progresso válido
+              const savedQuestion = progress.missao_2_current_question;
+              setCurrentQuestion((savedQuestion && savedQuestion >= 0) ? savedQuestion : 0);
               setAnswers((progress.missao_2_answers as Record<number, string>) || {});
             }
             setIsCompleted(progress.missao_2_completed || false);
+          } else {
+            // Se não há progresso, sempre começar na primeira pergunta
+            setCurrentQuestion(0);
           }
         }
       } catch (error) {
