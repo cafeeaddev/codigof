@@ -55,28 +55,20 @@ export const FeatureSection = ({
         <div className="flex flex-col items-center justify-center gap-8 lg:gap-16 mb-16">
           
           {/* Mobile/Tablet: Cody video first */}
-          <div 
-            ref={videoReveal.elementRef}
-            style={videoReveal.style}
-            className="lg:hidden flex-shrink-0 relative order-1"
-          >
+          <div className="lg:hidden flex-shrink-0 relative order-1">
             {/* Glowing circle border */}
             <div className="w-56 h-56 sm:w-72 sm:h-72 rounded-full bg-gradient-to-r from-neon-purple via-neon-purple to-neon-cyan p-1 shadow-glow">
               <div className="w-full h-full rounded-full bg-background/90 backdrop-blur-xl overflow-hidden relative">
-                {videoReveal.isVisible ? (
-                  <video 
-                    className="w-full h-full object-cover rounded-full"
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    preload="metadata"
-                  >
-                    <source src="https://meta.cafeeadhost.com.br/Cody/hero-animation.mp4" type="video/mp4" />
-                  </video>
-                ) : (
-                  <div className="w-full h-full rounded-full bg-background/90" aria-hidden />
-                )}
+                <video 
+                  className="w-full h-full object-cover rounded-full"
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  preload="auto"
+                >
+                  <source src="https://meta.cafeeadhost.com.br/Cody/hero-animation.mp4" type="video/mp4" />
+                </video>
                 {/* Additional glow effect */}
                 <div className="absolute inset-0 rounded-full bg-gradient-to-t from-transparent via-transparent to-neon-cyan/10"></div>
               </div>
@@ -224,11 +216,7 @@ export const FeatureSection = ({
           </div>
 
           {/* Mobile/Tablet: Content after Cody */}
-          <div 
-            ref={titleReveal.elementRef}
-            style={titleReveal.style}
-            className="lg:hidden w-full order-2"
-          >
+          <div className="lg:hidden w-full order-2">
             <div className="mb-6 space-y-3 text-center">
               <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[hsl(var(--near-white))]">
                 Sou a <span className="bg-gradient-to-r from-[hsl(var(--neon-cyan))] to-[hsl(var(--neon-purple))] bg-clip-text text-transparent">Cody</span>, sua IA mentora.
