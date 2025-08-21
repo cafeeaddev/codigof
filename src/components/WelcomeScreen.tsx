@@ -403,6 +403,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
               }}
               size="md"
               className="pl-2 ml-2 border-l border-border/50"
+              showTitle={true}
               medalNames={[
                 "Satélite",
                 "Planeta",
