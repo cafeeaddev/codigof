@@ -469,6 +469,120 @@ export const QuestionManager = () => {
               </div>
             </div>
 
+            {/* Seção de Áreas */}
+            <div>
+              <Label>Áreas (para questões específicas)</Label>
+              <div className="space-y-2 mt-2">
+                <div className="flex flex-wrap gap-2">
+                  {formData.target_area_ids.map((areaId) => {
+                    const area = areas.find(a => a.id === areaId);
+                    return (
+                      <div key={areaId} className="flex items-center space-x-1 bg-blue-100 text-blue-800 px-2 py-1 rounded-md">
+                        <span className="text-sm">{area?.name || areaId}</span>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          className="h-4 w-4 p-0 hover:bg-blue-200"
+                          onClick={() => {
+                            setFormData(prev => ({
+                              ...prev,
+                              target_area_ids: prev.target_area_ids.filter(id => id !== areaId)
+                            }));
+                          }}
+                        >
+                          ×
+                        </Button>
+                      </div>
+                    );
+                  })}
+                </div>
+                <Select onValueChange={(value) => {
+                  if (!formData.target_area_ids.includes(value)) {
+                    setFormData(prev => ({
+                      ...prev,
+                      target_area_ids: [...prev.target_area_ids, value]
+                    }));
+                  }
+                }}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Adicionar área..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {areas.filter(area => !formData.target_area_ids.includes(area.id)).map(area => (
+                      <SelectItem key={area.id} value={area.id}>
+                        {area.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            {/* Seção de Softwares */}
+            <div>
+              <Label>Softwares</Label>
+              <div className="space-y-2 mt-2">
+                <div className="flex flex-wrap gap-2">
+                  {formData.softwares.map((software, index) => (
+                    <div key={index} className="flex items-center space-x-1 bg-gray-100 text-gray-800 px-2 py-1 rounded-md">
+                      <span className="text-sm">{software}</span>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="h-4 w-4 p-0 hover:bg-gray-200"
+                        onClick={() => {
+                          setFormData(prev => ({
+                            ...prev,
+                            softwares: prev.softwares.filter((_, i) => i !== index)
+                          }));
+                        }}
+                      >
+                        ×
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+                <div className="flex space-x-2">
+                  <Input
+                    placeholder="Nome do software..."
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        const input = e.target as HTMLInputElement;
+                        const software = input.value.trim();
+                        if (software && !formData.softwares.includes(software)) {
+                          setFormData(prev => ({
+                            ...prev,
+                            softwares: [...prev.softwares, software]
+                          }));
+                          input.value = '';
+                        }
+                      }
+                    }}
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={(e) => {
+                      const input = (e.target as HTMLElement).parentElement?.querySelector('input') as HTMLInputElement;
+                      const software = input?.value.trim();
+                      if (software && !formData.softwares.includes(software)) {
+                        setFormData(prev => ({
+                          ...prev,
+                          softwares: [...prev.softwares, software]
+                        }));
+                        input.value = '';
+                      }
+                    }}
+                  >
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+
             <div>
               <Label>Opções de Resposta</Label>
               <div className="space-y-3 mt-2">
