@@ -209,7 +209,7 @@ export const MissaoTres = ({ onComplete }: MissaoTresProps) => {
   return (
     <div className="h-full flex flex-col bg-background overflow-hidden">
       <ScrollArea className="flex-1">
-        <div className="flex flex-col max-w-4xl mx-auto w-full p-3 pb-[calc(60px+env(safe-area-inset-bottom,0px))] min-h-full">
+        <div className="flex flex-col max-w-4xl mx-auto w-full p-3 pb-[calc(100px+env(safe-area-inset-bottom,0px))] min-h-full">
           {/* Progress Header - mais compacto */}
           <div className="mb-4 sticky top-0 bg-background z-10 pb-2">
             <div className="flex justify-between items-center mb-2">
@@ -268,7 +268,8 @@ export const MissaoTres = ({ onComplete }: MissaoTresProps) => {
       </ScrollArea>
 
       {/* Fixed Navigation Buttons */}
-      <div className="fixed bottom-0 left-0 right-0 border-t bg-background/95 backdrop-blur-sm p-3 pb-[calc(env(safe-area-inset-bottom,0px)+12px)] z-50 shadow-lg">
+      <div className="fixed bottom-0 left-0 right-0 border-t bg-background/98 backdrop-blur-sm p-4 pb-[calc(env(safe-area-inset-bottom,0px)+16px)] z-[60] shadow-xl"
+           style={{ minHeight: '80px' }}>
         <div className="max-w-4xl mx-auto flex justify-between items-center gap-4">
           <Button
             variant="outline"
