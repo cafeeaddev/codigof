@@ -129,7 +129,7 @@ const GameSummary = () => {
 
       // Apply or correct bonus
       if (expectedBonus > 0) {
-        const baseXP = (prog.total_xp || 0) - (prog.time_bonus_xp || 0);
+        const baseXP = prog.game_base_xp || 0;
         const newTotalXp = baseXP + expectedBonus;
         
         console.log('💾 [BONUS DEBUG] Database update calculation:', {
