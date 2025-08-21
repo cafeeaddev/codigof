@@ -146,6 +146,13 @@ export const QuestionManager = () => {
     });
   };
 
+  const getAreaNames = (areaIds: string[] | null): string => {
+    if (!areaIds || areaIds.length === 0) return '';
+    return areaIds
+      .map(id => areas.find(area => area.id === id)?.name || id)
+      .join(', ');
+  };
+
   const renderQuestionOptions = (question: Question) => {
     if (!question.options || question.options.length === 0) {
       return <p className="text-muted-foreground text-sm">Nenhuma opção configurada</p>;
@@ -545,6 +552,11 @@ export const QuestionManager = () => {
                       <Badge variant="secondary">
                         {question.question_type === 'multiple-choice' ? 'Múltipla Escolha' : 'Estrelas'}
                       </Badge>
+                      {question.question_type === 'star-rating' && question.target_area_ids && question.target_area_ids.length > 0 && (
+                        <Badge variant="default" className="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                          {getAreaNames(question.target_area_ids)}
+                        </Badge>
+                      )}
                       {!question.is_active && (
                         <Badge variant="destructive">Inativa</Badge>
                       )}
@@ -603,6 +615,18 @@ export const QuestionManager = () => {
                         {renderQuestionOptions(question)}
                       </div>
                     </div>
+                    {question.target_area_ids && question.target_area_ids.length > 0 && (
+                      <div>
+                        <Label className="text-sm font-medium">Áreas:</Label>
+                        <div className="flex flex-wrap gap-1 mt-1">
+                          {question.target_area_ids.map((areaId, index) => (
+                            <Badge key={index} variant="outline" className="text-xs">
+                              {areas.find(area => area.id === areaId)?.name || areaId}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                     {question.softwares && question.softwares.length > 0 && (
                       <div>
                         <Label className="text-sm font-medium">Softwares:</Label>
