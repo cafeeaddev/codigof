@@ -273,7 +273,7 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
   return (
     <div className="h-full flex flex-col bg-background overflow-hidden">
       <ScrollArea className="flex-1">
-        <div className="flex flex-col max-w-4xl mx-auto w-full p-4 pb-[80px] min-h-full">
+        <div className="flex flex-col max-w-4xl mx-auto w-full p-4 pb-[120px] min-h-full">
           {/* Progress Header - compacto */}
           <div className="mb-6 sticky top-0 bg-background z-10 pb-3">
             <div className="flex justify-between items-center mb-2">
@@ -331,18 +331,20 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
         </div>
       </ScrollArea>
 
-      {/* Fixed Navigation Buttons - sempre visíveis */}
-      <div className="bg-background/98 backdrop-blur-md border-t border-border/50 p-4 fixed bottom-0 left-0 right-0 z-[999] shadow-lg">
-        <div className="max-w-4xl mx-auto flex justify-between items-center gap-4">
+      {/* Sticky Navigation Buttons - sempre visíveis */}
+      <div className="sticky bottom-0 left-0 right-0 z-[9999] bg-background border-t border-border/50 shadow-[0_-4px_20px_rgba(0,0,0,0.15)] p-3 md:p-4">
+        <div className="max-w-4xl mx-auto flex justify-between items-center gap-3 md:gap-4">
           <Button
             type="button"
             onClick={() => goToPreviousQuestion()}
             disabled={currentQuestion === 0}
             variant="outline"
-            className="flex items-center space-x-2 min-w-[110px] bg-background hover:bg-muted/50 border-border shadow-sm"
+            size="sm"
+            className="flex items-center space-x-1 md:space-x-2 min-w-[80px] md:min-w-[110px] h-10 md:h-11 px-3 md:px-4 bg-background hover:bg-muted/50 border-border text-xs md:text-sm font-medium"
           >
-            <ChevronLeft className="w-4 h-4" />
-            <span>Anterior</span>
+            <ChevronLeft className="w-3 h-3 md:w-4 md:h-4" />
+            <span className="hidden sm:inline">Anterior</span>
+            <span className="sm:hidden">Ant.</span>
           </Button>
 
           {currentQuestion === quizQuestions.length - 1 ? (
@@ -350,19 +352,30 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
               type="button"
               onClick={() => submitQuiz()}
               disabled={!answers[currentQuestionData.id] || isSubmitting}
-              className="flex items-center space-x-2 min-w-[110px] bg-primary hover:bg-primary/90 shadow-sm"
+              size="sm"
+              className="flex items-center space-x-1 md:space-x-2 min-w-[80px] md:min-w-[110px] h-10 md:h-11 px-3 md:px-4 bg-primary hover:bg-primary/90 text-xs md:text-sm font-medium"
             >
-              {isSubmitting ? 'Enviando...' : 'Finalizar'}
+              {isSubmitting ? (
+                <>
+                  <div className="w-3 h-3 md:w-4 md:h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin mr-1" />
+                  <span className="hidden sm:inline">Enviando...</span>
+                  <span className="sm:hidden">...</span>
+                </>
+              ) : (
+                <span>Finalizar</span>
+              )}
             </Button>
           ) : (
             <Button
               type="button"
               onClick={() => goToNextQuestion()}
               disabled={!answers[currentQuestionData.id]}
-              className="flex items-center space-x-2 min-w-[110px] bg-primary hover:bg-primary/90 shadow-sm"
+              size="sm"
+              className="flex items-center space-x-1 md:space-x-2 min-w-[80px] md:min-w-[110px] h-10 md:h-11 px-3 md:px-4 bg-primary hover:bg-primary/90 text-xs md:text-sm font-medium"
             >
-              <span>Próxima</span>
-              <ChevronRight className="w-4 h-4" />
+              <span className="hidden sm:inline">Próxima</span>
+              <span className="sm:hidden">Próx.</span>
+              <ChevronRight className="w-3 h-3 md:w-4 md:h-4" />
             </Button>
           )}
         </div>
