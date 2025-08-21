@@ -156,7 +156,7 @@ export const ProfileHeroCard: React.FC<ProfileHeroCardProps> = ({
                 {timeBonus > 0 && (
                   <div className="bg-gradient-to-r from-neon-cyan/20 to-neon-purple/20 border border-neon-cyan/30 rounded-lg p-3 sm:p-4">
                     <p className="text-sm sm:text-base lg:text-lg font-semibold text-neon-cyan text-center">
-                      🚀 Você ganhou {timeBonus} XPs Bonus por agilidade
+                      🚀 Você ganhou {timeBonus} XPs bônus por agilidade
                     </p>
                   </div>
                 )}
