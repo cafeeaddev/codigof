@@ -6,7 +6,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 import { ScrollArea } from './ui/scroll-area';
 import { useUserRole } from '@/hooks/useUserRole';
-import { MissaoUm } from './MissaoUm';
+import { QuizDigital } from './QuizDigital';
 import { MissaoDois } from './MissaoDois';
 import { MissaoTres } from './MissaoTres';
 import { MissaoQuatro } from './MissaoQuatro';
@@ -527,9 +527,9 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                     </div>
                   </div>
                 ) : currentMission === 1 && !completedMissions.has(1) ? (
-                  <MissaoUm 
+                  <QuizDigital 
                     userId={userId}
-                    onComplete={() => handleMissionComplete(1)} />
+                    onClose={() => handleMissionComplete(1)} />
                 ) : currentMission === 2 && !completedMissions.has(2) ? (
                   <MissaoDois 
                     userId={userId}
@@ -716,9 +716,9 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                         </div>
                       </div>
                     ) : currentMission === 1 && !completedMissions.has(1) ? (
-                      <MissaoUm 
+                      <QuizDigital 
                         userId={userId}
-                        onComplete={() => handleMissionComplete(1)} />
+                        onClose={() => handleMissionComplete(1)} />
                     ) : currentMission === 2 && !completedMissions.has(2) ? (
                       <MissaoDois 
                         userId={userId}
@@ -809,9 +809,9 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                       </div>
                     </div>
                   ) : currentMission === 1 && !completedMissions.has(1) ? (
-                    <MissaoUm 
+                    <QuizDigital 
                       userId={userId}
-                      onComplete={() => handleMissionComplete(1)} />
+                      onClose={() => handleMissionComplete(1)} />
                   ) : currentMission === 2 && !completedMissions.has(2) ? (
                     <MissaoDois 
                       userId={userId}

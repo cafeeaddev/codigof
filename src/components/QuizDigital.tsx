@@ -8,6 +8,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 import { ScrollArea } from './ui/scroll-area';
 import { useAuth } from '@/contexts/AuthContext';
+import { useMissionQuestions } from '@/hooks/useMissionQuestions';
 
 
 interface QuizQuestion {
@@ -20,52 +21,6 @@ interface QuizQuestion {
   }[];
 }
 
-const quizQuestions: QuizQuestion[] = [
-  {
-    id: 1,
-    question: "Quando uma nova ferramenta digital é lançada na empresa, você...",
-    options: [
-      { letter: "A", text: "Prefiro esperar orientações ou alguém usar primeiro antes de se envolver.", points: 0.0 },
-      { letter: "B", text: "Me sinto inseguro, Gosta de entender como aquilo se conecta com o que já conhece.", points: 1.0 },
-      { letter: "C", text: "Explora por conta própria para ver se tem utilidade.", points: 2.5 },
-      { letter: "D", text: "Aplica em alguma tarefa e vê na prática se vale a pena.", points: 3.7 },
-      { letter: "E", text: "Avalia se a novidade pode contribuir para processos mais consistentes no time.", points: 5.0 }
-    ]
-  },
-  {
-    id: 2,
-    question: "Ao ajudar um colega com uma ferramenta que você já usou...",
-    options: [
-      { letter: "A", text: "Nunca ajudei, geralmente prefiro que outra pessoa mais experiente oriente.", points: 0.0 },
-      { letter: "B", text: "Tenta entender a dúvida e sugere um caminho para seguir.", points: 1.0 },
-      { letter: "C", text: "Mostra rapidamente como você costuma usar e incentiva ele a tentar.", points: 2.5 },
-      { letter: "D", text: "Explica detalhadamente, adaptando à necessidade específica dele.", points: 3.7 },
-      { letter: "E", text: "Cria um guia ou template que pode ajudar não só ele, mas outros colegas.", points: 5.0 }
-    ]
-  },
-  {
-    id: 3,
-    question: "Quando precisa aprender algo novo e complexo...",
-    options: [
-      { letter: "A", text: "Fico um pouco travado no início e espero alguém mostrar como começar.", points: 0.0 },
-      { letter: "B", text: "Procura alguém que já fez e tenta entender como aplicou.", points: 1.0 },
-      { letter: "C", text: "Assiste vídeos, lê artigos e testa por conta própria.", points: 2.5 },
-      { letter: "D", text: "Aplica direto em um projeto real para aprender fazendo.", points: 3.7 },
-      { letter: "E", text: "Aprende, aplica e adapta para que outros também possam usar.", points: 5.0 }
-    ]
-  },
-  {
-    id: 4,
-    question: "Sobre ferramentas de IA como ChatGPT ou Copilot:",
-    options: [
-      { letter: "A", text: "Já ouvi falar, mas ainda não explorei por não saber exatamente como começar.", points: 0.0 },
-      { letter: "B", text: "Ainda está conhecendo e prefere observar como outros usam.", points: 1.0 },
-      { letter: "C", text: "Já experimentou para tarefas simples ou gerar ideias.", points: 2.5 },
-      { letter: "D", text: "Usa regularmente para otimizar tarefas do seu trabalho.", points: 3.7 },
-      { letter: "E", text: "Integra em processos importantes e compartilha métodos eficientes com o time.", points: 5.0 }
-    ]
-  }
-];
 
 interface QuizDigitalProps {
   onClose: () => void;
@@ -74,11 +29,23 @@ interface QuizDigitalProps {
 
 export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
   const { user: authUser, profile } = useAuth();
+  const { questions: dbQuestions, isLoading: questionsLoading } = useMissionQuestions(1);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [isCompleted, setIsCompleted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+
+  // Converter dados do banco para o formato do QuizDigital
+  const quizQuestions: QuizQuestion[] = dbQuestions.map(q => ({
+    id: q.id,
+    question: q.question_text,
+    options: q.options.map(opt => ({
+      letter: opt.option_letter,
+      text: opt.option_text,
+      points: Number(opt.points)
+    }))
+  }));
 
   // Carregar progresso salvo ao iniciar
   useEffect(() => {
@@ -87,7 +54,7 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
         const currentUserId = authUser?.id || userId;
         console.log('[QuizDigital] Loading progress for userId:', currentUserId);
         
-        if (currentUserId) {
+        if (currentUserId && !questionsLoading && quizQuestions.length > 0) {
           const { data: progress, error } = await supabase
             .from('user_progress')
             .select('missao_1_current_question, missao_1_answers')
