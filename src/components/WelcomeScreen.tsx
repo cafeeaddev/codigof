@@ -420,7 +420,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
             <div className="flex flex-col items-center ml-3">
               <Button
                 onClick={() => setShowTutorial(true)}
-                className="bg-transparent border-0 p-0 shadow-none hover:opacity-95 hover:scale-105 transition-all duration-300 w-14 h-14 flex items-center justify-center"
+                className="bg-transparent border-2 border-cyan-400 rounded-full p-1 shadow-none hover:opacity-95 hover:scale-105 hover:border-cyan-300 transition-all duration-300 w-14 h-14 flex items-center justify-center"
               >
                 {codyVideoUrl && (
                   <video
@@ -429,7 +429,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                     loop
                     muted
                     playsInline
-                    className="w-12 h-12 rounded-full object-cover"
+                    className="w-10 h-10 rounded-full object-cover"
                   />
                 )}
               </Button>
@@ -506,7 +506,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
           <div className="flex flex-col items-center">
             <Button
               onClick={() => setShowTutorial(true)}
-              className="bg-transparent border-0 p-0 shadow-none hover:opacity-95 hover:scale-105 transition-all duration-300 w-[45px] h-[45px] flex items-center justify-center"
+              className="bg-transparent border-2 border-cyan-400 rounded-full p-1 shadow-none hover:opacity-95 hover:scale-105 hover:border-cyan-300 transition-all duration-300 w-[45px] h-[45px] flex items-center justify-center"
             >
               {codyVideoUrl && (
                 <video
@@ -515,7 +515,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                   loop
                   muted
                   playsInline
-                  className="w-10 h-10 rounded-full object-cover"
+                  className="w-8 h-8 rounded-full object-cover"
                 />
               )}
             </Button>
