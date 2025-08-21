@@ -330,7 +330,7 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
         </ScrollArea>
 
         {/* Fixed Mobile Buttons */}
-        <div className="fixed bottom-6 left-0 right-0 p-3 bg-background border-t border-border/50 shadow-[0_-4px_20px_rgba(0,0,0,0.15)]">
+        <div className="fixed bottom-12 left-0 right-0 p-3 bg-background border-t border-border/50 shadow-[0_-4px_20px_rgba(0,0,0,0.15)]">
           <div className="flex justify-between items-center gap-2">
             <Button
               type="button"
