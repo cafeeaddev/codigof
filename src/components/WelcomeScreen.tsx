@@ -227,6 +227,11 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
               setCurrentMission(4);
             } else {
               setCurrentMission(4); // All completed, keep on mission 4 to show completion screen
+              // Se todas as missões estão completas, carregar dados do resumo final
+              console.log('[WelcomeScreen] All missions completed, loading game summary data on refresh');
+              setTimeout(() => {
+                loadGameSummaryData();
+              }, 500);
             }
           }
         } else {
