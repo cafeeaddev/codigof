@@ -303,14 +303,14 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
 
       let m2 = 0;
       (r2.data || []).forEach((row: any) => {
-        const arr = row.respostas?.data;
-        if (Array.isArray(arr)) m2 += arr.reduce((s: number, it: any) => s + (it?.pontuacao || 0), 0);
+        const arr = row.respostas;
+        if (Array.isArray(arr)) m2 += arr.reduce((s: number, it: any) => s + (it?.points || 0), 0);
       });
 
       let m3 = 0;
       (r3.data || []).forEach((row: any) => {
         const arr = row.respostas;
-        if (Array.isArray(arr)) m3 += arr.reduce((s: number, it: any) => s + (it?.pontuacao || 0), 0);
+        if (Array.isArray(arr)) m3 += arr.reduce((s: number, it: any) => s + (it?.points || 0), 0);
       });
 
       const score = { mission1: m1, mission2: m2, mission3: m3, total: parseFloat((m1 + m2 + m3).toFixed(2)) };
