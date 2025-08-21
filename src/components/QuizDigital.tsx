@@ -242,19 +242,31 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
     }
   };
 
-  if (isLoading) {
+  if (isLoading || questionsLoading || quizQuestions.length === 0) {
     return (
       <div className="h-full flex flex-col items-center justify-center space-y-4 p-4">
         <div className="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center animate-spin">
           <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full"></div>
         </div>
-        <p className="text-sm text-muted-foreground">Carregando progresso...</p>
+        <p className="text-sm text-muted-foreground">Carregando quiz...</p>
       </div>
     );
   }
 
-
   const currentQuestionData = quizQuestions[currentQuestion];
+  
+  // Verificação adicional para garantir que currentQuestionData existe
+  if (!currentQuestionData) {
+    return (
+      <div className="h-full flex flex-col items-center justify-center space-y-4 p-4">
+        <p className="text-sm text-muted-foreground">Erro ao carregar pergunta atual.</p>
+        <Button onClick={() => setCurrentQuestion(0)} variant="outline">
+          Voltar ao início
+        </Button>
+      </div>
+    );
+  }
+
   const answeredCount = Object.keys(answers).length;
   const progress = (answeredCount / quizQuestions.length) * 100;
 
