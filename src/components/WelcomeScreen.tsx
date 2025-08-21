@@ -413,15 +413,15 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
             />
           </div>
           
-          {/* Botão Precisa de Ajuda - Responsivo */}
+          {/* Botão Precisa de Ajuda */}
           <Button
             onClick={() => setShowTutorial(true)}
             variant="outline"
             size="sm"
-            className="bg-transparent border-secondary text-secondary hover:bg-secondary hover:text-secondary-foreground mr-2"
+            className="bg-transparent border-secondary/50 text-secondary hover:bg-secondary/20 hover:text-secondary mr-2 flex items-center gap-2"
           >
-            <HelpCircle className="w-3 h-3 md:w-4 md:h-4 md:mr-2" />
-            <span className="hidden md:inline">Precisa de Ajuda</span>
+            <HelpCircle className="w-4 h-4" />
+            <span className="text-sm">Precisa de ajuda?</span>
           </Button>
           
           <Button
