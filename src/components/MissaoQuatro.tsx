@@ -342,17 +342,23 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
       </ScrollArea>
 
       {/* Fixed Navigation Buttons */}
-      <div className="fixed bottom-0 left-0 right-0 border-t bg-background/98 backdrop-blur-sm p-4 pb-[calc(env(safe-area-inset-bottom,0px)+16px)] z-[60] shadow-xl"
-           style={{ minHeight: '80px' }}>
-        <div className="max-w-4xl mx-auto flex justify-between items-center gap-4">
+      <div 
+        className="fixed bottom-0 left-0 right-0 bg-background border-t-2 border-primary/30 z-[100]"
+        style={{ 
+          minHeight: '90px',
+          paddingBottom: 'max(env(safe-area-inset-bottom, 0px), 20px)',
+          boxShadow: '0 -10px 30px rgba(0,0,0,0.3)'
+        }}
+      >
+        <div className="max-w-4xl mx-auto flex justify-between items-center gap-4 px-4 py-4 h-full">
           <Button
             type="button"
             onClick={() => goToPreviousQuestion()}
             disabled={currentQuestion === 0}
             variant="outline"
-            className="flex items-center space-x-2 min-w-[100px] h-11"
+            className="flex items-center space-x-2 min-w-[120px] h-12 text-base font-medium"
           >
-            <ChevronLeft className="w-4 h-4" />
+            <ChevronLeft className="w-5 h-5" />
             <span>Anterior</span>
           </Button>
           {currentQuestion === questions.length - 1 ? (
@@ -360,7 +366,7 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
               type="button"
               onClick={() => submitQuiz()}
               disabled={isSubmitting || progress < 100}
-              className="flex items-center space-x-2 min-w-[100px] h-11"
+              className="flex items-center space-x-2 min-w-[120px] h-12 text-base font-medium bg-primary hover:bg-primary/90"
             >
               {isSubmitting ? 'Enviando...' : 'Finalizar Missão 4'}
             </Button>
@@ -375,10 +381,10 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
                     )
                   : !answers[currentQuestionData.id]
               }
-              className="flex items-center space-x-2 min-w-[100px] h-11"
+              className="flex items-center space-x-2 min-w-[120px] h-12 text-base font-medium bg-primary hover:bg-primary/90"
             >
               <span>Próxima</span>
-              <ChevronRight className="w-4 h-4" />
+              <ChevronRight className="w-5 h-5" />
             </Button>
           )}
         </div>

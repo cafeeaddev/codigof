@@ -307,16 +307,22 @@ export const MissaoUm = ({ onComplete, userId }: MissaoUmProps) => {
       </ScrollArea>
 
       {/* Fixed Navigation Buttons */}
-      <div className="fixed bottom-0 left-0 right-0 border-t bg-background/98 backdrop-blur-sm p-4 pb-[calc(env(safe-area-inset-bottom,0px)+16px)] z-[60] shadow-xl"
-           style={{ minHeight: '80px' }}>
-        <div className="max-w-4xl mx-auto flex justify-between items-center gap-4">
+      <div 
+        className="fixed bottom-0 left-0 right-0 bg-background border-t-2 border-primary/30 z-[100]"
+        style={{ 
+          minHeight: '90px',
+          paddingBottom: 'max(env(safe-area-inset-bottom, 0px), 20px)',
+          boxShadow: '0 -10px 30px rgba(0,0,0,0.3)'
+        }}
+      >
+        <div className="max-w-4xl mx-auto flex justify-between items-center gap-4 px-4 py-4 h-full">
           <Button 
             variant="outline" 
             onClick={goToPreviousQuestion}
             disabled={currentQuestion === 0}
-            className="flex items-center space-x-2 min-w-[100px] h-11"
+            className="flex items-center space-x-2 min-w-[120px] h-12 text-base font-medium"
           >
-            <ChevronLeft className="h-4 w-4" />
+            <ChevronLeft className="h-5 w-5" />
             <span>Anterior</span>
           </Button>
 
@@ -324,7 +330,7 @@ export const MissaoUm = ({ onComplete, userId }: MissaoUmProps) => {
             <Button 
               onClick={submitQuiz}
               disabled={isSubmitting || isCompleted || !answers[currentQuestionData.id]}
-              className="flex items-center space-x-2 min-w-[100px] h-11"
+              className="flex items-center space-x-2 min-w-[120px] h-12 text-base font-medium bg-primary hover:bg-primary/90"
             >
               {isSubmitting ? 'Enviando...' : 'Finalizar'}
             </Button>
@@ -332,10 +338,10 @@ export const MissaoUm = ({ onComplete, userId }: MissaoUmProps) => {
             <Button 
               onClick={goToNextQuestion}
               disabled={!answers[currentQuestionData.id]}
-              className="flex items-center space-x-2 min-w-[100px] h-11"
+              className="flex items-center space-x-2 min-w-[120px] h-12 text-base font-medium bg-primary hover:bg-primary/90"
             >
               <span>Próxima</span>
-              <ChevronRight className="h-4 w-4" />
+              <ChevronRight className="h-5 w-5" />
             </Button>
           )}
         </div>
