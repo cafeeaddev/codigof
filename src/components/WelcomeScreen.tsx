@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from './ui/button';
-import { LogOut, User, Loader2, Shield } from 'lucide-react';
+import { LogOut, User, Loader2, Shield, Lock } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 import { ScrollArea } from './ui/scroll-area';
@@ -615,14 +615,18 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                         ></div>
                       </div>
                       
-                      {/* Ícone de Check para missões completadas */}
-                      {isCompleted && (
+                      {/* Ícone de Check para missões completadas ou Lock para bloqueadas */}
+                      {isCompleted ? (
                         <div className="absolute top-2 right-2 w-4 h-4 bg-primary rounded-full flex items-center justify-center">
                           <svg className="w-2.5 h-2.5 text-primary-foreground" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                           </svg>
                         </div>
-                      )}
+                      ) : isLocked ? (
+                        <div className="absolute top-2 right-2 w-4 h-4 bg-muted-foreground/50 rounded-full flex items-center justify-center">
+                          <Lock className="w-2.5 h-2.5 text-muted-foreground/70" />
+                        </div>
+                      ) : null}
                     </div>
                   );
                 })}
