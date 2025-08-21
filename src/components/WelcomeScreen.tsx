@@ -452,72 +452,81 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
         </div>
       </div>
 
-      {/* Estatísticas Mobile compactas */}
-      <div className="block lg:hidden bg-card/80 backdrop-blur-xl border-b border-secondary/30 px-3 py-2">
-        <div className="flex items-start justify-between gap-2 w-full">
-          <div className="text-center shrink-0 flex flex-col items-center">
-            <div className="bg-gradient-to-br from-primary/20 to-primary/10 border border-primary/30 rounded-lg px-3 py-2 shadow-md">
+      {/* Estatísticas Mobile/Tablet - Layout otimizado */}
+      <div className="block lg:hidden bg-card/95 backdrop-blur-xl border-b border-secondary/30 px-3 py-3">
+        <div className="flex items-center justify-between gap-3 w-full">
+          
+          {/* XP Card */}
+          <div className="flex flex-col items-center">
+            <div className="bg-gradient-to-br from-primary/25 to-primary/15 border border-primary/40 rounded-xl px-4 py-2.5 shadow-lg min-w-[70px] text-center">
               <AnimatedXP 
                 startValue={xpBeforeBonus || userProgress.total_xp}
                 endValue={userProgress.total_xp}
                 triggerAnimation={shouldAnimateXP}
                 onAnimationComplete={() => setShouldAnimateXP(false)}
-                className="text-lg font-bold text-primary leading-none"
+                className="text-xl font-bold text-primary leading-none"
               />
-              <div className="text-primary/80 text-xs leading-none mt-1 font-medium">XP</div>
+              <div className="text-primary/90 text-xs leading-none mt-1 font-semibold tracking-wide">XP</div>
             </div>
           </div>
           
-          <div className="text-center shrink-0 flex flex-col items-center">
-            <div className="bg-gradient-to-br from-accent/20 to-accent/10 border border-accent/30 rounded-lg px-3 py-2 shadow-md">
-              <div className="text-lg font-bold text-accent leading-none">{userProgress.completedMissionsCount}/4</div>
-              <div className="text-accent/80 text-xs leading-none mt-1 font-medium">Missões</div>
+          {/* Missões Card */}
+          <div className="flex flex-col items-center">
+            <div className="bg-gradient-to-br from-accent/25 to-accent/15 border border-accent/40 rounded-xl px-4 py-2.5 shadow-lg min-w-[70px] text-center">
+              <div className="text-xl font-bold text-accent leading-none">{userProgress.completedMissionsCount}/4</div>
+              <div className="text-accent/90 text-xs leading-none mt-1 font-semibold tracking-wide">Missões</div>
             </div>
           </div>
           
-          <div className="flex-1 min-w-0">
-            <MedalBadges
-              completed={{
-                m1: completedMissions.has(1),
-                m2: completedMissions.has(2),
-                m3: completedMissions.has(3),
-                m4: completedMissions.has(4),
-              }}
-              size="sm"
-              className="flex justify-center"
-              showTitle={true}
-              medalNames={[
-                "Satélite",
-                "Planeta", 
-                "Estrela",
-                "Galáxia",
-              ]}
-            />
+          {/* Medalhas Section */}
+          <div className="flex-1 flex justify-center">
+            <div className="bg-card/50 border border-secondary/30 rounded-xl px-3 py-2 shadow-md">
+              <MedalBadges
+                completed={{
+                  m1: completedMissions.has(1),
+                  m2: completedMissions.has(2),
+                  m3: completedMissions.has(3),
+                  m4: completedMissions.has(4),
+                }}
+                size="sm"
+                className="flex justify-center"
+                showTitle={true}
+                medalNames={[
+                  "Satélite",
+                  "Planeta", 
+                  "Estrela",
+                  "Galáxia",
+                ]}
+              />
+            </div>
           </div>
           
-          {/* Assistente IA mobile */}
-          <div className="text-center shrink-0">
-            <Button
-              onClick={() => setShowTutorial(true)}
-              className="bg-transparent border border-secondary/30 text-secondary hover:bg-secondary/10 hover:text-secondary transition-all duration-200 p-1 rounded-full w-10 h-10 flex items-center justify-center mx-auto"
-            >
-              <div className="relative flex items-center justify-center w-8 h-8 rounded-full overflow-hidden bg-gradient-to-br from-primary/20 to-secondary/20 border border-primary/30">
-                {codyVideoUrl && (
-                  <video
-                    src={codyVideoUrl}
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    className="w-full h-full object-cover"
-                  />
-                )}
-              </div>
-            </Button>
-            <div className="text-muted-foreground text-xs mt-1 text-center leading-none">
+          {/* Assistente IA */}
+          <div className="flex flex-col items-center">
+            <div className="bg-gradient-to-br from-secondary/20 to-secondary/10 border border-secondary/40 rounded-xl p-2 shadow-lg">
+              <Button
+                onClick={() => setShowTutorial(true)}
+                className="bg-transparent hover:bg-secondary/10 transition-all duration-200 p-1 rounded-full w-10 h-10 flex items-center justify-center"
+              >
+                <div className="relative flex items-center justify-center w-8 h-8 rounded-full overflow-hidden bg-gradient-to-br from-primary/30 to-secondary/30 border border-primary/40">
+                  {codyVideoUrl && (
+                    <video
+                      src={codyVideoUrl}
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      className="w-full h-full object-cover"
+                    />
+                  )}
+                </div>
+              </Button>
+            </div>
+            <div className="text-secondary/90 text-xs mt-1.5 text-center leading-none font-medium">
               Precisa de<br/>Ajuda?
             </div>
           </div>
+          
         </div>
         </div>
 
