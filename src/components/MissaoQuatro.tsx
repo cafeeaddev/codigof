@@ -251,84 +251,92 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
   const progress = (answeredCount / questions.length) * 100;
 
   return (
-    <div className="h-full flex flex-col min-h-0">
+    <div className="h-full flex flex-col bg-background overflow-hidden">
       <ScrollArea className="flex-1">
-        <div className="p-2 pb-[calc(60px+env(safe-area-inset-bottom,0px))]">
-
-          <div className="mb-4">
+        <div className="flex flex-col max-w-4xl mx-auto w-full p-3 pb-[calc(60px+env(safe-area-inset-bottom,0px))] min-h-full">
+          {/* Progress Header - mais compacto */}
+          <div className="mb-4 sticky top-0 bg-background z-10 pb-2">
             <div className="flex justify-between items-center mb-2">
-              <span className="text-xs text-muted-foreground">
+              <span className="text-sm text-muted-foreground">
                 Pergunta {currentQuestion + 1} de {questions.length}
               </span>
-              <span className="text-xs text-muted-foreground">
+              <span className="text-sm text-muted-foreground">
                 {Math.round(progress)}%
               </span>
             </div>
-            <div className="w-full bg-secondary/20 rounded-full h-1.5">
+            
+            {/* Progress Bar with gradient */}
+            <div className="w-full bg-secondary rounded-full h-2">
               <div
-                className="bg-primary h-1.5 rounded-full transition-all duration-300"
+                className="bg-gradient-to-r from-primary to-accent h-2 rounded-full transition-all duration-500"
                 style={{ width: `${progress}%` }}
               />
             </div>
           </div>
 
-          <div className="mb-6">
-            <h4 className="text-base font-medium text-foreground mb-4">
-              {currentQuestionData.question}
-            </h4>
+          {/* Question Card */}
+          <div className="flex-1 min-h-0">
+            <div className="bg-card rounded-lg p-4 md:p-6 border shadow-sm">
+              <h3 className="text-base md:text-lg font-medium text-foreground mb-4 leading-relaxed">
+                {currentQuestionData.question}
+              </h3>
 
-            {currentQuestionData.type === 'star-rating' ? (
-              <div className="space-y-4">
-                <div className="mb-4 p-3 bg-muted/30 rounded-lg">
-                  <p className="text-sm text-muted-foreground mb-2">
-                    Avalie seu conhecimento em cada ferramenta usando as estrelas:
-                  </p>
-                  <div className="text-xs text-muted-foreground space-y-1">
-                    {Object.entries(currentQuestionData.starLegends).map(([stars, legend]) => (
-                      <div key={stars}>
-                        <strong>{stars} estrela{stars !== '1' ? 's' : ''}:</strong> {(legend as any).text}
-                      </div>
+              {currentQuestionData.type === 'star-rating' ? (
+                <div className="space-y-4">
+                  <div className="mb-4 p-3 bg-muted/30 rounded-lg">
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Avalie seu conhecimento em cada ferramenta usando as estrelas:
+                    </p>
+                    <div className="text-xs text-muted-foreground space-y-1">
+                      {Object.entries(currentQuestionData.starLegends).map(([stars, legend]) => (
+                        <div key={stars}>
+                          <strong>{stars} estrela{stars !== '1' ? 's' : ''}:</strong> {(legend as any).text}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  <div className="grid gap-4 md:grid-cols-2">
+                    {currentQuestionData.softwares.map((software) => (
+                      <StarRating
+                        key={software}
+                        software={software}
+                        value={starRatings[currentQuestionData.id]?.[software] || 0}
+                        onChange={(rating) => handleStarRatingChange(currentQuestionData.id, software, rating)}
+                        legends={currentQuestionData.starLegends}
+                      />
                     ))}
                   </div>
                 </div>
-                
-                <div className="grid gap-4 md:grid-cols-2">
-                  {currentQuestionData.softwares.map((software) => (
-                    <StarRating
-                      key={software}
-                      software={software}
-                      value={starRatings[currentQuestionData.id]?.[software] || 0}
-                      onChange={(rating) => handleStarRatingChange(currentQuestionData.id, software, rating)}
-                      legends={currentQuestionData.starLegends}
-                    />
-                  ))}
-                </div>
-              </div>
-            ) : (
-              <RadioGroup
-                value={answers[currentQuestionData.id] || ""}
-                onValueChange={(value) => handleAnswerSelect(currentQuestionData.id, value)}
-                className="space-y-0.5"
-              >
-                {currentQuestionData.options.map((option) => (
-                  <div key={option.letter} className="flex items-start space-x-2 p-2 rounded hover:bg-muted/20 cursor-pointer" onClick={() => handleAnswerSelect(currentQuestionData.id, option.letter)}>
-                    <RadioGroupItem
-                      value={option.letter}
-                      id={`q${currentQuestionData.id}-${option.letter}`}
-                      className="border-secondary mt-0.5 h-5 w-5 md:h-4 md:w-4"
-                    />
-                    <Label
-                      htmlFor={`q${currentQuestionData.id}-${option.letter}`}
-                      className="text-xs md:text-sm text-foreground cursor-pointer flex-1 leading-relaxed"
+              ) : (
+                <RadioGroup
+                  value={answers[currentQuestionData.id] || ""}
+                  onValueChange={(value) => handleAnswerSelect(currentQuestionData.id, value)}
+                  className="space-y-0.5"
+                >
+                  {currentQuestionData.options.map((option) => (
+                    <div 
+                      key={option.letter} 
+                      className="flex items-start space-x-3 p-2 rounded-lg hover:bg-purple-500/20 cursor-pointer transition-colors duration-200"
+                      onClick={() => handleAnswerSelect(currentQuestionData.id, option.letter)}
                     >
-                      <span className="font-medium text-primary mr-1">{option.letter})</span>
-                      {option.text}
-                    </Label>
-                  </div>
-                ))}
-              </RadioGroup>
-            )}
-
+                      <RadioGroupItem
+                        value={option.letter}
+                        id={`q${currentQuestionData.id}-${option.letter}`}
+                        className="mt-1 h-4 w-4"
+                      />
+                      <Label
+                        htmlFor={`q${currentQuestionData.id}-${option.letter}`}
+                        className="text-xs md:text-sm text-foreground cursor-pointer flex-1 leading-relaxed"
+                      >
+                        <span className="font-medium mr-2">{option.letter})</span>
+                        {option.text}
+                      </Label>
+                    </div>
+                  ))}
+                </RadioGroup>
+              )}
+            </div>
           </div>
         </div>
       </ScrollArea>
