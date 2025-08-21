@@ -22,16 +22,22 @@ export const useMission4Questions = (userAreaId?: string | null) => {
       question_text: q.question_text,
       question_type: q.question_type,
       options: q.options.reduce((acc, opt) => {
-        acc[opt.option_letter] = opt.option_text;
+        acc[opt.option_letter] = {
+          text: opt.option_text,
+          points: opt.points || 0
+        };
         return acc;
       }, {} as any),
       softwares: q.softwares,
-      star_legends: q.options
-        .filter(opt => q.question_type === 'star-rating')
-        .reduce((acc, opt) => {
-          acc[opt.option_letter] = opt.option_text;
-          return acc;
-        }, {} as any)
+      star_legends: q.question_type === 'star-rating' 
+        ? q.options.reduce((acc, opt) => {
+            acc[opt.option_letter] = {
+              text: opt.option_text,
+              points: opt.points || 0
+            };
+            return acc;
+          }, {} as any)
+        : {}
     })),
     isLoading: result.isLoading,
     error: result.error
