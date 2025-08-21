@@ -141,36 +141,35 @@ const GameSummary = () => {
         return;
       }
       
-      // Force bonus for users who completed today (same as game start) but don't have bonus
-      const shouldForceBonus = (
-        completionDateStr === gameStartDateStr && // Completed on game start date
-        (!prog.time_bonus_xp || prog.time_bonus_xp === 0) // No bonus applied yet
-      );
+      // Check if bonus calculation is needed (no forcing, only proper date calculation)
+      const shouldCalculateBonus = (!prog.time_bonus_xp || prog.time_bonus_xp === 0);
       
       console.log('🔍 Bonus eligibility check:', {
         daysDiff,
-        shouldForceBonus,
+        shouldCalculateBonus,
         currentBonus: prog.time_bonus_xp
       });
 
       let bonus = 0;
       let bonusMessage = '';
 
-      // Calculate bonus based on completion day or force if eligible
-      if (shouldForceBonus || daysDiff === 0) {
-        bonus = 150;
-        bonusMessage = 'Concluído no primeiro dia!';
-        console.log('🎉 Applying Day 1 bonus:', bonus);
-      } else if (daysDiff === 1) {
-        bonus = 100;
-        bonusMessage = 'Concluído no segundo dia!';
-        console.log('🎉 Applying Day 2 bonus:', bonus);
-      } else if (daysDiff === 2) {
-        bonus = 50;
-        bonusMessage = 'Concluído no terceiro dia!';
-        console.log('🎉 Applying Day 3 bonus:', bonus);
-      } else {
-        console.log('❌ No bonus eligible for daysDiff:', daysDiff);
+      // Calculate bonus based on completion day only if needed
+      if (shouldCalculateBonus) {
+        if (daysDiff === 0) {
+          bonus = 150;
+          bonusMessage = 'Concluído no primeiro dia!';
+          console.log('🎉 Applying Day 1 bonus:', bonus);
+        } else if (daysDiff === 1) {
+          bonus = 100;
+          bonusMessage = 'Concluído no segundo dia!';
+          console.log('🎉 Applying Day 2 bonus:', bonus);
+        } else if (daysDiff === 2) {
+          bonus = 50;
+          bonusMessage = 'Concluído no terceiro dia!';
+          console.log('🎉 Applying Day 3 bonus:', bonus);
+        } else {
+          console.log('❌ No bonus eligible for daysDiff:', daysDiff);
+        }
       }
 
       if (bonus > 0) {
