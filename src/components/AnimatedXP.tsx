@@ -57,7 +57,7 @@ export const AnimatedXP: React.FC<AnimatedXPProps> = ({
       isAnimating && "text-[hsl(var(--neon-cyan))] scale-110",
       className
     )}>
-      {currentValue.toLocaleString()}
+      {currentValue.toLocaleString()} Xps
     </span>
   );
 };
