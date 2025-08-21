@@ -252,7 +252,7 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
   return (
     <div className="h-full flex flex-col min-h-0">
       <ScrollArea className="flex-1">
-        <div className="p-2 pb-[calc(80px+env(safe-area-inset-bottom,0px))]">
+        <div className="p-2 pb-[calc(60px+env(safe-area-inset-bottom,0px))]">
 
           <div className="mb-4">
             <div className="flex justify-between items-center mb-2">
