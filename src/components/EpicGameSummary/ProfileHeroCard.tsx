@@ -72,62 +72,125 @@ export const ProfileHeroCard: React.FC<ProfileHeroCardProps> = ({
         }}
       >
         <CardContent className="relative p-6 md:p-8">
-          {/* Centered congratulations section */}
-          <div className="text-center mb-8 lg:mb-12">
-            {/* Avatar Circle */}
-            <div className="relative mb-6">
-              <div 
-                className="w-32 h-32 mx-auto rounded-full flex items-center justify-center relative animate-float-medal overflow-hidden"
-                style={{
-                  background: `radial-gradient(circle, ${profileColor}30, ${profileColor}10)`,
-                  border: `4px solid ${profileColor}`,
-                  boxShadow: `0 0 50px ${profileColor}50`
-                }}
-              >
-                {/* Avatar Video */}
-                <video 
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  className="w-full h-full object-cover rounded-full"
-                  style={{
-                    filter: `drop-shadow(0 0 20px ${profileColor})`
-                  }}
-                >
-                  <source src="https://meta.cafeeadhost.com.br/Cody/hero-animation.mp4" type="video/mp4" />
-                </video>
-                
-                {/* Orbiting dots */}
-                <div 
-                  className="absolute w-3 h-3 rounded-full animate-orbit"
-                  style={{ 
-                    backgroundColor: profileColor,
-                    boxShadow: `0 0 15px ${profileColor}`
-                  }}
-                />
-                
-                {/* Pulse ring */}
-                <div 
-                  className="absolute inset-0 rounded-full border-2 animate-ping opacity-20"
-                  style={{ borderColor: profileColor }}
-                />
-              </div>
+          {/* Background decorative elements */}
+          <div className="absolute inset-0 overflow-hidden">
+            {/* Wireframe grid background */}
+            <div className="absolute inset-0 opacity-10">
+              <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                    <path d="M 40 0 L 0 0 0 40" fill="none" stroke={profileColor} strokeWidth="1"/>
+                  </pattern>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#grid)" />
+              </svg>
             </div>
-
-            {/* Announcement text */}
-            <div className="space-y-3">
-              <p className="text-xl md:text-2xl font-bold" style={{ color: profileColor }}>
-                Parabéns, {userName}!
-              </p>
-              <p className="text-lg md:text-xl text-foreground/90">
-                Chegamos ao final dessa primeira etapa
-              </p>
+            
+            {/* Flowing lines */}
+            <div className="absolute inset-0">
+              <svg width="100%" height="100%" className="absolute inset-0">
+                <path 
+                  d="M0,100 Q150,50 300,80 T600,60" 
+                  stroke={profileColor} 
+                  strokeWidth="2" 
+                  fill="none" 
+                  opacity="0.3"
+                  className="animate-pulse"
+                />
+                <path 
+                  d="M0,80 Q200,120 400,100 T800,90" 
+                  stroke={profileColor} 
+                  strokeWidth="1" 
+                  fill="none" 
+                  opacity="0.2"
+                />
+              </svg>
             </div>
           </div>
 
-          {/* Profile results section */}
-          <div className="text-center space-y-6">
+          <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12 relative z-10">
+            
+            {/* Left side - Enhanced Cody Avatar */}
+            <div className="flex-shrink-0 text-center lg:text-left">
+              {/* Large Avatar Circle with enhanced effects */}
+              <div className="relative mb-6">
+                <div 
+                  className="w-48 h-48 mx-auto lg:mx-0 rounded-full flex items-center justify-center relative animate-float-medal overflow-hidden"
+                  style={{
+                    background: `radial-gradient(circle at center, ${profileColor}40, ${profileColor}20, transparent 70%)`,
+                    border: `6px solid ${profileColor}`,
+                    boxShadow: `
+                      0 0 60px ${profileColor}60,
+                      inset 0 0 40px ${profileColor}20,
+                      0 0 100px ${profileColor}30
+                    `
+                  }}
+                >
+                  {/* Avatar Video */}
+                  <video 
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className="w-full h-full object-cover rounded-full"
+                    style={{
+                      filter: `drop-shadow(0 0 30px ${profileColor}) brightness(1.1) contrast(1.1)`
+                    }}
+                  >
+                    <source src="https://meta.cafeeadhost.com.br/Cody/hero-animation.mp4" type="video/mp4" />
+                  </video>
+                  
+                  {/* Multiple orbiting elements */}
+                  <div 
+                    className="absolute w-4 h-4 rounded-full animate-orbit"
+                    style={{ 
+                      backgroundColor: profileColor,
+                      boxShadow: `0 0 20px ${profileColor}`,
+                      animationDuration: '4s'
+                    }}
+                  />
+                  <div 
+                    className="absolute w-3 h-3 rounded-full animate-orbit"
+                    style={{ 
+                      backgroundColor: profileColor,
+                      boxShadow: `0 0 15px ${profileColor}`,
+                      animationDuration: '6s',
+                      animationDirection: 'reverse'
+                    }}
+                  />
+                  
+                  {/* Enhanced pulse rings */}
+                  <div 
+                    className="absolute inset-0 rounded-full border-4 animate-ping opacity-30"
+                    style={{ borderColor: profileColor }}
+                  />
+                  <div 
+                    className="absolute inset-[-10px] rounded-full border-2 animate-ping opacity-20"
+                    style={{ 
+                      borderColor: profileColor,
+                      animationDuration: '3s',
+                      animationDelay: '1s'
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Enhanced announcement text */}
+              <div className="space-y-4">
+                <p className="text-2xl md:text-3xl font-bold tracking-wide" style={{ 
+                  color: profileColor,
+                  textShadow: `0 0 20px ${profileColor}50`
+                }}>
+                  Parabéns, {userName}!
+                </p>
+                <p className="text-xl md:text-2xl text-foreground/90 font-medium">
+                  Chegamos ao final dessa primeira etapa
+                </p>
+              </div>
+            </div>
+
+            {/* Right side - Profile results with enhanced styling */}
+            <div className="flex-1 text-center lg:text-left space-y-6">
             {/* Profile Achievement */}
             <div>
               <div className="inline-flex items-center gap-2 mb-4 px-6 py-3 rounded-full border-2" 
@@ -150,6 +213,7 @@ export const ProfileHeroCard: React.FC<ProfileHeroCardProps> = ({
                   cardRef={cardRef}
                 />
               </div>
+            </div>
             </div>
           </div>
           
