@@ -291,7 +291,7 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
 
         {/* Scrollable Content */}
         <ScrollArea className="flex-1">
-          <div className="p-4 pb-32">
+          <div className="p-4 pb-40">
             <Card className="border shadow-sm">
               <CardContent className="p-4">
                 <h3 className="text-base font-semibold text-foreground mb-4 leading-relaxed">
