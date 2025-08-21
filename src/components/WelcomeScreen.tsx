@@ -450,6 +450,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
             }}
             size="sm"
             className="shrink-0"
+            showTitle={true}
             medalNames={[
               "Satélite",
               "Planeta", 

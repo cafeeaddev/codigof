@@ -14,9 +14,10 @@ interface MedalBadgesProps {
   className?: string;
   medalNames?: string[]; // [m1, m2, m3, m4]
   showNames?: boolean; // exibe os nomes abaixo dos ícones
+  showTitle?: boolean; // exibe "Medalhas" acima das medalhas
 }
 
-export const MedalBadges: React.FC<MedalBadgesProps> = ({ completed, size = "md", className, medalNames, showNames = false }) => {
+export const MedalBadges: React.FC<MedalBadgesProps> = ({ completed, size = "md", className, medalNames, showNames = false, showTitle = false }) => {
   const defaultMedalNames = [
     "Satélite",
     "Planeta", 
@@ -46,8 +47,12 @@ export const MedalBadges: React.FC<MedalBadgesProps> = ({ completed, size = "md"
 
   return (
     <TooltipProvider delayDuration={100}>
-      <div className={cn("flex items-center relative z-[100] pointer-events-auto", gap, className)} aria-label="Insígnias de missões">
-        {items.map((item) => (
+      <div className={cn("flex flex-col items-center relative z-[100] pointer-events-auto", className)} aria-label="Insígnias de missões">
+        {showTitle && (
+          <div className="text-xs text-muted-foreground mb-2 font-medium">Medalhas</div>
+        )}
+        <div className={cn("flex items-center", gap)}>
+          {items.map((item) => (
           <div key={item.id} className="flex flex-col items-center">
             <Tooltip>
               <TooltipTrigger asChild>
@@ -86,7 +91,8 @@ export const MedalBadges: React.FC<MedalBadgesProps> = ({ completed, size = "md"
               <span className="mt-1 text-xs text-foreground text-center">{item.medalName}</span>
             )}
           </div>
-        ))}
+          ))}
+        </div>
       </div>
     </TooltipProvider>
   );
