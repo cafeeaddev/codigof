@@ -449,8 +449,8 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
       </div>
 
       {/* Estatísticas Mobile compactas */}
-      <div className="block lg:hidden bg-card/80 backdrop-blur-xl border-b border-secondary/30 px-4 py-2">
-        <div className="flex items-center gap-4 px-3 overflow-x-auto whitespace-nowrap">
+      <div className="block lg:hidden bg-card/80 backdrop-blur-xl border-b border-secondary/30 px-3 py-2">
+        <div className="flex items-center justify-between gap-2 w-full">
           <div className="text-center shrink-0">
             <AnimatedXP 
               startValue={xpBeforeBonus || userProgress.total_xp}
@@ -461,48 +461,57 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
             />
             <div className="text-muted-foreground text-xs">XP</div>
           </div>
+          
           <div className="text-center shrink-0">
             <div className="text-sm font-bold text-accent">{userProgress.completedMissionsCount}/4</div>
             <div className="text-muted-foreground text-xs">Missões</div>
           </div>
-          <MedalBadges
-            completed={{
-              m1: completedMissions.has(1),
-              m2: completedMissions.has(2),
-              m3: completedMissions.has(3),
-              m4: completedMissions.has(4),
-            }}
-            size="sm"
-            className="shrink-0"
-            showTitle={true}
-            medalNames={[
-              "Satélite",
-              "Planeta", 
-              "Estrela",
-              "Galáxia",
-            ]}
-          />
+          
+          <div className="flex-1 min-w-0">
+            <MedalBadges
+              completed={{
+                m1: completedMissions.has(1),
+                m2: completedMissions.has(2),
+                m3: completedMissions.has(3),
+                m4: completedMissions.has(4),
+              }}
+              size="sm"
+              className="flex justify-center"
+              showTitle={true}
+              medalNames={[
+                "Satélite",
+                "Planeta", 
+                "Estrela",
+                "Galáxia",
+              ]}
+            />
+          </div>
           
           {/* Assistente IA mobile */}
-          <Button
-            onClick={() => setShowTutorial(true)}
-            className="bg-transparent border border-secondary/30 text-secondary hover:bg-secondary/10 hover:text-secondary transition-all duration-200 p-1.5 rounded-full w-8 h-8 flex items-center justify-center ml-3 shrink-0"
-          >
-            <div className="relative flex items-center justify-center w-5 h-5 rounded-full overflow-hidden bg-gradient-to-br from-primary/20 to-secondary/20 border border-primary/30">
-              {codyVideoUrl && (
-                <video
-                  src={codyVideoUrl}
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  className="w-full h-full object-cover"
-                />
-              )}
-              {/* Bolinha indicadora de IA ativa */}
-              <div className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse border border-background"></div>
+          <div className="text-center shrink-0">
+            <Button
+              onClick={() => setShowTutorial(true)}
+              className="bg-transparent border border-secondary/30 text-secondary hover:bg-secondary/10 hover:text-secondary transition-all duration-200 p-1.5 rounded-full w-8 h-8 flex items-center justify-center mx-auto"
+            >
+              <div className="relative flex items-center justify-center w-5 h-5 rounded-full overflow-hidden bg-gradient-to-br from-primary/20 to-secondary/20 border border-primary/30">
+                {codyVideoUrl && (
+                  <video
+                    src={codyVideoUrl}
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className="w-full h-full object-cover"
+                  />
+                )}
+                {/* Bolinha indicadora de IA ativa */}
+                <div className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse border border-background"></div>
+              </div>
+            </Button>
+            <div className="text-muted-foreground text-xs mt-1 text-center leading-none">
+              Precisa de<br/>Ajuda
             </div>
-          </Button>
+          </div>
         </div>
         </div>
 
