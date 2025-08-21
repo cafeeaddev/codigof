@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from './ui/button';
-import { LogOut, User, Loader2, Shield, Lock } from 'lucide-react';
+import { LogOut, User, Loader2, Shield, Lock, HelpCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 import { ScrollArea } from './ui/scroll-area';
@@ -12,6 +12,7 @@ import { MissaoTres } from './MissaoTres';
 import { MissaoQuatro } from './MissaoQuatro';
 import MedalBadges from './MedalBadges';
 import TutorialOverlay from './TutorialOverlay';
+import { SecretFAQDialog } from './SecretFAQDialog';
 import { getDigitalProfile, getProfilePhrase } from '@/lib/digitalProfile';
 import { ProfileHeroCard } from './EpicGameSummary/ProfileHeroCard';
 import { FloatingMedals } from './EpicGameSummary/FloatingMedals';
@@ -412,6 +413,19 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
               ]}
             />
           </div>
+          
+          {/* Botão Precisa de Ajuda Desktop */}
+          <SecretFAQDialog>
+            <Button
+              variant="outline"
+              size="sm"
+              className="bg-transparent border-secondary text-secondary hover:bg-secondary hover:text-secondary-foreground mr-2"
+            >
+              <HelpCircle className="w-3 h-3 md:w-4 md:h-4 md:mr-2" />
+              <span className="hidden md:inline">Precisa de Ajuda</span>
+            </Button>
+          </SecretFAQDialog>
+          
           <Button
             onClick={handleLogout}
             variant="outline"
@@ -459,6 +473,17 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
               "Galáxia",
             ]}
           />
+          
+          {/* Botão Precisa de Ajuda Mobile */}
+          <SecretFAQDialog>
+            <Button
+              variant="outline"
+              size="sm"
+              className="bg-transparent border-secondary text-secondary hover:bg-secondary hover:text-secondary-foreground shrink-0 ml-4"
+            >
+              <HelpCircle className="w-3 h-3" />
+            </Button>
+          </SecretFAQDialog>
         </div>
         </div>
 
