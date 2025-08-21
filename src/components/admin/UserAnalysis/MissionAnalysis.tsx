@@ -207,10 +207,8 @@ export const MissionAnalysis = ({
                        // Para missão 1: usar perguntas do banco + buscar texto das opções
                        if (mission.number === 1) {
                          const missionQuestions = questions.filter(q => q.mission_number === 1);
-                         const questionsToShow = missionQuestions.length > 0 ? missionQuestions : 
-                           mission.questions.map((q, i) => ({ question_text: q, id: 53 + i }));
                          
-                         return questionsToShow.map((question, idx) => {
+                         return mission.questions.map((questionText, idx) => {
                            let answer = null;
                            let points = 0;
                            
@@ -222,15 +220,24 @@ export const MissionAnalysis = ({
                              points = questionItem?.pontuacao || 0;
                            }
                            
+                           // Buscar pergunta do banco correspondente
+                           const dbQuestion = missionQuestions.find(q => q.id === (53 + idx));
+                           
                            // Para missão 1: buscar texto real da opção no banco
-                           const answerText = (answer && question.id && !isLoading) 
-                             ? getOptionText(question.id, answer)
-                             : `Opção ${answer}`;
+                           let answerText = `Opção ${answer}`;
+                           
+                           // Se temos pergunta do banco e resposta, buscar texto da opção
+                           if (answer && dbQuestion && !isLoading) {
+                             const optionText = getOptionText(dbQuestion.id, answer);
+                             if (optionText && optionText !== `Opção ${answer}`) {
+                               answerText = optionText;
+                             }
+                           }
                            
                            return (
                              <div key={idx} className="border rounded-lg p-4 space-y-2">
                                <p className="text-sm font-medium">
-                                 {idx + 1}. {question.question_text}
+                                 {idx + 1}. {dbQuestion?.question_text || questionText}
                                </p>
                                {answer && (
                                  <div className="flex items-center gap-2">
