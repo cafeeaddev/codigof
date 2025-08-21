@@ -271,9 +271,9 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
   const progress = (answeredCount / quizQuestions.length) * 100;
 
   return (
-    <div className="h-full flex flex-col bg-background overflow-hidden">
+    <div className="h-full flex flex-col bg-background">
       <ScrollArea className="flex-1">
-        <div className="flex flex-col max-w-4xl mx-auto w-full p-4 pb-[120px] min-h-full">
+        <div className="max-w-4xl mx-auto w-full p-4 pb-20 min-h-full">
           {/* Progress Header - compacto */}
           <div className="mb-6 sticky top-0 bg-background z-10 pb-3">
             <div className="flex justify-between items-center mb-2">
@@ -331,8 +331,8 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
         </div>
       </ScrollArea>
 
-      {/* Sticky Navigation Buttons - sempre visíveis */}
-      <div className="sticky bottom-0 left-0 right-0 z-[9999] bg-background border-t border-border/50 shadow-[0_-4px_20px_rgba(0,0,0,0.15)] p-3 md:p-4">
+      {/* Fixed Navigation Buttons - sempre visíveis */}
+      <div className="bg-background border-t border-border/50 p-3 md:p-4 shadow-[0_-4px_20px_rgba(0,0,0,0.15)]">
         <div className="max-w-4xl mx-auto flex justify-between items-center gap-3 md:gap-4">
           <Button
             type="button"
