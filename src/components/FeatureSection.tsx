@@ -180,21 +180,26 @@ export const FeatureSection = ({
             <div className="flex-shrink-0 relative">
               {/* Glowing circle border */}
               <div className="w-80 h-80 rounded-full bg-gradient-to-r from-neon-purple via-neon-purple to-neon-cyan p-1 shadow-glow">
-                <div className="w-full h-full rounded-full bg-background/90 backdrop-blur-xl overflow-hidden relative">
-                  {videoReveal.isVisible ? (
-                    <video 
-                      className="w-full h-full object-cover rounded-full"
-                      autoPlay
-                      muted
-                      loop
-                      playsInline
-                      preload="metadata"
-                    >
-                      <source src="https://meta.cafeeadhost.com.br/Cody/hero-animation.mp4" type="video/mp4" />
-                    </video>
-                  ) : (
-                    <div className="w-full h-full rounded-full bg-background/90" aria-hidden />
-                  )}
+                <div className="w-full h-full rounded-full bg-background/20 backdrop-blur-xl overflow-hidden relative">
+                  <video 
+                    className="w-full h-full object-cover rounded-full"
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    preload="auto"
+                    onLoadStart={() => console.log('Video loading started')}
+                    onCanPlay={() => console.log('Video can play')}
+                    onError={(e) => console.error('Video error:', e)}
+                  >
+                    <source src="https://meta.cafeeadhost.com.br/Cody/hero-animation.mp4" type="video/mp4" />
+                    <div className="w-full h-full rounded-full bg-gradient-to-br from-neon-purple/20 via-neon-cyan/10 to-neon-purple/20 flex items-center justify-center">
+                      <div className="text-center">
+                        <div className="w-16 h-16 rounded-full bg-gradient-to-r from-neon-cyan to-neon-purple mx-auto mb-4 animate-pulse"></div>
+                        <p className="text-neon-cyan text-sm">Cody AI</p>
+                      </div>
+                    </div>
+                  </video>
                   {/* Additional glow effect */}
                   <div className="absolute inset-0 rounded-full bg-gradient-to-t from-transparent via-transparent to-neon-cyan/10"></div>
                 </div>
