@@ -283,7 +283,7 @@ export const MissaoUm = ({ onComplete, userId }: MissaoUmProps) => {
         </div>
       </ScrollArea>
 
-      <div className="flex items-center justify-between pt-4 border-t">
+      <div className="flex items-center justify-between pt-3 border-t">
         <Button 
           variant="outline" 
           onClick={goToPreviousQuestion}

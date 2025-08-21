@@ -332,7 +332,7 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
       </ScrollArea>
 
       {/* Fixed Navigation Buttons */}
-      <div className="border-t bg-background p-4 pb-6 md:pb-4 lg:pb-4 mt-auto">
+      <div className="border-t bg-background p-3 pb-5 md:pb-3 lg:pb-3 mt-auto">
         <div className="max-w-4xl mx-auto flex justify-between items-center gap-4">
           <Button
             type="button"
