@@ -38,26 +38,42 @@ export const MissaoDois = ({ onComplete, userId }: MissaoDoisProps) => {
             .eq('user_id', currentUserId)
             .maybeSingle();
 
+          console.log('[MissaoDois] Raw progress data:', progress);
+          
           if (progress) {
-            console.log('[MissaoDois] Progress loaded:', progress);
-            // Se a missão já foi completada, sempre começar do início
-            if (progress.missao_2_completed) {
-              setCurrentQuestion(0);
-              setAnswers({});
-            } else {
-              // Garantir que sempre comece na pergunta 0 se não há progresso válido
-              const savedQuestion = progress.missao_2_current_question;
-              setCurrentQuestion((savedQuestion && savedQuestion >= 0) ? savedQuestion : 0);
-              setAnswers((progress.missao_2_answers as Record<number, string>) || {});
-            }
-            setIsCompleted(progress.missao_2_completed || false);
-          } else {
-            // Se não há progresso, sempre começar na primeira pergunta
+            console.log('[MissaoDois] Progress loaded:', {
+              missao_2_current_question: progress.missao_2_current_question,
+              missao_2_completed: progress.missao_2_completed,
+              missao_2_answers: progress.missao_2_answers
+            });
+            
+            // SEMPRE começar na pergunta 0 (primeira pergunta)
+            console.log('[MissaoDois] Setting currentQuestion to 0 (first question)');
             setCurrentQuestion(0);
+            
+            // Se a missão já foi completada, limpar respostas também
+            if (progress.missao_2_completed) {
+              console.log('[MissaoDois] Mission 2 already completed, clearing answers');
+              setAnswers({});
+              setIsCompleted(true);
+            } else {
+              // Manter respostas salvas se existirem
+              setAnswers((progress.missao_2_answers as Record<number, string>) || {});
+              setIsCompleted(false);
+            }
+          } else {
+            console.log('[MissaoDois] No progress found, starting fresh');
+            setCurrentQuestion(0);
+            setAnswers({});
+            setIsCompleted(false);
           }
         }
       } catch (error) {
         console.error('[MissaoDois] Error loading progress:', error);
+        // Em caso de erro, sempre começar na primeira pergunta
+        setCurrentQuestion(0);
+        setAnswers({});
+        setIsCompleted(false);
       } finally {
         setIsLoading(false);
       }
@@ -184,7 +200,7 @@ export const MissaoDois = ({ onComplete, userId }: MissaoDoisProps) => {
           user_id: currentUserId,
           missao_2_completed: true,
           total_xp: currentXP + 25, // Adicionar 25 XP da missão 2
-          missao_2_current_question: currentQuestion + 1,
+          missao_2_current_question: 0, // SEMPRE resetar para 0 quando completar
           missao_2_answers: answers,
           last_saved_at: new Date().toISOString()
         }, {
