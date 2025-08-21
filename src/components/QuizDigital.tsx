@@ -332,14 +332,14 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
       </ScrollArea>
 
       {/* Fixed Navigation Buttons */}
-      <div className="border-t bg-background p-3 pb-5 md:pb-3 lg:pb-3 mt-auto">
+      <div className="border-t bg-background/95 backdrop-blur-sm p-3 pb-5 md:pb-3 lg:pb-3 mt-auto relative z-50">
         <div className="max-w-4xl mx-auto flex justify-between items-center gap-4">
           <Button
             type="button"
             onClick={() => goToPreviousQuestion()}
             disabled={currentQuestion === 0}
             variant="outline"
-            className="flex items-center space-x-2 min-w-[100px]"
+            className="flex items-center space-x-2 min-w-[100px] bg-background/95 backdrop-blur-sm border-secondary/50 hover:bg-secondary/10 relative z-50"
           >
             <ChevronLeft className="w-4 h-4" />
             <span>Anterior</span>
@@ -350,7 +350,7 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
               type="button"
               onClick={() => submitQuiz()}
               disabled={!answers[currentQuestionData.id] || isSubmitting}
-              className="flex items-center space-x-2 min-w-[100px]"
+              className="flex items-center space-x-2 min-w-[100px] bg-primary/95 hover:bg-primary/90 relative z-50"
             >
               {isSubmitting ? 'Enviando...' : 'Finalizar'}
             </Button>
@@ -359,7 +359,7 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
               type="button"
               onClick={() => goToNextQuestion()}
               disabled={!answers[currentQuestionData.id]}
-              className="flex items-center space-x-2 min-w-[100px]"
+              className="flex items-center space-x-2 min-w-[100px] bg-primary/95 hover:bg-primary/90 relative z-50"
             >
               <span>Próxima</span>
               <ChevronRight className="w-4 h-4" />
