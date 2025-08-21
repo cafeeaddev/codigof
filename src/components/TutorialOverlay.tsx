@@ -31,7 +31,7 @@ const useSlides = (stage: "prelogin" | "ingame") => {
         {
           title: "Missões e Progresso",
           description:
-            "Nesse jogo, você encontrará 4 missões estratégicas, cada uma valendo 25 XPs. Não se preocupe: seu progresso é salvo automaticamente.\n\nMissões 1 a 3: medem seu nível de maturidade digital.\nMissão 4: não interfere no seu nível de maturidade digital; ela avalia seu conhecimento das ferramentas Forvis Mazars e ajuda a mapear treinamentos futuros.\n\nComplete todas as etapas e desbloqueie seu perfil completo. Vamos juntos nessa?",
+            "Nesse jogo, você encontrará 4 missões estratégicas, cada uma valendo 25 XPs. Não se preocupe: seu progresso é salvo automaticamente.\n\n**Missões 1 a 3:** medem seu nível de maturidade digital.\n**Missão 4:** não interfere no seu nível de maturidade digital; ela avalia seu conhecimento das ferramentas Forvis Mazars e ajuda a mapear treinamentos futuros.\n\nComplete todas as etapas e desbloqueie seu perfil completo. Vamos juntos nessa?",
           narration:
             "Cada missão vale 25 XPs. Seu progresso inicia em 0% e avança conforme você responde. Complete cada missão e conquiste uma nova medalha.",
           customAudioUrl: "https://meta.cafeeadhost.com.br/Cody/audio02.mp3",
@@ -203,7 +203,14 @@ export const TutorialOverlay = ({ stage, onClose, onDontShowAgain }: TutorialOve
           <div className="grid grid-cols-1 md:grid-cols-[1fr,136px] gap-4 items-start">
             <div className="space-y-2">
               <h2 className="text-xl md:text-2xl font-bold text-primary">{slides[index].title}</h2>
-              <div className="text-sm md:text-base text-muted-foreground whitespace-pre-line">{slides[index].description}</div>
+              <div className="text-sm md:text-base text-muted-foreground whitespace-pre-line">
+                {slides[index].description.split(/(\*\*[^*]+\*\*)/).map((part, i) => {
+                  if (part.startsWith('**') && part.endsWith('**')) {
+                    return <strong key={i}>{part.slice(2, -2)}</strong>;
+                  }
+                  return part;
+                })}
+              </div>
 
               <div className="mt-4 flex items-center justify-between text-xs text-muted-foreground">
                 <span>
