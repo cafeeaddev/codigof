@@ -373,8 +373,8 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
               <User className="w-4 h-4 md:w-5 md:h-5 text-secondary" />
             </div>
             <div className="min-w-0 mr-12 sm:mr-16 md:mr-20 lg:mr-0 flex-1">
-              <h1 className="text-secondary text-sm md:text-base font-bold tracking-wider break-words leading-tight">{userProfile.nome || 'Usuário'}</h1>
-              <p className="text-muted-foreground text-xs md:text-sm break-words leading-tight">{userProfile.cargo?.replace(/^\d+-\s*/, '').trim()}</p>
+              <h1 className="text-secondary text-xs sm:text-sm md:text-base font-bold tracking-wider truncate">{userProfile.nome || "Usuário"}</h1>
+              <p className="text-muted-foreground text-xs md:text-sm truncate">{userProfile.cargo?.replace(/^\d+-\s*/, "").trim()}</p>
             </div>
           </div>
 
