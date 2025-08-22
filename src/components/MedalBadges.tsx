@@ -9,36 +9,47 @@ interface MedalBadgesProps {
     m2: boolean;
     m3: boolean;
     m4: boolean;
+    m5?: boolean;
   };
   size?: "sm" | "md";
   className?: string;
-  medalNames?: string[]; // [m1, m2, m3, m4]
+  medalNames?: string[]; // [m1, m2, m3, m4, m5]
   showNames?: boolean; // exibe os nomes abaixo dos ícones
   showTitle?: boolean; // exibe "Medalhas" acima das medalhas
+  showMission5?: boolean; // controla se a 5ª medalha deve aparecer
 }
 
-export const MedalBadges: React.FC<MedalBadgesProps> = ({ completed, size = "md", className, medalNames, showNames = false, showTitle = false }) => {
+export const MedalBadges: React.FC<MedalBadgesProps> = ({ completed, size = "md", className, medalNames, showNames = false, showTitle = false, showMission5 = false }) => {
   const defaultMedalNames = [
     "Satélite",
     "Planeta", 
     "Estrela",
     "Galáxia",
+    "Universo",
   ];
   
   const medalDescriptions = [
     "Você lançou seu primeiro satélite. A jornada começou!",
     "Você conquistou um planeta. Espaço ampliado!",
     "Você dominou uma estrela. Brilho de um verdadeiro mestre!",
-    "Você explorou uma galáxia inteira. Imensidão sob controle!"
+    "Você explorou uma galáxia inteira. Imensidão sob controle!",
+    "Você está prestes a conquistar o universo. Mestre do cosmos!"
   ];
   
-  const names = medalNames && medalNames.length === 4 ? medalNames : defaultMedalNames;
-  const items = [
+  const expectedLength = showMission5 ? 5 : 4;
+  const names = medalNames && medalNames.length === expectedLength ? medalNames : defaultMedalNames.slice(0, expectedLength);
+  
+  const baseItems = [
     { id: 1, label: "Missão 1", done: completed.m1, medalName: names[0], description: medalDescriptions[0] },
     { id: 2, label: "Missão 2", done: completed.m2, medalName: names[1], description: medalDescriptions[1] },
     { id: 3, label: "Missão 3", done: completed.m3, medalName: names[2], description: medalDescriptions[2] },
     { id: 4, label: "Missão 4", done: completed.m4, medalName: names[3], description: medalDescriptions[3] },
   ];
+
+  const items = showMission5 ? [
+    ...baseItems,
+    { id: 5, label: "Missão 5", done: completed.m5 || false, medalName: names[4], description: medalDescriptions[4] },
+  ] : baseItems;
 
   const iconSize = size === "sm" ? 16 : 20;
   const dotSize = size === "sm" ? "w-1.5 h-1.5" : "w-2 h-2";
