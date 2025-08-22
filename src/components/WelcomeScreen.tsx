@@ -744,7 +744,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                       key={missionId}
                       className={`relative p-4 rounded-lg border-2 transition-all duration-300 ${
                         isExtraMission
-                          ? 'bg-muted/30 border-muted-foreground/30 opacity-60 animate-pulse'
+                          ? 'bg-blue-500/20 border-blue-400/60 shadow-blue-400/20 shadow-lg animate-pulse'
                           : isCompleted
                           ? 'bg-primary/20 border-primary shadow-sm'
                           : isCurrent
@@ -754,19 +754,19 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                           : 'bg-card border-secondary/50'
                       }`}
                     >
-                      <div className="flex items-center gap-2 mb-2">
+                       <div className="flex items-center gap-2 mb-2">
                         <div className={`w-3 h-3 rounded-full ${
-                          isExtraMission ? 'bg-muted-foreground/50' : isCompleted ? 'bg-primary' : isCurrent ? 'bg-accent' : isLocked ? 'bg-muted-foreground/50' : 'bg-muted'
+                          isExtraMission ? 'bg-blue-400 shadow-blue-400/50 shadow-md' : isCompleted ? 'bg-primary' : isCurrent ? 'bg-accent' : isLocked ? 'bg-muted-foreground/50' : 'bg-muted'
                         }`}></div>
                         <span className={`text-sm font-bold tracking-wider ${
-                          isExtraMission ? 'text-muted-foreground/70' : isCompleted ? 'text-primary' : isCurrent ? 'text-accent' : isLocked ? 'text-muted-foreground/70' : 'text-foreground'
+                          isExtraMission ? 'text-blue-300' : isCompleted ? 'text-primary' : isCurrent ? 'text-accent' : isLocked ? 'text-muted-foreground/70' : 'text-foreground'
                         }`}>
                           {isExtraMission ? 'MISSÃO EXTRA' : `MISSÃO ${missionId}`}
                         </span>
                       </div>
                       
                       <div className={`text-xs mb-2 font-medium ${
-                        isExtraMission ? 'text-muted-foreground/60' : isCompleted ? 'text-primary/80' : isCurrent ? 'text-accent/80' : isLocked ? 'text-muted-foreground/60' : 'text-foreground/70'
+                        isExtraMission ? 'text-blue-200' : isCompleted ? 'text-primary/80' : isCurrent ? 'text-accent/80' : isLocked ? 'text-muted-foreground/60' : 'text-foreground/70'
                       }`}>
                         {missionId === 1 && "Como você encara o digital?"}
                         {missionId === 2 && "O digital no seu dia a dia"}
@@ -780,7 +780,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                       </div>
                       
                       <div className={`text-xs mb-2 ${
-                        isExtraMission ? 'text-muted-foreground' : isCompleted ? 'text-primary' : isCurrent ? 'text-accent' : 'text-muted-foreground'
+                        isExtraMission ? 'text-blue-300' : isCompleted ? 'text-primary' : isCurrent ? 'text-accent' : 'text-muted-foreground'
                       }`}>
                         {isExtraMission ? 'Aliança' : 'Vale 25 XP'}
                       </div>
@@ -789,7 +789,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                       <div className="w-full bg-muted/30 rounded-full h-2">
                         <div
                           className={`h-2 rounded-full transition-all duration-500 ${
-                            isExtraMission ? 'bg-muted w-0' : isCompleted ? 'bg-primary w-full' : isCurrent ? 'bg-accent w-1/2' : 'bg-muted w-0'
+                            isExtraMission ? 'bg-blue-400 w-0' : isCompleted ? 'bg-primary w-full' : isCurrent ? 'bg-accent w-1/2' : 'bg-muted w-0'
                           }`}
                         ></div>
                       </div>
