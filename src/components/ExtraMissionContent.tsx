@@ -182,7 +182,7 @@ export const ExtraMissionContent = ({ userName, onBack }: ExtraMissionContentPro
                               className="mt-1"
                             />
                             <label htmlFor="want-participate" className="text-sm text-foreground/90 cursor-pointer">
-                              Não concordo e não vou participar
+                              Não concordo e não vou participar.
                             </label>
                           </div>
 
