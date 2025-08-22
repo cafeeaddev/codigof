@@ -38,6 +38,8 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
   const { isAdmin } = useUserRole();
   const { isEligible: isMission5Eligible, isLoading: mission5Loading } = useMission5Eligibility();
   const [isLoading, setIsLoading] = useState(true);
+  
+  console.log('[WelcomeScreen] Loading states - mission5:', mission5Loading, 'main:', isLoading);
   const [currentMission, setCurrentMission] = useState<1 | 2 | 3 | 4 | 5>(1);
   const [completedMissions, setCompletedMissions] = useState<Set<number>>(new Set());
   const [userProgress, setUserProgress] = useState({ total_xp: 0, completedMissionsCount: 0 });
