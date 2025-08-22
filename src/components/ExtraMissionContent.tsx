@@ -44,17 +44,71 @@ export const ExtraMissionContent = ({ userName, onBack }: ExtraMissionContentPro
         <div className="p-6 pt-16">
           {/* Hero Card da Missão Extra */}
           <div className="mb-8">
-            <ProfileHeroCard
-              profile={extraMissionData.profile}
-              sublevel={extraMissionData.sublevel}
-              phrase={extraMissionData.phrase}
-              userName={userName}
-              medals={extraMissionData.medals}
-              xp={extraMissionData.xp}
-              totalScore={extraMissionData.totalScore}
-              timeBonus={extraMissionData.timeBonus}
-              className="border-cyan-400/30 bg-gradient-to-br from-cyan-500/10 to-purple-600/10"
-            />
+            {/* Hero Card simplificado para Missão Extra - sem compartilhamento */}
+            <div className="relative overflow-hidden animate-epic-entry bg-background/95 backdrop-blur-sm border-2 border-cyan-400/30 bg-gradient-to-br from-cyan-500/10 to-purple-600/10 rounded-xl">
+              <div className="relative p-6 md:p-8">
+                <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12 relative z-10">
+                  
+                  {/* Avatar do Cody */}
+                  <div className="flex-shrink-0 text-center lg:text-left">
+                    <div className="relative mb-6">
+                      <div className="w-48 h-48 sm:w-64 sm:h-64 lg:w-72 lg:h-72 rounded-full bg-gradient-to-r from-neon-purple via-neon-purple to-neon-cyan p-1 shadow-glow mx-auto lg:mx-0">
+                        <div className="w-full h-full rounded-full bg-background/20 backdrop-blur-xl overflow-hidden relative">
+                          <video 
+                            className="w-full h-full object-cover rounded-full"
+                            autoPlay
+                            muted
+                            loop
+                            playsInline
+                            preload="auto"
+                          >
+                            <source src="https://meta.cafeeadhost.com.br/Cody/hero-animation.mp4" type="video/mp4" />
+                          </video>
+                          <div className="absolute inset-0 rounded-full bg-gradient-to-t from-transparent via-transparent to-neon-cyan/10"></div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Texto de anúncio */}
+                    <div className="space-y-3 sm:space-y-4">
+                      <p className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-wide text-cyan-300" style={{ 
+                        textShadow: '0 0 20px hsl(var(--neon-cyan))'
+                      }}>
+                        Parabéns, {userName}!
+                      </p>
+                      <p className="text-lg sm:text-xl lg:text-2xl text-foreground/90 font-medium">
+                        Chegamos ao final dessa primeira etapa
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Profile results - sem ShareActions */}
+                  <div className="flex-1 text-center lg:text-left space-y-4 sm:space-y-6 w-full">
+                    <div>
+                      <div className="inline-flex items-center gap-2 mb-4 px-4 sm:px-6 py-2 sm:py-3 rounded-full border-2 border-cyan-400 bg-cyan-400/20">
+                        <Shield size={16} className="sm:w-5 sm:h-5 text-cyan-400" />
+                        <span className="text-lg sm:text-xl lg:text-2xl xl:text-3xl font-bold text-cyan-400">
+                          Seu Level é: {extraMissionData.profile}
+                        </span>
+                      </div>
+                      
+                      {/* Texto da fase sem compartilhamento */}
+                      <div className="relative">
+                        <div 
+                          className="absolute inset-0 bg-gradient-to-r opacity-10 blur-sm rounded-lg"
+                          style={{ 
+                            background: 'linear-gradient(45deg, hsl(var(--primary))20, transparent, hsl(var(--primary))20)' 
+                          }}
+                        />
+                        <p className="relative text-foreground/90 leading-relaxed p-4 rounded-lg border border-border/50 bg-background/30">
+                          {extraMissionData.phrase}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Área de conteúdo vazia (para futuras implementações) */}
