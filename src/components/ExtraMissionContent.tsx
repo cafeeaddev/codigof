@@ -163,17 +163,9 @@ export const ExtraMissionContent = ({ userName, onBack }: ExtraMissionContentPro
                             <Button
                               onClick={handleSubmit}
                               disabled={isSubmitting}
-                              className="flex-1 bg-cyan-600 hover:bg-cyan-700 text-white"
+                              className="w-full bg-cyan-600 hover:bg-cyan-700 text-white"
                             >
                               {isSubmitting ? 'Enviando...' : 'Confirmar'}
-                            </Button>
-                            
-                            <Button
-                              onClick={onBack}
-                              variant="outline"
-                              className="flex-1 border-cyan-400/50 text-cyan-300 hover:bg-cyan-400/10"
-                            >
-                              Voltar
                             </Button>
                           </div>
                         </div>
