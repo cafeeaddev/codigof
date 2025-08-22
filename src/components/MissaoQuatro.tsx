@@ -175,16 +175,28 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
 
         const currentXP = existingProgress?.total_xp || 0;
 
+        // Verificar se todas as outras missões foram completadas para definir game_end_date
+        const allMissionsCompleted = existingProgress?.missao_1_completed && 
+                                    existingProgress?.missao_2_completed && 
+                                    existingProgress?.missao_3_completed;
+
+        const updateData: any = {
+          user_id: user.id,
+          missao_4_completed: true,
+          total_xp: currentXP + 25, // Adicionar 25 XP da missão 4
+          missao_4_current_question: currentQuestion + 1,
+          missao_4_answers: answers,
+          last_saved_at: new Date().toISOString()
+        };
+
+        // Se todas as missões estão completas, definir data de fim do jogo
+        if (allMissionsCompleted) {
+          updateData.game_end_date = new Date().toISOString();
+        }
+
         const { error: progressError } = await supabase
           .from('user_progress')
-          .upsert({
-            user_id: user.id,
-            missao_4_completed: true,
-            total_xp: currentXP + 25, // Adicionar 25 XP da missão 4
-            missao_4_current_question: currentQuestion + 1,
-            missao_4_answers: answers,
-            last_saved_at: new Date().toISOString()
-          }, {
+          .upsert(updateData, {
             onConflict: 'user_id'
           });
 

@@ -81,6 +81,10 @@ export const UserTable = ({
         aValue = new Date(a.created_at);
         bValue = new Date(b.created_at);
         break;
+      case 'ended':
+        aValue = a.game_end_date ? new Date(a.game_end_date) : new Date(0);
+        bValue = b.game_end_date ? new Date(b.game_end_date) : new Date(0);
+        break;
       default:
         return 0;
     }
@@ -236,6 +240,7 @@ export const UserTable = ({
               <TableHead>Cargo</TableHead>
               <TableHead>Área</TableHead>
               <SortableHeader column="created">Data de Início</SortableHeader>
+              <SortableHeader column="ended">Data de Fim</SortableHeader>
               <SortableHeader column="score">Pontuação Total</SortableHeader>
               <TableHead>Perfil Digital</TableHead>
               <SortableHeader column="xp">XP Total</SortableHeader>
@@ -277,6 +282,12 @@ export const UserTable = ({
                     {userProfile?.area || '-'}
                   </TableCell>
                   <TableCell>{new Date(progress.created_at).toLocaleDateString('pt-BR')}</TableCell>
+                  <TableCell>
+                    {progress.game_end_date 
+                      ? new Date(progress.game_end_date).toLocaleDateString('pt-BR')
+                      : '-'
+                    }
+                  </TableCell>
                   <TableCell className="font-medium" style={{ color: 'hsl(var(--profile-ninja))' }}>
                     {totalScore.toFixed(2)} pts
                   </TableCell>
@@ -344,7 +355,7 @@ export const UserTable = ({
             })}
             {paginatedUsers.length === 0 && (
               <TableRow>
-                <TableCell colSpan={13} className="text-center py-8 text-muted-foreground">
+                <TableCell colSpan={14} className="text-center py-8 text-muted-foreground">
                   <Users className="w-12 h-12 mx-auto mb-4 opacity-50" />
                   <p>Nenhum usuário encontrado.</p>
                 </TableCell>

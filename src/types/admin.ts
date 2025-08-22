@@ -29,6 +29,7 @@ export interface UserProgress {
   total_play_time: number;
   session_start_time: string;
   last_saved_at: string;
+  game_end_date?: string; // Nova coluna para data de fim do jogo
   missao_1_current_question: number;
   missao_1_answers: any;
   missao_2_current_question: number;
