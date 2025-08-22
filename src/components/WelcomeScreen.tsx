@@ -815,19 +815,27 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                             : isCompleted ? 'bg-primary' : isCurrent ? 'bg-accent' : isLocked ? 'bg-muted-foreground/50' : 'bg-muted'
                         }`}></div>
                         <span className={`text-sm font-bold tracking-wider ${
-                          isExtraMission ? (!isGameEnded ? 'text-cyan-300 animate-pulse' : 'text-cyan-300') : isCompleted ? 'text-primary' : isCurrent ? 'text-accent' : isLocked ? 'text-muted-foreground/70' : 'text-foreground'
+                          isExtraMission 
+                            ? userDeclinedFastTrack 
+                              ? 'text-muted-foreground/70' // Estado 3: Fim de Jogo
+                              : extraMissionAvailable 
+                                ? 'text-cyan-300 animate-pulse' // Estado 2: Liberada
+                                : 'text-blue-300/60' // Estado 1: Bloqueada
+                            : isCompleted ? 'text-primary' : isCurrent ? 'text-accent' : isLocked ? 'text-muted-foreground/70' : 'text-foreground'
                         }`}>
                           {isExtraMission ? 'MISSÃO EXTRA' : `MISSÃO ${missionId}`}
                         </span>
                       </div>
                       
-                      <div className={`text-xs mb-2 font-medium ${
-                        isExtraMission 
-                          ? isExtraMissionAvailable 
-                            ? 'text-blue-300 font-bold' 
-                            : 'text-blue-200/60' 
-                          : isCompleted ? 'text-primary/80' : isCurrent ? 'text-accent/80' : isLocked ? 'text-muted-foreground/60' : 'text-foreground/70'
-                      }`}>
+                       <div className={`text-xs mb-2 font-medium ${
+                         isExtraMission 
+                           ? userDeclinedFastTrack 
+                             ? 'text-muted-foreground/60' // Estado 3: Fim de Jogo
+                             : extraMissionAvailable 
+                               ? 'text-blue-300 font-bold' // Estado 2: Liberada
+                               : 'text-blue-200/60' // Estado 1: Bloqueada
+                           : isCompleted ? 'text-primary/80' : isCurrent ? 'text-accent/80' : isLocked ? 'text-muted-foreground/60' : 'text-foreground/70'
+                       }`}>
                         {missionId === 1 && "Como você encara o digital?"}
                         {missionId === 2 && "O digital no seu dia a dia"}
                         {missionId === 3 && "Quando o desafio é maior"}
@@ -858,26 +866,30 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                         )}
                       </div>
                       
-                      <div className={`text-xs mb-2 ${
-                        isExtraMission 
-                          ? isExtraMissionAvailable 
-                            ? 'text-cyan-200 font-semibold' 
-                            : 'text-blue-300/50' 
-                          : isCompleted ? 'text-primary' : isCurrent ? 'text-accent' : 'text-muted-foreground'
-                      }`}>
+                       <div className={`text-xs mb-2 ${
+                         isExtraMission 
+                           ? userDeclinedFastTrack 
+                             ? 'text-muted-foreground/60' // Estado 3: Fim de Jogo
+                             : extraMissionAvailable 
+                               ? 'text-cyan-200 font-semibold' // Estado 2: Liberada
+                               : 'text-blue-300/50' // Estado 1: Bloqueada
+                           : isCompleted ? 'text-primary' : isCurrent ? 'text-accent' : 'text-muted-foreground'
+                       }`}>
                         {isExtraMission ? 'Aliança Digital' : 'Vale 25 XP'}
                       </div>
                       
                       {/* Barra de Progresso */}
                       <div className="w-full bg-muted/30 rounded-full h-2">
-                        <div
-                          className={`h-2 rounded-full transition-all duration-500 ${
-                            isExtraMission 
-                              ? isExtraMissionAvailable 
-                                ? 'bg-gradient-to-r from-blue-400 to-purple-400 w-full shadow-lg shadow-blue-400/50' 
-                                : 'bg-blue-400/30 w-0'
-                              : isCompleted ? 'bg-primary w-full' : isCurrent ? 'bg-accent w-1/2' : 'bg-muted w-0'
-                          }`}
+                         <div
+                           className={`h-2 rounded-full transition-all duration-500 ${
+                             isExtraMission 
+                               ? userDeclinedFastTrack 
+                                 ? 'bg-muted-foreground/30 w-full' // Estado 3: Fim de Jogo
+                                 : extraMissionAvailable 
+                                   ? 'bg-gradient-to-r from-blue-400 to-purple-400 w-full shadow-lg shadow-blue-400/50' // Estado 2: Liberada
+                                   : 'bg-blue-400/30 w-0' // Estado 1: Bloqueada
+                               : isCompleted ? 'bg-primary w-full' : isCurrent ? 'bg-accent w-1/2' : 'bg-muted w-0'
+                           }`}
                         ></div>
                       </div>
                       
