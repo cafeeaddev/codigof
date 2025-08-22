@@ -108,7 +108,9 @@ export const CompetencyHeatMap = ({ data }: CompetencyHeatMapProps) => {
                           <div 
                             className={`w-24 h-12 p-2 text-xs text-center flex items-center justify-center cursor-pointer transition-opacity hover:opacity-80 ${getColorClass(rating)}`}
                           >
-                            {rating ? rating.toFixed(1) : '-'}
+                            <span className="font-semibold text-slate-800 dark:text-slate-200">
+                              {rating ? rating.toFixed(1) : '-'}
+                            </span>
                           </div>
                         </TooltipTrigger>
                         <TooltipContent>
