@@ -749,7 +749,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                       key={missionId}
                        className={`relative p-4 rounded-lg border-2 transition-all duration-300 cursor-pointer hover:scale-105 ${
                          isExtraMission
-                           ? 'bg-gradient-to-br from-blue-500/20 to-purple-500/20 border-blue-400 hover:border-blue-300 shadow-lg shadow-blue-400/30 animate-pulse'
+                           ? 'bg-cyan-500/20 border-cyan-400 hover:border-cyan-300 shadow-lg shadow-cyan-400/30 animate-pulse'
                            : isCompleted
                            ? 'bg-primary/20 border-primary shadow-sm hover:border-primary/80'
                            : isCurrent
@@ -761,10 +761,10 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                     >
                        <div className="flex items-center gap-2 mb-2">
                         <div className={`w-3 h-3 rounded-full ${
-                          isExtraMission ? 'bg-gradient-to-r from-blue-400 to-purple-400 shadow-lg shadow-blue-400/50 animate-pulse' : isCompleted ? 'bg-primary' : isCurrent ? 'bg-accent' : isLocked ? 'bg-muted-foreground/50' : 'bg-muted'
+                          isExtraMission ? 'bg-cyan-400 shadow-lg shadow-cyan-400/50 animate-pulse' : isCompleted ? 'bg-primary' : isCurrent ? 'bg-accent' : isLocked ? 'bg-muted-foreground/50' : 'bg-muted'
                         }`}></div>
                         <span className={`text-sm font-bold tracking-wider ${
-                          isExtraMission ? 'text-transparent bg-gradient-to-r from-blue-300 to-purple-300 bg-clip-text animate-pulse' : isCompleted ? 'text-primary' : isCurrent ? 'text-accent' : isLocked ? 'text-muted-foreground/70' : 'text-foreground'
+                          isExtraMission ? 'text-cyan-300 animate-pulse' : isCompleted ? 'text-primary' : isCurrent ? 'text-accent' : isLocked ? 'text-muted-foreground/70' : 'text-foreground'
                         }`}>
                           {isExtraMission ? 'MISSÃO EXTRA' : `MISSÃO ${missionId}`}
                         </span>
@@ -801,7 +801,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                       <div className={`text-xs mb-2 ${
                         isExtraMission 
                           ? isExtraMissionAvailable 
-                            ? 'text-blue-200 font-semibold' 
+                            ? 'text-cyan-200 font-semibold' 
                             : 'text-blue-300/50' 
                           : isCompleted ? 'text-primary' : isCurrent ? 'text-accent' : 'text-muted-foreground'
                       }`}>
