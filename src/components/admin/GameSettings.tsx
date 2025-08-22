@@ -216,7 +216,7 @@ export const GameSettings: React.FC<GameSettingsProps> = ({ className }) => {
   const getExtraMissionInfo = () => {
     if (!extraMissionReleaseDate) return null;
 
-    const releaseDate = new Date(extraMissionReleaseDate);
+    const releaseDate = new Date(extraMissionReleaseDate + 'T00:00:00'); // Force local timezone
     const today = new Date();
     
     // Zerar horas para comparação apenas de datas
@@ -224,6 +224,15 @@ export const GameSettings: React.FC<GameSettingsProps> = ({ className }) => {
     today.setHours(0, 0, 0, 0);
     
     const daysDiff = Math.floor((releaseDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+
+    // Debug logs (temporários)
+    console.log('Debug Extra Mission:', {
+      extraMissionReleaseDate,
+      releaseDate: releaseDate.toISOString(),
+      today: today.toISOString(),
+      daysDiff,
+      status: daysDiff > 0 ? 'future' : daysDiff === 0 ? 'today' : 'released'
+    });
 
     return {
       daysDiff,
