@@ -116,6 +116,13 @@ export const ExtraMissionContent = ({ userName, onBack }: ExtraMissionContentPro
                         </div>
                       </div>
                     </div>
+                    
+                    {/* Texto abaixo do Cody */}
+                    <div className="text-center">
+                      <p className="text-lg font-semibold text-cyan-300">
+                        Pronto para essa etapa final?
+                      </p>
+                    </div>
                   </div>
 
                   {/* Conteúdo dos termos */}
