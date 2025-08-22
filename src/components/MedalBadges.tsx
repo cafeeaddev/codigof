@@ -2,6 +2,7 @@ import React from "react";
 import { Medal, Lock } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
 import { cn } from "@/lib/utils";
+import { useMission5Eligibility } from "@/hooks/useMission5Eligibility";
 
 interface MedalBadgesProps {
   completed: {
@@ -20,6 +21,8 @@ interface MedalBadgesProps {
 }
 
 export const MedalBadges: React.FC<MedalBadgesProps> = ({ completed, size = "md", className, medalNames, showNames = false, showTitle = false, showMission5 = false }) => {
+  const { isEligible: isMission5Eligible } = useMission5Eligibility();
+  
   const defaultMedalNames = [
     "Satélite",
     "Planeta", 
@@ -33,7 +36,7 @@ export const MedalBadges: React.FC<MedalBadgesProps> = ({ completed, size = "md"
     "Você conquistou um planeta. Espaço ampliado!",
     "Você dominou uma estrela. Brilho de um verdadeiro mestre!",
     "Você explorou uma galáxia inteira. Imensidão sob controle!",
-    "Você está prestes a conquistar o universo. Mestre do cosmos!"
+    "Fast Track Digital - Missão bônus disponível!"
   ];
   
   const expectedLength = showMission5 ? 5 : 4;
@@ -48,7 +51,14 @@ export const MedalBadges: React.FC<MedalBadgesProps> = ({ completed, size = "md"
 
   const items = showMission5 ? [
     ...baseItems,
-    { id: 5, label: "Missão 5", done: completed.m5 || false, medalName: names[4], description: medalDescriptions[4] },
+    { 
+      id: 5, 
+      label: "Missão 5", 
+      done: completed.m5 || false, 
+      medalName: names[4], 
+      description: medalDescriptions[4],
+      isEligible: isMission5Eligible
+    },
   ] : baseItems;
 
   const iconSize = size === "sm" ? 16 : 20;
@@ -60,50 +70,63 @@ export const MedalBadges: React.FC<MedalBadgesProps> = ({ completed, size = "md"
     <TooltipProvider delayDuration={100}>
       <div className={cn("flex flex-col items-center relative z-[100] pointer-events-auto", className)} aria-label="Insígnias de missões">
         <div className={cn("flex items-center", gap)}>
-          {items.map((item) => (
-          <div key={item.id} className="flex flex-col items-center">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div
-                  role="img"
-                  aria-label={`${item.label} ${item.done ? "concluída" : "pendente"}`}
-                  className={cn(
-                    "rounded-full border inline-flex items-center justify-center transition-colors pointer-events-auto",
-                    pad,
-                    item.done
-                      ? "bg-neon-cyan/10 border-neon-cyan/30 text-neon-cyan ring-1 ring-neon-cyan/40"
-                      : "bg-muted/30 border-border text-muted-foreground"
-                  )}
-                >
-                  <div className="relative flex items-center justify-center">
-                    {item.done ? (
-                      <Medal size={iconSize} strokeWidth={2} />
-                    ) : (
-                      <Lock size={iconSize} strokeWidth={2} />
-                    )}
-                    <span
+          {items.map((item) => {
+            const isMission5 = item.id === 5;
+            const showAsEligible = isMission5 && !item.done && (item as any).isEligible;
+            
+            return (
+              <div key={item.id} className="flex flex-col items-center">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div
+                      role="img"
+                      aria-label={`${item.label} ${item.done ? "concluída" : showAsEligible ? "disponível" : "bloqueada"}`}
                       className={cn(
-                        "absolute -bottom-0.5 -right-0.5 rounded-full",
-                        dotSize,
-                        item.done ? "bg-neon-cyan" : "bg-border"
+                        "rounded-full border inline-flex items-center justify-center transition-colors pointer-events-auto",
+                        pad,
+                        item.done
+                          ? "bg-neon-cyan/10 border-neon-cyan/30 text-neon-cyan ring-1 ring-neon-cyan/40"
+                          : showAsEligible
+                          ? "bg-accent/10 border-accent/30 text-accent ring-1 ring-accent/40"
+                          : "bg-muted/30 border-border text-muted-foreground"
                       )}
-                      aria-hidden
-                    />
-                  </div>
-                </div>
-              </TooltipTrigger>
-              <TooltipContent>
-                <div className="text-center">
-                  <p className="font-semibold">{item.medalName}</p>
-                  <p className="text-sm text-muted-foreground">{item.description}</p>
-                </div>
-              </TooltipContent>
-            </Tooltip>
-            {showNames && (
-              <span className="mt-1 text-xs text-foreground text-center">{item.medalName}</span>
-            )}
-          </div>
-          ))}
+                    >
+                      <div className="relative flex items-center justify-center">
+                        {item.done ? (
+                          <Medal size={iconSize} strokeWidth={2} />
+                        ) : (
+                          <Lock size={iconSize} strokeWidth={2} />
+                        )}
+                        <span
+                          className={cn(
+                            "absolute -bottom-0.5 -right-0.5 rounded-full",
+                            dotSize,
+                            item.done 
+                              ? "bg-neon-cyan" 
+                              : showAsEligible 
+                              ? "bg-accent" 
+                              : "bg-border"
+                          )}
+                          aria-hidden
+                        />
+                      </div>
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <div className="text-center">
+                      <p className="font-semibold">{item.medalName}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {showAsEligible ? "Clique para começar a missão bônus!" : item.description}
+                      </p>
+                    </div>
+                  </TooltipContent>
+                </Tooltip>
+                {showNames && (
+                  <span className="mt-1 text-xs text-foreground text-center">{item.medalName}</span>
+                )}
+              </div>
+            );
+          })}
         </div>
         {showTitle && (
           <div className="text-xs text-muted-foreground mt-2 font-medium">Medalhas</div>
