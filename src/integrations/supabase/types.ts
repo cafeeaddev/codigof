@@ -65,6 +65,36 @@ export type Database = {
         }
         Relationships: []
       }
+      profile_audit_log: {
+        Row: {
+          accessed_at: string | null
+          accessed_profile_id: string | null
+          action_type: string
+          id: string
+          ip_address: unknown | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          accessed_at?: string | null
+          accessed_profile_id?: string | null
+          action_type: string
+          id?: string
+          ip_address?: unknown | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          accessed_at?: string | null
+          accessed_profile_id?: string | null
+          action_type?: string
+          id?: string
+          ip_address?: unknown | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       profile_texts: {
         Row: {
           created_at: string
@@ -452,7 +482,53 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      profiles_secure_view: {
+        Row: {
+          area: string | null
+          area_id: string | null
+          cargo: string | null
+          cpf_masked: string | null
+          created_at: string | null
+          email: string | null
+          id: string | null
+          nome: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          area?: string | null
+          area_id?: string | null
+          cargo?: string | null
+          cpf_masked?: never
+          created_at?: string | null
+          email?: string | null
+          id?: string | null
+          nome?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          area?: string | null
+          area_id?: string | null
+          cargo?: string | null
+          cpf_masked?: never
+          created_at?: string | null
+          email?: string | null
+          id?: string | null
+          nome?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profiles_area_id_fkey"
+            columns: ["area_id"]
+            isOneToOne: false
+            referencedRelation: "areas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       has_role: {
@@ -461,6 +537,10 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      mask_cpf: {
+        Args: { cpf_value: string }
+        Returns: string
       }
     }
     Enums: {
