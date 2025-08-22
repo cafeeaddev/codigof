@@ -450,12 +450,14 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
               size="md"
               className="pl-2 ml-2 border-l border-border/50"
               showTitle={true}
-              medalNames={[
-                "Satélite",
-                "Planeta",
-                "Estrela",
-                "Galáxia",
-              ]}
+              medalNames={
+                (showGameSummary || (completedMissions.size === 4 && gameData)) && gameData ? (
+                  // Na tela final, se perfil não for Beginner, mostrar 5 medalhas
+                  getDigitalProfile(gameData.score.total).profile !== 'Beginner' 
+                    ? ["Satélite", "Planeta", "Estrela", "Galáxia", "Universo"]
+                    : ["Satélite", "Planeta", "Estrela", "Galáxia"]
+                ) : ["Satélite", "Planeta", "Estrela", "Galáxia"]
+              }
             />
             
             {/* Assistente IA integrado - ocultar na tela final */}
@@ -536,12 +538,14 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                 size="sm"
                 className="flex justify-center"
                 showTitle={true}
-                medalNames={[
-                  "Satélite",
-                  "Planeta", 
-                  "Estrela",
-                  "Galáxia",
-                ]}
+                medalNames={
+                  (showGameSummary || (completedMissions.size === 4 && gameData)) && gameData ? (
+                    // Na tela final, se perfil não for Beginner, mostrar 5 medalhas
+                    getDigitalProfile(gameData.score.total).profile !== 'Beginner' 
+                      ? ["Satélite", "Planeta", "Estrela", "Galáxia", "Universo"]
+                      : ["Satélite", "Planeta", "Estrela", "Galáxia"]
+                  ) : ["Satélite", "Planeta", "Estrela", "Galáxia"]
+                }
               />
             </div>
           </div>
