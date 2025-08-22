@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { ArrowLeft, User, Lock, FileText, Calendar, LogOut, Award } from 'lucide-react';
+import { ArrowLeft, User, Lock, Calendar, LogOut, Award } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { ForgotPasswordDialog } from '@/components/ForgotPasswordDialog';
@@ -154,108 +154,6 @@ const AdminDashboard = () => {
     }
   };
 
-  const exportToCSV = (data: ResponseData[], missionName: string) => {
-    if (data.length === 0) {
-      toast({
-        title: "Nenhum dado",
-        description: "Não há dados para exportar.",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    const headers = ['Nome', 'Email', 'Data', 'Respostas'];
-    const csvContent = [
-      headers.join(','),
-      ...data.map(item => [
-        `"${item.nome}"`,
-        `"${item.email}"`,
-        `"${new Date(item.created_at).toLocaleString('pt-BR')}"`,
-        `"${JSON.stringify(item.respostas).replace(/"/g, '""')}"`
-      ].join(','))
-    ].join('\n');
-
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = `${missionName}_respostas_${new Date().toISOString().split('T')[0]}.csv`;
-    link.click();
-  };
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleString('pt-BR');
-  };
-
-  const renderResponses = (data: ResponseData[], missionName: string) => (
-    <div className="space-y-4 animate-fade-in">
-      <div className="flex justify-between items-center">
-        <div className="flex items-center gap-4">
-          <h3 className="text-lg font-semibold">{missionName}</h3>
-          <span className="px-2 py-1 text-xs rounded-full bg-primary/10 text-primary">
-            {data.length} {data.length === 1 ? 'resposta' : 'respostas'}
-          </span>
-        </div>
-        <Button
-          onClick={() => exportToCSV(data, missionName.toLowerCase().replace(/\s+/g, '_'))}
-          variant="outline"
-          size="sm"
-          disabled={data.length === 0}
-          className="hover-scale"
-        >
-          <FileText className="w-4 h-4 mr-2" />
-          Exportar CSV
-        </Button>
-      </div>
-      
-      <ScrollArea className="h-[400px]">
-        <div className="space-y-3">
-          {data.map((response) => (
-            <Card key={response.id} className="border-secondary/20 hover:border-primary/30 transition-colors">
-              <CardHeader className="pb-3">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <CardTitle className="text-base">{response.nome}</CardTitle>
-                    <p className="text-sm text-muted-foreground">{response.email}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-xs text-muted-foreground">
-                      <Calendar className="w-3 h-3 inline mr-1" />
-                      {formatDate(response.created_at)}
-                    </p>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="pt-0">
-                <details className="group">
-                  <summary className="cursor-pointer text-sm font-medium text-primary hover:text-primary/80 transition-colors">
-                    Ver respostas detalhadas
-                  </summary>
-                  <div className="mt-2 animate-accordion-down">
-                    <ResponseViewer 
-                      respostas={response.respostas}
-                      missionType={
-                        missionName.includes('Missão 1') ? 'mission1' :
-                        missionName.includes('Missão 2') ? 'mission2' :
-                        missionName.includes('Missão 3') ? 'mission3' :
-                        missionName.includes('Missão 4') ? 'mission4' :
-                        undefined
-                      }
-                    />
-                  </div>
-                </details>
-              </CardContent>
-            </Card>
-          ))}
-          {data.length === 0 && (
-            <div className="text-center py-8 text-muted-foreground">
-              <FileText className="w-12 h-12 mx-auto mb-4 opacity-50" />
-              <p>Nenhuma resposta encontrada para esta missão.</p>
-            </div>
-          )}
-        </div>
-      </ScrollArea>
-    </div>
-  );
 
   if (isAdmin) {
     if (dashboardLoading) {
@@ -310,7 +208,7 @@ const AdminDashboard = () => {
 
           {/* Main Dashboard Tabs */}
           <Tabs defaultValue="dashboard" className="w-full">
-            <TabsList className="grid w-full grid-cols-4 mb-8">
+            <TabsList className="grid w-full grid-cols-3 mb-8">
               <TabsTrigger value="dashboard" className="flex items-center gap-2">
                 <User className="w-4 h-4" />
                 Dashboard
@@ -322,10 +220,6 @@ const AdminDashboard = () => {
               <TabsTrigger value="configuracoes" className="flex items-center gap-2">
                 <Calendar className="w-4 h-4" />
                 Configurações
-              </TabsTrigger>
-              <TabsTrigger value="relatorios" className="flex items-center gap-2">
-                <FileText className="w-4 h-4" />
-                Relatórios
               </TabsTrigger>
             </TabsList>
 
@@ -398,51 +292,6 @@ const AdminDashboard = () => {
               </Card>
             </TabsContent>
 
-            {/* Relatórios Tab */}
-            <TabsContent value="relatorios" className="space-y-8">
-              <Card className="animate-fade-in">
-                <CardHeader>
-                  <CardTitle>Respostas das Missões</CardTitle>
-                  <p className="text-muted-foreground">
-                    Visualize e exporte as respostas de cada missão
-                  </p>
-                </CardHeader>
-                <CardContent>
-                  <Tabs defaultValue="mission1" className="w-full">
-                    <TabsList className="grid w-full grid-cols-4">
-                      <TabsTrigger value="mission1" className="flex items-center gap-2">
-                        <span className="w-2 h-2 rounded-full" style={{ backgroundColor: 'hsl(var(--profile-beginner))' }}></span>
-                        Missão 1
-                      </TabsTrigger>
-                      <TabsTrigger value="mission2" className="flex items-center gap-2">
-                        <span className="w-2 h-2 rounded-full" style={{ backgroundColor: 'hsl(var(--profile-explorer))' }}></span>
-                        Missão 2
-                      </TabsTrigger>
-                      <TabsTrigger value="mission3" className="flex items-center gap-2">
-                        <span className="w-2 h-2 rounded-full" style={{ backgroundColor: 'hsl(var(--profile-pro-player))' }}></span>
-                        Missão 3
-                      </TabsTrigger>
-                      <TabsTrigger value="mission4" className="flex items-center gap-2">
-                        <span className="w-2 h-2 rounded-full" style={{ backgroundColor: 'hsl(var(--profile-ninja))' }}></span>
-                        Missão 4
-                      </TabsTrigger>
-                    </TabsList>
-                    <TabsContent value="mission1" className="mt-6">
-                      {renderResponses(responses1, 'Missão 1 - Quiz Digital')}
-                    </TabsContent>
-                    <TabsContent value="mission2" className="mt-6">
-                      {renderResponses(responses2, 'Missão 2 - Práticas Digitais')}
-                    </TabsContent>
-                    <TabsContent value="mission3" className="mt-6">
-                      {renderResponses(responses3, 'Missão 3 - Desafios e Inovação')}
-                    </TabsContent>
-                    <TabsContent value="mission4" className="mt-6">
-                      {renderResponses(responses4, 'Missão 4 - Ferramentas Digitais')}
-                    </TabsContent>
-                  </Tabs>
-                </CardContent>
-              </Card>
-            </TabsContent>
           </Tabs>
 
           {/* Modal de Análise Individual */}
