@@ -21,6 +21,7 @@ import { AnimatedXP } from './AnimatedXP';
 import { ShareActions } from './EpicGameSummary/ShareActions';
 import { TechnicalSkillsDisplay } from './TechnicalSkillsDisplay';
 import { useMission5Eligibility } from '@/hooks/useMission5Eligibility';
+import MissionProgress from './MissionProgress';
 
 interface WelcomeScreenProps {
   user: {
@@ -418,8 +419,19 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                 </div>
               </div>
 
-              {/* Estatísticas compactas no Header Desktop */}
-              <div className="hidden lg:flex items-center gap-4 mx-4">
+              {/* Progress das Missões */}
+              <div className="hidden xl:block mx-4">
+                <MissionProgress
+                  completedMissions={completedMissions}
+                  currentMission={currentMission}
+                  isMission5Eligible={isMission5Eligible}
+                  showMission5={showMission5}
+                  className="grid-cols-5 gap-2"
+                />
+              </div>
+
+              {/* Estatísticas compactas no Header Mobile/Tablet */}
+              <div className="flex xl:hidden items-center gap-4 mx-4">
                 <div className="text-center">
                   <div className="bg-gradient-to-br from-primary/20 to-primary/10 border border-primary/30 rounded-lg px-4 py-2 shadow-lg">
                     <AnimatedXP 
@@ -485,6 +497,17 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
 
           <div className="h-[calc(100svh-5.25rem)] md:h-[calc(100svh-4.5rem)] overflow-hidden p-2 md:p-4 relative z-10">
             <div className="max-w-7xl mx-auto h-full flex flex-col">
+              
+              {/* Progress das Missões - Mobile/Tablet */}
+              <div className="xl:hidden mb-4">
+                <MissionProgress
+                  completedMissions={completedMissions}
+                  currentMission={currentMission}
+                  isMission5Eligible={isMission5Eligible}
+                  showMission5={showMission5}
+                  className="grid-cols-2 sm:grid-cols-4 gap-3"
+                />
+              </div>
               
               {/* Content for missions */}
               <div className="flex-1 overflow-hidden min-h-0">
