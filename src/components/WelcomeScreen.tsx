@@ -19,6 +19,8 @@ import { AnimatedStats } from './EpicGameSummary/AnimatedStats';
 import { AnimatedXP } from './AnimatedXP';
 import { ShareActions } from './EpicGameSummary/ShareActions';
 import { TechnicalSkillsDisplay } from './TechnicalSkillsDisplay';
+import { ExtraMissionContent } from './ExtraMissionContent';
+
 interface WelcomeScreenProps {
   user: {
     nome: string;
@@ -34,10 +36,11 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
   const navigate = useNavigate();
   const { isAdmin } = useUserRole();
   const [isLoading, setIsLoading] = useState(true);
-  const [currentMission, setCurrentMission] = useState<1 | 2 | 3 | 4>(1);
+  const [currentMission, setCurrentMission] = useState<1 | 2 | 3 | 4 | 5>(1);
   const [completedMissions, setCompletedMissions] = useState<Set<number>>(new Set());
   const [userProgress, setUserProgress] = useState({ total_xp: 0, completedMissionsCount: 0 });
   const [justCompleted, setJustCompleted] = useState<1 | 2 | 3 | 4 | null>(null);
+  const [showExtraMissionScreen, setShowExtraMissionScreen] = useState(false);
   const [showTutorial, setShowTutorial] = useState(false);
   const [codyVideoUrl, setCodyVideoUrl] = useState<string | null>(null);
   const [isLoadingProfile, setIsLoadingProfile] = useState(false);
@@ -775,6 +778,14 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                            ? 'bg-muted/30 border-muted-foreground/30 opacity-60'
                            : 'bg-card border-secondary/50 hover:border-accent/50'
                        }`}
+                      onClick={() => {
+                        if (isExtraMission && extraMissionAvailable) {
+                          setCurrentMission(5);
+                          setShowExtraMissionScreen(true);
+                        } else if (!isLocked && !isExtraMission) {
+                          setCurrentMission(missionId as 1 | 2 | 3 | 4);
+                        }
+                      }}
                     >
                        <div className="flex items-center gap-2 mb-2">
                         <div className={`w-3 h-3 rounded-full ${
@@ -912,6 +923,14 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                           </p>
                         </div>
                       </div>
+                ) : showExtraMissionScreen && currentMission === 5 ? (
+                      <ExtraMissionContent 
+                        userName={userProfile.nome}
+                        onBack={() => {
+                          setShowExtraMissionScreen(false);
+                          setCurrentMission(1);
+                        }}
+                      />
                     ) : showGameSummary || (completedMissions.size === 4 && gameData) ? (
                       <GameSummaryContent gameData={gameData} userId={userId} onXpUpdate={handleXpUpdate} />
                     ) : completedMissions.size === 4 ? (
@@ -962,6 +981,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                   {currentMission === 2 && "MISSÃO 2 – O digital no seu dia a dia"}
                   {currentMission === 3 && "MISSÃO 3 – Quando o desafio é maior"}
                   {currentMission === 4 && "MISSÃO 4 – Seu Radar de Ferramentas"}
+                  {currentMission === 5 && "MISSÃO EXTRA – Aliança Digital"}
                 </span>
               </div>
 
@@ -996,6 +1016,14 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                     <MissaoTres onComplete={() => handleMissionComplete(3)} />
                   ) : currentMission === 4 && !completedMissions.has(4) ? (
                     <MissaoQuatro onComplete={() => handleMissionComplete(4)} />
+                  ) : showExtraMissionScreen && currentMission === 5 ? (
+                    <ExtraMissionContent 
+                      userName={userProfile.nome}
+                      onBack={() => {
+                        setShowExtraMissionScreen(false);
+                        setCurrentMission(1);
+                      }}
+                    />
                   ) : isLoadingProfile ? (
                     <div className="h-full flex flex-col items-center justify-center space-y-4">
                       <div className="w-16 h-16 border-4 border-primary/30 border-t-primary rounded-full animate-spin"></div>
