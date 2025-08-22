@@ -689,11 +689,20 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
             <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-4 shadow-neon">
               {/* Determinar se deve mostrar 5 missões baseado no perfil e data de liberação */}
               {(() => {
-                // Verificar se deve mostrar missão extra
+                // Verificar se deve mostrar missão extra (sempre mostrar se há data configurada)
+                const shouldShowExtraMission = () => {
+                  // Só mostrar se há data de liberação configurada
+                  if (!extraMissionReleaseDate) {
+                    console.log('[WelcomeScreen] Missão extra: Nenhuma data de liberação configurada');
+                    return false;
+                  }
+                  return true; // Sempre mostrar se há data configurada
+                };
+
+                // Verificar se a missão extra está disponível para jogar
                 const isExtraMissionAvailable = () => {
                   // Verificar se há data de liberação configurada
                   if (!extraMissionReleaseDate) {
-                    console.log('[WelcomeScreen] Missão extra: Nenhuma data de liberação configurada');
                     return false;
                   }
                   
@@ -732,12 +741,13 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                     return isNonBeginner;
                   }
                   
-                  // Se não há gameData mas completou missões e data liberada, não mostrar (aguardar carregamento)
+                  // Se não há gameData mas completou missões e data liberada, não mostrar como disponível (aguardar carregamento)
                   console.log('[WelcomeScreen] Missão extra: Aguardando dados do jogo para verificar perfil');
                   return false;
                 };
 
-                const showExtraMission = isExtraMissionAvailable();
+                const showExtraMission = shouldShowExtraMission();
+                const extraMissionAvailable = isExtraMissionAvailable();
                 const missions = showExtraMission ? [1, 2, 3, 4, 5] : [1, 2, 3, 4];
                 const gridCols = showExtraMission ? 'grid-cols-5' : 'grid-cols-4';
                 
@@ -746,8 +756,10 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                     {missions.map((missionId) => {
                   const isCompleted = completedMissions.has(missionId);
                   const isCurrent = currentMission === missionId;
-                  const isLocked = missionId > currentMission && !isCompleted;
                   const isExtraMission = missionId === 5;
+                  const isLocked = isExtraMission 
+                    ? !extraMissionAvailable // Missão extra bloqueada se não disponível
+                    : missionId > currentMission && !isCompleted; // Lógica normal para outras missões
                   
                   return (
                      <div
