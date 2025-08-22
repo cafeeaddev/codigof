@@ -34,11 +34,18 @@ export const useGameProgress = () => {
 
   // Track user activity
   const updateActivity = useCallback(() => {
-    lastActivityRef.current = Date.now();
-    if (!isActiveRef.current) {
+    const now = Date.now();
+    const wasInactive = !isActiveRef.current;
+    
+    lastActivityRef.current = now;
+    if (wasInactive) {
       isActiveRef.current = true;
-      sessionStartRef.current = new Date(); // Reset session start when becoming active again
-      console.log('[useGameProgress] User became active, resetting session timer');
+      // Only reset session start if user was inactive for more than 5 minutes
+      const timeSinceStart = now - sessionStartRef.current.getTime();
+      if (timeSinceStart > INACTIVITY_TIMEOUT) {
+        sessionStartRef.current = new Date();
+        console.log('[useGameProgress] User became active after inactivity, resetting session timer');
+      }
     }
   }, []);
 
@@ -97,15 +104,34 @@ export const useGameProgress = () => {
       }
 
       if (data) {
-        // Validate and sanitize loaded data
-        const sanitizedPlayTime = Math.max(0, Math.min(data.total_play_time || 0, MAX_SESSION_TIME * 100)); // Max 100 sessions worth
+        // Validate and sanitize loaded data - detect absurd values
+        const rawPlayTime = data.total_play_time || 0;
+        const MAX_REASONABLE_TIME = 8 * 60 * 60; // 8 hours max per session seems reasonable
+        let sanitizedPlayTime = rawPlayTime;
+        
+        // If play time seems absurd (more than 8 hours), flag it and reset
+        if (rawPlayTime > MAX_REASONABLE_TIME) {
+          console.warn('[useGameProgress] Detected absurd play time:', rawPlayTime, 'seconds. Resetting to 0.');
+          sanitizedPlayTime = 0;
+          // Update database to fix the corrupted data
+          await supabase
+            .from('user_progress')
+            .update({ total_play_time: 0 })
+            .eq('user_id', user.id);
+        }
         
         setProgress({
           currentPosition: data.current_position || 'inicio',
           totalPlayTime: sanitizedPlayTime,
-          sessionStartTime: new Date(data.session_start_time || Date.now()),
+          sessionStartTime: new Date(), // Always start fresh session on load
           lastSavedAt: new Date(data.last_saved_at || Date.now()),
         });
+        
+        // Reset session tracking to prevent accumulation bugs
+        sessionStartRef.current = new Date();
+        lastActivityRef.current = Date.now();
+        isActiveRef.current = true;
+        hasUnsavedChangesRef.current = false;
         
         console.log('[useGameProgress] Loaded progress with total time:', sanitizedPlayTime, 'seconds');
       } else {
