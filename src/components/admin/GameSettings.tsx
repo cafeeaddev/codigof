@@ -15,7 +15,8 @@ export const GameSettings: React.FC<GameSettingsProps> = ({ className }) => {
   const [gameStartDate, setGameStartDate] = useState<string>('');
   const [extraMissionReleaseDate, setExtraMissionReleaseDate] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
+  const [isSavingGameStart, setIsSavingGameStart] = useState(false);
+  const [isSavingExtraMission, setIsSavingExtraMission] = useState(false);
 
   useEffect(() => {
     loadGameSettings();
@@ -55,7 +56,7 @@ export const GameSettings: React.FC<GameSettingsProps> = ({ className }) => {
     }
   };
 
-  const saveGameSettings = async () => {
+  const saveGameStartDate = async () => {
     if (!gameStartDate) {
       toast({
         title: "Data obrigatória",
@@ -65,7 +66,7 @@ export const GameSettings: React.FC<GameSettingsProps> = ({ className }) => {
       return;
     }
 
-    setIsSaving(true);
+    setIsSavingGameStart(true);
     try {
       // First, check if settings already exist
       const { data: existing } = await supabase
@@ -80,7 +81,6 @@ export const GameSettings: React.FC<GameSettingsProps> = ({ className }) => {
           .from('game_settings')
           .update({ 
             game_start_date: gameStartDate,
-            extra_mission_release_date: extraMissionReleaseDate || null,
             updated_at: new Date().toISOString()
           })
           .eq('id', existing.id);
@@ -92,6 +92,55 @@ export const GameSettings: React.FC<GameSettingsProps> = ({ className }) => {
           .from('game_settings')
           .insert({ 
             game_start_date: gameStartDate,
+            created_by: (await supabase.auth.getUser()).data.user?.id
+          });
+
+        if (error) throw error;
+      }
+
+      toast({
+        title: "Data de início salva",
+        description: "Data de início do jogo atualizada com sucesso!"
+      });
+    } catch (error) {
+      console.error('Error saving game start date:', error);
+      toast({
+        title: "Erro ao salvar",
+        description: "Não foi possível salvar a data de início",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSavingGameStart(false);
+    }
+  };
+
+  const saveExtraMissionDate = async () => {
+    setIsSavingExtraMission(true);
+    try {
+      // First, check if settings already exist
+      const { data: existing } = await supabase
+        .from('game_settings')
+        .select('id')
+        .limit(1)
+        .maybeSingle();
+
+      if (existing) {
+        // Update existing record
+        const { error } = await supabase
+          .from('game_settings')
+          .update({ 
+            extra_mission_release_date: extraMissionReleaseDate || null,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', existing.id);
+
+        if (error) throw error;
+      } else {
+        // Create new record with just the extra mission date
+        const { error } = await supabase
+          .from('game_settings')
+          .insert({ 
+            game_start_date: gameStartDate || new Date().toISOString().split('T')[0], // fallback to today
             extra_mission_release_date: extraMissionReleaseDate || null,
             created_by: (await supabase.auth.getUser()).data.user?.id
           });
@@ -100,18 +149,20 @@ export const GameSettings: React.FC<GameSettingsProps> = ({ className }) => {
       }
 
       toast({
-        title: "Configurações salvas",
-        description: "Configurações do jogo atualizadas com sucesso!"
+        title: "Data da missão extra salva",
+        description: extraMissionReleaseDate 
+          ? "Data de liberação da missão extra atualizada!"
+          : "Data da missão extra removida!"
       });
     } catch (error) {
-      console.error('Error saving game settings:', error);
+      console.error('Error saving extra mission date:', error);
       toast({
         title: "Erro ao salvar",
-        description: "Não foi possível salvar as configurações",
+        description: "Não foi possível salvar a data da missão extra",
         variant: "destructive"
       });
     } finally {
-      setIsSaving(false);
+      setIsSavingExtraMission(false);
     }
   };
 
@@ -292,6 +343,26 @@ export const GameSettings: React.FC<GameSettingsProps> = ({ className }) => {
           </div>
         )}
 
+        {/* Save Game Start Date Button */}
+        <Button 
+          onClick={saveGameStartDate}
+          disabled={isSavingGameStart}
+          className="w-full"
+          variant="default"
+        >
+          {isSavingGameStart ? (
+            <>
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2" />
+              Salvando...
+            </>
+          ) : (
+            <>
+              <Save className="w-4 h-4 mr-2" />
+              Salvar Data de Início
+            </>
+          )}
+        </Button>
+
         {/* Data de Liberação da Missão Extra */}
         <div className="space-y-3">
           <Label htmlFor="extra-mission-date" className="text-sm font-medium">
@@ -331,13 +402,14 @@ export const GameSettings: React.FC<GameSettingsProps> = ({ className }) => {
           </div>
         )}
 
-        {/* Save Button */}
+        {/* Save Extra Mission Date Button */}
         <Button 
-          onClick={saveGameSettings}
-          disabled={isSaving}
+          onClick={saveExtraMissionDate}
+          disabled={isSavingExtraMission}
           className="w-full"
+          variant="secondary"
         >
-          {isSaving ? (
+          {isSavingExtraMission ? (
             <>
               <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2" />
               Salvando...
@@ -345,7 +417,7 @@ export const GameSettings: React.FC<GameSettingsProps> = ({ className }) => {
           ) : (
             <>
               <Save className="w-4 h-4 mr-2" />
-              Salvar Configurações
+              Salvar Data da Missão Extra
             </>
           )}
         </Button>
