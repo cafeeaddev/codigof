@@ -369,7 +369,9 @@ export const UserTable = ({
                     {(() => {
                       const totalSeconds = progress.total_play_time || 0;
                       const minutes = Math.floor(totalSeconds / 60);
-                      console.log(`[UserTable] User ${userProfile?.nome}: raw=${totalSeconds}s, display=${minutes}min`);
+                      if (minutes > 120) { // More than 2 hours, likely corrupted
+                        console.warn(`[UserTable] Suspicious time for ${userProfile?.nome}: ${totalSeconds}s (${minutes}min)`);
+                      }
                       return `${minutes}min`;
                     })()}
                   </TableCell>

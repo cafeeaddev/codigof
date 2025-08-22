@@ -49,7 +49,9 @@ export const ProfileOverview = ({
   const playTimeHours = Math.floor(totalSeconds / 3600);
   const playTimeMinutes = Math.floor((totalSeconds % 3600) / 60);
   
-  console.log(`[ProfileOverview] User analysis - raw time: ${totalSeconds}s, display: ${playTimeHours}h ${playTimeMinutes}min`);
+  if (totalSeconds > 7200) { // More than 2 hours
+    console.warn(`[ProfileOverview] Suspicious time for user: ${totalSeconds}s, displaying: ${playTimeHours}h ${playTimeMinutes}min`);
+  }
 
   const getScoreColor = (score: number) => {
     if (score >= 42) return 'hsl(var(--profile-ninja))';
