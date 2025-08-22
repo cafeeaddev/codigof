@@ -488,6 +488,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      fix_corrupted_time_data: {
+        Args: Record<PropertyKey, never>
+        Returns: number
+      }
       get_masked_profiles: {
         Args: Record<PropertyKey, never>
         Returns: {

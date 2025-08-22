@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from '@/hooks/use-toast';
+import { validatePlayTime, fixUserTimeData } from '@/utils/gameTimeUtils';
 
 interface GameProgress {
   currentPosition: string;
@@ -104,20 +105,15 @@ export const useGameProgress = () => {
       }
 
       if (data) {
-        // Validate and sanitize loaded data - detect absurd values
-        const rawPlayTime = data.total_play_time || 0;
-        const MAX_REASONABLE_TIME = 8 * 60 * 60; // 8 hours max per session seems reasonable
-        let sanitizedPlayTime = rawPlayTime;
+        // Validate and sanitize loaded data using utility function
+        const validation = validatePlayTime(data.total_play_time || 0);
+        let sanitizedPlayTime = validation.correctedTime;
         
-        // If play time seems absurd (more than 8 hours), flag it and reset
-        if (rawPlayTime > MAX_REASONABLE_TIME) {
-          console.warn('[useGameProgress] Detected absurd play time:', rawPlayTime, 'seconds. Resetting to 0.');
-          sanitizedPlayTime = 0;
-          // Update database to fix the corrupted data
-          await supabase
-            .from('user_progress')
-            .update({ total_play_time: 0 })
-            .eq('user_id', user.id);
+        // If data is corrupted, attempt to fix it
+        if (!validation.isValid) {
+          console.warn('[useGameProgress] Detected corrupted time data:', validation.reason);
+          await fixUserTimeData(user.id);
+          sanitizedPlayTime = 0; // Reset to 0 for safety
         }
         
         setProgress({
