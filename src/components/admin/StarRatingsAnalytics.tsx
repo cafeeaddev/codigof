@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { CompetencyHeatMap } from "./CompetencyHeatMap";
 import { SoftwareCompetencyChart } from "./SoftwareCompetencyChart";
 import { AreaCompetencyCards } from "./AreaCompetencyCards";
+import { useSoftwareMapping } from "@/hooks/useSoftwareMapping";
 
 interface StarRatingsAnalyticsProps {
   responses: any[];
@@ -16,6 +17,9 @@ interface StarRatingsAnalyticsProps {
 export const StarRatingsAnalytics = ({ responses, questions, profiles }: StarRatingsAnalyticsProps) => {
   const [selectedArea, setSelectedArea] = useState<string>("all");
   const [selectedSoftware, setSelectedSoftware] = useState<string>("all");
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  
+  const { getPointsForAnswer, getSoftwareForQuestion } = useSoftwareMapping();
 
   const competencyData = useMemo(() => {
     console.log('Processing competency data...');
@@ -28,38 +32,65 @@ export const StarRatingsAnalytics = ({ responses, questions, profiles }: StarRat
     }
 
     const data = responses.flatMap(response => {
-      if (!response.respostas?.starRatings) {
-        console.log('No starRatings for response:', response.nome);
-        return [];
+      const userProfile = profiles.find(p => p.email === response.email);
+      const ratings = [];
+
+      // 1. Processar questões 1-9 (universais) - múltipla escolha
+      if (response.respostas?.answers) {
+        for (let i = 1; i <= 9; i++) {
+          const answerKey = `question${i}`;
+          const answer = response.respostas.answers[answerKey];
+          
+          if (answer) {
+            const points = getPointsForAnswer(i, answer);
+            const software = getSoftwareForQuestion(i);
+            
+            if (points > 0) { // Só incluir se há pontuação válida
+              ratings.push({
+                userId: response.user_id,
+                userName: response.nome,
+                userEmail: response.email,
+                userArea: userProfile?.area || 'Não informado',
+                software: software,
+                rating: points,
+                ratingLabel: getRatingLabel(points),
+                category: 'Universal',
+                questionType: 'multiple-choice'
+              });
+            }
+          }
+        }
       }
 
-      const starRatings = response.respostas.starRatings;
-      const userProfile = profiles.find(p => p.email === response.email);
-      
-      // Processar star ratings aninhados por pergunta
-      const ratings = [];
-      Object.values(starRatings).forEach((questionRatings: any) => {
-        if (typeof questionRatings === 'object') {
-          Object.entries(questionRatings).forEach(([software, rating]) => {
-            ratings.push({
-              userId: response.user_id,
-              userName: response.nome,
-              userEmail: response.email,
-              userArea: userProfile?.area || 'Não informado',
-              software: software,
-              rating: Number(rating),
-              ratingLabel: getRatingLabel(Number(rating))
+      // 2. Processar star ratings (específicos por área)
+      if (response.respostas?.starRatings) {
+        const starRatings = response.respostas.starRatings;
+        
+        Object.values(starRatings).forEach((questionRatings: any) => {
+          if (typeof questionRatings === 'object') {
+            Object.entries(questionRatings).forEach(([software, rating]) => {
+              ratings.push({
+                userId: response.user_id,
+                userName: response.nome,
+                userEmail: response.email,
+                userArea: userProfile?.area || 'Não informado',
+                software: software,
+                rating: Number(rating),
+                ratingLabel: getRatingLabel(Number(rating)),
+                category: 'Específica da Área',
+                questionType: 'star-rating'
+              });
             });
-          });
-        }
-      });
+          }
+        });
+      }
 
       return ratings;
     });
 
-    console.log('Processed competency data:', data);
+    console.log('Processed competency data (with universal questions):', data);
     return data;
-  }, [responses, questions, profiles]);
+  }, [responses, questions, profiles, getPointsForAnswer, getSoftwareForQuestion]);
 
   const softwareList = useMemo(() => {
     const softwares = new Set(competencyData.map(item => item.software));
@@ -71,13 +102,19 @@ export const StarRatingsAnalytics = ({ responses, questions, profiles }: StarRat
     return Array.from(areas).sort();
   }, [competencyData]);
 
+  const categoryList = useMemo(() => {
+    const categories = new Set(competencyData.map(item => item.category));
+    return Array.from(categories).sort();
+  }, [competencyData]);
+
   const filteredData = useMemo(() => {
     return competencyData.filter(item => {
       const areaMatch = selectedArea === "all" || item.userArea === selectedArea;
       const softwareMatch = selectedSoftware === "all" || item.software === selectedSoftware;
-      return areaMatch && softwareMatch;
+      const categoryMatch = selectedCategory === "all" || item.category === selectedCategory;
+      return areaMatch && softwareMatch && categoryMatch;
     });
-  }, [competencyData, selectedArea, selectedSoftware]);
+  }, [competencyData, selectedArea, selectedSoftware, selectedCategory]);
 
   const overallStats = useMemo(() => {
     if (filteredData.length === 0) return { average: 0, total: 0, distribution: {} };
@@ -128,6 +165,20 @@ export const StarRatingsAnalytics = ({ responses, questions, profiles }: StarRat
                 <SelectItem value="all">Todos os softwares</SelectItem>
                 {softwareList.map(software => (
                   <SelectItem key={software} value={software}>{software}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="flex-1">
+            <label className="block text-sm font-medium mb-2">Categoria</label>
+            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+              <SelectTrigger>
+                <SelectValue placeholder="Selecione uma categoria" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todas as categorias</SelectItem>
+                {categoryList.map(category => (
+                  <SelectItem key={category} value={category}>{category}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
