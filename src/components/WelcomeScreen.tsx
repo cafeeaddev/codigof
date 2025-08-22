@@ -10,6 +10,7 @@ import { QuizDigital } from './QuizDigital';
 import { MissaoDois } from './MissaoDois';
 import { MissaoTres } from './MissaoTres';
 import { MissaoQuatro } from './MissaoQuatro';
+import MissaoCinco from './MissaoCinco';
 import MedalBadges from './MedalBadges';
 import TutorialOverlay from './TutorialOverlay';
 import { getDigitalProfile, getProfilePhrase } from '@/lib/digitalProfile';
@@ -19,6 +20,8 @@ import { AnimatedStats } from './EpicGameSummary/AnimatedStats';
 import { AnimatedXP } from './AnimatedXP';
 import { ShareActions } from './EpicGameSummary/ShareActions';
 import { TechnicalSkillsDisplay } from './TechnicalSkillsDisplay';
+import { useMission5Eligibility } from '@/hooks/useMission5Eligibility';
+
 interface WelcomeScreenProps {
   user: {
     nome: string;
@@ -26,31 +29,41 @@ interface WelcomeScreenProps {
     area?: string;
     cargo?: string;
   };
-  userId: string; // Explicit userId prop to avoid context dependency
+  userId: string;
   onLogout: () => void;
 }
 
 export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeScreenProps) => {
   const navigate = useNavigate();
   const { isAdmin } = useUserRole();
+  const { isEligible: isMission5Eligible, isLoading: mission5Loading } = useMission5Eligibility();
   const [isLoading, setIsLoading] = useState(true);
-  const [currentMission, setCurrentMission] = useState<1 | 2 | 3 | 4>(1);
+  const [currentMission, setCurrentMission] = useState<1 | 2 | 3 | 4 | 5>(1);
   const [completedMissions, setCompletedMissions] = useState<Set<number>>(new Set());
   const [userProgress, setUserProgress] = useState({ total_xp: 0, completedMissionsCount: 0 });
-  const [justCompleted, setJustCompleted] = useState<1 | 2 | 3 | 4 | null>(null);
+  const [justCompleted, setJustCompleted] = useState<1 | 2 | 3 | 4 | 5 | null>(null);
   const [showTutorial, setShowTutorial] = useState(false);
   const [codyVideoUrl, setCodyVideoUrl] = useState<string | null>(null);
   const [isLoadingProfile, setIsLoadingProfile] = useState(false);
   const [showGameSummary, setShowGameSummary] = useState(false);
+  const [showMission5, setShowMission5] = useState(false);
   const [xpBeforeBonus, setXpBeforeBonus] = useState(0);
   const [shouldAnimateXP, setShouldAnimateXP] = useState(false);
   const [gameData, setGameData] = useState({
     nome: '',
     xp: 0,
-    medals: { m1: false, m2: false, m3: false, m4: false },
+    medals: { m1: false, m2: false, m3: false, m4: false, m5: false },
+    profile: '',
+    sublevel: '',
+    playTime: '',
+    completionDate: '',
+    technicalSkills: {} as Record<number, string[]>,
+    areas: [] as string[],
     score: { mission1: 0, mission2: 0, mission3: 0, total: 0 }
   });
-  const UNLOCK_DELAY = 1000; // ms
+
+  const UNLOCK_DELAY = 1000;
+
   useEffect(() => {
     const seen = localStorage.getItem('tutorialSeen');
     if (!seen) setShowTutorial(true);
@@ -69,13 +82,6 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
     }
   }, []);
 
-  console.log('[WelcomeScreen] Props received:', { 
-    userProfile: userProfile.nome, 
-    userId,
-    userIdDefined: !!userId 
-  });
-
-  // Função para atualizar XP quando o bônus for aplicado
   const handleXpUpdate = (newXp: number) => {
     setUserProgress(prev => ({
       ...prev,
@@ -83,29 +89,17 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
     }));
   };
 
-  // Função para atualizar progresso ao completar missão
   const updateProgressOnMissionComplete = async (missionId: number) => {
-    console.log(`[WelcomeScreen] updateProgressOnMissionComplete iniciado para missão ${missionId}`);
-    
     const newXp = userProgress.total_xp + 25;
     const newCompletedCount = userProgress.completedMissionsCount + 1;
     
-    console.log(`[WelcomeScreen] Calculando novos valores: XP ${userProgress.total_xp} + 25 = ${newXp}, missões completadas: ${userProgress.completedMissionsCount} + 1 = ${newCompletedCount}`);
-    
-    // Atualizar estado local imediatamente
-    setUserProgress(prev => {
-      const updated = {
-        total_xp: newXp,
-        completedMissionsCount: newCompletedCount
-      };
-      console.log(`[WelcomeScreen] Estado local atualizado:`, updated);
-      return updated;
-    });
+    setUserProgress(prev => ({
+      total_xp: newXp,
+      completedMissionsCount: newCompletedCount
+    }));
 
-    // Salvar no banco de dados
     try {
       const missionColumn = `missao_${missionId}_completed`;
-      console.log(`[WelcomeScreen] Salvando no banco: coluna ${missionColumn} = true, total_xp = ${newXp}`);
       
       const { error } = await supabase
         .from('user_progress')
@@ -117,8 +111,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
         .eq('user_id', userId);
 
       if (error) {
-        console.error(`[WelcomeScreen] Erro ao salvar progresso da missão ${missionId}:`, error);
-        // Reverter estado local em caso de erro
+        console.error(`Erro ao salvar progresso da missão ${missionId}:`, error);
         setUserProgress(prev => ({
           total_xp: prev.total_xp - 25,
           completedMissionsCount: prev.completedMissionsCount - 1
@@ -128,12 +121,9 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
           description: "Houve um problema ao salvar seu progresso. Tente novamente.",
           variant: "destructive"
         });
-      } else {
-        console.log(`[WelcomeScreen] ✅ Missão ${missionId} salva com sucesso! Novo XP: ${newXp}`);
       }
     } catch (error) {
-      console.error(`[WelcomeScreen] Erro ao atualizar progresso da missão ${missionId}:`, error);
-      // Reverter estado local em caso de erro
+      console.error(`Erro ao atualizar progresso da missão ${missionId}:`, error);
       setUserProgress(prev => ({
         total_xp: prev.total_xp - 25,
         completedMissionsCount: prev.completedMissionsCount - 1
@@ -146,18 +136,18 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
     }
   };
 
-  // Fluxo ao finalizar missão: mostra tela de concluída e libera a próxima após curto atraso
-  const handleMissionComplete = (missionId: 1 | 2 | 3 | 4) => {
+  const handleMissionComplete = (missionId: 1 | 2 | 3 | 4 | 5) => {
     console.log(`[WelcomeScreen] Missão ${missionId} completada!`);
     
-    // Só atualizar se a missão ainda não foi completada
     if (!completedMissions.has(missionId)) {
       console.log(`[WelcomeScreen] Atualizando progresso da missão ${missionId}`);
-      updateProgressOnMissionComplete(missionId);
+      if (missionId <= 4) {
+        updateProgressOnMissionComplete(missionId as 1 | 2 | 3 | 4);
+      }
     } else {
       console.log(`[WelcomeScreen] Missão ${missionId} já estava completada`);
     }
-    
+
     setJustCompleted(missionId);
     console.log(`[WelcomeScreen] Definindo justCompleted como ${missionId}`);
     
@@ -168,71 +158,80 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
         console.log(`[WelcomeScreen] Missões completadas atualizadas:`, Array.from(newCompleted));
         return newCompleted;
       });
+      setJustCompleted(null);
       
       if (missionId < 4) {
-        const nextMission = (missionId + 1) as 1 | 2 | 3 | 4;
+        const nextMission = (missionId + 1) as 1 | 2 | 3 | 4 | 5;
         console.log(`[WelcomeScreen] Mudando para missão ${nextMission}`);
         setCurrentMission(nextMission);
-        setJustCompleted(null);
-      } else {
-        // Após completar missão 4, limpar justCompleted e mostrar loading
-        console.log(`[WelcomeScreen] Todas as missões completadas, carregando resumo do jogo`);
+      } else if (missionId === 4) {
+        // Após completar missão 4, verificar se pode mostrar Missão 5
+        console.log(`[WelcomeScreen] Missão 4 completada, verificando elegibilidade para Missão 5`);
+        if (isMission5Eligible) {
+          console.log(`[WelcomeScreen] Usuário elegível para Missão 5, mostrando...`);
+          setShowMission5(true);
+        } else {
+          console.log(`[WelcomeScreen] Usuário não elegível para Missão 5, carregando resumo do jogo`);
+          setJustCompleted(null);
+          setIsLoadingProfile(true);
+          setTimeout(() => loadGameSummary(), 1000);
+        }
+      } else if (missionId === 5) {
+        // Após completar missão 5, mostrar resumo final
+        console.log(`[WelcomeScreen] Missão 5 completada, carregando resumo do jogo`);
+        setShowMission5(false);
         setJustCompleted(null);
         setIsLoadingProfile(true);
-        setTimeout(() => {
-          loadGameSummaryData();
-        }, 2000);
+        setTimeout(() => loadGameSummary(), 1000);
       }
-    }, UNLOCK_DELAY);
+    }, 2000);
   };
-
 
   useEffect(() => {
     const loadUserProgress = async () => {
       try {
         console.log('[WelcomeScreen] Loading progress for userId:', userId);
         if (userId) {
-          const { data: progress } = await supabase
+          const { data } = await supabase
             .from('user_progress')
             .select('*')
-            .eq('user_id', userId)
-            .maybeSingle();
+            .eq('user_id', userId);
 
-          if (progress) {
-            setUserProgress({ 
-              total_xp: progress.total_xp, 
-              completedMissionsCount: [
-                progress.missao_1_completed,
-                progress.missao_2_completed,
-                progress.missao_3_completed,
-                progress.missao_4_completed
-              ].filter(Boolean).length
-            });
+          if (data && data.length > 0) {
+            const progress = data[0];
+            const allMissionsCompleted = progress.missao_1_completed && progress.missao_2_completed && progress.missao_3_completed && progress.missao_4_completed;
+            const mission5Completed = progress.missao_5_completed;
             
-            // Set completed missions and determine current mission
             const completed = new Set<number>();
             if (progress.missao_1_completed) completed.add(1);
             if (progress.missao_2_completed) completed.add(2);
             if (progress.missao_3_completed) completed.add(3);
             if (progress.missao_4_completed) completed.add(4);
-            setCompletedMissions(completed);
+            if (progress.missao_5_completed) completed.add(5);
             
-            // Determine current mission based on completion
-            if (!progress.missao_1_completed) {
-              setCurrentMission(1);
-            } else if (!progress.missao_2_completed) {
-              setCurrentMission(2);
-            } else if (!progress.missao_3_completed) {
-              setCurrentMission(3);
-            } else if (!progress.missao_4_completed) {
-              setCurrentMission(4);
-            } else {
-              setCurrentMission(4); // All completed, keep on mission 4 to show completion screen
-              // Se todas as missões estão completas, carregar dados do resumo final
+            setCompletedMissions(completed);
+            setUserProgress({ total_xp: progress.total_xp || 0, completedMissionsCount: completed.size });
+
+            // Determinar próxima missão ou estado
+            if (mission5Completed || (allMissionsCompleted && !isMission5Eligible)) {
+              // Se completou Missão 5 OU completou 4 missões mas não é elegível para 5
               console.log('[WelcomeScreen] All missions completed, loading game summary data on refresh');
               setTimeout(() => {
-                loadGameSummaryData();
+                loadGameSummary();
               }, 500);
+            } else if (allMissionsCompleted && isMission5Eligible) {
+              // Se completou 4 missões e é elegível para 5, mostrar Missão 5
+              console.log('[WelcomeScreen] User eligible for Mission 5, showing it');
+              setShowMission5(true);
+            } else {
+              // Definir próxima missão baseada no progresso
+              let nextMission: 1 | 2 | 3 | 4 | 5 = 1;
+              if (progress.missao_4_completed) nextMission = 5;
+              else if (progress.missao_3_completed) nextMission = 4;
+              else if (progress.missao_2_completed) nextMission = 3;
+              else if (progress.missao_1_completed) nextMission = 2;
+              
+              setCurrentMission(nextMission);
             }
           }
         } else {
@@ -242,14 +241,14 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
         console.error('[WelcomeScreen] Error loading user progress:', error);
       } finally {
         console.log('[WelcomeScreen] Loading complete, isLoading set to false');
-        setIsLoading(false); // Remover timeout - definir imediatamente
+        setIsLoading(false);
       }
     };
 
     loadUserProgress();
-  }, [userId]);
+  }, [userId, isMission5Eligible]);
 
-  const loadGameSummaryData = async () => {
+  const loadGameSummary = async () => {
     try {
       if (!userId) return;
 
@@ -259,18 +258,9 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
       ]);
 
       const nome = prof?.nome || userProfile.nome || 'Você';
-      console.log('🔍 [WelcomeScreen] Debug nome:', { 
-        profNome: prof?.nome, 
-        userProfileNome: userProfile.nome, 
-        finalNome: nome,
-        userId,
-        gameDataNome: gameData?.nome
-      });
       let xp = 0;
-      let medals = { m1: false, m2: false, m3: false, m4: false };
+      let medals = { m1: false, m2: false, m3: false, m4: false, m5: false };
 
-      console.log('🎖️ Debug prog data:', prog);
-      
       if (prog) {
         xp = prog.total_xp || 0;
         medals = {
@@ -278,10 +268,9 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
           m2: !!prog.missao_2_completed,
           m3: !!prog.missao_3_completed,
           m4: !!prog.missao_4_completed,
+          m5: !!prog.missao_5_completed
         };
       }
-      
-      console.log('🏆 Debug medals:', medals);
 
       // Carrega pontuações das missões
       const [r1, r2, r3] = await Promise.all([
@@ -332,7 +321,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
         console.error('Erro ao salvar perfil final e pontuação:', error);
       }
 
-      setGameData({ nome, xp, medals, score });
+      setGameData({ ...gameData, nome, xp, medals, score });
       setIsLoadingProfile(false);
       setShowGameSummary(true);
     } catch (error) {
@@ -359,7 +348,6 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center space-y-6">
           <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-8 shadow-neon">
-            {/* Terminal header */}
             <div className="flex items-center gap-2 mb-6 p-3 bg-muted/50 rounded-t-lg">
               <div className="w-3 h-3 bg-neon-cyan rounded-full"></div>
               <div className="w-3 h-3 bg-neon-purple rounded-full"></div>
@@ -386,548 +374,186 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
 
   return (
     <>
-      
-      <div 
-        className="fixed inset-0 bg-background z-[10] welcome-screen" 
-        style={{ 
-          height: '100vh', 
-          width: '100vw',
-          pointerEvents: 'auto',
-          overflow: 'hidden',
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0
-        }}
-      >
-      {/* Header */}
-      <div className="bg-card/90 backdrop-blur-xl border-b border-secondary/50 p-3 md:p-4 relative z-10" style={{ pointerEvents: 'auto' }}>
-        <div className="flex items-center justify-between max-w-7xl mx-auto" style={{ pointerEvents: 'auto' }}>
-          <div className="flex items-center gap-3 flex-1">
-          </div>
-          
-          
+      {showMission5 && (
+        <MissaoCinco
+          isVisible={showMission5}
+          onComplete={() => {
+            setShowMission5(false);
+            handleMissionComplete(5);
+          }}
+        />
+      )}
 
-          {/* Avatar + Nome/Área */}
-          <div className="flex items-center gap-2 ml-0 md:ml-8 mr-auto max-w-[35vw] sm:max-w-[25vw] md:max-w-[30vw]">
-            <div className="hidden sm:flex w-8 h-8 md:w-10 md:h-10 bg-secondary/20 rounded-full items-center justify-center border border-secondary/50">
-              <User className="w-4 h-4 md:w-5 md:h-5 text-secondary" />
-            </div>
-            <div className="min-w-0 mr-6 sm:mr-12 md:mr-20 lg:mr-0 flex-1">
-              <h1 className="text-secondary text-xs sm:text-sm md:text-base font-bold tracking-wider truncate">{userProfile.nome || "Usuário"}</h1>
-              <p className="text-muted-foreground text-xs md:text-sm truncate">{userProfile.cargo?.replace(/^\d+-\s*/, "").trim()}</p>
-            </div>
-          </div>
+      {!isLoading && !showGameSummary && !showMission5 && (
+        <div 
+          className="fixed inset-0 bg-background z-[10] welcome-screen" 
+          style={{ 
+            height: '100vh', 
+            width: '100vw',
+            pointerEvents: 'auto',
+            overflow: 'hidden',
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0
+          }}
+        >
+          {/* Header */}
+          <div className="bg-card/90 backdrop-blur-xl border-b border-secondary/50 p-3 md:p-4 relative z-10" style={{ pointerEvents: 'auto' }}>
+            <div className="flex items-center justify-between max-w-7xl mx-auto" style={{ pointerEvents: 'auto' }}>
+              <div className="flex items-center gap-3 flex-1">
+              </div>
+              
+              {/* Avatar + Nome/Área */}
+              <div className="flex items-center gap-2 ml-0 md:ml-8 mr-auto max-w-[35vw] sm:max-w-[25vw] md:max-w-[30vw]">
+                <div className="hidden sm:flex w-8 h-8 md:w-10 md:h-10 bg-secondary/20 rounded-full items-center justify-center border border-secondary/50">
+                  <User className="w-4 h-4 md:w-5 md:h-5 text-secondary" />
+                </div>
+                <div className="min-w-0 mr-6 sm:mr-12 md:mr-20 lg:mr-0 flex-1">
+                  <h1 className="text-secondary text-xs sm:text-sm md:text-base font-bold tracking-wider truncate">{userProfile.nome || "Usuário"}</h1>
+                  <p className="text-muted-foreground text-xs md:text-sm truncate">{userProfile.cargo?.replace(/^\d+-\s*/, "").trim()}</p>
+                </div>
+              </div>
 
-          {/* Estatísticas compactas no Header Desktop (à direita) */}
-          <div className="hidden lg:flex items-center gap-4 mx-4">
-            <div className="text-center">
-              <div className="bg-gradient-to-br from-primary/20 to-primary/10 border border-primary/30 rounded-lg px-4 py-2 shadow-lg">
-                <AnimatedXP 
-                  startValue={xpBeforeBonus || userProgress.total_xp}
-                  endValue={userProgress.total_xp}
-                  triggerAnimation={shouldAnimateXP}
-                  onAnimationComplete={() => setShouldAnimateXP(false)}
-                  className="text-lg font-bold text-primary"
-                />
-                <div className="text-primary/80 text-xs font-medium">XP</div>
-              </div>
-            </div>
-            <div className="text-center">
-              <div className="bg-gradient-to-br from-accent/20 to-accent/10 border border-accent/30 rounded-lg px-4 py-2 shadow-lg">
-                <div className="text-lg font-bold text-accent">{userProgress.completedMissionsCount}/4</div>
-                <div className="text-accent/80 text-xs font-medium">Missões</div>
-              </div>
-            </div>
-            <MedalBadges
-              completed={{
-                m1: completedMissions.has(1),
-                m2: completedMissions.has(2),
-                m3: completedMissions.has(3),
-                m4: completedMissions.has(4),
-              }}
-              size="md"
-              className="pl-2 ml-2 border-l border-border/50"
-              showTitle={true}
-              medalNames={[
-                "Satélite",
-                "Planeta",
-                "Estrela",
-                "Galáxia",
-              ]}
-            />
-            
-            {/* Assistente IA integrado - ocultar na tela final */}
-            {!(showGameSummary || (completedMissions.size === 4 && gameData)) && (
-              <div className="flex flex-col items-center ml-3">
-                <Button
-                  onClick={() => setShowTutorial(true)}
-                  className="bg-transparent border-2 border-cyan-400 rounded-full p-1 shadow-none hover:opacity-95 hover:scale-105 hover:border-cyan-300 transition-all duration-300 w-14 h-14 flex items-center justify-center"
-                >
-                  {codyVideoUrl && (
-                    <video
-                      src={codyVideoUrl}
-                      autoPlay
-                      loop
-                      muted
-                      playsInline
-                      className="w-10 h-10 rounded-full object-cover"
+              {/* Estatísticas compactas no Header Desktop */}
+              <div className="hidden lg:flex items-center gap-4 mx-4">
+                <div className="text-center">
+                  <div className="bg-gradient-to-br from-primary/20 to-primary/10 border border-primary/30 rounded-lg px-4 py-2 shadow-lg">
+                    <AnimatedXP 
+                      startValue={xpBeforeBonus || userProgress.total_xp}
+                      endValue={userProgress.total_xp}
+                      triggerAnimation={shouldAnimateXP}
+                      onAnimationComplete={() => setShouldAnimateXP(false)}
+                      className="text-lg font-bold text-primary"
                     />
-                  )}
-                </Button>
-                <div className="text-secondary/90 text-xs mt-1 text-center leading-none font-medium">
-                  Precisa de<br/>Ajuda?
+                    <div className="text-primary/80 text-xs font-medium">XP</div>
+                  </div>
                 </div>
-              </div>
-            )}
-          </div>
-          
-          
-          <Button
-            onClick={handleLogout}
-            variant="outline"
-            size="sm"
-            className="bg-transparent border-secondary text-secondary hover:bg-secondary hover:text-secondary-foreground relative z-50 cursor-pointer"
-            style={{ pointerEvents: 'auto' }}
-          >
-            <LogOut className="w-3 h-3 md:w-4 md:h-4 md:mr-2" />
-            <span className="hidden md:inline">SAIR</span>
-          </Button>
-        </div>
-      </div>
-
-      {/* Estatísticas Mobile/Tablet - Layout otimizado */}
-      <div className="block lg:hidden bg-card/95 backdrop-blur-xl border-b border-secondary/30 px-1.5 py-2.5">
-        <div className="flex items-center justify-between gap-1.5 w-full">
-          
-          {/* XP Card */}
-          <div className="flex flex-col items-center">
-            <div className="bg-gradient-to-br from-primary/25 to-primary/15 border border-primary/40 rounded-lg px-2 py-1.5 shadow-lg w-[50px] h-[50px] flex flex-col items-center justify-center text-center">
-              <AnimatedXP 
-                startValue={xpBeforeBonus || userProgress.total_xp}
-                endValue={userProgress.total_xp}
-                triggerAnimation={shouldAnimateXP}
-                onAnimationComplete={() => setShouldAnimateXP(false)}
-                className="text-sm font-bold text-primary leading-none"
-              />
-              <div className="text-primary/90 text-xs leading-none mt-0.5 font-semibold">XP</div>
-            </div>
-          </div>
-          
-          {/* Missões Card */}
-          <div className="flex flex-col items-center">
-            <div className="bg-gradient-to-br from-accent/25 to-accent/15 border border-accent/40 rounded-lg px-2 py-1.5 shadow-lg w-[50px] h-[50px] flex flex-col items-center justify-center text-center">
-              <div className="text-sm font-bold text-accent leading-none">{userProgress.completedMissionsCount}/4</div>
-              <div className="text-accent/90 text-xs leading-none mt-0.5 font-semibold">Missões</div>
-            </div>
-          </div>
-          
-          {/* Medalhas Section */}
-          <div className="flex-1 flex justify-center px-1">
-            <div className="bg-card/40 border border-secondary/20 rounded-lg px-1.5 py-1 shadow-sm">
-              <MedalBadges
-                completed={{
-                  m1: completedMissions.has(1),
-                  m2: completedMissions.has(2),
-                  m3: completedMissions.has(3),
-                  m4: completedMissions.has(4),
-                }}
-                size="sm"
-                className="flex justify-center"
-                showTitle={true}
-                medalNames={[
-                  "Satélite",
-                  "Planeta", 
-                  "Estrela",
-                  "Galáxia",
-                ]}
-              />
-            </div>
-          </div>
-          
-          {/* Assistente IA */}
-          <div className="flex flex-col items-center">
-            <Button
-              onClick={() => setShowTutorial(true)}
-              className="bg-transparent border-2 border-cyan-400 rounded-full p-1 shadow-none hover:opacity-95 hover:scale-105 hover:border-cyan-300 transition-all duration-300 w-[45px] h-[45px] flex items-center justify-center"
-            >
-              {codyVideoUrl && (
-                <video
-                  src={codyVideoUrl}
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  className="w-8 h-8 rounded-full object-cover"
+                <div className="text-center">
+                  <div className="bg-gradient-to-br from-accent/20 to-accent/10 border border-accent/30 rounded-lg px-4 py-2 shadow-lg">
+                    <div className="text-lg font-bold text-accent">{userProgress.completedMissionsCount}/{isMission5Eligible ? 5 : 4}</div>
+                    <div className="text-accent/80 text-xs font-medium">Missões</div>
+                  </div>
+                </div>
+                <MedalBadges 
+                  completed={gameData.medals}
+                  showMission5={isMission5Eligible && completedMissions.size >= 4}
+                  className="mb-6" 
+                  showNames={true}
                 />
-              )}
-            </Button>
-            <div className="text-secondary/90 text-xs mt-0.5 text-center leading-none font-medium">
-              Ajuda?
-            </div>
-          </div>
-          
-        </div>
-        </div>
-
-      <div className="h-[calc(100svh-5.25rem)] md:h-[calc(100svh-4.5rem)] overflow-hidden p-2 md:p-4 relative z-10">
-        <div className="max-w-7xl mx-auto h-full flex flex-col">
-          
-          {/* Layout Mobile: Apenas a missão ativa em tela cheia */}
-          <div className="block md:hidden h-full">
-            <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-4 shadow-neon h-full overflow-hidden flex flex-col min-h-0">
-              <div className="flex items-center justify-between mb-4 p-3 bg-muted/50 rounded-lg">
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-accent rounded-full"></div>
-                  <span className="text-accent text-sm font-bold tracking-wider">
-                    MISSÃO {currentMission} ATIVADA
-                  </span>
-                </div>
-              </div>
-
-              <div className="flex-1 overflow-hidden min-h-0">
-                {justCompleted !== null ? (
-                  <div className="h-full flex flex-col items-center justify-center space-y-4 p-4 animate-fade-in">
-                    <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center">
-                      <svg className="w-6 h-6 text-primary" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                    <div className="text-center">
-                      <h4 className="text-lg font-bold text-primary mb-1">
-                        Missão {justCompleted} concluída! +25 XP
-                      </h4>
-                      <p className="text-sm text-muted-foreground">
-                        Liberando a próxima missão...
-                      </p>
-                    </div>
-                  </div>
-                ) : currentMission === 1 && !completedMissions.has(1) ? (
-                  <QuizDigital 
-                    userId={userId}
-                    onClose={() => handleMissionComplete(1)} />
-                ) : currentMission === 2 && !completedMissions.has(2) ? (
-                  <MissaoDois 
-                    userId={userId}
-                    onComplete={() => handleMissionComplete(2)} />
-                ) : currentMission === 3 && !completedMissions.has(3) ? (
-                  <MissaoTres onComplete={() => handleMissionComplete(3)} />
-                ) : currentMission === 4 && !completedMissions.has(4) ? (
-                  <MissaoQuatro onComplete={() => handleMissionComplete(4)} />
-                ) : isLoadingProfile ? (
-                  <div className="h-full flex flex-col items-center justify-center space-y-4 p-4">
-                    <div className="w-16 h-16 border-4 border-primary/30 border-t-primary rounded-full animate-spin"></div>
-                    <div className="text-center">
-                      <h4 className="text-lg font-bold text-primary mb-1">
-                        Carregando seu Perfil Digital...
-                      </h4>
-                      <p className="text-sm text-muted-foreground">
-                        Preparando sua conquista épica!
-                      </p>
-                    </div>
-                  </div>
-                ) : showGameSummary || (completedMissions.size === 4 && gameData) ? (
-                  <GameSummaryContent gameData={gameData} userId={userId} onXpUpdate={handleXpUpdate} />
-                ) : completedMissions.size === 4 ? (
-                  <div className="h-full flex flex-col items-center justify-center space-y-4 p-4">
-                    <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center">
-                      <svg className="w-6 h-6 text-primary" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                    <div className="text-center">
-                      <h4 className="text-lg font-bold text-primary mb-1">
-                        Missões Completadas!
-                      </h4>
-                      <p className="text-sm text-muted-foreground">
-                        Aguarde novas missões em breve.
-                      </p>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="h-full flex flex-col items-center justify-center space-y-4 p-4">
-                    <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center">
-                      <svg className="w-6 h-6 text-primary" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                    <div className="text-center">
-                      <h4 className="text-lg font-bold text-primary mb-1">
-                        Aguarde...
-                      </h4>
-                      <p className="text-sm text-muted-foreground">
-                        Preparando próximas missões.
-                      </p>
+                
+                {/* Assistente IA integrado - ocultar na tela final */}
+                {!(showGameSummary || (completedMissions.size === 4 && gameData)) && (
+                  <div className="flex flex-col items-center ml-3">
+                    <Button
+                      onClick={() => setShowTutorial(true)}
+                      className="bg-transparent border-2 border-cyan-400 rounded-full p-1 shadow-none hover:opacity-95 hover:scale-105 hover:border-cyan-300 transition-all duration-300 w-14 h-14 flex items-center justify-center"
+                    >
+                      {codyVideoUrl && (
+                        <video
+                          src={codyVideoUrl}
+                          autoPlay
+                          loop
+                          muted
+                          playsInline
+                          className="w-10 h-10 rounded-full object-cover"
+                        />
+                      )}
+                    </Button>
+                    <div className="text-secondary/90 text-xs mt-1 text-center leading-none font-medium">
+                      Precisa de<br/>Ajuda?
                     </div>
                   </div>
                 )}
               </div>
+              
+              <Button
+                onClick={handleLogout}
+                variant="outline"
+                size="sm"
+                className="bg-transparent border-secondary text-secondary hover:bg-secondary hover:text-secondary-foreground relative z-50 cursor-pointer"
+                style={{ pointerEvents: 'auto' }}
+              >
+                <LogOut className="w-3 h-3 md:w-4 md:h-4 md:mr-2" />
+                <span className="hidden md:inline">SAIR</span>
+              </Button>
             </div>
           </div>
 
-          {/* Layout Desktop: Grade com barra de missões no topo */}
-          <div className="hidden md:flex flex-col h-full gap-4">
-            {/* Barra Horizontal das Missões - Desktop */}
-            <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-4 shadow-neon">
-              <div className="grid grid-cols-4 gap-4">
-                {[1, 2, 3, 4].map((missionId) => {
-                  const isCompleted = completedMissions.has(missionId);
-                  const isCurrent = currentMission === missionId;
-                  const isLocked = missionId > currentMission && !isCompleted;
-                  
-                  return (
-                     <div
-                      key={missionId}
-                      className={`relative p-4 rounded-lg border-2 transition-all duration-300 ${
-                        isCompleted
-                          ? 'bg-primary/20 border-primary shadow-sm'
-                          : isCurrent
-                          ? 'bg-accent/20 border-accent shadow-sm'
-                          : isLocked
-                          ? 'bg-muted/30 border-muted-foreground/30 opacity-60'
-                          : 'bg-card border-secondary/50'
-                      }`}
-                    >
-                      <div className="flex items-center gap-2 mb-2">
-                        <div className={`w-3 h-3 rounded-full ${
-                          isCompleted ? 'bg-primary' : isCurrent ? 'bg-accent' : isLocked ? 'bg-muted-foreground/50' : 'bg-muted'
-                        }`}></div>
-                        <span className={`text-sm font-bold tracking-wider ${
-                          isCompleted ? 'text-primary' : isCurrent ? 'text-accent' : isLocked ? 'text-muted-foreground/70' : 'text-foreground'
-                        }`}>
-                          MISSÃO {missionId}
-                        </span>
-                      </div>
-                      
-                      <div className={`text-xs mb-2 font-medium ${
-                        isCompleted ? 'text-primary/80' : isCurrent ? 'text-accent/80' : isLocked ? 'text-muted-foreground/60' : 'text-foreground/70'
-                      }`}>
-                        {missionId === 1 && "Como você encara o digital?"}
-                        {missionId === 2 && "O digital no seu dia a dia"}
-                        {missionId === 3 && "Quando o desafio é maior"}
-                        {missionId === 4 && "Seu Radar de Ferramentas"}
-                      </div>
-                      
-                      <div className={`text-xs mb-2 ${
-                        isCompleted ? 'text-primary' : isCurrent ? 'text-accent' : 'text-muted-foreground'
-                      }`}>
-                        Vale 25 XP
-                      </div>
-                      
-                      {/* Barra de Progresso */}
-                      <div className="w-full bg-muted/30 rounded-full h-2">
-                        <div
-                          className={`h-2 rounded-full transition-all duration-500 ${
-                            isCompleted ? 'bg-primary w-full' : isCurrent ? 'bg-accent w-1/2' : 'bg-muted w-0'
-                          }`}
-                        ></div>
-                      </div>
-                      
-                      {/* Ícone de Check para missões completadas ou Lock para bloqueadas */}
-                      {isCompleted ? (
-                        <div className="absolute top-2 right-2 w-4 h-4 bg-primary rounded-full flex items-center justify-center">
-                          <svg className="w-2.5 h-2.5 text-primary-foreground" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                          </svg>
+          <div className="h-[calc(100svh-5.25rem)] md:h-[calc(100svh-4.5rem)] overflow-hidden p-2 md:p-4 relative z-10">
+            <div className="max-w-7xl mx-auto h-full flex flex-col">
+              
+              {/* Content for missions */}
+              <div className="flex-1 overflow-hidden min-h-0">
+                <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-4 h-full flex flex-col overflow-hidden min-h-0">
+                  <ScrollArea className="flex-1">
+                    <div className="pr-3">
+                      {justCompleted !== null ? (
+                        <div className="h-full flex flex-col items-center justify-center space-y-5 animate-fade-in">
+                          <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center">
+                            <svg className="w-8 h-8 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                            </svg>
+                          </div>
+                          <div className="text-center">
+                            <h4 className="text-xl font-bold text-primary mb-1">
+                              Missão {justCompleted} concluída! +25 XP
+                            </h4>
+                            <p className="text-sm text-muted-foreground">Liberando a próxima missão...</p>
+                          </div>
                         </div>
-                      ) : isLocked ? (
-                        <div className="absolute top-2 right-2 w-4 h-4 bg-muted-foreground/50 rounded-full flex items-center justify-center">
-                          <Lock className="w-2.5 h-2.5 text-muted-foreground/70" />
+                      ) : currentMission === 1 && !completedMissions.has(1) ? (
+                        <QuizDigital 
+                          userId={userId}
+                          onClose={() => handleMissionComplete(1)} />
+                      ) : currentMission === 2 && !completedMissions.has(2) ? (
+                        <MissaoDois 
+                          userId={userId}
+                          onComplete={() => handleMissionComplete(2)} />
+                      ) : currentMission === 3 && !completedMissions.has(3) ? (
+                        <MissaoTres onComplete={() => handleMissionComplete(3)} />
+                      ) : currentMission === 4 && !completedMissions.has(4) ? (
+                        <MissaoQuatro onComplete={() => handleMissionComplete(4)} />
+                      ) : isLoadingProfile ? (
+                        <div className="h-full flex flex-col items-center justify-center space-y-4">
+                          <div className="w-16 h-16 border-4 border-primary/30 border-t-primary rounded-full animate-spin"></div>
+                          <div className="text-center">
+                            <h4 className="text-lg font-bold text-primary mb-1">
+                              Carregando seu Perfil Digital...
+                            </h4>
+                            <p className="text-sm text-muted-foreground">
+                              Preparando sua conquista épica!
+                            </p>
+                          </div>
                         </div>
-                      ) : null}
+                      ) : showGameSummary || (completedMissions.size >= 4 && gameData) ? (
+                        <GameSummaryContent gameData={gameData} userId={userId} onXpUpdate={handleXpUpdate} />
+                      ) : (
+                        <div className="h-full flex flex-col items-center justify-center space-y-4">
+                          <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center">
+                            <svg className="w-8 h-8 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                            </svg>
+                          </div>
+                          <div className="text-center">
+                            <h4 className="text-lg font-bold text-primary mb-1">
+                              Aguarde...
+                            </h4>
+                            <p className="text-sm text-muted-foreground">
+                              Preparando próximas missões.
+                            </p>
+                          </div>
+                        </div>
+                      )}
                     </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Conteúdo da missão no desktop */}
-            <div className="flex-1 overflow-hidden min-h-0">
-              <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-4 h-full flex flex-col overflow-hidden min-h-0">
-                {/* Desktop mission content - more space without help button */}
-
-                <ScrollArea className="flex-1">
-                  <div className="pr-3">
-                    {justCompleted !== null ? (
-                      <div className="h-full flex flex-col items-center justify-center space-y-5 animate-fade-in">
-                        <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center">
-                          <svg className="w-8 h-8 text-primary" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                          </svg>
-                        </div>
-                        <div className="text-center">
-                          <h4 className="text-xl font-bold text-primary mb-1">
-                            {justCompleted === 1 && "Missão 1 concluída! +25 XP"}
-                            {justCompleted === 2 && "Missão 2 concluída! +25 XP"}
-                            {justCompleted === 3 && "Missão 3 concluída! +25 XP"}
-                            {justCompleted === 4 && "Missão 4 concluída! +25 XP"}
-                          </h4>
-                          <p className="text-sm text-muted-foreground">Liberando a próxima missão...</p>
-                        </div>
-                      </div>
-                    ) : currentMission === 1 && !completedMissions.has(1) ? (
-                      <QuizDigital 
-                        userId={userId}
-                        onClose={() => handleMissionComplete(1)} />
-                    ) : currentMission === 2 && !completedMissions.has(2) ? (
-                      <MissaoDois 
-                        userId={userId}
-                        onComplete={() => handleMissionComplete(2)} />
-                    ) : currentMission === 3 && !completedMissions.has(3) ? (
-                      <MissaoTres onComplete={() => handleMissionComplete(3)} />
-                    ) : currentMission === 4 && !completedMissions.has(4) ? (
-                      <MissaoQuatro onComplete={() => handleMissionComplete(4)} />
-                    ) : isLoadingProfile ? (
-                      <div className="h-full flex flex-col items-center justify-center space-y-4">
-                        <div className="w-16 h-16 border-4 border-primary/30 border-t-primary rounded-full animate-spin"></div>
-                        <div className="text-center">
-                          <h4 className="text-lg font-bold text-primary mb-1">
-                            Carregando seu Perfil Digital...
-                          </h4>
-                          <p className="text-sm text-muted-foreground">
-                            Preparando sua conquista épica!
-                          </p>
-                        </div>
-                      </div>
-                    ) : showGameSummary || (completedMissions.size === 4 && gameData) ? (
-                      <GameSummaryContent gameData={gameData} userId={userId} onXpUpdate={handleXpUpdate} />
-                    ) : completedMissions.size === 4 ? (
-                      <div className="h-full flex flex-col items-center justify-center space-y-4">
-                        <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center">
-                          <svg className="w-8 h-8 text-primary" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                          </svg>
-                        </div>
-                        <div className="text-center">
-                          <h4 className="text-lg font-bold text-primary mb-1">
-                            Missões Completadas!
-                          </h4>
-                          <p className="text-sm text-muted-foreground">
-                            Aguarde novas missões em breve.
-                          </p>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="h-full flex flex-col items-center justify-center space-y-4">
-                        <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center">
-                          <svg className="w-8 h-8 text-primary" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                          </svg>
-                        </div>
-                        <div className="text-center">
-                          <h4 className="text-lg font-bold text-primary mb-1">
-                            Aguarde...
-                          </h4>
-                          <p className="text-sm text-muted-foreground">
-                            Preparando próximas missões.
-                          </p>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </ScrollArea>
-              </div>
-            </div>
-          </div>
-
-          {/* Área Principal das Perguntas (mobile apenas) */}
-          <div className="md:hidden flex-1 overflow-hidden min-h-0">
-            <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-4 h-full flex flex-col overflow-hidden min-h-0">
-              <div className="flex items-center gap-2 mb-4 p-2 bg-muted/50 rounded-lg">
-                <span className="text-accent text-sm font-bold tracking-wider">
-                  {currentMission === 1 && "MISSÃO 1 – Como você encara o digital?"}
-                  {currentMission === 2 && "MISSÃO 2 – O digital no seu dia a dia"}
-                  {currentMission === 3 && "MISSÃO 3 – Quando o desafio é maior"}
-                  {currentMission === 4 && "MISSÃO 4 – Seu Radar de Ferramentas"}
-                </span>
-              </div>
-
-              <ScrollArea className="flex-1">
-                <div className="pr-3">
-                  {justCompleted !== null ? (
-                    <div className="h-full flex flex-col items-center justify-center space-y-5 animate-fade-in">
-                      <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center">
-                        <svg className="w-8 h-8 text-primary" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                        </svg>
-                      </div>
-                      <div className="text-center">
-                        <h4 className="text-xl font-bold text-primary mb-1">
-                          {justCompleted === 1 && "Missão 1 concluída! +25 XP"}
-                          {justCompleted === 2 && "Missão 2 concluída! +25 XP"}
-                          {justCompleted === 3 && "Missão 3 concluída! +25 XP"}
-                          {justCompleted === 4 && "Missão 4 concluída! +25 XP"}
-                        </h4>
-                        <p className="text-sm text-muted-foreground">Liberando a próxima missão...</p>
-                      </div>
-                    </div>
-                  ) : currentMission === 1 && !completedMissions.has(1) ? (
-                    <QuizDigital 
-                      userId={userId}
-                      onClose={() => handleMissionComplete(1)} />
-                  ) : currentMission === 2 && !completedMissions.has(2) ? (
-                    <MissaoDois 
-                      userId={userId}
-                      onComplete={() => handleMissionComplete(2)} />
-                  ) : currentMission === 3 && !completedMissions.has(3) ? (
-                    <MissaoTres onComplete={() => handleMissionComplete(3)} />
-                  ) : currentMission === 4 && !completedMissions.has(4) ? (
-                    <MissaoQuatro onComplete={() => handleMissionComplete(4)} />
-                  ) : isLoadingProfile ? (
-                    <div className="h-full flex flex-col items-center justify-center space-y-4">
-                      <div className="w-16 h-16 border-4 border-primary/30 border-t-primary rounded-full animate-spin"></div>
-                      <div className="text-center">
-                        <h4 className="text-lg font-bold text-primary mb-1">
-                          Carregando seu Perfil Digital...
-                        </h4>
-                        <p className="text-sm text-muted-foreground">
-                          Preparando sua conquista épica!
-                        </p>
-                      </div>
-                    </div>
-                  ) : showGameSummary || (completedMissions.size === 4 && gameData) ? (
-                    <GameSummaryContent gameData={gameData} userId={userId} onXpUpdate={handleXpUpdate} />
-                  ) : completedMissions.size === 4 ? (
-                    <div className="h-full flex flex-col items-center justify-center space-y-4">
-                      <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center">
-                        <svg className="w-8 h-8 text-primary" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                        </svg>
-                      </div>
-                      <div className="text-center">
-                        <h4 className="text-lg font-bold text-primary mb-1">
-                          Missões Completadas!
-                        </h4>
-                        <p className="text-sm text-muted-foreground">
-                          Aguarde novas missões em breve.
-                        </p>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="h-full flex flex-col items-center justify-center space-y-4">
-                      <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center">
-                        <svg className="w-8 h-8 text-primary" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                        </svg>
-                      </div>
-                      <div className="text-center">
-                        <h4 className="text-lg font-bold text-primary mb-1">
-                          Aguarde...
-                        </h4>
-                        <p className="text-sm text-muted-foreground">
-                          Preparando próximas missões.
-                        </p>
-                      </div>
-                    </div>
-                  )}
+                  </ScrollArea>
                 </div>
-              </ScrollArea>
+              </div>
             </div>
           </div>
         </div>
-        </div>
-      </div>
+      )}
 
       {/* Tutorial somente in-game */}
       {showTutorial && (
@@ -940,8 +566,6 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
           }}
         />
       )}
-
-
     </>
   );
 };
@@ -971,10 +595,7 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; u
 
   // Bonus calculation and application function
   const calculateAndApplyTimeBonus = async (userId: string) => {
-    console.log('🚀 [GameSummaryContent] Starting bonus calculation for user:', userId);
-    
     try {
-      // Fetch user progress
       const { data: prog, error } = await supabase
         .from('user_progress')
         .select('*')
@@ -982,13 +603,10 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; u
         .single();
 
       if (error) {
-        console.error('❌ [GameSummaryContent] Error fetching progress:', error);
+        console.error('Error fetching progress:', error);
         return;
       }
 
-      console.log('📊 [GameSummaryContent] Progress data:', JSON.stringify(prog, null, 2));
-
-      // CALCULATE CORRECT BONUS FOR COMPLETED USERS WITHOUT BONUS
       if (
         prog.missao_1_completed && 
         prog.missao_2_completed && 
@@ -996,14 +614,11 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; u
         prog.missao_4_completed && 
         (!prog.time_bonus_xp || prog.time_bonus_xp === 0)
       ) {
-        console.log('🎯 [GameSummaryContent] CALCULATING BONUS - All missions complete but no bonus applied!');
-        
-        // Import the bonus calculation function
         const { calculateTimeBonus } = await import('@/lib/bonusCalculation');
         const bonusResult = await calculateTimeBonus(prog.updated_at || prog.created_at);
         
         if (!bonusResult) {
-          console.log('❌ [GameSummaryContent] Could not calculate bonus');
+          console.log('Could not calculate bonus');
           return;
         }
         
@@ -1011,13 +626,6 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; u
         const baseXP = prog.game_base_xp || 0;
         const newTotalXp = baseXP + bonus;
         
-        console.log('💾 [GameSummaryContent] APPLYING BONUS:', {
-          currentXP: prog.total_xp,
-          bonusXP: bonus,
-          newTotalXP: newTotalXp
-        });
-        
-        // Update database
         const { error: updateError } = await supabase
           .from('user_progress')
           .update({
@@ -1028,95 +636,68 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; u
           .eq('user_id', userId);
 
         if (updateError) {
-          console.error('❌ [GameSummaryContent] Update error:', updateError);
+          console.error('Update error:', updateError);
           return;
         }
-
-        console.log('✅ [GameSummaryContent] Bonus applied successfully!');
         
-        // Update UI states
         setTimeBonus(bonus);
         setCurrentXp(newTotalXp);
         
-        // Update parent component XP (for header display)
         if (onXpUpdate) {
           onXpUpdate(newTotalXp);
         }
         
-        // Show final screen immediately with bonus applied
         setShowFinalScreen(true);
-        console.log('✅ [GameSummaryContent] Bonus applied, showing final screen directly');
-        
         return;
       } else if (prog.time_bonus_xp > 0) {
-        console.log('🎁 [GameSummaryContent] User already has bonus:', prog.time_bonus_xp);
         setTimeBonus(prog.time_bonus_xp);
         setCurrentXp(prog.total_xp);
-        // Show final screen immediately since bonus was already applied
         setShowFinalScreen(true);
       } else {
-        console.log('⏳ [GameSummaryContent] User not eligible for bonus yet');
-        // Show final screen immediately since no bonus will be applied
         setShowFinalScreen(true);
       }
       
     } catch (error) {
-      console.error('❌ [GameSummaryContent] Exception in bonus calculation:', error);
+      console.error('Exception in bonus calculation:', error);
     }
   };
 
-  // Execute bonus check on component mount
   useEffect(() => {
     if (userId) {
-      console.log('🔥 [GameSummaryContent] Executing bonus check for userId:', userId);
       calculateAndApplyTimeBonus(userId);
     }
   }, [userId]);
-  
-  console.log('DEBUG GameSummary:', { 
-    score: gameData.score.total, 
-    profile: profile.profile, 
-    sublevel: profile.sublevel, 
-    phrase,
-    currentXp,
-    timeBonus
-  });
 
-  const achievementNames = ["Satélite", "Planeta", "Estrela", "Galáxia"];
+  const achievementNames = ["Satélite", "Planeta", "Estrela", "Galáxia", "Universo"];
   const achievements = [
     { id: 1, title: achievementNames[0], done: gameData.medals.m1 },
     { id: 2, title: achievementNames[1], done: gameData.medals.m2 },
     { id: 3, title: achievementNames[2], done: gameData.medals.m3 },
     { id: 4, title: achievementNames[3], done: gameData.medals.m4 },
+    { id: 5, title: achievementNames[4], done: gameData.medals.m5 },
   ];
 
   return (
     <>
-
       <ScrollArea className="h-full">
         {!showBonusScreen && showFinalScreen && (
           <div className="p-4 space-y-6">
-
-            {/* Profile Card */}
             <ProfileHeroCard
               profile={profile.profile} 
               sublevel={profile.sublevel}
               phrase={phrase}
               userName={gameData.nome}
-              medals={achievements}
+              medals={achievements.filter(a => a.done)}
               xp={currentXp}
               totalScore={gameData.score.total}
               timeBonus={timeBonus}
               className="max-w-none"
             />
 
-            {/* Technical Skills Section */}
             <TechnicalSkillsDisplay userId={userId} />
-
           </div>
         )}
       </ScrollArea>
-
     </>
   );
 };
