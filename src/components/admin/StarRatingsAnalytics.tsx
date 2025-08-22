@@ -19,7 +19,13 @@ export const StarRatingsAnalytics = ({ responses, questions, profiles }: StarRat
   const [selectedSoftware, setSelectedSoftware] = useState<string>("all");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   
-  const { getPointsForAnswer, getSoftwareForQuestion } = useSoftwareMapping();
+  const { getPointsForAnswer, getSoftwareForQuestion, isLoading: mappingLoading, error: mappingError } = useSoftwareMapping();
+
+  // Debug logs
+  console.log('StarRatingsAnalytics - Mapping loading:', mappingLoading);
+  console.log('StarRatingsAnalytics - Mapping error:', mappingError);
+  console.log('StarRatingsAnalytics - Responses count:', responses?.length || 0);
+  console.log('StarRatingsAnalytics - Profiles count:', profiles?.length || 0);
 
   const competencyData = useMemo(() => {
     console.log('Processing competency data...');
@@ -132,6 +138,37 @@ export const StarRatingsAnalytics = ({ responses, questions, profiles }: StarRat
     console.log('Overall stats:', { average, total, distribution });
     return { average, total, distribution };
   }, [filteredData]);
+
+  // Loading state
+  if (mappingLoading) {
+    return (
+      <div className="space-y-6">
+        <Card>
+          <CardContent className="p-8">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+              <p className="mt-2 text-muted-foreground">Carregando dados de competências...</p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // Error state
+  if (mappingError) {
+    return (
+      <div className="space-y-6">
+        <Card>
+          <CardContent className="p-8">
+            <div className="text-center">
+              <p className="text-destructive">Erro ao carregar competências: {mappingError}</p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

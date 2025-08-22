@@ -374,7 +374,7 @@ const AdminDashboard = () => {
             <TabsContent value="competencias" className="space-y-8">
               <StarRatingsAnalytics 
                 responses={responses4 || []} 
-                questions={[]} 
+                questions={questions || []} 
                 profiles={allProfiles || []} 
               />
             </TabsContent>
