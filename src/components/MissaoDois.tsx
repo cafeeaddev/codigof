@@ -214,8 +214,7 @@ export const MissaoDois = ({ onComplete, userId }: MissaoDoisProps) => {
       setIsCompleted(true);
       
       toast({
-        title: "Medalha conquistada: Planeta",
-        description: "Você conquistou um planeta. Espaço ampliado!"
+        title: "Medalha conquistada: Planeta"
       });
 
       onComplete();
