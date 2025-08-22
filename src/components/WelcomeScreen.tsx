@@ -828,17 +828,17 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                             <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                           </svg>
                         </div>
-                      ) : (isLocked || (isExtraMission && !isExtraMissionAvailable)) ? (
+                       ) : (isLocked || (isExtraMission && !showExtraMission)) ? (
                         <div className="absolute top-2 right-2 w-4 h-4 bg-muted-foreground/50 rounded-full flex items-center justify-center">
                           <Lock className="w-2.5 h-2.5 text-muted-foreground/70" />
                         </div>
-                      ) : isExtraMission && isExtraMissionAvailable ? (
-                        <div className="absolute top-2 right-2 w-4 h-4 bg-gradient-to-br from-blue-400 to-purple-400 rounded-full flex items-center justify-center shadow-lg shadow-blue-400/50 animate-pulse">
+                       ) : isExtraMission && showExtraMission ? (
+                        <div className="absolute top-2 right-2 w-4 h-4 bg-cyan-400 rounded-full flex items-center justify-center shadow-lg shadow-cyan-400/50 animate-pulse">
                           <svg className="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                           </svg>
                         </div>
-                      ) : null}
+                       ) : null}
                     </div>
                   );
                 })}
