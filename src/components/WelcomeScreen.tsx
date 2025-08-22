@@ -55,6 +55,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
     score: { mission1: 0, mission2: 0, mission3: 0, total: 0 }
   });
   const [extraMissionReleaseDate, setExtraMissionReleaseDate] = useState<string | null>(null);
+  const [userDeclinedFastTrack, setUserDeclinedFastTrack] = useState(false);
   const UNLOCK_DELAY = 1000; // ms
   useEffect(() => {
     const seen = localStorage.getItem('tutorialSeen');
@@ -197,8 +198,8 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
       try {
         console.log('[WelcomeScreen] Loading progress for userId:', userId);
         if (userId) {
-          // Carregar progresso do usuário e configurações da missão extra
-          const [{ data: progress }, { data: gameSettings }] = await Promise.all([
+          // Carregar progresso do usuário, configurações da missão extra e resposta do fast track
+          const [{ data: progress }, { data: gameSettings }, { data: fastTrackResponse }] = await Promise.all([
             supabase
               .from('user_progress')
               .select('*')
@@ -209,11 +210,19 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
               .select('extra_mission_release_date')
               .order('created_at', { ascending: false })
               .limit(1)
+              .maybeSingle(),
+            supabase
+              .from('fast_track_terms_responses')
+              .select('want_to_participate')
+              .eq('user_id', userId)
               .maybeSingle()
           ]);
 
           // Definir data de liberação da missão extra
           setExtraMissionReleaseDate(gameSettings?.extra_mission_release_date || null);
+          
+          // Verificar se o usuário recusou participar do fast track
+          setUserDeclinedFastTrack(fastTrackResponse?.want_to_participate === false);
 
           if (progress) {
             setUserProgress({ 
@@ -716,6 +725,11 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                     return false;
                   }
                   
+                  // Se o usuário recusou participar, não está disponível
+                  if (userDeclinedFastTrack) {
+                    return false;
+                  }
+                  
                   // Verificar se a data já passou
                   const today = new Date();
                   const releaseDate = new Date(extraMissionReleaseDate + 'T00:00:00'); // Force local timezone
@@ -729,7 +743,8 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                     extraMissionReleaseDate,
                     today: today.toISOString(),
                     releaseDate: releaseDate.toISOString(),
-                    isDateReached
+                    isDateReached,
+                    userDeclinedFastTrack
                   });
                   
                   if (!isDateReached) {
@@ -779,18 +794,25 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                            ? 'bg-muted/30 border-muted-foreground/30 opacity-60'
                            : 'bg-card border-secondary/50 hover:border-accent/50'
                        }`}
-                      onClick={() => {
+                        onClick={() => {
                         if (isExtraMission && extraMissionAvailable) {
                           setCurrentMission(5);
                           setShowExtraMissionScreen(true);
                         } else if (!isLocked && !isExtraMission) {
                           setCurrentMission(missionId as 1 | 2 | 3 | 4);
                         }
+                        // Para missão extra: só permite clique no estado 2 (liberada)
                       }}
                     >
                        <div className="flex items-center gap-2 mb-2">
                         <div className={`w-3 h-3 rounded-full ${
-                          isExtraMission ? (!isGameEnded ? 'bg-cyan-400 shadow-lg shadow-cyan-400/50 animate-pulse' : 'bg-cyan-400 shadow-lg shadow-cyan-400/50') : isCompleted ? 'bg-primary' : isCurrent ? 'bg-accent' : isLocked ? 'bg-muted-foreground/50' : 'bg-muted'
+                          isExtraMission 
+                            ? userDeclinedFastTrack 
+                              ? 'bg-muted-foreground/50' // Estado 3: Fim de Jogo
+                              : extraMissionAvailable 
+                                ? 'bg-cyan-400 shadow-lg shadow-cyan-400/50 animate-pulse' // Estado 2: Liberada
+                                : 'bg-blue-400/30' // Estado 1: Bloqueada
+                            : isCompleted ? 'bg-primary' : isCurrent ? 'bg-accent' : isLocked ? 'bg-muted-foreground/50' : 'bg-muted'
                         }`}></div>
                         <span className={`text-sm font-bold tracking-wider ${
                           isExtraMission ? (!isGameEnded ? 'text-cyan-300 animate-pulse' : 'text-cyan-300') : isCompleted ? 'text-primary' : isCurrent ? 'text-accent' : isLocked ? 'text-muted-foreground/70' : 'text-foreground'
@@ -817,11 +839,20 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                               const releaseDate = new Date(extraMissionReleaseDate + 'T00:00:00'); // Force local timezone
                               today.setHours(0, 0, 0, 0);
                               releaseDate.setHours(0, 0, 0, 0);
-                              const isAvailable = today >= releaseDate;
+                              const isDateReached = today >= releaseDate;
                               
-                              return isAvailable 
-                                ? "Fim do Jogo!" 
-                                : `Será Liberada em: ${releaseDate.toLocaleDateString('pt-BR')}`;
+                              // Estado 3: Usuário recusou participar
+                              if (userDeclinedFastTrack) {
+                                return "Fim de Jogo";
+                              }
+                              
+                              // Estado 2: Data chegou e usuário pode participar
+                              if (isDateReached) {
+                                return "Missão Liberada!";
+                              }
+                              
+                              // Estado 1: Data ainda não chegou
+                              return `Missão Bloqueada até ${releaseDate.toLocaleDateString('pt-BR')}`;
                             })()}
                           </span>
                         )}
@@ -862,10 +893,24 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                           <Lock className="w-2.5 h-2.5 text-muted-foreground/70" />
                         </div>
                        ) : isExtraMission && showExtraMission ? (
-                        <div className={`absolute top-2 right-2 w-4 h-4 bg-cyan-400 rounded-full flex items-center justify-center shadow-lg shadow-cyan-400/50 ${!isGameEnded ? 'animate-pulse' : ''}`}>
-                          <svg className="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                          </svg>
+                        <div className={`absolute top-2 right-2 w-4 h-4 rounded-full flex items-center justify-center shadow-lg ${
+                          userDeclinedFastTrack 
+                            ? 'bg-muted-foreground/50' // Estado 3: Fim de Jogo
+                            : extraMissionAvailable 
+                              ? 'bg-cyan-400 shadow-cyan-400/50 animate-pulse' // Estado 2: Liberada (com pulse)
+                              : 'bg-blue-400/30' // Estado 1: Bloqueada (sem pulse)
+                        }`}>
+                          {userDeclinedFastTrack ? (
+                            <svg className="w-2.5 h-2.5 text-muted-foreground/70" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                            </svg>
+                          ) : extraMissionAvailable ? (
+                            <svg className="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                            </svg>
+                          ) : (
+                            <Lock className="w-2.5 h-2.5 text-blue-300/70" />
+                          )}
                         </div>
                        ) : null}
                     </div>
@@ -924,14 +969,17 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                           </p>
                         </div>
                       </div>
-                ) : showExtraMissionScreen && currentMission === 5 ? (
+                 ) : showExtraMissionScreen && currentMission === 5 ? (
                       <ExtraMissionContent 
                         userName={userProfile.nome}
                         onBack={() => {
                           setShowExtraMissionScreen(false);
                           setCurrentMission(1);
                         }}
-                        onDeclineShown={setIsGameEnded}
+                        onDeclineShown={(declined) => {
+                          setIsGameEnded(declined);
+                          setUserDeclinedFastTrack(declined);
+                        }}
                       />
                     ) : showGameSummary || (completedMissions.size === 4 && gameData) ? (
                       <GameSummaryContent gameData={gameData} userId={userId} onXpUpdate={handleXpUpdate} />
@@ -1018,14 +1066,17 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                     <MissaoTres onComplete={() => handleMissionComplete(3)} />
                   ) : currentMission === 4 && !completedMissions.has(4) ? (
                     <MissaoQuatro onComplete={() => handleMissionComplete(4)} />
-                  ) : showExtraMissionScreen && currentMission === 5 ? (
+                   ) : showExtraMissionScreen && currentMission === 5 ? (
                     <ExtraMissionContent 
                       userName={userProfile.nome}
                       onBack={() => {
                         setShowExtraMissionScreen(false);
                         setCurrentMission(1);
                       }}
-                      onDeclineShown={setIsGameEnded}
+                      onDeclineShown={(declined) => {
+                        setIsGameEnded(declined);
+                        setUserDeclinedFastTrack(declined);
+                      }}
                     />
                   ) : isLoadingProfile ? (
                     <div className="h-full flex flex-col items-center justify-center space-y-4">
