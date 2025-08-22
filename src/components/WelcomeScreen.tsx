@@ -18,6 +18,7 @@ import { FloatingMedals } from './EpicGameSummary/FloatingMedals';
 import { AnimatedStats } from './EpicGameSummary/AnimatedStats';
 import { AnimatedXP } from './AnimatedXP';
 import { ShareActions } from './EpicGameSummary/ShareActions';
+import { TechnicalSkillsDisplay } from './TechnicalSkillsDisplay';
 interface WelcomeScreenProps {
   user: {
     nome: string;
@@ -1108,6 +1109,9 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; u
               timeBonus={timeBonus}
               className="max-w-none"
             />
+
+            {/* Technical Skills Section */}
+            <TechnicalSkillsDisplay userId={userId} />
 
           </div>
         )}
