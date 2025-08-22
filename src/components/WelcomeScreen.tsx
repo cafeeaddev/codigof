@@ -706,6 +706,11 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                   // Verificar se a data já passou
                   const today = new Date();
                   const releaseDate = new Date(extraMissionReleaseDate);
+                  
+                  // Zerar horas para comparação apenas de datas
+                  today.setHours(0, 0, 0, 0);
+                  releaseDate.setHours(0, 0, 0, 0);
+                  
                   const isDateReached = today >= releaseDate;
                   console.log('[WelcomeScreen] Missão extra: Data atual:', today.toDateString(), '| Data liberação:', releaseDate.toDateString(), '| Liberada:', isDateReached);
                   
