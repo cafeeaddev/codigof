@@ -29,16 +29,24 @@ export const MedalBadges: React.FC<MedalBadgesProps> = ({ completed, size = "md"
     "Você lançou seu primeiro satélite. A jornada começou!",
     "Você conquistou um planeta. Espaço ampliado!",
     "Você dominou uma estrela. Brilho de um verdadeiro mestre!",
-    "Você explorou uma galáxia inteira. Imensidão sob controle!"
+    "Você explorou uma galáxia inteira. Imensidão sob controle!",
+    "Uma nova dimensão de desafios te aguarda..."
   ];
   
-  const names = medalNames && medalNames.length === 4 ? medalNames : defaultMedalNames;
-  const items = [
+  const names = medalNames && medalNames.length >= 4 ? medalNames : defaultMedalNames;
+  
+  // Build base items for missions 1-4
+  const baseItems = [
     { id: 1, label: "Missão 1", done: completed.m1, medalName: names[0], description: medalDescriptions[0] },
     { id: 2, label: "Missão 2", done: completed.m2, medalName: names[1], description: medalDescriptions[1] },
     { id: 3, label: "Missão 3", done: completed.m3, medalName: names[2], description: medalDescriptions[2] },
     { id: 4, label: "Missão 4", done: completed.m4, medalName: names[3], description: medalDescriptions[3] },
   ];
+  
+  // Add extra mission if medalNames has 5 items (indicating extra medal should be shown)
+  const items = medalNames && medalNames.length === 5 
+    ? [...baseItems, { id: 5, label: "Missão Extra", done: false, medalName: "Universo", description: medalDescriptions[4] }]
+    : baseItems;
 
   const iconSize = size === "sm" ? 16 : 20;
   const dotSize = size === "sm" ? "w-1.5 h-1.5" : "w-2 h-2";

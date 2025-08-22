@@ -1090,6 +1090,12 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; u
     { id: 4, title: achievementNames[3], done: gameData.medals.m4 },
   ];
 
+  // Add extra medal for non-Beginner profiles
+  const isNonBeginner = profile.profile !== 'Beginner';
+  const achievementsWithExtra = isNonBeginner 
+    ? [...achievements, { id: 5, title: "Universo", done: false }]
+    : achievements;
+
   return (
     <>
 
@@ -1103,7 +1109,7 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; u
               sublevel={profile.sublevel}
               phrase={phrase}
               userName={gameData.nome}
-              medals={achievements}
+              medals={achievementsWithExtra}
               xp={currentXp}
               totalScore={gameData.score.total}
               timeBonus={timeBonus}
