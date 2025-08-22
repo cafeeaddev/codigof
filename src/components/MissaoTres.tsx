@@ -9,7 +9,7 @@ import { toast } from '@/hooks/use-toast';
 import { ScrollArea } from './ui/scroll-area';
 import { useAuth } from '@/contexts/AuthContext';
 import { useMissionQuestions } from '@/hooks/useMissionQuestions';
-import { MedalEarnedDialog } from './MedalEarnedDialog';
+
 
 interface MissaoTresProps {
   onComplete: () => void;
@@ -23,7 +23,7 @@ export const MissaoTres = ({ onComplete }: MissaoTresProps) => {
   const [isCompleted, setIsCompleted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [showMedalDialog, setShowMedalDialog] = useState(false);
+  
 
   // Carregar progresso inicial
   useEffect(() => {
@@ -154,7 +154,13 @@ export const MissaoTres = ({ onComplete }: MissaoTresProps) => {
       if (progressError) throw progressError;
 
       setIsCompleted(true);
-      setShowMedalDialog(true);
+      
+      toast({
+        title: "Medalha conquistada: Estrela",
+        description: "Você dominou uma estrela. Brilho de um verdadeiro mestre!"
+      });
+
+      onComplete();
     } catch (error) {
       console.error('Error submitting quiz:', error);
       toast({
@@ -304,17 +310,6 @@ export const MissaoTres = ({ onComplete }: MissaoTresProps) => {
         </div>
       </div>
 
-      <MedalEarnedDialog
-        open={showMedalDialog}
-        onOpenChange={(open) => {
-          setShowMedalDialog(open);
-          if (!open) {
-            onComplete();
-          }
-        }}
-        missionLabel="Desafios e Inovação"
-        xp={25}
-      />
     </div>
   );
 };
