@@ -987,7 +987,7 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; u
 
       console.log('📊 [GameSummaryContent] Progress data:', JSON.stringify(prog, null, 2));
 
-      // FORCE BONUS FOR COMPLETED USERS WITHOUT BONUS
+      // CALCULATE CORRECT BONUS FOR COMPLETED USERS WITHOUT BONUS
       if (
         prog.missao_1_completed && 
         prog.missao_2_completed && 
@@ -995,10 +995,20 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; u
         prog.missao_4_completed && 
         (!prog.time_bonus_xp || prog.time_bonus_xp === 0)
       ) {
-        console.log('🎯 [GameSummaryContent] FORCING BONUS - All missions complete but no bonus applied!');
+        console.log('🎯 [GameSummaryContent] CALCULATING BONUS - All missions complete but no bonus applied!');
         
-        const bonus = 150;
-        const newTotalXp = (prog.total_xp || 0) + bonus;
+        // Import the bonus calculation function
+        const { calculateTimeBonus } = await import('@/lib/bonusCalculation');
+        const bonusResult = await calculateTimeBonus(prog.updated_at || prog.created_at);
+        
+        if (!bonusResult) {
+          console.log('❌ [GameSummaryContent] Could not calculate bonus');
+          return;
+        }
+        
+        const bonus = bonusResult.expectedBonus;
+        const baseXP = prog.game_base_xp || 0;
+        const newTotalXp = baseXP + bonus;
         
         console.log('💾 [GameSummaryContent] APPLYING BONUS:', {
           currentXP: prog.total_xp,

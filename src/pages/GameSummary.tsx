@@ -77,44 +77,26 @@ const GameSummary = () => {
     console.log('🚀 [BONUS DEBUG] Progress data:', JSON.stringify(prog, null, 2));
     
     try {
-      // Get game settings
-      const { data: gameSettings, error: gameError } = await supabase
-        .from('game_settings')
-        .select('game_start_date')
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .maybeSingle();
-
-      console.log('🚀 [BONUS DEBUG] Game settings query result:', { gameSettings, gameError });
-
-      if (gameError || !gameSettings?.game_start_date) {
-        console.log('❌ [BONUS DEBUG] No game settings found');
+      // Use the unified bonus calculation function
+      const { calculateTimeBonus } = await import('@/lib/bonusCalculation');
+      const bonusResult = await calculateTimeBonus(prog.updated_at || prog.created_at);
+      
+      if (!bonusResult) {
+        console.log('❌ [BONUS DEBUG] Could not calculate bonus');
         return;
       }
-
-      // Calculate completion date and days difference
-      const gameStartDateStr = gameSettings.game_start_date.split('T')[0];
-      const completionDateStr = (prog.updated_at || prog.created_at).split('T')[0];
-      const gameStartDate = new Date(gameStartDateStr);
-      const completionDate = new Date(completionDateStr);
-      const daysDiff = Math.floor((completionDate.getTime() - gameStartDate.getTime()) / (1000 * 60 * 60 * 24));
       
-      console.log('🚀 [BONUS DEBUG] Date calculations:', {
-        gameStartDateStr,
-        completionDateStr,
-        gameStartDate: gameStartDate.toISOString(),
-        completionDate: completionDate.toISOString(),
-        daysDiff
+      const expectedBonus = bonusResult.expectedBonus;
+      
+      console.log('🚀 [BONUS DEBUG] Unified bonus calculation:', {
+        daysDiff: bonusResult.daysDiff,
+        gameStartDate: bonusResult.gameStartDate,
+        completionDate: bonusResult.completionDate,
+        expectedBonus
       });
       
-      // Calculate expected bonus
-      let expectedBonus = 0;
-      if (daysDiff === 0) expectedBonus = 150;
-      else if (daysDiff === 1) expectedBonus = 100;
-      else if (daysDiff === 2) expectedBonus = 50;
-      
       console.log('🚀 [BONUS DEBUG] Bonus calculation:', {
-        daysDiff,
+        daysDiff: bonusResult.daysDiff,
         expectedBonus,
         currentBonus: prog.time_bonus_xp || 0,
         needsUpdate: (prog.time_bonus_xp || 0) !== expectedBonus
