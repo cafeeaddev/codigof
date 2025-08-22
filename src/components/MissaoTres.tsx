@@ -155,11 +155,14 @@ export const MissaoTres = ({ onComplete }: MissaoTresProps) => {
 
       setIsCompleted(true);
       
+      console.log("[MISSAO3] Triggering medal toast with correct text");
       toast({
         title: "Medalha conquistada: Estrela",
         description: "Você dominou uma estrela. Brilho de um verdadeiro mestre!",
         duration: 6000,
+        className: "medal-toast-mission3",
       });
+      console.log("[MISSAO3] Medal toast triggered successfully");
 
       onComplete();
     } catch (error) {
