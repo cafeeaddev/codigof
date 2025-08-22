@@ -106,9 +106,9 @@ export const MissionProgress: React.FC<MissionProgressProps> = ({
     }
   };
 
-  // Filtrar missões baseado na elegibilidade da Missão 5
+  // Filtrar missões baseado na elegibilidade da Missão 5 - só mostrar se showMission5 for true
   const visibleMissions = missions.filter(mission => 
-    mission.id <= 4 || (mission.id === 5 && (isMission5Eligible || showMission5))
+    mission.id <= 4 || (mission.id === 5 && showMission5 && isMission5Eligible)
   );
 
   return (

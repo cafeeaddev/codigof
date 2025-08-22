@@ -617,7 +617,7 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; u
   const [shouldAnimateXP, setShouldAnimateXP] = useState(false);
   const [currentXp, setCurrentXp] = useState(gameData.xp);
   
-  // Lógica condicional para Missão 5
+  // Lógica condicional para Missão 5 - só mostrar se elegível E não for Beginner
   const shouldShowMission5 = isMission5Eligible && profile.profile !== 'Beginner';
   
   useEffect(() => {
@@ -728,12 +728,12 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; u
             "grid gap-4 mb-8",
             shouldShowMission5 
               ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-5" 
-              : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
+              : "grid-cols-2 lg:grid-cols-4"
           )}>
             <MissionProgress 
               completedMissions={new Set([1, 2, 3, 4])}
               currentMission={5}
-              isMission5Eligible={isMission5Eligible}
+              isMission5Eligible={shouldShowMission5}
               showMission5={shouldShowMission5}
               className="contents"
             />
