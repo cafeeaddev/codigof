@@ -833,7 +833,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                             : 'text-blue-300/50' 
                           : isCompleted ? 'text-primary' : isCurrent ? 'text-accent' : 'text-muted-foreground'
                       }`}>
-                        {isExtraMission ? 'Aliança' : 'Vale 25 XP'}
+                        {isExtraMission ? 'Aliança Digital' : 'Vale 25 XP'}
                       </div>
                       
                       {/* Barra de Progresso */}
