@@ -691,20 +691,37 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
               {(() => {
                 // Verificar se deve mostrar missão extra
                 const isExtraMissionAvailable = () => {
-                  if (!extraMissionReleaseDate) return false;
+                  // Verificar se há data de liberação configurada
+                  if (!extraMissionReleaseDate) {
+                    console.log('[WelcomeScreen] Missão extra: Nenhuma data de liberação configurada');
+                    return false;
+                  }
                   
-                  const releaseDate = new Date(extraMissionReleaseDate);
+                  // Verificar se a data já passou
                   const today = new Date();
+                  const releaseDate = new Date(extraMissionReleaseDate);
                   const isDateReached = today >= releaseDate;
+                  console.log('[WelcomeScreen] Missão extra: Data atual:', today.toDateString(), '| Data liberação:', releaseDate.toDateString(), '| Liberada:', isDateReached);
                   
-                  // Determinar perfil do usuário baseado no score total
-                  const isInFinalScreen = showGameSummary || (completedMissions.size === 4 && gameData);
-                  if (!isInFinalScreen || !gameData) return false;
+                  if (!isDateReached) return false;
                   
-                  const { profile } = getDigitalProfile(gameData.score.total);
-                  const isNonBeginner = profile !== 'Beginner';
+                  // Para usuários que não completaram o jogo ainda, mostrar a missão extra disponível
+                  if (completedMissions.size < 4) {
+                    console.log('[WelcomeScreen] Missão extra: Usuário ainda não completou todas as missões, mas data liberada');
+                    return true;
+                  }
                   
-                  return isDateReached && isNonBeginner;
+                  // Para usuários que completaram o jogo, verificar se não são beginner
+                  if (gameData) {
+                    const { profile } = getDigitalProfile(gameData.score.total);
+                    const isNonBeginner = profile !== 'Beginner';
+                    console.log('[WelcomeScreen] Missão extra: Jogo completo, perfil:', profile, '| Não-beginner:', isNonBeginner);
+                    return isNonBeginner;
+                  }
+                  
+                  // Fallback: se não há gameData mas data foi liberada, mostrar
+                  console.log('[WelcomeScreen] Missão extra: Fallback - data liberada, exibindo');
+                  return true;
                 };
 
                 const showExtraMission = isExtraMissionAvailable();
