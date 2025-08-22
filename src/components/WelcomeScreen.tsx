@@ -705,14 +705,19 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                   
                   // Verificar se a data já passou
                   const today = new Date();
-                  const releaseDate = new Date(extraMissionReleaseDate);
+                  const releaseDate = new Date(extraMissionReleaseDate + 'T00:00:00'); // Force local timezone
                   
                   // Zerar horas para comparação apenas de datas
                   today.setHours(0, 0, 0, 0);
                   releaseDate.setHours(0, 0, 0, 0);
                   
                   const isDateReached = today >= releaseDate;
-                  console.log('[WelcomeScreen] Missão extra: Data atual:', today.toDateString(), '| Data liberação:', releaseDate.toDateString(), '| Liberada:', isDateReached);
+                  console.log('[WelcomeScreen] Missão extra Debug:', {
+                    extraMissionReleaseDate,
+                    today: today.toISOString(),
+                    releaseDate: releaseDate.toISOString(),
+                    isDateReached
+                  });
                   
                   if (!isDateReached) {
                     console.log('[WelcomeScreen] Missão extra: Data ainda não foi atingida');
@@ -785,7 +790,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                           <span>
                             {(() => {
                               const today = new Date();
-                              const releaseDate = new Date(extraMissionReleaseDate);
+                              const releaseDate = new Date(extraMissionReleaseDate + 'T00:00:00'); // Force local timezone
                               today.setHours(0, 0, 0, 0);
                               releaseDate.setHours(0, 0, 0, 0);
                               const isAvailable = today >= releaseDate;
