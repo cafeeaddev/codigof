@@ -23,6 +23,8 @@ import { ShareActions } from './EpicGameSummary/ShareActions';
 import { TechnicalSkillsDisplay } from './TechnicalSkillsDisplay';
 import { useMission5Eligibility } from '@/hooks/useMission5Eligibility';
 import MissionProgress from './MissionProgress';
+import { VaporwaveBackground } from './VaporwaveBackground';
+import { UserHeader } from './UserHeader';
 
 interface WelcomeScreenProps {
   user: {
@@ -576,6 +578,54 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                   </ScrollArea>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showGameSummary && (
+        <div className="relative min-h-screen overflow-hidden">
+          <VaporwaveBackground />
+          <div className="relative z-10 min-h-screen flex flex-col">
+            <div className="flex-1 container mx-auto px-4 py-8 max-w-6xl">
+              <UserHeader 
+                name={gameData?.nome || userProfile?.nome || 'Usuário'} 
+                level={(getDigitalProfile(gameData?.score?.total || 0).profile as any) || 'Beginner'} 
+                breadcrumb="Jornada Concluída" 
+              />
+              
+              {/* Cards das Missões */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
+                <MissionProgress 
+                  completedMissions={completedMissions}
+                  currentMission={5}
+                  isMission5Eligible={true}
+                  showMission5={true}
+                  className="contents"
+                />
+              </div>
+
+              {/* Medalhas */}
+              <div className="flex justify-center mb-8">
+                <MedalBadges 
+                  completed={{
+                    m1: gameData?.medals?.m1 || false,
+                    m2: gameData?.medals?.m2 || false, 
+                    m3: gameData?.medals?.m3 || false,
+                    m4: gameData?.medals?.m4 || false,
+                    m5: gameData?.medals?.m5 || false
+                  }}
+                  showMission5={true}
+                  showNames={true}
+                  size="md"
+                />
+              </div>
+
+              <GameSummaryContent 
+                gameData={gameData} 
+                userId={userId} 
+                onXpUpdate={handleXpUpdate}
+              />
             </div>
           </div>
         </div>
