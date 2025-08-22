@@ -45,8 +45,11 @@ export const ProfileOverview = ({
     user.missao_4_completed
   ].filter(Boolean).length;
 
-  const playTimeHours = Math.floor((user.total_play_time || 0) / 3600);
-  const playTimeMinutes = Math.floor(((user.total_play_time || 0) % 3600) / 60);
+  const totalSeconds = user.total_play_time || 0;
+  const playTimeHours = Math.floor(totalSeconds / 3600);
+  const playTimeMinutes = Math.floor((totalSeconds % 3600) / 60);
+  
+  console.log(`[ProfileOverview] User analysis - raw time: ${totalSeconds}s, display: ${playTimeHours}h ${playTimeMinutes}min`);
 
   const getScoreColor = (score: number) => {
     if (score >= 42) return 'hsl(var(--profile-ninja))';

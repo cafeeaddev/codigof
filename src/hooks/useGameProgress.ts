@@ -109,6 +109,14 @@ export const useGameProgress = () => {
         const validation = validatePlayTime(data.total_play_time || 0);
         let sanitizedPlayTime = validation.correctedTime;
         
+        console.log('[useGameProgress] Loaded raw time data:', {
+          user_id: user.id,
+          raw_total_play_time: data.total_play_time,
+          is_valid: validation.isValid,
+          sanitized_time: sanitizedPlayTime,
+          reason: validation.reason
+        });
+        
         // If data is corrupted, attempt to fix it
         if (!validation.isValid) {
           console.warn('[useGameProgress] Detected corrupted time data:', validation.reason);

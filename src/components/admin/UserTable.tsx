@@ -365,7 +365,14 @@ export const UserTable = ({
                     </div>
                   </TableCell>
                   <TableCell className="text-primary font-medium">{progress.total_xp || 0} XP</TableCell>
-                  <TableCell>{Math.floor((progress.total_play_time || 0) / 60)}min</TableCell>
+                  <TableCell>
+                    {(() => {
+                      const totalSeconds = progress.total_play_time || 0;
+                      const minutes = Math.floor(totalSeconds / 60);
+                      console.log(`[UserTable] User ${userProfile?.nome}: raw=${totalSeconds}s, display=${minutes}min`);
+                      return `${minutes}min`;
+                    })()}
+                  </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-1">
                       {progress.missao_1_completed ? '✅' : '⏳'}
