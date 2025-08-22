@@ -674,17 +674,29 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
           <div className="hidden md:flex flex-col h-full gap-4">
             {/* Barra Horizontal das Missões - Desktop */}
             <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-4 shadow-neon">
-              <div className="grid grid-cols-4 gap-4">
-                {[1, 2, 3, 4].map((missionId) => {
+              {/* Determinar se deve mostrar 5 missões baseado no perfil */}
+              {(() => {
+                const showExtraMission = (showGameSummary || (completedMissions.size === 4 && gameData)) && 
+                                        gameData && 
+                                        getDigitalProfile(gameData.score.total).profile !== 'Beginner';
+                const missions = showExtraMission ? [1, 2, 3, 4, 5] : [1, 2, 3, 4];
+                const gridCols = showExtraMission ? 'grid-cols-5' : 'grid-cols-4';
+                
+                return (
+                  <div className={`grid ${gridCols} gap-4`}>
+                    {missions.map((missionId) => {
                   const isCompleted = completedMissions.has(missionId);
                   const isCurrent = currentMission === missionId;
                   const isLocked = missionId > currentMission && !isCompleted;
+                  const isExtraMission = missionId === 5;
                   
                   return (
                      <div
                       key={missionId}
                       className={`relative p-4 rounded-lg border-2 transition-all duration-300 ${
-                        isCompleted
+                        isExtraMission
+                          ? 'bg-muted/30 border-muted-foreground/30 opacity-60'
+                          : isCompleted
                           ? 'bg-primary/20 border-primary shadow-sm'
                           : isCurrent
                           ? 'bg-accent/20 border-accent shadow-sm'
@@ -695,35 +707,36 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                     >
                       <div className="flex items-center gap-2 mb-2">
                         <div className={`w-3 h-3 rounded-full ${
-                          isCompleted ? 'bg-primary' : isCurrent ? 'bg-accent' : isLocked ? 'bg-muted-foreground/50' : 'bg-muted'
+                          isExtraMission ? 'bg-muted-foreground/50' : isCompleted ? 'bg-primary' : isCurrent ? 'bg-accent' : isLocked ? 'bg-muted-foreground/50' : 'bg-muted'
                         }`}></div>
                         <span className={`text-sm font-bold tracking-wider ${
-                          isCompleted ? 'text-primary' : isCurrent ? 'text-accent' : isLocked ? 'text-muted-foreground/70' : 'text-foreground'
+                          isExtraMission ? 'text-muted-foreground/70' : isCompleted ? 'text-primary' : isCurrent ? 'text-accent' : isLocked ? 'text-muted-foreground/70' : 'text-foreground'
                         }`}>
-                          MISSÃO {missionId}
+                          {isExtraMission ? 'MISSÃO EXTRA' : `MISSÃO ${missionId}`}
                         </span>
                       </div>
                       
                       <div className={`text-xs mb-2 font-medium ${
-                        isCompleted ? 'text-primary/80' : isCurrent ? 'text-accent/80' : isLocked ? 'text-muted-foreground/60' : 'text-foreground/70'
+                        isExtraMission ? 'text-muted-foreground/60' : isCompleted ? 'text-primary/80' : isCurrent ? 'text-accent/80' : isLocked ? 'text-muted-foreground/60' : 'text-foreground/70'
                       }`}>
                         {missionId === 1 && "Como você encara o digital?"}
                         {missionId === 2 && "O digital no seu dia a dia"}
                         {missionId === 3 && "Quando o desafio é maior"}
                         {missionId === 4 && "Seu Radar de Ferramentas"}
+                        {missionId === 5 && "Em breve..."}
                       </div>
                       
                       <div className={`text-xs mb-2 ${
-                        isCompleted ? 'text-primary' : isCurrent ? 'text-accent' : 'text-muted-foreground'
+                        isExtraMission ? 'text-muted-foreground' : isCompleted ? 'text-primary' : isCurrent ? 'text-accent' : 'text-muted-foreground'
                       }`}>
-                        Vale 25 XP
+                        {isExtraMission ? 'Novos desafios' : 'Vale 25 XP'}
                       </div>
                       
                       {/* Barra de Progresso */}
                       <div className="w-full bg-muted/30 rounded-full h-2">
                         <div
                           className={`h-2 rounded-full transition-all duration-500 ${
-                            isCompleted ? 'bg-primary w-full' : isCurrent ? 'bg-accent w-1/2' : 'bg-muted w-0'
+                            isExtraMission ? 'bg-muted w-0' : isCompleted ? 'bg-primary w-full' : isCurrent ? 'bg-accent w-1/2' : 'bg-muted w-0'
                           }`}
                         ></div>
                       </div>
@@ -735,7 +748,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                             <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                           </svg>
                         </div>
-                      ) : isLocked ? (
+                      ) : (isLocked || isExtraMission) ? (
                         <div className="absolute top-2 right-2 w-4 h-4 bg-muted-foreground/50 rounded-full flex items-center justify-center">
                           <Lock className="w-2.5 h-2.5 text-muted-foreground/70" />
                         </div>
@@ -743,7 +756,9 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                     </div>
                   );
                 })}
-              </div>
+                  </div>
+                );
+              })()}
             </div>
 
             {/* Conteúdo da missão no desktop */}
