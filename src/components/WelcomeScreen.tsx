@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Button } from './ui/button';
-import { LogOut, User, Loader2, Shield, Lock, HelpCircle, CheckCircle } from 'lucide-react';
+import { LogOut, User, Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
@@ -16,10 +15,7 @@ import MedalBadges from './MedalBadges';
 import TutorialOverlay from './TutorialOverlay';
 import { getDigitalProfile, getProfilePhrase } from '@/lib/digitalProfile';
 import { ProfileHeroCard } from './EpicGameSummary/ProfileHeroCard';
-import { FloatingMedals } from './EpicGameSummary/FloatingMedals';
-import { AnimatedStats } from './EpicGameSummary/AnimatedStats';
 import { AnimatedXP } from './AnimatedXP';
-import { ShareActions } from './EpicGameSummary/ShareActions';
 import { TechnicalSkillsDisplay } from './TechnicalSkillsDisplay';
 import { useMission5Eligibility } from '@/hooks/useMission5Eligibility';
 import MissionProgress from './MissionProgress';
@@ -38,7 +34,6 @@ interface WelcomeScreenProps {
 }
 
 export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeScreenProps) => {
-  const navigate = useNavigate();
   const { isAdmin } = useUserRole();
   const { isEligible: isMission5Eligible, isLoading: mission5Loading } = useMission5Eligibility();
   const [isLoading, setIsLoading] = useState(true);
@@ -584,51 +579,11 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
       )}
 
       {showGameSummary && (
-        <div className="relative min-h-screen overflow-hidden">
-          <VaporwaveBackground />
-          <div className="relative z-10 min-h-screen flex flex-col">
-            <div className="flex-1 container mx-auto px-4 py-8 max-w-6xl">
-              <UserHeader 
-                name={gameData?.nome || userProfile?.nome || 'Usuário'} 
-                level={(getDigitalProfile(gameData?.score?.total || 0).profile as any) || 'Beginner'} 
-                breadcrumb="Jornada Concluída" 
-              />
-              
-              {/* Cards das Missões */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
-                <MissionProgress 
-                  completedMissions={completedMissions}
-                  currentMission={5}
-                  isMission5Eligible={true}
-                  showMission5={true}
-                  className="contents"
-                />
-              </div>
-
-              {/* Medalhas */}
-              <div className="flex justify-center mb-8">
-                <MedalBadges 
-                  completed={{
-                    m1: gameData?.medals?.m1 || false,
-                    m2: gameData?.medals?.m2 || false, 
-                    m3: gameData?.medals?.m3 || false,
-                    m4: gameData?.medals?.m4 || false,
-                    m5: gameData?.medals?.m5 || false
-                  }}
-                  showMission5={true}
-                  showNames={true}
-                  size="md"
-                />
-              </div>
-
-              <GameSummaryContent 
-                gameData={gameData} 
-                userId={userId} 
-                onXpUpdate={handleXpUpdate}
-              />
-            </div>
-          </div>
-        </div>
+        <GameSummaryContent 
+          gameData={gameData} 
+          userId={userId} 
+          onXpUpdate={handleXpUpdate}
+        />
       )}
 
       {/* Tutorial somente in-game */}
@@ -661,6 +616,9 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; u
   const [xpBeforeBonus, setXpBeforeBonus] = useState(0);
   const [shouldAnimateXP, setShouldAnimateXP] = useState(false);
   const [currentXp, setCurrentXp] = useState(gameData.xp);
+  
+  // Lógica condicional para Missão 5
+  const shouldShowMission5 = isMission5Eligible && profile.profile !== 'Beginner';
   
   useEffect(() => {
     const loadPhrase = async () => {
@@ -755,11 +713,35 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; u
   ];
 
   return (
-    <>
-      <ScrollArea className="h-full">
-        {!showBonusScreen && showFinalScreen && (
-          <div className="p-4 space-y-6">
-            <MedalBadges
+    <div className="relative min-h-screen overflow-hidden">
+      <VaporwaveBackground />
+      <div className="relative z-10 min-h-screen flex flex-col">
+        <div className="flex-1 container mx-auto px-4 py-8 max-w-6xl">
+          <UserHeader 
+            name={gameData?.nome || 'Usuário'} 
+            level={profile.profile || 'Beginner'} 
+            breadcrumb="Jornada Concluída" 
+          />
+          
+          {/* Cards das Missões - Original layout com condicional para Missão 5 */}
+          <div className={cn(
+            "grid gap-4 mb-8",
+            shouldShowMission5 
+              ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-5" 
+              : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
+          )}>
+            <MissionProgress 
+              completedMissions={new Set([1, 2, 3, 4])}
+              currentMission={5}
+              isMission5Eligible={isMission5Eligible}
+              showMission5={shouldShowMission5}
+              className="contents"
+            />
+          </div>
+
+          {/* Medalhas - Original layout com condicional para Missão 5 */}
+          <div className="flex justify-center mb-8">
+            <MedalBadges 
               completed={{
                 m1: gameData.medals.m1,
                 m2: gameData.medals.m2,
@@ -767,29 +749,33 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; u
                 m4: gameData.medals.m4,
                 m5: gameData.medals.m5 || false
               }}
-              size="md"
+              showMission5={shouldShowMission5}
               showNames={true}
-              showTitle={true}
-              showMission5={true}
-              className="mb-8"
+              size="md"
             />
-            
-            <ProfileHeroCard
-              profile={profile.profile} 
-              sublevel={profile.sublevel}
-              phrase={phrase}
-              userName={gameData.nome}
-              medals={achievements.filter(a => a.done)}
-              xp={currentXp}
-              totalScore={gameData.score.total}
-              timeBonus={timeBonus}
-              className="max-w-none"
-            />
-
-            <TechnicalSkillsDisplay userId={userId} />
           </div>
-        )}
-      </ScrollArea>
-    </>
+
+          <ScrollArea className="h-full">
+            {!showBonusScreen && showFinalScreen && (
+              <div className="p-4 space-y-6">
+                <ProfileHeroCard
+                  profile={profile.profile} 
+                  sublevel={profile.sublevel}
+                  phrase={phrase}
+                  userName={gameData.nome}
+                  medals={achievements.filter(a => a.done)}
+                  xp={currentXp}
+                  totalScore={gameData.score.total}
+                  timeBonus={timeBonus}
+                  className="max-w-none"
+                />
+
+                <TechnicalSkillsDisplay userId={userId} />
+              </div>
+            )}
+          </ScrollArea>
+        </div>
+      </div>
+    </div>
   );
 };

@@ -112,7 +112,13 @@ export const MissionProgress: React.FC<MissionProgressProps> = ({
   );
 
   return (
-    <div className={cn("grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4", className)}>
+    <div className={cn(
+      "grid gap-4",
+      visibleMissions.length === 5 
+        ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-5" 
+        : "grid-cols-2 lg:grid-cols-4",
+      className
+    )}>
       {visibleMissions.map((mission) => {
         const status = getMissionStatus(mission.id);
         const styles = getMissionStyles(status);

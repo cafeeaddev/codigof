@@ -21,6 +21,7 @@ import { QuestionManager } from '@/components/admin/QuestionManager';
 import { StarRatingsAnalytics } from '@/components/admin/StarRatingsAnalytics';
 import { UserAnalysisDialog } from '@/components/admin/UserAnalysisDialog';
 import { TimeDataManager } from '@/components/admin/TimeDataManager';
+import Mission5Settings from '@/components/admin/Mission5Settings';
 import { useAdminDashboard } from '@/hooks/useAdminDashboard';
 import { useFilters } from '@/hooks/useFilters';
 import { ResponseData, UserProgress, UserProfile } from '@/types/admin';
@@ -281,6 +282,19 @@ const AdminDashboard = () => {
 
               {/* Time Data Manager */}
               <TimeDataManager />
+
+              {/* Mission 5 Settings */}
+              <Card className="animate-fade-in">
+                <CardHeader>
+                  <CardTitle>Configurações da Missão 5</CardTitle>
+                  <p className="text-muted-foreground">
+                    Configure a data de liberação e status da Missão 5 (Fast Track)
+                  </p>
+                </CardHeader>
+                <CardContent>
+                  <Mission5Settings />
+                </CardContent>
+              </Card>
 
               {/* Question Manager */}
               <Card className="animate-fade-in">
