@@ -54,8 +54,9 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown }: ExtraM
       if (error) throw error;
 
       if (!wantToParticipate) {
-        // Show decline message instead of closing
+        // Show decline message and notify parent immediately
         setShowDeclineMessage(true);
+        onDeclineShown?.(true);
       } else {
         toast({
           title: "Sucesso",
