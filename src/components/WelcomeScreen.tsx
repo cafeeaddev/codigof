@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from './ui/button';
-import { LogOut, User, Loader2, Shield, Lock, HelpCircle } from 'lucide-react';
+import { LogOut, User, Loader2, Shield, Lock, HelpCircle, CheckCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
+import { cn } from '@/lib/utils';
 import { ScrollArea } from './ui/scroll-area';
 import { useUserRole } from '@/hooks/useUserRole';
 import { QuizDigital } from './QuizDigital';
@@ -597,6 +598,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
 
 // Internal Game Summary Component with Bonus System
 const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; userId: string; onXpUpdate?: (newXp: number) => void }) => {
+  const { isEligible: isMission5Eligible } = useMission5Eligibility();
   const profile = getDigitalProfile(gameData.score.total);
   const [phrase, setPhrase] = useState<string>('');
   
@@ -707,6 +709,116 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; u
       <ScrollArea className="h-full">
         {!showBonusScreen && showFinalScreen && (
           <div className="p-4 space-y-6">
+            {/* Cards das Missões - Incluindo Missão 5 */}
+            <div className="mb-6">
+              <div className="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                {/* Missão 1 */}
+                <div className="relative rounded-lg border-2 border-neon-pink/50 bg-gradient-to-br from-neon-pink/90 to-neon-purple/80 p-4 backdrop-blur-sm">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="font-bold text-sm text-white">MISSÃO 1</div>
+                    <CheckCircle className="w-6 h-6 text-white" />
+                  </div>
+                  <div className="space-y-3">
+                    <h3 className="font-medium text-sm leading-tight text-white">Como você encara o digital?</h3>
+                    <p className="text-xs opacity-80 text-white">Vale 25 XP</p>
+                    <div className="w-full bg-black/20 rounded-full h-2 overflow-hidden">
+                      <div className="h-full rounded-full bg-neon-pink w-full transition-all duration-500" />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Missão 2 */}
+                <div className="relative rounded-lg border-2 border-neon-pink/50 bg-gradient-to-br from-neon-pink/90 to-neon-purple/80 p-4 backdrop-blur-sm">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="font-bold text-sm text-white">MISSÃO 2</div>
+                    <CheckCircle className="w-6 h-6 text-white" />
+                  </div>
+                  <div className="space-y-3">
+                    <h3 className="font-medium text-sm leading-tight text-white">O digital no seu dia a dia</h3>
+                    <p className="text-xs opacity-80 text-white">Vale 25 XP</p>
+                    <div className="w-full bg-black/20 rounded-full h-2 overflow-hidden">
+                      <div className="h-full rounded-full bg-neon-pink w-full transition-all duration-500" />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Missão 3 */}
+                <div className="relative rounded-lg border-2 border-neon-pink/50 bg-gradient-to-br from-neon-pink/90 to-neon-purple/80 p-4 backdrop-blur-sm">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="font-bold text-sm text-white">MISSÃO 3</div>
+                    <CheckCircle className="w-6 h-6 text-white" />
+                  </div>
+                  <div className="space-y-3">
+                    <h3 className="font-medium text-sm leading-tight text-white">Quando o desafio é maior</h3>
+                    <p className="text-xs opacity-80 text-white">Vale 25 XP</p>
+                    <div className="w-full bg-black/20 rounded-full h-2 overflow-hidden">
+                      <div className="h-full rounded-full bg-neon-pink w-full transition-all duration-500" />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Missão 4 */}
+                <div className="relative rounded-lg border-2 border-neon-pink/50 bg-gradient-to-br from-neon-pink/90 to-neon-purple/80 p-4 backdrop-blur-sm">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="font-bold text-sm text-white">MISSÃO 4</div>
+                    <CheckCircle className="w-6 h-6 text-white" />
+                  </div>
+                  <div className="space-y-3">
+                    <h3 className="font-medium text-sm leading-tight text-white">Seu Radar de Ferramentas</h3>
+                    <p className="text-xs opacity-80 text-white">Vale 25 XP</p>
+                    <div className="w-full bg-black/20 rounded-full h-2 overflow-hidden">
+                      <div className="h-full rounded-full bg-neon-pink w-full transition-all duration-500" />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Missão 5 - Mostrar se elegível ou completada */}
+                {(isMission5Eligible || gameData.medals.m5) && (
+                  <div className={cn(
+                    "relative rounded-lg border-2 p-4 backdrop-blur-sm",
+                    gameData.medals.m5 
+                      ? "border-neon-pink/50 bg-gradient-to-br from-neon-pink/90 to-neon-purple/80"
+                      : "border-muted/30 bg-gradient-to-br from-muted/20 to-background/30"
+                  )}>
+                    <div className="flex items-center justify-between mb-3">
+                      <div className={cn("font-bold text-sm", gameData.medals.m5 ? "text-white" : "text-muted-foreground")}>
+                        MISSÃO 5
+                      </div>
+                      {gameData.medals.m5 ? (
+                        <CheckCircle className="w-6 h-6 text-white" />
+                      ) : (
+                        <Lock className="w-6 h-6 text-muted-foreground/60" />
+                      )}
+                    </div>
+                    <div className="space-y-3">
+                      <h3 className={cn("font-medium text-sm leading-tight", gameData.medals.m5 ? "text-white" : "text-muted-foreground")}>
+                        Fast Track Digital
+                      </h3>
+                      <p className={cn("text-xs opacity-80", gameData.medals.m5 ? "text-white" : "text-muted-foreground")}>
+                        Missão Bônus
+                      </p>
+                      <div className="w-full bg-black/20 rounded-full h-2 overflow-hidden">
+                        <div className={cn(
+                          "h-full rounded-full transition-all duration-500",
+                          gameData.medals.m5 
+                            ? "bg-neon-pink w-full" 
+                            : "bg-muted/20 w-0"
+                        )} />
+                      </div>
+                    </div>
+                    {!gameData.medals.m5 && isMission5Eligible && (
+                      <div className="absolute inset-0 bg-gradient-to-br from-accent/20 to-secondary/10 rounded-lg border-2 border-accent/30 flex items-center justify-center">
+                        <div className="text-center">
+                          <div className="text-white text-xs font-bold mb-1">DISPONÍVEL</div>
+                          <div className="text-white/80 text-xs">Clique para começar</div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+            
             <ProfileHeroCard
               profile={profile.profile} 
               sublevel={profile.sublevel}
