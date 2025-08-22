@@ -41,10 +41,44 @@ export type Database = {
         }
         Relationships: []
       }
+      fast_track_responses: {
+        Row: {
+          accepted_terms: boolean
+          created_at: string
+          id: string
+          interest_level: string | null
+          main_objective: string | null
+          other_objective: string | null
+          time_commitment: string | null
+          user_id: string | null
+        }
+        Insert: {
+          accepted_terms: boolean
+          created_at?: string
+          id?: string
+          interest_level?: string | null
+          main_objective?: string | null
+          other_objective?: string | null
+          time_commitment?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          accepted_terms?: boolean
+          created_at?: string
+          id?: string
+          interest_level?: string | null
+          main_objective?: string | null
+          other_objective?: string | null
+          time_commitment?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       game_settings: {
         Row: {
           created_at: string
           created_by: string | null
+          extra_mission_release_date: string | null
           game_start_date: string
           id: string
           updated_at: string
@@ -52,6 +86,7 @@ export type Database = {
         Insert: {
           created_at?: string
           created_by?: string | null
+          extra_mission_release_date?: string | null
           game_start_date: string
           id?: string
           updated_at?: string
@@ -59,8 +94,36 @@ export type Database = {
         Update: {
           created_at?: string
           created_by?: string | null
+          extra_mission_release_date?: string | null
           game_start_date?: string
           id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      mission5_settings: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          is_active: boolean
+          release_date: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_active?: boolean
+          release_date: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_active?: boolean
+          release_date?: string
           updated_at?: string
         }
         Relationships: []
@@ -375,6 +438,36 @@ export type Database = {
         }
         Relationships: []
       }
+      respostas_missao5: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          nome: string
+          respostas: Json
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          nome: string
+          respostas?: Json
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          nome?: string
+          respostas?: Json
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       user_progress: {
         Row: {
           created_at: string
@@ -397,6 +490,9 @@ export type Database = {
           missao_4_answers: Json | null
           missao_4_completed: boolean | null
           missao_4_current_question: number | null
+          missao_5_answers: Json | null
+          missao_5_completed: boolean | null
+          missao_5_current_question: number | null
           session_start_time: string | null
           time_bonus_xp: number | null
           total_play_time: number | null
@@ -425,6 +521,9 @@ export type Database = {
           missao_4_answers?: Json | null
           missao_4_completed?: boolean | null
           missao_4_current_question?: number | null
+          missao_5_answers?: Json | null
+          missao_5_completed?: boolean | null
+          missao_5_current_question?: number | null
           session_start_time?: string | null
           time_bonus_xp?: number | null
           total_play_time?: number | null
@@ -453,6 +552,9 @@ export type Database = {
           missao_4_answers?: Json | null
           missao_4_completed?: boolean | null
           missao_4_current_question?: number | null
+          missao_5_answers?: Json | null
+          missao_5_completed?: boolean | null
+          missao_5_current_question?: number | null
           session_start_time?: string | null
           time_bonus_xp?: number | null
           total_play_time?: number | null

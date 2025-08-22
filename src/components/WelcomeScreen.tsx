@@ -50,6 +50,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
     medals: { m1: false, m2: false, m3: false, m4: false },
     score: { mission1: 0, mission2: 0, mission3: 0, total: 0 }
   });
+  const [extraMissionReleaseDate, setExtraMissionReleaseDate] = useState<string | null>(null);
   const UNLOCK_DELAY = 1000; // ms
   useEffect(() => {
     const seen = localStorage.getItem('tutorialSeen');
@@ -192,11 +193,23 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
       try {
         console.log('[WelcomeScreen] Loading progress for userId:', userId);
         if (userId) {
-          const { data: progress } = await supabase
-            .from('user_progress')
-            .select('*')
-            .eq('user_id', userId)
-            .maybeSingle();
+          // Carregar progresso do usuário e configurações da missão extra
+          const [{ data: progress }, { data: gameSettings }] = await Promise.all([
+            supabase
+              .from('user_progress')
+              .select('*')
+              .eq('user_id', userId)
+              .maybeSingle(),
+            supabase
+              .from('game_settings')
+              .select('extra_mission_release_date')
+              .order('created_at', { ascending: false })
+              .limit(1)
+              .maybeSingle()
+          ]);
+
+          // Definir data de liberação da missão extra
+          setExtraMissionReleaseDate(gameSettings?.extra_mission_release_date || null);
 
           if (progress) {
             setUserProgress({ 
@@ -674,11 +687,27 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
           <div className="hidden md:flex flex-col h-full gap-4">
             {/* Barra Horizontal das Missões - Desktop */}
             <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-4 shadow-neon">
-              {/* Determinar se deve mostrar 5 missões baseado no perfil */}
+              {/* Determinar se deve mostrar 5 missões baseado no perfil e data de liberação */}
               {(() => {
-                const showExtraMission = (showGameSummary || (completedMissions.size === 4 && gameData)) && 
-                                        gameData && 
-                                        getDigitalProfile(gameData.score.total).profile !== 'Beginner';
+                // Verificar se deve mostrar missão extra
+                const isExtraMissionAvailable = () => {
+                  if (!extraMissionReleaseDate) return false;
+                  
+                  const releaseDate = new Date(extraMissionReleaseDate);
+                  const today = new Date();
+                  const isDateReached = today >= releaseDate;
+                  
+                  // Determinar perfil do usuário baseado no score total
+                  const isInFinalScreen = showGameSummary || (completedMissions.size === 4 && gameData);
+                  if (!isInFinalScreen || !gameData) return false;
+                  
+                  const { profile } = getDigitalProfile(gameData.score.total);
+                  const isNonBeginner = profile !== 'Beginner';
+                  
+                  return isDateReached && isNonBeginner;
+                };
+
+                const showExtraMission = isExtraMissionAvailable();
                 const missions = showExtraMission ? [1, 2, 3, 4, 5] : [1, 2, 3, 4];
                 const gridCols = showExtraMission ? 'grid-cols-5' : 'grid-cols-4';
                 

@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Calendar, Save, Clock, Trophy } from 'lucide-react';
+import { Calendar, Save, Clock, Trophy, Lock } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -13,6 +13,7 @@ interface GameSettingsProps {
 
 export const GameSettings: React.FC<GameSettingsProps> = ({ className }) => {
   const [gameStartDate, setGameStartDate] = useState<string>('');
+  const [extraMissionReleaseDate, setExtraMissionReleaseDate] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -25,7 +26,7 @@ export const GameSettings: React.FC<GameSettingsProps> = ({ className }) => {
     try {
       const { data, error } = await supabase
         .from('game_settings')
-        .select('game_start_date')
+        .select('game_start_date, extra_mission_release_date')
         .order('created_at', { ascending: false })
         .limit(1)
         .maybeSingle();
@@ -37,6 +38,10 @@ export const GameSettings: React.FC<GameSettingsProps> = ({ className }) => {
       } else {
         // Set default to today if no settings exist
         setGameStartDate(new Date().toISOString().split('T')[0]);
+      }
+      
+      if (data?.extra_mission_release_date) {
+        setExtraMissionReleaseDate(data.extra_mission_release_date);
       }
     } catch (error) {
       console.error('Error loading game settings:', error);
@@ -75,6 +80,7 @@ export const GameSettings: React.FC<GameSettingsProps> = ({ className }) => {
           .from('game_settings')
           .update({ 
             game_start_date: gameStartDate,
+            extra_mission_release_date: extraMissionReleaseDate || null,
             updated_at: new Date().toISOString()
           })
           .eq('id', existing.id);
@@ -86,6 +92,7 @@ export const GameSettings: React.FC<GameSettingsProps> = ({ className }) => {
           .from('game_settings')
           .insert({ 
             game_start_date: gameStartDate,
+            extra_mission_release_date: extraMissionReleaseDate || null,
             created_by: (await supabase.auth.getUser()).data.user?.id
           });
 
@@ -94,7 +101,7 @@ export const GameSettings: React.FC<GameSettingsProps> = ({ className }) => {
 
       toast({
         title: "Configurações salvas",
-        description: "Data de início do jogo atualizada com sucesso!"
+        description: "Configurações do jogo atualizadas com sucesso!"
       });
     } catch (error) {
       console.error('Error saving game settings:', error);
@@ -150,6 +157,50 @@ export const GameSettings: React.FC<GameSettingsProps> = ({ className }) => {
         return 'text-yellow-500';
       case 'day3':
         return 'text-orange-500';
+      default:
+        return 'text-muted-foreground';
+    }
+  };
+
+  const getExtraMissionInfo = () => {
+    if (!extraMissionReleaseDate) return null;
+
+    const releaseDate = new Date(extraMissionReleaseDate);
+    const today = new Date();
+    const daysDiff = Math.floor((today.getTime() - releaseDate.getTime()) / (1000 * 60 * 60 * 24));
+
+    return {
+      daysDiff,
+      isReleased: daysDiff >= 0,
+      status: daysDiff < 0 ? 'future' : daysDiff === 0 ? 'today' : 'released'
+    };
+  };
+
+  const extraMissionInfo = getExtraMissionInfo();
+
+  const getExtraMissionText = () => {
+    if (!extraMissionInfo) return 'Nenhuma data configurada';
+    
+    switch (extraMissionInfo.status) {
+      case 'future':
+        return `Missão Extra será liberada em ${Math.abs(extraMissionInfo.daysDiff)} dias`;
+      case 'today':
+        return 'HOJE: Missão Extra foi liberada!';
+      case 'released':
+        return `Missão Extra liberada há ${extraMissionInfo.daysDiff} dias`;
+      default:
+        return 'Status desconhecido';
+    }
+  };
+
+  const getExtraMissionColor = () => {
+    if (!extraMissionInfo) return 'text-muted-foreground';
+    
+    switch (extraMissionInfo.status) {
+      case 'today':
+        return 'text-green-500';
+      case 'released':
+        return 'text-blue-500';
       default:
         return 'text-muted-foreground';
     }
@@ -231,6 +282,45 @@ export const GameSettings: React.FC<GameSettingsProps> = ({ className }) => {
                   <Trophy className="w-3 h-3 text-muted-foreground" />
                   <span>Após: +0 XP</span>
                 </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Data de Liberação da Missão Extra */}
+        <div className="space-y-3">
+          <Label htmlFor="extra-mission-date" className="text-sm font-medium">
+            Data de Liberação da Missão Extra
+          </Label>
+          <Input
+            id="extra-mission-date"
+            type="date"
+            value={extraMissionReleaseDate}
+            onChange={(e) => setExtraMissionReleaseDate(e.target.value)}
+            className="w-full"
+          />
+          <p className="text-xs text-muted-foreground">
+            Define quando a Missão Extra ficará disponível para usuários avançados (opcional)
+          </p>
+        </div>
+
+        {/* Status da Missão Extra */}
+        {extraMissionReleaseDate && (
+          <div className="p-4 rounded-lg bg-muted/50 space-y-3">
+            <div className="flex items-center gap-2">
+              <Lock className="w-4 h-4" />
+              <span className="font-medium text-sm">Status da Missão Extra</span>
+            </div>
+            <p className={`text-sm font-medium ${getExtraMissionColor()}`}>
+              {getExtraMissionText()}
+            </p>
+            
+            <div className="space-y-2 text-xs text-muted-foreground">
+              <p className="font-medium">Regras de Liberação:</p>
+              <div className="pl-2 space-y-1">
+                <p>• Disponível apenas para usuários não-Beginner</p>
+                <p>• Liberada automaticamente na data configurada</p>
+                <p>• Se não configurada, a missão não aparece</p>
               </div>
             </div>
           </div>
