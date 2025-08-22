@@ -531,6 +531,21 @@ export type Database = {
       }
     }
     Functions: {
+      get_masked_profiles: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          area: string
+          area_id: string
+          cargo: string
+          cpf_masked: string
+          created_at: string
+          email: string
+          id: string
+          nome: string
+          updated_at: string
+          user_id: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
