@@ -106,10 +106,10 @@ export const ExtraMissionContent = ({ userName, onBack }: ExtraMissionContentPro
   );
 
   return (
-    <div className="w-full h-full relative overflow-hidden">
+    <div className="w-full h-full min-h-screen md:min-h-0 relative overflow-hidden">
       {/* Layout principal com ScrollArea */}
       <ScrollArea className="h-full w-full">
-        <div className="p-6">
+        <div className="p-4 md:p-6">
           {/* Hero Card da Missão Extra */}
           <div className="mb-8">
             {/* Hero Card simplificado para Fast Track */}
@@ -120,7 +120,7 @@ export const ExtraMissionContent = ({ userName, onBack }: ExtraMissionContentPro
                   {/* Avatar do Cody */}
                   <div className="flex-shrink-0 text-center lg:text-left">
                     <div className="relative mb-6">
-                      <div className="w-48 h-48 sm:w-64 sm:h-64 lg:w-72 lg:h-72 rounded-full bg-gradient-to-r from-neon-purple via-neon-purple to-neon-cyan p-1 shadow-glow mx-auto lg:mx-0">
+                      <div className="w-32 h-32 sm:w-48 sm:h-48 md:w-64 md:h-64 lg:w-72 lg:h-72 rounded-full bg-gradient-to-r from-neon-purple via-neon-purple to-neon-cyan p-1 shadow-glow mx-auto lg:mx-0">
                         <div className="w-full h-full rounded-full bg-background/20 backdrop-blur-xl overflow-hidden relative">
                           <video 
                             className="w-full h-full object-cover rounded-full"
