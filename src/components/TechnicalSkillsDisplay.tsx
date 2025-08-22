@@ -21,6 +21,8 @@ export const TechnicalSkillsDisplay = ({ userId }: TechnicalSkillsDisplayProps) 
   useEffect(() => {
     const loadTechnicalSkills = async () => {
       try {
+        console.log('TechnicalSkillsDisplay: Loading data for userId:', userId);
+        
         // Buscar respostas da missão 4
         const { data: mission4Response, error } = await supabase
           .from('respostas_missao4')
@@ -29,44 +31,56 @@ export const TechnicalSkillsDisplay = ({ userId }: TechnicalSkillsDisplayProps) 
           .single();
 
         if (error || !mission4Response) {
-          console.log('Usuário não completou a Missão 4 ainda');
+          console.log('TechnicalSkillsDisplay: Usuário não completou a Missão 4 ainda', error);
           setIsLoading(false);
           return;
         }
 
         const responses = mission4Response.respostas as any;
+        console.log('TechnicalSkillsDisplay: Raw responses:', responses);
+        
         const ratings: SkillsByRating = { 5: [], 4: [], 3: [], 2: [], 1: [] };
 
-        // Processar starRatings (questões universais 1-9)
-        if (responses?.starRatings) {
-          Object.entries(responses.starRatings).forEach(([questionKey, rating]) => {
+        // Processar questões universais 1-9 (A=1, B=2, C=3, D=4, E=5 estrelas)
+        if (responses?.answers) {
+          Object.entries(responses.answers).forEach(([questionKey, answer]) => {
             const questionNumber = parseInt(questionKey.replace('question', ''));
             if (questionNumber >= 1 && questionNumber <= 9) {
               const software = getSoftwareForQuestion(questionNumber);
-              const ratingValue = parseInt(rating as string);
+              
+              // Converter letra para rating (A=1, B=2, C=3, D=4, E=5)
+              const letterToRating: Record<string, number> = {
+                'A': 1, 'B': 2, 'C': 3, 'D': 4, 'E': 5
+              };
+              
+              const ratingValue = letterToRating[answer as string];
               if (ratingValue >= 1 && ratingValue <= 5) {
                 ratings[ratingValue].push(software);
+                console.log(`TechnicalSkillsDisplay: ${software} = ${ratingValue} estrelas`);
               }
             }
           });
         }
 
-        // Processar softwares específicos da área (questões 10+)
-        if (responses?.softwares) {
-          Object.entries(responses.softwares).forEach(([questionKey, rating]) => {
-            // Para softwares específicos, vamos usar o nome da questão ou um mapeamento
-            // Por enquanto, vamos extrair do questionKey ou usar um nome genérico
-            const software = questionKey.replace('question', 'Software ');
-            const ratingValue = parseInt(rating as string);
-            if (ratingValue >= 1 && ratingValue <= 5) {
-              ratings[ratingValue].push(software);
+        // Processar avaliações específicas da área em starRatings
+        if (responses?.starRatings) {
+          Object.entries(responses.starRatings).forEach(([areaKey, softwares]) => {
+            if (typeof softwares === 'object' && softwares !== null) {
+              Object.entries(softwares as Record<string, any>).forEach(([softwareName, rating]) => {
+                const ratingValue = parseInt(rating as string);
+                if (ratingValue >= 1 && ratingValue <= 5) {
+                  ratings[ratingValue].push(softwareName);
+                  console.log(`TechnicalSkillsDisplay: ${softwareName} (área específica) = ${ratingValue} estrelas`);
+                }
+              });
             }
           });
         }
 
+        console.log('TechnicalSkillsDisplay: Final ratings:', ratings);
         setSkillsByRating(ratings);
       } catch (error) {
-        console.error('Erro ao carregar competências técnicas:', error);
+        console.error('TechnicalSkillsDisplay: Erro ao carregar competências técnicas:', error);
       } finally {
         setIsLoading(false);
       }
