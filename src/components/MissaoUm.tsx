@@ -185,8 +185,9 @@ export const MissaoUm = ({ onComplete, userId }: MissaoUmProps) => {
       setIsCompleted(true);
       
       toast({
-        title: "Quiz Digital concluído!",
-        description: "Você ganhou 25 XP. Parabéns!",
+        title: "Medalha conquistada: Satélite",
+        description: "Você lançou seu primeiro satélite. A jornada começou!",
+        duration: 6000,
       });
 
       onComplete();

@@ -204,7 +204,9 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
       }
 
       toast({
-        title: "Medalha conquistada: Galáxia"
+        title: "Medalha conquistada: Galáxia",
+        description: "Você explorou uma galáxia inteira. Imensidão sob controle!",
+        duration: 6000,
       });
       onComplete();
     } catch (error) {

@@ -156,7 +156,9 @@ export const MissaoTres = ({ onComplete }: MissaoTresProps) => {
       setIsCompleted(true);
       
       toast({
-        title: "Medalha conquistada: Estrela"
+        title: "Medalha conquistada: Estrela",
+        description: "Você dominou uma estrela. Brilho de um verdadeiro mestre!",
+        duration: 6000,
       });
 
       onComplete();
