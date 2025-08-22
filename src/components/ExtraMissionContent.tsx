@@ -16,6 +16,7 @@ export const ExtraMissionContent = ({ userName, onBack }: ExtraMissionContentPro
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [wantToParticipate, setWantToParticipate] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showDeclineMessage, setShowDeclineMessage] = useState(false);
 
   const handleSubmit = async () => {
     if (!acceptedTerms && wantToParticipate) {
@@ -51,14 +52,16 @@ export const ExtraMissionContent = ({ userName, onBack }: ExtraMissionContentPro
 
       if (error) throw error;
 
-      toast({
-        title: "Sucesso",
-        description: wantToParticipate 
-          ? "Inscrição no Fast Track realizada com sucesso!" 
-          : "Resposta registrada com sucesso.",
-      });
-
-      onBack();
+      if (!wantToParticipate) {
+        // Show decline message instead of closing
+        setShowDeclineMessage(true);
+      } else {
+        toast({
+          title: "Sucesso",
+          description: "Inscrição no Fast Track realizada com sucesso!",
+        });
+        onBack();
+      }
     } catch (error) {
       console.error('Erro ao salvar resposta:', error);
       toast({
@@ -104,6 +107,79 @@ export const ExtraMissionContent = ({ userName, onBack }: ExtraMissionContentPro
       </div>
     </div>
   );
+
+  // Show decline message screen
+  if (showDeclineMessage) {
+    return (
+      <div className="w-full h-full min-h-screen md:min-h-0 relative overflow-hidden">
+        <ScrollArea className="h-full w-full">
+          <div className="p-4 md:p-6">
+            <div className="mb-8">
+              <div className="relative overflow-hidden animate-epic-entry bg-background/95 backdrop-blur-sm border-2 border-cyan-400/30 bg-gradient-to-br from-cyan-500/10 to-purple-600/10 rounded-xl">
+                <div className="relative p-6 md:p-8">
+                  <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12 relative z-10">
+                    
+                    {/* Avatar do Cody */}
+                    <div className="flex-shrink-0 text-center lg:text-left">
+                      <div className="relative mb-6">
+                        <div className="w-32 h-32 sm:w-48 sm:h-48 md:w-64 md:h-64 lg:w-72 lg:h-72 rounded-full bg-gradient-to-r from-neon-purple via-neon-purple to-neon-cyan p-1 shadow-glow mx-auto lg:mx-0">
+                          <div className="w-full h-full rounded-full bg-background/20 backdrop-blur-xl overflow-hidden relative">
+                            <video 
+                              className="w-full h-full object-cover rounded-full"
+                              autoPlay
+                              muted
+                              loop
+                              playsInline
+                              preload="auto"
+                            >
+                              <source src="https://meta.cafeeadhost.com.br/Cody/hero-animation.mp4" type="video/mp4" />
+                            </video>
+                            <div className="absolute inset-0 rounded-full bg-gradient-to-t from-transparent via-transparent to-neon-cyan/10"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Mensagem de despedida */}
+                    <div className="flex-1 text-center lg:text-left space-y-4 sm:space-y-6 w-full">
+                      <div className="relative">
+                        <div 
+                          className="absolute inset-0 bg-gradient-to-r opacity-10 blur-sm rounded-lg"
+                          style={{ 
+                            background: 'linear-gradient(45deg, hsl(var(--primary))20, transparent, hsl(var(--primary))20)' 
+                          }}
+                        />
+                        <div className="relative text-foreground/90 leading-relaxed p-6 rounded-lg border border-border/50 bg-background/30 text-center">
+                          <div className="space-y-4">
+                            <h3 className="text-2xl font-bold text-cyan-300">Poxa</h3>
+                            <p className="text-lg">
+                              Tudo bem, entendemos que esse pode não ser o momento ideal para você.
+                            </p>
+                            <p className="text-lg">
+                              Seguimos juntos e nos encontraremos em uma próxima jornada digital!
+                            </p>
+                          </div>
+                          
+                          <div className="flex gap-4 pt-6">
+                            <Button
+                              onClick={onBack}
+                              className="w-full bg-cyan-600 hover:bg-cyan-700 text-white"
+                            >
+                              Continuar
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ScrollArea>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full h-full min-h-screen md:min-h-0 relative overflow-hidden">
