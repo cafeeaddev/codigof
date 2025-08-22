@@ -15,14 +15,10 @@ export const useMission5Eligibility = () => {
 
   useEffect(() => {
     const checkEligibility = async () => {
-      if (!user || !profile) {
-        setIsEligible(false);
-        setIsLoading(false);
-        return;
-      }
-
+      console.log('[useMission5Eligibility] Starting check, user:', !!user, 'profile:', !!profile);
+      
       try {
-        // 1. Verificar configurações da Missão 5
+        // 1. Verificar configurações da Missão 5 primeiro (independente do usuário)
         const { data: settings, error: settingsError } = await supabase
           .from('mission5_settings')
           .select('*')
@@ -31,22 +27,33 @@ export const useMission5Eligibility = () => {
           .single();
 
         if (settingsError) {
-          console.error('Erro ao buscar configurações da Missão 5:', settingsError);
+          console.log('[useMission5Eligibility] Settings error:', settingsError);
+          setMission5Settings(null);
           setIsEligible(false);
           setIsLoading(false);
           return;
         }
 
+        console.log('[useMission5Eligibility] Settings loaded:', settings);
         setMission5Settings(settings);
 
         // 2. Verificar se a Missão 5 está ativa e a data de liberação passou
         if (!settings.is_active || new Date(settings.release_date) > new Date()) {
+          console.log('[useMission5Eligibility] Mission 5 not active or future date');
           setIsEligible(false);
           setIsLoading(false);
           return;
         }
 
-        // 3. Verificar progresso do usuário
+        // 3. Se não há usuário/profile, não pode ser elegível mas loading pode terminar
+        if (!user || !profile) {
+          console.log('[useMission5Eligibility] No user or profile');
+          setIsEligible(false);
+          setIsLoading(false);
+          return;
+        }
+
+        // 4. Verificar progresso do usuário
         const { data: progress, error: progressError } = await supabase
           .from('user_progress')
           .select('*')
@@ -54,17 +61,21 @@ export const useMission5Eligibility = () => {
           .single();
 
         if (progressError) {
-          console.error('Erro ao buscar progresso do usuário:', progressError);
+          console.log('[useMission5Eligibility] Progress error:', progressError);
           setIsEligible(false);
           setIsLoading(false);
           return;
         }
 
-        // 4. Verificar se o usuário completou as 4 missões anteriores
+        console.log('[useMission5Eligibility] Progress loaded:', progress);
+
+        // 5. Verificar se o usuário completou as 4 missões anteriores
         const completedAllMissions = progress.missao_1_completed && 
                                    progress.missao_2_completed && 
                                    progress.missao_3_completed && 
                                    progress.missao_4_completed;
+
+        console.log('[useMission5Eligibility] Completed all missions:', completedAllMissions);
 
         if (!completedAllMissions) {
           setIsEligible(false);
@@ -72,16 +83,18 @@ export const useMission5Eligibility = () => {
           return;
         }
 
-        // 5. Verificar se já completou a Missão 5
+        // 6. Verificar se já completou a Missão 5
         if (progress.missao_5_completed) {
+          console.log('[useMission5Eligibility] Mission 5 already completed');
           setIsEligible(false);
           setIsLoading(false);
           return;
         }
 
-        // 6. Verificar se o perfil é diferente de "Beginner"
-        // Assumindo que o perfil final está em progress.final_profile
+        // 7. Verificar se o perfil é diferente de "Beginner"
         const profileLevel = progress.final_profile;
+        console.log('[useMission5Eligibility] Profile level:', profileLevel);
+        
         if (profileLevel === 'Beginner') {
           setIsEligible(false);
           setIsLoading(false);
@@ -89,17 +102,19 @@ export const useMission5Eligibility = () => {
         }
 
         // Se chegou até aqui, o usuário é elegível
+        console.log('[useMission5Eligibility] User is eligible!');
         setIsEligible(true);
       } catch (error) {
-        console.error('Erro ao verificar elegibilidade da Missão 5:', error);
+        console.error('[useMission5Eligibility] Error:', error);
         setIsEligible(false);
       } finally {
+        console.log('[useMission5Eligibility] Check completed, isEligible:', isEligible);
         setIsLoading(false);
       }
     };
 
     checkEligibility();
-  }, [user, profile]);
+  }, [user?.id, profile?.id]); // Only depend on IDs to avoid unnecessary re-runs
 
   return {
     isEligible,
