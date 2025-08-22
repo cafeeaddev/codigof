@@ -151,22 +151,13 @@ export const ExtraMissionContent = ({ userName, onBack }: ExtraMissionContentPro
                         />
                         <div className="relative text-foreground/90 leading-relaxed p-6 rounded-lg border border-border/50 bg-background/30 text-center">
                           <div className="space-y-4">
-                            <h3 className="text-2xl font-bold text-cyan-300">Poxa</h3>
+                            <h3 className="text-2xl font-bold text-cyan-300">Poxa 🙁!!</h3>
                             <p className="text-lg">
                               Tudo bem, entendemos que esse pode não ser o momento ideal para você.
                             </p>
                             <p className="text-lg">
                               Seguimos juntos e nos encontraremos em uma próxima jornada digital!
                             </p>
-                          </div>
-                          
-                          <div className="flex gap-4 pt-6">
-                            <Button
-                              onClick={onBack}
-                              className="w-full bg-cyan-600 hover:bg-cyan-700 text-white"
-                            >
-                              Continuar
-                            </Button>
                           </div>
                         </div>
                       </div>
