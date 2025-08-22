@@ -1,10 +1,11 @@
-import { ScrollArea } from './ui/scroll-area';
+import { useState, useEffect } from 'react';
 import { Button } from './ui/button';
+import { ScrollArea } from './ui/scroll-area';
 import { Checkbox } from './ui/checkbox';
 import { Shield } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface ExtraMissionContentProps {
   userName: string;
@@ -14,6 +15,7 @@ interface ExtraMissionContentProps {
 
 export const ExtraMissionContent = ({ userName, onBack, onDeclineShown }: ExtraMissionContentProps) => {
   const { toast } = useToast();
+  const { user } = useAuth();
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [wantToParticipate, setWantToParticipate] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -31,13 +33,13 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown }: ExtraM
 
     setIsSubmitting(true);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
+      if (!user?.id) {
         toast({
           title: "Erro",
           description: "Usuário não autenticado.",
           variant: "destructive",
         });
+        setIsSubmitting(false);
         return;
       }
 
