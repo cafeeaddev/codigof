@@ -167,12 +167,17 @@ export const GameSettings: React.FC<GameSettingsProps> = ({ className }) => {
 
     const releaseDate = new Date(extraMissionReleaseDate);
     const today = new Date();
-    const daysDiff = Math.floor((today.getTime() - releaseDate.getTime()) / (1000 * 60 * 60 * 24));
+    
+    // Zerar horas para comparação apenas de datas
+    releaseDate.setHours(0, 0, 0, 0);
+    today.setHours(0, 0, 0, 0);
+    
+    const daysDiff = Math.floor((releaseDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
 
     return {
       daysDiff,
-      isReleased: daysDiff >= 0,
-      status: daysDiff < 0 ? 'future' : daysDiff === 0 ? 'today' : 'released'
+      isReleased: daysDiff <= 0, // Liberada quando daysDiff é 0 ou negativo
+      status: daysDiff > 0 ? 'future' : daysDiff === 0 ? 'today' : 'released'
     };
   };
 
@@ -183,11 +188,11 @@ export const GameSettings: React.FC<GameSettingsProps> = ({ className }) => {
     
     switch (extraMissionInfo.status) {
       case 'future':
-        return `Missão Extra será liberada em ${Math.abs(extraMissionInfo.daysDiff)} dias`;
+        return `Missão Extra será liberada em ${extraMissionInfo.daysDiff} dias`;
       case 'today':
         return 'HOJE: Missão Extra foi liberada!';
       case 'released':
-        return `Missão Extra liberada há ${extraMissionInfo.daysDiff} dias`;
+        return `Missão Extra liberada há ${Math.abs(extraMissionInfo.daysDiff)} dias`;
       default:
         return 'Status desconhecido';
     }
