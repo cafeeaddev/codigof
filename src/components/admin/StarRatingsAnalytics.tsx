@@ -43,13 +43,18 @@ export const StarRatingsAnalytics = ({ responses, questions, profiles }: StarRat
 
       // 1. Processar questões 1-9 (universais) - múltipla escolha
       if (response.respostas?.answers) {
+        console.log('Checking answers for response:', response.email, response.respostas.answers);
         for (let i = 1; i <= 9; i++) {
-          const answerKey = `question${i}`;
+          const answerKey = `${i}`;  // Chave corrigida: usar apenas o número
           const answer = response.respostas.answers[answerKey];
+          
+          console.log(`Question ${i}: answerKey=${answerKey}, answer=${answer}`);
           
           if (answer) {
             const points = getPointsForAnswer(i, answer);
             const software = getSoftwareForQuestion(i);
+            
+            console.log(`Question ${i}: software=${software}, points=${points}`);
             
             if (points > 0) { // Só incluir se há pontuação válida
               ratings.push({
