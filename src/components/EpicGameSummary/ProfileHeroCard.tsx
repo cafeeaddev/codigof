@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { getProfileColor } from '@/lib/digitalProfile';
 import { cn } from '@/lib/utils';
 import { Brain, Zap, Star, Target, ChevronDown, ChevronUp, Medal, Trophy, Award, Check } from 'lucide-react';
+import MedalBadges from '../MedalBadges';
 import { ShareActions } from './ShareActions';
 
 interface Medal {
@@ -61,6 +62,15 @@ export const ProfileHeroCard: React.FC<ProfileHeroCardProps> = ({
 
   const ProfileIcon = getProfileIcon();
   const completedMedals = medals.filter(medal => medal.done).length;
+
+  // Convert medals array to MedalBadges format
+  const medalNames = medals.map(medal => medal.title);
+  const completed = {
+    m1: medals[0]?.done || false,
+    m2: medals[1]?.done || false,
+    m3: medals[2]?.done || false,
+    m4: medals[3]?.done || false,
+  };
 
   return (
     <div className={cn("relative", className)}>
@@ -176,6 +186,18 @@ export const ProfileHeroCard: React.FC<ProfileHeroCardProps> = ({
                 <span className="text-lg sm:text-xl lg:text-2xl xl:text-3xl font-bold" style={{ color: profileColor }}>
                   Seu Level é: {profile}
                 </span>
+              </div>
+              
+              {/* Medals Display */}
+              <div className="mt-6">
+                <MedalBadges
+                  completed={completed}
+                  medalNames={medalNames}
+                  size="md"
+                  showNames={true}
+                  showTitle={true}
+                  className="justify-center lg:justify-start"
+                />
               </div>
               
               {/* Share Actions */}
