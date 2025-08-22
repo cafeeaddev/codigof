@@ -9,6 +9,7 @@ import { toast } from '@/hooks/use-toast';
 import { ScrollArea } from './ui/scroll-area';
 import { useAuth } from '@/contexts/AuthContext';
 import { useMissionQuestions } from '@/hooks/useMissionQuestions';
+import { MedalEarnedDialog } from './MedalEarnedDialog';
 
 interface MissaoDoisProps {
   onComplete: () => void;
@@ -23,6 +24,7 @@ export const MissaoDois = ({ onComplete, userId }: MissaoDoisProps) => {
   const [isCompleted, setIsCompleted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [showMedalDialog, setShowMedalDialog] = useState(false);
 
   // Carregar progresso salvo ao iniciar
   useEffect(() => {
@@ -210,13 +212,7 @@ export const MissaoDois = ({ onComplete, userId }: MissaoDoisProps) => {
       if (progressError) throw progressError;
 
       setIsCompleted(true);
-      
-      toast({
-        title: "Práticas Digitais concluída!",
-        description: "Você ganhou 25 XP. Parabéns!",
-      });
-
-      onComplete();
+      setShowMedalDialog(true);
     } catch (error) {
       console.error('[MissaoDois] Error submitting quiz:', error);
       toast({
@@ -375,6 +371,18 @@ export const MissaoDois = ({ onComplete, userId }: MissaoDoisProps) => {
           )}
         </div>
       </div>
+
+      <MedalEarnedDialog
+        open={showMedalDialog}
+        onOpenChange={(open) => {
+          setShowMedalDialog(open);
+          if (!open) {
+            onComplete();
+          }
+        }}
+        missionLabel="Práticas Digitais"
+        xp={25}
+      />
     </div>
   );
 };

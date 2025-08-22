@@ -9,6 +9,7 @@ import { toast } from '@/hooks/use-toast';
 import { ScrollArea } from './ui/scroll-area';
 import { useAuth } from '@/contexts/AuthContext';
 import { useMissionQuestions } from '@/hooks/useMissionQuestions';
+import { MedalEarnedDialog } from './MedalEarnedDialog';
 
 interface MissaoTresProps {
   onComplete: () => void;
@@ -22,6 +23,7 @@ export const MissaoTres = ({ onComplete }: MissaoTresProps) => {
   const [isCompleted, setIsCompleted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [showMedalDialog, setShowMedalDialog] = useState(false);
 
   // Carregar progresso inicial
   useEffect(() => {
@@ -152,13 +154,7 @@ export const MissaoTres = ({ onComplete }: MissaoTresProps) => {
       if (progressError) throw progressError;
 
       setIsCompleted(true);
-      
-      toast({
-        title: "Desafios e Inovação concluída!",
-        description: "Você ganhou 25 XP. Parabéns!",
-      });
-
-      onComplete();
+      setShowMedalDialog(true);
     } catch (error) {
       console.error('Error submitting quiz:', error);
       toast({
@@ -307,6 +303,18 @@ export const MissaoTres = ({ onComplete }: MissaoTresProps) => {
           )}
         </div>
       </div>
+
+      <MedalEarnedDialog
+        open={showMedalDialog}
+        onOpenChange={(open) => {
+          setShowMedalDialog(open);
+          if (!open) {
+            onComplete();
+          }
+        }}
+        missionLabel="Desafios e Inovação"
+        xp={25}
+      />
     </div>
   );
 };
