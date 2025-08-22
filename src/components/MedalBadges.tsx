@@ -20,9 +20,20 @@ interface MedalBadgesProps {
   showMission5?: boolean; // controla se a 5ª medalha deve aparecer
 }
 
-export const MedalBadges: React.FC<MedalBadgesProps> = ({ completed, size = "md", className, medalNames, showNames = false, showTitle = false, showMission5 = false }) => {
-  const { isEligible: isMission5Eligible } = useMission5Eligibility();
-  
+interface MedalBadgesInternalProps extends MedalBadgesProps {
+  isMission5Eligible?: boolean;
+}
+
+const MedalBadgesInternal: React.FC<MedalBadgesInternalProps> = ({ 
+  completed, 
+  size = "md", 
+  className, 
+  medalNames, 
+  showNames = false, 
+  showTitle = false, 
+  showMission5 = false,
+  isMission5Eligible = false
+}) => {
   const defaultMedalNames = [
     "Satélite",
     "Planeta", 
@@ -133,6 +144,17 @@ export const MedalBadges: React.FC<MedalBadgesProps> = ({ completed, size = "md"
         )}
       </div>
     </TooltipProvider>
+  );
+};
+
+export const MedalBadges: React.FC<MedalBadgesProps> = (props) => {
+  const { isEligible: isMission5Eligible } = useMission5Eligibility();
+  
+  return (
+    <MedalBadgesInternal 
+      {...props} 
+      isMission5Eligible={isMission5Eligible} 
+    />
   );
 };
 
