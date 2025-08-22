@@ -4,14 +4,15 @@ import { Checkbox } from './ui/checkbox';
 import { Shield } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface ExtraMissionContentProps {
   userName: string;
   onBack: () => void;
+  onDeclineShown?: (isShown: boolean) => void;
 }
 
-export const ExtraMissionContent = ({ userName, onBack }: ExtraMissionContentProps) => {
+export const ExtraMissionContent = ({ userName, onBack, onDeclineShown }: ExtraMissionContentProps) => {
   const { toast } = useToast();
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [wantToParticipate, setWantToParticipate] = useState(true);
@@ -107,6 +108,11 @@ export const ExtraMissionContent = ({ userName, onBack }: ExtraMissionContentPro
       </div>
     </div>
   );
+
+  // Notify parent when decline message is shown/hidden
+  useEffect(() => {
+    onDeclineShown?.(showDeclineMessage);
+  }, [showDeclineMessage, onDeclineShown]);
 
   // Show decline message screen
   if (showDeclineMessage) {

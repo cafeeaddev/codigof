@@ -41,6 +41,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
   const [userProgress, setUserProgress] = useState({ total_xp: 0, completedMissionsCount: 0 });
   const [justCompleted, setJustCompleted] = useState<1 | 2 | 3 | 4 | null>(null);
   const [showExtraMissionScreen, setShowExtraMissionScreen] = useState(false);
+  const [isGameEnded, setIsGameEnded] = useState(false);
   const [showTutorial, setShowTutorial] = useState(false);
   const [codyVideoUrl, setCodyVideoUrl] = useState<string | null>(null);
   const [isLoadingProfile, setIsLoadingProfile] = useState(false);
@@ -769,7 +770,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                       key={missionId}
                        className={`relative p-4 rounded-lg border-2 transition-all duration-300 cursor-pointer hover:scale-105 ${
                          isExtraMission
-                           ? 'bg-cyan-500/20 border-cyan-400 hover:border-cyan-300 shadow-lg shadow-cyan-400/30 animate-pulse'
+                           ? (!isGameEnded ? 'bg-cyan-500/20 border-cyan-400 hover:border-cyan-300 shadow-lg shadow-cyan-400/30 animate-pulse' : 'bg-cyan-500/20 border-cyan-400 hover:border-cyan-300 shadow-lg shadow-cyan-400/30')
                            : isCompleted
                            ? 'bg-primary/20 border-primary shadow-sm hover:border-primary/80'
                            : isCurrent
@@ -789,10 +790,10 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                     >
                        <div className="flex items-center gap-2 mb-2">
                         <div className={`w-3 h-3 rounded-full ${
-                          isExtraMission ? 'bg-cyan-400 shadow-lg shadow-cyan-400/50 animate-pulse' : isCompleted ? 'bg-primary' : isCurrent ? 'bg-accent' : isLocked ? 'bg-muted-foreground/50' : 'bg-muted'
+                          isExtraMission ? (!isGameEnded ? 'bg-cyan-400 shadow-lg shadow-cyan-400/50 animate-pulse' : 'bg-cyan-400 shadow-lg shadow-cyan-400/50') : isCompleted ? 'bg-primary' : isCurrent ? 'bg-accent' : isLocked ? 'bg-muted-foreground/50' : 'bg-muted'
                         }`}></div>
                         <span className={`text-sm font-bold tracking-wider ${
-                          isExtraMission ? 'text-cyan-300 animate-pulse' : isCompleted ? 'text-primary' : isCurrent ? 'text-accent' : isLocked ? 'text-muted-foreground/70' : 'text-foreground'
+                          isExtraMission ? (!isGameEnded ? 'text-cyan-300 animate-pulse' : 'text-cyan-300') : isCompleted ? 'text-primary' : isCurrent ? 'text-accent' : isLocked ? 'text-muted-foreground/70' : 'text-foreground'
                         }`}>
                           {isExtraMission ? 'MISSÃO EXTRA' : `MISSÃO ${missionId}`}
                         </span>
@@ -819,7 +820,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                               const isAvailable = today >= releaseDate;
                               
                               return isAvailable 
-                                ? "Missão Liberada!" 
+                                ? "Fim do Jogo!" 
                                 : `Será Liberada em: ${releaseDate.toLocaleDateString('pt-BR')}`;
                             })()}
                           </span>
@@ -861,7 +862,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                           <Lock className="w-2.5 h-2.5 text-muted-foreground/70" />
                         </div>
                        ) : isExtraMission && showExtraMission ? (
-                        <div className="absolute top-2 right-2 w-4 h-4 bg-cyan-400 rounded-full flex items-center justify-center shadow-lg shadow-cyan-400/50 animate-pulse">
+                        <div className={`absolute top-2 right-2 w-4 h-4 bg-cyan-400 rounded-full flex items-center justify-center shadow-lg shadow-cyan-400/50 ${!isGameEnded ? 'animate-pulse' : ''}`}>
                           <svg className="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                           </svg>
@@ -930,6 +931,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                           setShowExtraMissionScreen(false);
                           setCurrentMission(1);
                         }}
+                        onDeclineShown={setIsGameEnded}
                       />
                     ) : showGameSummary || (completedMissions.size === 4 && gameData) ? (
                       <GameSummaryContent gameData={gameData} userId={userId} onXpUpdate={handleXpUpdate} />
@@ -1023,6 +1025,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                         setShowExtraMissionScreen(false);
                         setCurrentMission(1);
                       }}
+                      onDeclineShown={setIsGameEnded}
                     />
                   ) : isLoadingProfile ? (
                     <div className="h-full flex flex-col items-center justify-center space-y-4">
