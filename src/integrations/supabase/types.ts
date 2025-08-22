@@ -485,53 +485,7 @@ export type Database = {
       }
     }
     Views: {
-      profiles_secure_view: {
-        Row: {
-          area: string | null
-          area_id: string | null
-          cargo: string | null
-          cpf_masked: string | null
-          created_at: string | null
-          email: string | null
-          id: string | null
-          nome: string | null
-          updated_at: string | null
-          user_id: string | null
-        }
-        Insert: {
-          area?: string | null
-          area_id?: string | null
-          cargo?: string | null
-          cpf_masked?: never
-          created_at?: string | null
-          email?: string | null
-          id?: string | null
-          nome?: string | null
-          updated_at?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          area?: string | null
-          area_id?: string | null
-          cargo?: string | null
-          cpf_masked?: never
-          created_at?: string | null
-          email?: string | null
-          id?: string | null
-          nome?: string | null
-          updated_at?: string | null
-          user_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "profiles_area_id_fkey"
-            columns: ["area_id"]
-            isOneToOne: false
-            referencedRelation: "areas"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
+      [_ in never]: never
     }
     Functions: {
       get_masked_profiles: {
