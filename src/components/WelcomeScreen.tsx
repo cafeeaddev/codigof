@@ -747,31 +747,35 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                   return (
                      <div
                       key={missionId}
-                      className={`relative p-4 rounded-lg border-2 transition-all duration-300 ${
-                        isExtraMission
-                          ? 'bg-blue-500/20 border-blue-400/60 shadow-blue-400/20 shadow-lg animate-pulse'
-                          : isCompleted
-                          ? 'bg-primary/20 border-primary shadow-sm'
-                          : isCurrent
-                          ? 'bg-accent/20 border-accent shadow-sm'
-                          : isLocked
-                          ? 'bg-muted/30 border-muted-foreground/30 opacity-60'
-                          : 'bg-card border-secondary/50'
-                      }`}
+                       className={`relative p-4 rounded-lg border-2 transition-all duration-300 cursor-pointer hover:scale-105 ${
+                         isExtraMission
+                           ? 'bg-gradient-to-br from-blue-500/20 to-purple-500/20 border-blue-400 hover:border-blue-300 shadow-lg shadow-blue-400/30 animate-pulse'
+                           : isCompleted
+                           ? 'bg-primary/20 border-primary shadow-sm hover:border-primary/80'
+                           : isCurrent
+                           ? 'bg-accent/20 border-accent shadow-sm hover:border-accent/80 ring-2 ring-accent/30'
+                           : isLocked
+                           ? 'bg-muted/30 border-muted-foreground/30 opacity-60'
+                           : 'bg-card border-secondary/50 hover:border-accent/50'
+                       }`}
                     >
                        <div className="flex items-center gap-2 mb-2">
                         <div className={`w-3 h-3 rounded-full ${
-                          isExtraMission ? 'bg-blue-400 shadow-blue-400/50 shadow-md' : isCompleted ? 'bg-primary' : isCurrent ? 'bg-accent' : isLocked ? 'bg-muted-foreground/50' : 'bg-muted'
+                          isExtraMission ? 'bg-gradient-to-r from-blue-400 to-purple-400 shadow-lg shadow-blue-400/50 animate-pulse' : isCompleted ? 'bg-primary' : isCurrent ? 'bg-accent' : isLocked ? 'bg-muted-foreground/50' : 'bg-muted'
                         }`}></div>
                         <span className={`text-sm font-bold tracking-wider ${
-                          isExtraMission ? 'text-blue-300' : isCompleted ? 'text-primary' : isCurrent ? 'text-accent' : isLocked ? 'text-muted-foreground/70' : 'text-foreground'
+                          isExtraMission ? 'text-transparent bg-gradient-to-r from-blue-300 to-purple-300 bg-clip-text animate-pulse' : isCompleted ? 'text-primary' : isCurrent ? 'text-accent' : isLocked ? 'text-muted-foreground/70' : 'text-foreground'
                         }`}>
                           {isExtraMission ? 'MISSÃO EXTRA' : `MISSÃO ${missionId}`}
                         </span>
                       </div>
                       
                       <div className={`text-xs mb-2 font-medium ${
-                        isExtraMission ? 'text-blue-200' : isCompleted ? 'text-primary/80' : isCurrent ? 'text-accent/80' : isLocked ? 'text-muted-foreground/60' : 'text-foreground/70'
+                        isExtraMission 
+                          ? isExtraMissionAvailable 
+                            ? 'text-blue-300 font-bold' 
+                            : 'text-blue-200/60' 
+                          : isCompleted ? 'text-primary/80' : isCurrent ? 'text-accent/80' : isLocked ? 'text-muted-foreground/60' : 'text-foreground/70'
                       }`}>
                         {missionId === 1 && "Como você encara o digital?"}
                         {missionId === 2 && "O digital no seu dia a dia"}
@@ -795,7 +799,11 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                       </div>
                       
                       <div className={`text-xs mb-2 ${
-                        isExtraMission ? 'text-blue-300' : isCompleted ? 'text-primary' : isCurrent ? 'text-accent' : 'text-muted-foreground'
+                        isExtraMission 
+                          ? isExtraMissionAvailable 
+                            ? 'text-blue-200 font-semibold' 
+                            : 'text-blue-300/50' 
+                          : isCompleted ? 'text-primary' : isCurrent ? 'text-accent' : 'text-muted-foreground'
                       }`}>
                         {isExtraMission ? 'Aliança' : 'Vale 25 XP'}
                       </div>
@@ -804,14 +812,11 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                       <div className="w-full bg-muted/30 rounded-full h-2">
                         <div
                           className={`h-2 rounded-full transition-all duration-500 ${
-                            isExtraMission ? (() => {
-                              const today = new Date();
-                              const releaseDate = new Date(extraMissionReleaseDate);
-                              today.setHours(0, 0, 0, 0);
-                              releaseDate.setHours(0, 0, 0, 0);
-                              const isAvailable = today >= releaseDate;
-                              return isAvailable ? 'bg-blue-400 w-full' : 'bg-blue-400/30 w-0';
-                            })() : isCompleted ? 'bg-primary w-full' : isCurrent ? 'bg-accent w-1/2' : 'bg-muted w-0'
+                            isExtraMission 
+                              ? isExtraMissionAvailable 
+                                ? 'bg-gradient-to-r from-blue-400 to-purple-400 w-full shadow-lg shadow-blue-400/50' 
+                                : 'bg-blue-400/30 w-0'
+                              : isCompleted ? 'bg-primary w-full' : isCurrent ? 'bg-accent w-1/2' : 'bg-muted w-0'
                           }`}
                         ></div>
                       </div>
@@ -823,15 +828,15 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                             <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                           </svg>
                         </div>
-                      ) : (isLocked || (isExtraMission && (() => {
-                        const today = new Date();
-                        const releaseDate = new Date(extraMissionReleaseDate);
-                        today.setHours(0, 0, 0, 0);
-                        releaseDate.setHours(0, 0, 0, 0);
-                        return today < releaseDate;
-                      })())) ? (
+                      ) : (isLocked || (isExtraMission && !isExtraMissionAvailable)) ? (
                         <div className="absolute top-2 right-2 w-4 h-4 bg-muted-foreground/50 rounded-full flex items-center justify-center">
                           <Lock className="w-2.5 h-2.5 text-muted-foreground/70" />
+                        </div>
+                      ) : isExtraMission && isExtraMissionAvailable ? (
+                        <div className="absolute top-2 right-2 w-4 h-4 bg-gradient-to-br from-blue-400 to-purple-400 rounded-full flex items-center justify-center shadow-lg shadow-blue-400/50 animate-pulse">
+                          <svg className="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                          </svg>
                         </div>
                       ) : null}
                     </div>
