@@ -779,7 +779,17 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                         {missionId === 4 && "Seu Radar de Ferramentas"}
                         {missionId === 5 && extraMissionReleaseDate && (
                           <span>
-                            Será Liberada em: {new Date(extraMissionReleaseDate).toLocaleDateString('pt-BR')}
+                            {(() => {
+                              const today = new Date();
+                              const releaseDate = new Date(extraMissionReleaseDate);
+                              today.setHours(0, 0, 0, 0);
+                              releaseDate.setHours(0, 0, 0, 0);
+                              const isAvailable = today >= releaseDate;
+                              
+                              return isAvailable 
+                                ? "Missão Liberada!" 
+                                : `Será Liberada em: ${releaseDate.toLocaleDateString('pt-BR')}`;
+                            })()}
                           </span>
                         )}
                       </div>
@@ -794,7 +804,14 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                       <div className="w-full bg-muted/30 rounded-full h-2">
                         <div
                           className={`h-2 rounded-full transition-all duration-500 ${
-                            isExtraMission ? 'bg-blue-400 w-0' : isCompleted ? 'bg-primary w-full' : isCurrent ? 'bg-accent w-1/2' : 'bg-muted w-0'
+                            isExtraMission ? (() => {
+                              const today = new Date();
+                              const releaseDate = new Date(extraMissionReleaseDate);
+                              today.setHours(0, 0, 0, 0);
+                              releaseDate.setHours(0, 0, 0, 0);
+                              const isAvailable = today >= releaseDate;
+                              return isAvailable ? 'bg-blue-400 w-full' : 'bg-blue-400/30 w-0';
+                            })() : isCompleted ? 'bg-primary w-full' : isCurrent ? 'bg-accent w-1/2' : 'bg-muted w-0'
                           }`}
                         ></div>
                       </div>
@@ -806,7 +823,13 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                             <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                           </svg>
                         </div>
-                      ) : (isLocked || isExtraMission) ? (
+                      ) : (isLocked || (isExtraMission && (() => {
+                        const today = new Date();
+                        const releaseDate = new Date(extraMissionReleaseDate);
+                        today.setHours(0, 0, 0, 0);
+                        releaseDate.setHours(0, 0, 0, 0);
+                        return today < releaseDate;
+                      })())) ? (
                         <div className="absolute top-2 right-2 w-4 h-4 bg-muted-foreground/50 rounded-full flex items-center justify-center">
                           <Lock className="w-2.5 h-2.5 text-muted-foreground/70" />
                         </div>
