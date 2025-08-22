@@ -50,7 +50,7 @@ export const useMissionScores = (
       }
     }
 
-    // Calcular pontuação da Missão 3 (máximo 25 pontos)
+    // Calcular pontuação da Missão 3 (máximo 20 pontos)
     if (missionsCompleted.missao_3_completed) {
       const mission3Response = responses3.find(r => r.email === userEmail);
       if (mission3Response && Array.isArray(mission3Response.respostas)) {
@@ -75,12 +75,12 @@ export const useMissionScores = (
       },
       mission3: {
         score: parseFloat(mission3Score.toFixed(1)),
-        maxScore: 25,
+        maxScore: 20,
         completed: missionsCompleted.missao_3_completed
       },
       total: {
         score: parseFloat(totalScore.toFixed(1)),
-        maxScore: 60
+        maxScore: 55
       }
     };
   }, [userEmail, responses1, responses2, responses3, missionsCompleted]);

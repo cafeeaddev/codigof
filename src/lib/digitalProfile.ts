@@ -3,13 +3,14 @@ import { supabase } from '@/integrations/supabase/client';
 export type ProfileName = 'Beginner' | 'Beginner +' | 'Explorer' | 'Pro-Player' | 'Ninja';
 
 export const getDigitalProfile = (totalScore: number) => {
-  if (totalScore >= 57) return { profile: 'Ninja' as const, sublevel: 'Ninja Raiz™ 😎' };
-  if (totalScore >= 52) return { profile: 'Ninja' as const, sublevel: 'Consolidação' };
-  if (totalScore >= 42) return { profile: 'Pro-Player' as const, sublevel: 'Transição → Ninja' };
-  if (totalScore >= 37) return { profile: 'Pro-Player' as const, sublevel: 'Início/Consolidado' };
-  if (totalScore >= 31) return { profile: 'Explorer' as const, sublevel: 'Transição → Pro-Player' };
-  if (totalScore >= 25) return { profile: 'Explorer' as const, sublevel: 'Início' };
-  if (totalScore >= 18) return { profile: 'Beginner +' as const, sublevel: 'Transição → Explorer' };
+  // Ajustado para pontuação máxima de 55 pontos (era 60)
+  if (totalScore >= 52) return { profile: 'Ninja' as const, sublevel: 'Ninja Raiz™ 😎' };
+  if (totalScore >= 47) return { profile: 'Ninja' as const, sublevel: 'Consolidação' };
+  if (totalScore >= 38) return { profile: 'Pro-Player' as const, sublevel: 'Transição → Ninja' };
+  if (totalScore >= 34) return { profile: 'Pro-Player' as const, sublevel: 'Início/Consolidado' };
+  if (totalScore >= 28) return { profile: 'Explorer' as const, sublevel: 'Transição → Pro-Player' };
+  if (totalScore >= 23) return { profile: 'Explorer' as const, sublevel: 'Início' };
+  if (totalScore >= 16) return { profile: 'Beginner +' as const, sublevel: 'Transição → Explorer' };
   return { profile: 'Beginner' as const, sublevel: 'Início' };
 };
 

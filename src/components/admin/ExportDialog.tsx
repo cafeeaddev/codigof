@@ -89,7 +89,7 @@ export const ExportDialog = ({
         'tempo_de_jogo_(min)': Math.floor((progress.total_play_time || 0) / 60),
         missão_1: progress.missao_1_completed ? 'Concluída' : `${progress.missao_1_current_question}/4`,
         missão_2: progress.missao_2_completed ? 'Concluída' : `${progress.missao_2_current_question}/3`,
-        missão_3: progress.missao_3_completed ? 'Concluída' : `${progress.missao_3_current_question}/5`,
+        missão_3: progress.missao_3_completed ? 'Concluída' : `${progress.missao_3_current_question}/4`,
         missão_4: progress.missao_4_completed ? 'Concluída' : `${progress.missao_4_current_question}/5`
       };
     });
