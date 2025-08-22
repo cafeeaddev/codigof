@@ -74,6 +74,39 @@ export type Database = {
         }
         Relationships: []
       }
+      fast_track_terms_responses: {
+        Row: {
+          accepted_terms: boolean
+          created_at: string
+          email: string
+          id: string
+          nome: string
+          updated_at: string
+          user_id: string | null
+          want_to_participate: boolean
+        }
+        Insert: {
+          accepted_terms?: boolean
+          created_at?: string
+          email: string
+          id?: string
+          nome: string
+          updated_at?: string
+          user_id?: string | null
+          want_to_participate?: boolean
+        }
+        Update: {
+          accepted_terms?: boolean
+          created_at?: string
+          email?: string
+          id?: string
+          nome?: string
+          updated_at?: string
+          user_id?: string | null
+          want_to_participate?: boolean
+        }
+        Relationships: []
+      }
       game_settings: {
         Row: {
           created_at: string
