@@ -744,7 +744,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                       key={missionId}
                       className={`relative p-4 rounded-lg border-2 transition-all duration-300 ${
                         isExtraMission
-                          ? 'bg-muted/30 border-muted-foreground/30 opacity-60'
+                          ? 'bg-muted/30 border-muted-foreground/30 opacity-60 animate-pulse'
                           : isCompleted
                           ? 'bg-primary/20 border-primary shadow-sm'
                           : isCurrent
@@ -772,13 +772,17 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                         {missionId === 2 && "O digital no seu dia a dia"}
                         {missionId === 3 && "Quando o desafio é maior"}
                         {missionId === 4 && "Seu Radar de Ferramentas"}
-                        {missionId === 5 && "Em breve..."}
+                        {missionId === 5 && extraMissionReleaseDate && (
+                          <span>
+                            Será Liberada em: {new Date(extraMissionReleaseDate).toLocaleDateString('pt-BR')}
+                          </span>
+                        )}
                       </div>
                       
                       <div className={`text-xs mb-2 ${
                         isExtraMission ? 'text-muted-foreground' : isCompleted ? 'text-primary' : isCurrent ? 'text-accent' : 'text-muted-foreground'
                       }`}>
-                        {isExtraMission ? 'Novos desafios' : 'Vale 25 XP'}
+                        {isExtraMission ? 'Aliança' : 'Vale 25 XP'}
                       </div>
                       
                       {/* Barra de Progresso */}
