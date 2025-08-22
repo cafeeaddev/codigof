@@ -1,7 +1,10 @@
 import { ScrollArea } from './ui/scroll-area';
-import { ProfileHeroCard } from './EpicGameSummary/ProfileHeroCard';
 import { Button } from './ui/button';
-import { ArrowLeft, Shield } from 'lucide-react';
+import { Checkbox } from './ui/checkbox';
+import { Shield } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
+import { useState } from 'react';
 
 interface ExtraMissionContentProps {
   userName: string;
