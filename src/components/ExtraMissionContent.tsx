@@ -129,8 +129,53 @@ export const ExtraMissionContent = ({ userName, onBack }: ExtraMissionContentPro
                       />
                       <div className="relative text-foreground/90 leading-relaxed p-6 rounded-lg border border-border/50 bg-background/30">
                         <h3 className="text-xl font-bold text-cyan-300 mb-4">Fast Track do Código F - Termos de Participação</h3>
-                        <div className="text-sm whitespace-pre-line text-left">
+                        <div className="text-sm whitespace-pre-line text-left mb-6">
                           {termsText}
+                        </div>
+
+                        {/* Formulário de aceitação */}
+                        <div className="space-y-6 pt-4 border-t border-cyan-400/20">
+                          <div className="flex items-start space-x-3">
+                            <Checkbox
+                              id="accept-terms"
+                              checked={acceptedTerms}
+                              onCheckedChange={(checked) => setAcceptedTerms(checked as boolean)}
+                              className="mt-1"
+                            />
+                            <label htmlFor="accept-terms" className="text-sm text-foreground/90 cursor-pointer">
+                              Li e concordo com os termos acima.
+                            </label>
+                          </div>
+
+                          <div className="flex items-start space-x-3">
+                            <Checkbox
+                              id="want-participate"
+                              checked={!wantToParticipate}
+                              onCheckedChange={(checked) => setWantToParticipate(!checked)}
+                              className="mt-1"
+                            />
+                            <label htmlFor="want-participate" className="text-sm text-foreground/90 cursor-pointer">
+                              Não quero Participar
+                            </label>
+                          </div>
+
+                          <div className="flex gap-4 pt-4">
+                            <Button
+                              onClick={handleSubmit}
+                              disabled={isSubmitting}
+                              className="flex-1 bg-cyan-600 hover:bg-cyan-700 text-white"
+                            >
+                              {isSubmitting ? 'Enviando...' : 'Confirmar'}
+                            </Button>
+                            
+                            <Button
+                              onClick={onBack}
+                              variant="outline"
+                              className="flex-1 border-cyan-400/50 text-cyan-300 hover:bg-cyan-400/10"
+                            >
+                              Voltar
+                            </Button>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -140,52 +185,6 @@ export const ExtraMissionContent = ({ userName, onBack }: ExtraMissionContentPro
             </div>
           </div>
 
-          {/* Formulário de aceitação */}
-          <div className="bg-card/50 backdrop-blur-sm rounded-xl border border-cyan-400/20 p-8">
-            <div className="space-y-6">
-              <div className="flex items-start space-x-3">
-                <Checkbox
-                  id="accept-terms"
-                  checked={acceptedTerms}
-                  onCheckedChange={(checked) => setAcceptedTerms(checked as boolean)}
-                  className="mt-1"
-                />
-                <label htmlFor="accept-terms" className="text-sm text-foreground/90 cursor-pointer">
-                  Li e concordo com os termos acima.
-                </label>
-              </div>
-
-              <div className="flex items-start space-x-3">
-                <Checkbox
-                  id="want-participate"
-                  checked={!wantToParticipate}
-                  onCheckedChange={(checked) => setWantToParticipate(!checked)}
-                  className="mt-1"
-                />
-                <label htmlFor="want-participate" className="text-sm text-foreground/90 cursor-pointer">
-                  Não quero Participar
-                </label>
-              </div>
-
-              <div className="flex gap-4 pt-4">
-                <Button
-                  onClick={handleSubmit}
-                  disabled={isSubmitting}
-                  className="flex-1 bg-cyan-600 hover:bg-cyan-700 text-white"
-                >
-                  {isSubmitting ? 'Enviando...' : 'Confirmar'}
-                </Button>
-                
-                <Button
-                  onClick={onBack}
-                  variant="outline"
-                  className="flex-1 border-cyan-400/50 text-cyan-300 hover:bg-cyan-400/10"
-                >
-                  Voltar
-                </Button>
-              </div>
-            </div>
-          </div>
         </div>
       </ScrollArea>
     </div>
