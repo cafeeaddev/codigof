@@ -140,7 +140,7 @@ export const ExtraMissionContent = ({ userName, onBack }: ExtraMissionContentPro
                     {/* Texto abaixo do Cody */}
                     <div className="text-center">
                       <p className="text-lg font-semibold text-cyan-300">
-                        Pronto para essa etapa final?
+                        Pronto para esta etapa final?
                       </p>
                     </div>
                   </div>
@@ -182,7 +182,7 @@ export const ExtraMissionContent = ({ userName, onBack }: ExtraMissionContentPro
                               className="mt-1"
                             />
                             <label htmlFor="want-participate" className="text-sm text-foreground/90 cursor-pointer">
-                              Não quero Participar
+                              Não concordo e não vou participar
                             </label>
                           </div>
 
