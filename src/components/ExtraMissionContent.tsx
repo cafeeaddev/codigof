@@ -71,19 +71,39 @@ export const ExtraMissionContent = ({ userName, onBack }: ExtraMissionContentPro
     }
   };
 
-  const termsText = `Ao me inscrever no Fast Track do Código F, declaro estar ciente e de acordo com os seguintes compromissos:
+  const termsContent = (
+    <div className="space-y-4 text-sm">
+      <p className="font-medium">
+        Ao me inscrever no Fast Track do Código F, declaro estar ciente e de acordo com os seguintes compromissos:
+      </p>
+      
+      <div className="space-y-4">
+        <div>
+          <h4 className="font-semibold text-cyan-300 mb-2">1. Participação e Dedicação</h4>
+          <ul className="ml-4 space-y-1 list-disc text-foreground/90">
+            <li>Participar de, no mínimo, 75% das atividades previstas (palestras, tech labs, desafios e encontros).</li>
+            <li>Dedicar às atividades, estudos e desafios da trilha, incluindo aplicação prática dos aprendizados em meus projetos, desde que haja prévia comunicação ao gestor e à TI.</li>
+          </ul>
+        </div>
 
-1. Participação e Dedicação
-• Participar de, no mínimo, 75% das atividades previstas (palestras, tech labs, desafios e encontros).
-• Dedicar às atividades, estudos e desafios da trilha, incluindo aplicação prática dos aprendizados em meus projetos, desde que haja prévia comunicação ao gestor e à TI.
+        <div>
+          <h4 className="font-semibold text-cyan-300 mb-2">2. Aprendizado Ativo e Ética</h4>
+          <ul className="ml-4 space-y-1 list-disc text-foreground/90">
+            <li>Comprometer-se com exploração, curiosidade e aprendizado contínuo.</li>
+            <li>Respeitar princípios éticos, confidencialidade e propriedade intelectual, bem como diretrizes internas de cybersegurança, especialmente em atividades colaborativas.</li>
+            <li>Aplicar os aprendizados de forma prática, explorando ferramentas digitais e soluções de IA propostas pelo programa, integrando os conceitos do programa à minha prática, desde que haja prévia comunicação ao gestor e à TI.</li>
+          </ul>
+        </div>
 
-2. Aprendizado Ativo e Ética
-• Comprometer-se com exploração, curiosidade e aprendizado contínuo.
-• Respeitar princípios éticos, confidencialidade e propriedade intelectual, bem como diretrizes internas de cybersegurança, especialmente em atividades colaborativas.
-• Aplicar os aprendizados de forma prática, explorando ferramentas digitais e soluções de IA propostas pelo programa, integrando os conceitos do programa à minha prática, desde que haja prévia comunicação ao gestor e à TI.
-
-3. Acompanhamento e Feedback
-• Estar disponível para mentorias, avaliações de progresso e sessões de feedback oferecidas pelo programa.`;
+        <div>
+          <h4 className="font-semibold text-cyan-300 mb-2">3. Acompanhamento e Feedback</h4>
+          <ul className="ml-4 space-y-1 list-disc text-foreground/90">
+            <li>Estar disponível para mentorias, avaliações de progresso e sessões de feedback oferecidas pelo programa.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <div className="w-full h-full relative overflow-hidden">
@@ -136,8 +156,8 @@ export const ExtraMissionContent = ({ userName, onBack }: ExtraMissionContentPro
                       />
                       <div className="relative text-foreground/90 leading-relaxed p-6 rounded-lg border border-border/50 bg-background/30">
                         <h3 className="text-xl font-bold text-cyan-300 mb-4">Fast Track do Código F - Termos de Participação</h3>
-                        <div className="text-sm whitespace-pre-line text-left mb-6">
-                          {termsText}
+                        <div className="text-left mb-6">
+                          {termsContent}
                         </div>
 
                         {/* Formulário de aceitação */}
