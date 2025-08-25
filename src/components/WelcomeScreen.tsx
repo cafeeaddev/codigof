@@ -1198,7 +1198,8 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; u
   const [shouldAnimateXP, setShouldAnimateXP] = useState(false);
   const [currentXp, setCurrentXp] = useState(gameData.xp);
   
-  // Extra mission states (now handled by useExtraMissionState hook)
+  // Use extra mission hook
+  const { state: extraMissionState, releaseDate: extraMissionReleaseDate } = useExtraMissionState(userId, profile.profile);
   
   useEffect(() => {
     const loadPhrase = async () => {
@@ -1304,9 +1305,6 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; u
     }
   };
 
-  // Use extra mission hook
-  const { state: extraMissionState, releaseDate: extraMissionReleaseDate } = useExtraMissionState(userId, profile.profile);
-
   // Execute bonus check on component mount
   useEffect(() => {
     if (userId) {
@@ -1324,19 +1322,20 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; u
   const getExtraMissionDisplay = () => {
     switch (extraMissionState) {
       case 'available':
-        return { title: 'Missão Liberada', icon: '🌟', isClickable: true };
+        return { title: 'Missão Liberada!', icon: '🌟', isClickable: true, shouldPulse: true };
       case 'blocked':
         return { 
-          title: `Missão Bloqueada até: ${extraMissionReleaseDate ? new Date(extraMissionReleaseDate).toLocaleDateString('pt-BR') : ''}`, 
+          title: `Missão Bloqueada até ${extraMissionReleaseDate ? new Date(extraMissionReleaseDate).toLocaleDateString('pt-BR') : ''}`, 
           icon: '🔒', 
-          isClickable: false 
+          isClickable: false,
+          shouldPulse: true
         };
       case 'completed':
-        return { title: 'Fast Track', icon: '✅', isClickable: false };
+        return { title: 'Fast Track Completo', icon: '✅', isClickable: false, shouldPulse: false };
       case 'declined':
-        return { title: 'Fim do Jogo!', icon: '⚫', isClickable: false };
+        return { title: 'Fim do Jogo!', icon: '⚫', isClickable: false, shouldPulse: false };
       default:
-        return { title: 'Missão Extra', icon: '🌟', isClickable: false };
+        return { title: 'Missão Extra', icon: '🌟', isClickable: false, shouldPulse: false };
     }
   };
 
@@ -1421,41 +1420,60 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; u
                 {shouldShowExtraMission() && (() => {
                   const missionDisplay = getExtraMissionDisplay();
                   const isDeclined = extraMissionState === 'declined';
-                  const isBlocked = extraMissionState === 'blocked';
-                  const isAvailable = extraMissionState === 'available';
+                  const isCompleted = extraMissionState === 'completed';
                   
                   return (
                     <div
-                      className={`relative p-3 rounded-lg border-2 transition-all duration-300 ${
+                      className={`relative p-4 rounded-lg border-2 transition-all duration-300 ${
                         isDeclined 
-                          ? 'bg-gray-500/20 border-gray-400 cursor-default' 
-                          : isBlocked || !missionDisplay.isClickable
-                          ? 'bg-cyan-500/20 border-cyan-400 cursor-default'
-                          : 'bg-cyan-500/20 border-cyan-400 hover:border-cyan-300 shadow-lg shadow-cyan-400/30 cursor-pointer hover:scale-105'
-                      } ${(isAvailable || isBlocked) && !isDeclined ? 'animate-pulse' : ''}`}
+                          ? 'bg-gray-500/20 border-gray-400 cursor-default opacity-70' 
+                          : isCompleted
+                          ? 'bg-green-500/20 border-green-400 cursor-default'
+                          : 'bg-cyan-500/20 border-cyan-400 cursor-pointer hover:scale-105'
+                      } ${missionDisplay.shouldPulse && !isDeclined && !isCompleted ? 'animate-pulse' : ''}`}
                       onClick={() => {
-                        if (missionDisplay.isClickable) {
+                        if (missionDisplay.isClickable && extraMissionState === 'available') {
                           handleExtraMissionClick();
                         }
                       }}
                     >
-                      <div className="flex items-center gap-1 mb-1">
-                        <div className={`w-2 h-2 rounded-full ${
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className={`w-3 h-3 rounded-full ${
                           isDeclined 
                             ? 'bg-gray-400' 
-                            : 'bg-cyan-400 shadow-lg shadow-cyan-400/50'
-                        } ${(isAvailable || isBlocked) && !isDeclined ? 'animate-pulse' : ''}`} />
-                        <span className="text-xs font-medium">MISSÃO EXTRA</span>
+                            : isCompleted
+                            ? 'bg-green-400'
+                            : 'bg-cyan-400'
+                        } ${missionDisplay.shouldPulse && !isDeclined && !isCompleted ? 'animate-pulse shadow-lg shadow-cyan-400/50' : ''}`} />
+                        <span className={`text-sm font-medium ${
+                          isDeclined 
+                            ? 'text-gray-400' 
+                            : isCompleted
+                            ? 'text-green-400'
+                            : 'text-cyan-400'
+                        }`}>MISSÃO EXTRA</span>
                       </div>
                       
-                      <div className="text-center space-y-1">
-                        <div className="text-xs font-semibold text-cyan-400">
+                      <div className="text-center space-y-2">
+                        <div className={`text-xs font-semibold ${
+                          isDeclined 
+                            ? 'text-gray-400' 
+                            : isCompleted
+                            ? 'text-green-400'
+                            : 'text-cyan-400'
+                        }`}>
                           Aliança Digital
                         </div>
-                        <div className="text-lg">
+                        <div className="text-2xl mb-1">
                           {missionDisplay.icon}
                         </div>
-                        <div className="text-xs text-muted-foreground leading-tight">
+                        <div className={`text-xs leading-tight ${
+                          isDeclined 
+                            ? 'text-gray-500' 
+                            : isCompleted
+                            ? 'text-green-400/80'
+                            : 'text-cyan-300'
+                        }`}>
                           {missionDisplay.title}
                         </div>
                       </div>
