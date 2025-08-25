@@ -1268,21 +1268,21 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; u
   // Get mission display text based on state
   const getExtraMissionDisplay = () => {
     switch (gameSummaryExtraMissionState) {
+      case 'completed':
+        return { title: 'Missão Finalizada com Sucesso', icon: '🌟', isClickable: false, shouldPulse: false };
       case 'available':
-        return { title: 'Missão Finalizada com Sucesso', icon: '🌟', isClickable: true, shouldPulse: false };
+        return { title: 'Missão Extra', icon: '🎯', isClickable: true, shouldPulse: true };
       case 'blocked':
         return { 
           title: `Missão Bloqueada até ${extraMissionReleaseDate ? new Date(extraMissionReleaseDate).toLocaleDateString('pt-BR') : ''}`, 
           icon: '🔒', 
-          isClickable: false,
-          shouldPulse: true
+          isClickable: false, 
+          shouldPulse: false 
         };
-      case 'completed':
-        return { title: 'Fast Track Completo', icon: '✅', isClickable: false, shouldPulse: false };
       case 'declined':
-        return { title: 'Fim do Jogo!', icon: '⚫', isClickable: false, shouldPulse: false };
+        return { title: 'Missão Recusada', icon: '❌', isClickable: false, shouldPulse: false };
       default:
-        return { title: 'Missão Extra', icon: '🌟', isClickable: false, shouldPulse: false };
+        return { title: 'Missão Extra', icon: '🎯', isClickable: false, shouldPulse: false };
     }
   };
 
