@@ -43,6 +43,24 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown }: ExtraM
         return;
       }
 
+      // Check if response already exists to prevent duplicates
+      const { data: existingResponse } = await supabase
+        .from('fast_track_terms_responses')
+        .select('id')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      if (existingResponse) {
+        // User already responded, just update parent state
+        if (!wantToParticipate) {
+          setShowDeclineMessage(true);
+          onDeclineShown?.(true);
+        } else {
+          onBack();
+        }
+        return;
+      }
+
       const { error } = await supabase
         .from('fast_track_terms_responses')
         .insert({

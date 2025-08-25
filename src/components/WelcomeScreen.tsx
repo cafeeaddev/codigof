@@ -1086,8 +1086,13 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                         setCurrentMission(1);
                       }}
                       onDeclineShown={(declined) => {
-                        setIsGameEnded(declined);
+                        console.log('Setting userDeclinedFastTrack to:', declined);
                         setUserDeclinedFastTrack(declined);
+                        setIsGameEnded(declined);
+                        if (declined) {
+                          setShowExtraMissionScreen(false);
+                          setCurrentMission(1);
+                        }
                       }}
                     />
                   ) : isLoadingProfile ? (
