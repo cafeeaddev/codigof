@@ -1319,6 +1319,40 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; u
               className="max-w-none"
             />
 
+            {/* Extra Mission Card - Show when available */}
+            {shouldShowExtraMission() && (
+              <div className="mt-6">
+                {(() => {
+                  const extraMissionDisplay = getExtraMissionDisplay();
+                  return (
+                    <div 
+                      className={`
+                        bg-gradient-to-r from-purple-500/20 to-pink-500/20 
+                        border border-purple-500/30 rounded-xl p-6 
+                        text-center cursor-pointer transition-all duration-300
+                        ${extraMissionDisplay.isClickable ? 'hover:scale-105 hover:border-purple-400/50' : 'cursor-not-allowed opacity-70'}
+                        ${extraMissionDisplay.shouldPulse ? 'animate-pulse' : ''}
+                      `}
+                      onClick={extraMissionDisplay.isClickable ? handleExtraMissionClick : undefined}
+                    >
+                      <div className="text-4xl mb-2">{extraMissionDisplay.icon}</div>
+                      <h3 className="text-xl font-bold text-foreground mb-2">
+                        Fast Track Program
+                      </h3>
+                      <p className="text-muted-foreground">
+                        {extraMissionDisplay.title}
+                      </p>
+                      {extraMissionState === 'blocked' && extraMissionReleaseDate && (
+                        <p className="text-sm text-muted-foreground/70 mt-2">
+                          Disponível em: {new Date(extraMissionReleaseDate).toLocaleDateString('pt-BR')}
+                        </p>
+                      )}
+                    </div>
+                  );
+                })()}
+              </div>
+            )}
+
             {/* Spacer for better layout */}
             <div className="h-4"></div>
 
