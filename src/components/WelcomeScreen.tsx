@@ -750,7 +750,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                             ? (extraMissionState === 'declined'
                                 ? 'bg-muted/30 border-muted-foreground/30 opacity-60' 
                                 : isExtraMissionAvailable 
-                                  ? 'bg-cyan-500/20 border-cyan-400 hover:border-cyan-300 shadow-lg shadow-cyan-400/30 animate-pulse' 
+                                  ? 'bg-cyan-500/20 border-cyan-400 hover:border-cyan-300 shadow-lg shadow-cyan-400/30' 
                                   : 'bg-muted/30 border-muted-foreground/30 opacity-60')
                             : isCompleted
                            ? 'bg-primary/20 border-primary shadow-sm hover:border-primary/80'
@@ -775,7 +775,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                             ? extraMissionState === 'declined'
                               ? 'bg-muted-foreground/50' // Estado 3: Fim de Jogo
                               : isExtraMissionAvailable 
-                                ? 'bg-cyan-400 shadow-lg shadow-cyan-400/50 animate-pulse' // Estado 2: Liberada
+                                ? 'bg-cyan-400 shadow-lg shadow-cyan-400/50' // Estado 2: Liberada
                                 : 'bg-blue-400/30' // Estado 1: Bloqueada
                             : isCompleted ? 'bg-primary' : isCurrent ? 'bg-accent' : isLocked ? 'bg-muted-foreground/50' : 'bg-muted'
                         }`}></div>
@@ -784,7 +784,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                             ? extraMissionState === 'declined'
                               ? 'text-muted-foreground/70' // Estado 3: Fim de Jogo
                               : isExtraMissionAvailable 
-                                ? 'text-cyan-300 animate-pulse' // Estado 2: Liberada
+                                ? 'text-cyan-300' // Estado 2: Liberada
                                 : 'text-blue-300/60' // Estado 1: Bloqueada
                             : isCompleted ? 'text-primary' : isCurrent ? 'text-accent' : isLocked ? 'text-muted-foreground/70' : 'text-foreground'
                         }`}>
@@ -813,7 +813,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                               }
                               
                               if (extraMissionState === 'available') {
-                                return "Missão Liberada!";
+                                return "Missão Finalizada com Sucesso";
                               }
                               
                               const releaseDate = new Date(extraMissionReleaseDate + 'T00:00:00');
@@ -1265,7 +1265,7 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; u
   const getExtraMissionDisplay = () => {
     switch (gameSummaryExtraMissionState) {
       case 'available':
-        return { title: 'Missão Liberada!', icon: '🌟', isClickable: true, shouldPulse: true };
+        return { title: 'Missão Finalizada com Sucesso', icon: '🌟', isClickable: true, shouldPulse: false };
       case 'blocked':
         return { 
           title: `Missão Bloqueada até ${extraMissionReleaseDate ? new Date(extraMissionReleaseDate).toLocaleDateString('pt-BR') : ''}`, 
