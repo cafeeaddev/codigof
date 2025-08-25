@@ -11,9 +11,10 @@ interface ExtraMissionContentProps {
   userName: string;
   onBack: () => void;
   onDeclineShown?: (isShown: boolean) => void;
+  onResponseSubmitted?: () => void;
 }
 
-export const ExtraMissionContent = ({ userName, onBack, onDeclineShown }: ExtraMissionContentProps) => {
+export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onResponseSubmitted }: ExtraMissionContentProps) => {
   const { toast } = useToast();
   const { user } = useAuth();
   const [acceptedTerms, setAcceptedTerms] = useState(false);
@@ -72,6 +73,9 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown }: ExtraM
         });
 
       if (error) throw error;
+
+      // Notify parent that response was submitted
+      onResponseSubmitted?.();
 
       if (!wantToParticipate) {
         // Show decline message and notify parent immediately

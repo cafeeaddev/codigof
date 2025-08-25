@@ -57,10 +57,11 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
   });
   const [extraMissionReleaseDate, setExtraMissionReleaseDate] = useState<string | null>(null);
   const [userDeclinedFastTrack, setUserDeclinedFastTrack] = useState(false);
+  const [extraMissionRefreshTrigger, setExtraMissionRefreshTrigger] = useState(0);
   const UNLOCK_DELAY = 1000; // ms
   
   // Hook para estado da missão extra
-  const { state: extraMissionState, releaseDate: hookExtraMissionReleaseDate } = useExtraMissionState(userId, 'Unknown');
+  const { state: extraMissionState, releaseDate: hookExtraMissionReleaseDate, refreshState } = useExtraMissionState(userId, 'Unknown', extraMissionRefreshTrigger);
   useEffect(() => {
     const seen = localStorage.getItem('tutorialSeen');
     if (!seen) setShowTutorial(true);
@@ -944,6 +945,9 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                           setIsGameEnded(declined);
                           setUserDeclinedFastTrack(declined);
                         }}
+                        onResponseSubmitted={() => {
+                          setExtraMissionRefreshTrigger(prev => prev + 1);
+                        }}
                       />
                     ) : showGameSummary || (completedMissions.size === 4 && gameData) ? (
                       <GameSummaryContent gameData={gameData} userId={userId} onXpUpdate={handleXpUpdate} />
@@ -1041,11 +1045,10 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                         console.log('Setting userDeclinedFastTrack to:', declined);
                         setUserDeclinedFastTrack(declined);
                         setIsGameEnded(declined);
-                        if (declined) {
-                          setShowExtraMissionScreen(false);
-                          setCurrentMission(1);
-                        }
                       }}
+                       onResponseSubmitted={() => {
+                         setExtraMissionRefreshTrigger(prev => prev + 1);
+                       }}
                     />
                   ) : isLoadingProfile ? (
                     <div className="h-full flex flex-col items-center justify-center space-y-4">
