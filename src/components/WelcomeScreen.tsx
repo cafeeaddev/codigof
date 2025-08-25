@@ -351,7 +351,8 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
           .from('user_progress')
           .update({ 
             final_profile: profile,
-            final_score: score.total 
+            final_score: score.total,
+            game_base_xp: userProgress.total_xp
           })
           .eq('user_id', userId);
       } catch (error) {
