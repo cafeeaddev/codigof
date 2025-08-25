@@ -275,6 +275,20 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
     loadUserProgress();
   }, [userId]);
 
+  // Listen for extra mission event from GameSummaryContent
+  useEffect(() => {
+    const handleStartExtraMission = () => {
+      setCurrentMission(5);
+      setShowExtraMissionScreen(true);
+    };
+
+    window.addEventListener('startExtraMission', handleStartExtraMission);
+    
+    return () => {
+      window.removeEventListener('startExtraMission', handleStartExtraMission);
+    };
+  }, []);
+
   const loadGameSummaryData = async () => {
     try {
       if (!userId) return;
@@ -1183,6 +1197,10 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; u
   const [shouldAnimateXP, setShouldAnimateXP] = useState(false);
   const [currentXp, setCurrentXp] = useState(gameData.xp);
   
+  // Extra mission states
+  const [extraMissionReleaseDate, setExtraMissionReleaseDate] = useState<string | null>(null);
+  const [mission5Completed, setMission5Completed] = useState(false);
+  
   useEffect(() => {
     const loadPhrase = async () => {
       const profilePhrase = await getProfilePhrase(profile.profile, profile.sublevel);
@@ -1287,6 +1305,36 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; u
     }
   };
 
+  // Load extra mission settings and check completion status
+  useEffect(() => {
+    const loadExtraMissionData = async () => {
+      try {
+        // Load game settings for extra mission release date
+        const { data: gameSettings } = await supabase
+          .from('game_settings')
+          .select('extra_mission_release_date')
+          .single();
+        
+        setExtraMissionReleaseDate(gameSettings?.extra_mission_release_date || null);
+        
+        // Check if user completed mission 5
+        if (userId) {
+          const { data: progress } = await supabase
+            .from('user_progress')
+            .select('missao_5_completed')
+            .eq('user_id', userId)
+            .single();
+          
+          setMission5Completed(progress?.missao_5_completed || false);
+        }
+      } catch (error) {
+        console.error('Error loading extra mission data:', error);
+      }
+    };
+    
+    loadExtraMissionData();
+  }, [userId]);
+
   // Execute bonus check on component mount
   useEffect(() => {
     if (userId) {
@@ -1295,13 +1343,39 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; u
     }
   }, [userId]);
   
+  // Check if extra mission should be shown
+  const shouldShowExtraMission = () => {
+    // Only show for non-Beginner users
+    if (profile.profile === 'Beginner') return false;
+    
+    // Must have release date configured
+    if (!extraMissionReleaseDate) return false;
+    
+    // Check if release date has passed
+    const today = new Date();
+    const releaseDate = new Date(extraMissionReleaseDate + 'T00:00:00');
+    today.setHours(0, 0, 0, 0);
+    releaseDate.setHours(0, 0, 0, 0);
+    
+    return today >= releaseDate;
+  };
+
+  // Navigate to extra mission
+  const handleExtraMissionClick = () => {
+    // This will trigger the parent component to show the extra mission
+    window.dispatchEvent(new CustomEvent('startExtraMission'));
+  };
+  
   console.log('DEBUG GameSummary:', { 
     score: gameData.score.total, 
     profile: profile.profile, 
     sublevel: profile.sublevel, 
     phrase,
     currentXp,
-    timeBonus
+    timeBonus,
+    shouldShowExtra: shouldShowExtraMission(),
+    mission5Completed,
+    extraMissionReleaseDate
   });
 
   const achievementNames = ["Satélite", "Planeta", "Estrela", "Galáxia"];
@@ -1337,6 +1411,45 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; u
               timeBonus={timeBonus}
               className="max-w-none"
             />
+
+            {/* Extra Mission Section */}
+            {shouldShowExtraMission() && (
+              <div className="space-y-4">
+                <h3 className="text-xl font-bold text-center bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+                  🚀 Missão Extra Desbloqueada!
+                </h3>
+                
+                {mission5Completed ? (
+                  <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-green-500/50 p-6 shadow-neon text-center">
+                    <div className="flex items-center justify-center space-x-2 text-green-400">
+                      <span className="text-2xl">✅</span>
+                      <span className="text-lg font-semibold">Missão Extra Concluída!</span>
+                    </div>
+                    <p className="text-muted-foreground mt-2">
+                      Parabéns! Você já completou a missão extra.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-primary/50 p-6 shadow-neon space-y-4">
+                    <div className="text-center space-y-2">
+                      <div className="text-4xl">🌟</div>
+                      <h4 className="text-lg font-semibold text-primary">Fast Track - Programa de Aceleração</h4>
+                      <p className="text-muted-foreground">
+                        Uma oportunidade especial para acelerar sua jornada digital
+                      </p>
+                    </div>
+                    
+                    <Button
+                      onClick={handleExtraMissionClick}
+                      className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-white font-semibold py-3 px-6 rounded-lg shadow-neon transition-all duration-300 hover:shadow-lg hover:scale-105"
+                    >
+                      <span className="mr-2">🚀</span>
+                      Iniciar Missão Extra
+                    </Button>
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Technical Skills Section */}
             <TechnicalSkillsDisplay userId={userId} />
