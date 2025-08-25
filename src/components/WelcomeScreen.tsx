@@ -783,10 +783,14 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                   return (
                      <div
                       key={missionId}
-                       className={`relative p-4 rounded-lg border-2 transition-all duration-300 cursor-pointer hover:scale-105 ${
-                         isExtraMission
-                           ? (!isGameEnded ? 'bg-cyan-500/20 border-cyan-400 hover:border-cyan-300 shadow-lg shadow-cyan-400/30 animate-pulse' : 'bg-cyan-500/20 border-cyan-400 hover:border-cyan-300 shadow-lg shadow-cyan-400/30')
-                           : isCompleted
+                        className={`relative p-4 rounded-lg border-2 transition-all duration-300 cursor-pointer hover:scale-105 ${
+                          isExtraMission
+                            ? (userDeclinedFastTrack 
+                                ? 'bg-muted/30 border-muted-foreground/30 opacity-60' 
+                                : extraMissionAvailable 
+                                  ? 'bg-cyan-500/20 border-cyan-400 hover:border-cyan-300 shadow-lg shadow-cyan-400/30 animate-pulse' 
+                                  : 'bg-muted/30 border-muted-foreground/30 opacity-60')
+                            : isCompleted
                            ? 'bg-primary/20 border-primary shadow-sm hover:border-primary/80'
                            : isCurrent
                            ? 'bg-accent/20 border-accent shadow-sm hover:border-accent/80 ring-2 ring-accent/30'
