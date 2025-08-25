@@ -722,8 +722,9 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
             <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-4 shadow-neon">
               {/* Desktop Mission Cards */}
               {(() => {
-                // Determinar missões a exibir baseado no estado da missão extra
-                const shouldShowExtraMission = extraMissionState !== 'hidden';
+                // Só mostrar missão extra na tela final após completar as 4 missões
+                const isGameComplete = completedMissions.size === 4 && gameData;
+                const shouldShowExtraMission = isGameComplete && extraMissionState !== 'hidden';
                 const missions = shouldShowExtraMission ? [1, 2, 3, 4, 5] : [1, 2, 3, 4];
                 const gridCols = shouldShowExtraMission ? 'grid-cols-5' : 'grid-cols-4';
                 
@@ -1252,7 +1253,7 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; u
     }
   }, [userId]);
   
-  // Check if extra mission should be shown (always show for non-Beginners except hidden state)
+  // Check if extra mission should be shown (this component only renders in final screen)
   const shouldShowExtraMission = () => {
     return extraMissionState !== 'hidden';
   };
