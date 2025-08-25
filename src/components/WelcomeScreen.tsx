@@ -703,14 +703,10 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
             <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-4 shadow-neon">
               {/* Determinar se deve mostrar 5 missões baseado no perfil e data de liberação */}
               {(() => {
-                // Verificar se deve mostrar missão extra (sempre mostrar se há data configurada)
+                // A missão extra NUNCA deve aparecer na tela de seleção de missões
+                // Ela só deve aparecer na tela final (GameSummaryContent) para usuários não-beginners
                 const shouldShowExtraMission = () => {
-                  // Só mostrar se há data de liberação configurada
-                  if (!extraMissionReleaseDate) {
-                    console.log('[WelcomeScreen] Missão extra: Nenhuma data de liberação configurada');
-                    return false;
-                  }
-                  return true; // Sempre mostrar se há data configurada
+                  return false; // Sempre false na tela de missões
                 };
 
                 // Verificar se a missão extra está disponível para jogar
