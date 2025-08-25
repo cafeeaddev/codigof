@@ -60,14 +60,20 @@ export const useExtraMissionState = (userId: string | undefined, profileName: st
         return;
       }
 
-      // Check if user completed mission 5
+      // Check if user completed mission 5 OR submitted fast track form
       const { data: progress } = await supabase
         .from('user_progress')
         .select('missao_5_completed')
         .eq('user_id', userId)
         .maybeSingle();
 
-      if (progress?.missao_5_completed) {
+      const { data: fastTrackResponse } = await supabase
+        .from('fast_track_responses')
+        .select('id')
+        .eq('user_id', userId)
+        .maybeSingle();
+
+      if (progress?.missao_5_completed || fastTrackResponse) {
         setState('completed');
         setIsLoading(false);
         return;

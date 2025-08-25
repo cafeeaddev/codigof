@@ -809,11 +809,15 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                           <span>
                             {(() => {
                               if (extraMissionState === 'declined') {
-                                return "Fim de Jogo";
+                                return "Missão Recusada";
+                              }
+                              
+                              if (extraMissionState === 'completed') {
+                                return "Missão Finalizada com Sucesso";
                               }
                               
                               if (extraMissionState === 'available') {
-                                return "Missão Finalizada com Sucesso";
+                                return "Missão Extra";
                               }
                               
                               const releaseDate = new Date(extraMissionReleaseDate + 'T00:00:00');

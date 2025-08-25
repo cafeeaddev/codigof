@@ -68,6 +68,16 @@ export const FastTrackForm = ({ userName, onComplete }: FastTrackFormProps) => {
 
       if (error) throw error;
 
+      // Update user_progress to mark mission 5 as completed
+      const { error: progressError } = await supabase
+        .from('user_progress')
+        .update({ missao_5_completed: true })
+        .eq('user_id', user.id);
+
+      if (progressError) {
+        console.error('Error updating mission 5 completion:', progressError);
+      }
+
       toast({
         title: "Sucesso",
         description: "Respostas enviadas com sucesso!",
