@@ -724,8 +724,10 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
               {(() => {
                 // Só mostrar missão extra na tela final após completar as 4 missões
                 const isGameComplete = completedMissions.size === 4 && gameData;
-                // IMPORTANTE: Sempre ocultar missão extra até o jogo estar completo, independente do estado
-                const shouldShowExtraMission = false; // Nunca mostrar na grid principal, só na tela final
+                // Verificar se é perfil Beginner na tela final
+                const isBeginnerProfile = isGameComplete && gameData && getDigitalProfile(gameData.score.total).profile === 'Beginner';
+                // IMPORTANTE: Nunca mostrar missão extra para Beginners, mesmo na tela final
+                const shouldShowExtraMission = isGameComplete && !isBeginnerProfile && extraMissionState !== 'hidden';
                 const missions = shouldShowExtraMission ? [1, 2, 3, 4, 5] : [1, 2, 3, 4];
                 const gridCols = shouldShowExtraMission ? 'grid-cols-5' : 'grid-cols-4';
                 
