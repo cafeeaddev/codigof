@@ -6,6 +6,7 @@ import { Shield } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { FastTrackRegistrationForm } from './FastTrackRegistrationForm';
 
 interface ExtraMissionContentProps {
   userName: string;
@@ -21,6 +22,7 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
   const [wantToParticipate, setWantToParticipate] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showDeclineMessage, setShowDeclineMessage] = useState(false);
+  const [showRegistrationForm, setShowRegistrationForm] = useState(false);
 
   const handleSubmit = async () => {
     if (!acceptedTerms && wantToParticipate) {
@@ -82,11 +84,8 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
         setShowDeclineMessage(true);
         onDeclineShown?.(true);
       } else {
-        toast({
-          title: "Sucesso",
-          description: "Inscrição no Fast Track realizada com sucesso!",
-        });
-        onBack();
+        // Show registration form
+        setShowRegistrationForm(true);
       }
     } catch (error) {
       console.error('Erro ao salvar resposta:', error);
@@ -138,6 +137,24 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
   useEffect(() => {
     onDeclineShown?.(showDeclineMessage);
   }, [showDeclineMessage, onDeclineShown]);
+
+  // Show registration form
+  if (showRegistrationForm) {
+    return (
+      <FastTrackRegistrationForm
+        userName={userName}
+        onBack={() => setShowRegistrationForm(false)}
+        onRegistrationComplete={() => {
+          toast({
+            title: "Sucesso",
+            description: "Inscrição no FastTrack Digital realizada com sucesso!",
+          });
+          onResponseSubmitted?.();
+          onBack();
+        }}
+      />
+    );
+  }
 
   // Show decline message screen
   if (showDeclineMessage) {
