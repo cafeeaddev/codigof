@@ -6,6 +6,8 @@ import { Shield } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { FastTrackForm } from './FastTrackForm';
+import { FastTrackThankYou } from './FastTrackThankYou';
 
 interface ExtraMissionContentProps {
   userName: string;
@@ -21,6 +23,8 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
   const [wantToParticipate, setWantToParticipate] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showDeclineMessage, setShowDeclineMessage] = useState(false);
+  const [showFastTrackForm, setShowFastTrackForm] = useState(false);
+  const [showThankYou, setShowThankYou] = useState(false);
 
   const handleSubmit = async () => {
     if (!acceptedTerms && wantToParticipate) {
@@ -57,7 +61,8 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
           setShowDeclineMessage(true);
           onDeclineShown?.(true);
         } else {
-          onBack();
+          // Show FastTrack form if user wants to participate
+          setShowFastTrackForm(true);
         }
         return;
       }
@@ -82,11 +87,8 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
         setShowDeclineMessage(true);
         onDeclineShown?.(true);
       } else {
-        toast({
-          title: "Sucesso",
-          description: "Inscrição no Fast Track realizada com sucesso!",
-        });
-        onBack();
+        // Show FastTrack form instead of going back
+        setShowFastTrackForm(true);
       }
     } catch (error) {
       console.error('Erro ao salvar resposta:', error);
@@ -138,6 +140,26 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
   useEffect(() => {
     onDeclineShown?.(showDeclineMessage);
   }, [showDeclineMessage, onDeclineShown]);
+
+  // Show thank you screen
+  if (showThankYou) {
+    return (
+      <FastTrackThankYou 
+        userName={userName}
+        onBack={onBack}
+      />
+    );
+  }
+
+  // Show FastTrack form screen
+  if (showFastTrackForm) {
+    return (
+      <FastTrackForm 
+        userName={userName}
+        onComplete={() => setShowThankYou(true)}
+      />
+    );
+  }
 
   // Show decline message screen
   if (showDeclineMessage) {
