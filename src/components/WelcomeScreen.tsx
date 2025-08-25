@@ -60,7 +60,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
   const [extraMissionRefreshTrigger, setExtraMissionRefreshTrigger] = useState(0);
   const UNLOCK_DELAY = 1000; // ms
   
-  // Hook para estado da missão extra
+  // Hook para estado da missão extra (temporário - será substituído pelo correto na tela final)
   const { state: extraMissionState, releaseDate: hookExtraMissionReleaseDate, refreshState } = useExtraMissionState(userId, 'Unknown', extraMissionRefreshTrigger);
   useEffect(() => {
     const seen = localStorage.getItem('tutorialSeen');
@@ -724,7 +724,8 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
               {(() => {
                 // Só mostrar missão extra na tela final após completar as 4 missões
                 const isGameComplete = completedMissions.size === 4 && gameData;
-                const shouldShowExtraMission = isGameComplete && extraMissionState !== 'hidden';
+                // IMPORTANTE: Sempre ocultar missão extra até o jogo estar completo, independente do estado
+                const shouldShowExtraMission = false; // Nunca mostrar na grid principal, só na tela final
                 const missions = shouldShowExtraMission ? [1, 2, 3, 4, 5] : [1, 2, 3, 4];
                 const gridCols = shouldShowExtraMission ? 'grid-cols-5' : 'grid-cols-4';
                 
@@ -1138,8 +1139,8 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; u
   const [shouldAnimateXP, setShouldAnimateXP] = useState(false);
   const [currentXp, setCurrentXp] = useState(gameData.xp);
   
-  // Use extra mission hook
-  const { state: extraMissionState, releaseDate: extraMissionReleaseDate } = useExtraMissionState(userId, profile.profile);
+  // Use extra mission hook with correct profile  
+  const { state: gameSummaryExtraMissionState, releaseDate: extraMissionReleaseDate } = useExtraMissionState(userId, profile.profile);
   
   useEffect(() => {
     const loadPhrase = async () => {
@@ -1255,12 +1256,12 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; u
   
   // Check if extra mission should be shown (this component only renders in final screen)
   const shouldShowExtraMission = () => {
-    return extraMissionState !== 'hidden';
+    return gameSummaryExtraMissionState !== 'hidden';
   };
 
   // Get mission display text based on state
   const getExtraMissionDisplay = () => {
-    switch (extraMissionState) {
+    switch (gameSummaryExtraMissionState) {
       case 'available':
         return { title: 'Missão Liberada!', icon: '🌟', isClickable: true, shouldPulse: true };
       case 'blocked':
@@ -1293,7 +1294,7 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; u
     currentXp,
     timeBonus,
     shouldShowExtra: shouldShowExtraMission(),
-    extraMissionState,
+    extraMissionState: gameSummaryExtraMissionState,
     extraMissionReleaseDate
   });
 
