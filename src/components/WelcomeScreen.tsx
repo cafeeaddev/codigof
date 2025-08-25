@@ -1413,67 +1413,65 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; u
             />
 
             {/* Mission Cards Grid */}
-            {shouldShowExtraMission() && (
-              <div className="space-y-4">
-                <h3 className="text-xl font-bold text-center bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-                  🚀 Missão Extra Desbloqueada!
-                </h3>
-                
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
-                  {[1, 2, 3, 4, 5].map((missionId) => {
-                    const isCompleted = missionId === 5 ? mission5Completed : true; // All main missions are completed in final screen
-                    const isExtraMission = missionId === 5;
+            <div className="space-y-4">
+              <h3 className="text-xl font-bold text-center bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+                Jornada Concluída
+              </h3>
+              
+              <div className={`grid gap-4 ${shouldShowExtraMission() ? 'grid-cols-2 sm:grid-cols-3 md:grid-cols-5' : 'grid-cols-2 sm:grid-cols-4'}`}>
+                {/* Main Missions 1-4 (always completed in final screen) */}
+                {[1, 2, 3, 4].map((missionId) => (
+                  <div
+                    key={missionId}
+                    className="relative p-4 rounded-lg border-2 bg-primary/20 border-primary shadow-sm cursor-default transition-all duration-300"
+                  >
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-3 h-3 rounded-full bg-primary" />
+                      <span className="text-sm font-medium">Missão {missionId}</span>
+                    </div>
                     
-                    return (
-                      <div
-                        key={missionId}
-                        className={`relative p-4 rounded-lg border-2 transition-all duration-300 ${
-                          isExtraMission
-                            ? mission5Completed 
-                              ? 'bg-primary/20 border-primary shadow-sm cursor-default' 
-                              : 'bg-cyan-500/20 border-cyan-400 hover:border-cyan-300 shadow-lg shadow-cyan-400/30 cursor-pointer hover:scale-105' 
-                            : 'bg-primary/20 border-primary shadow-sm cursor-default'
-                        }`}
-                        onClick={() => {
-                          if (isExtraMission && !mission5Completed) {
-                            handleExtraMissionClick();
-                          }
-                        }}
-                      >
-                        <div className="flex items-center gap-2 mb-2">
-                          <div className={`w-3 h-3 rounded-full ${
-                            isExtraMission 
-                              ? mission5Completed 
-                                ? 'bg-primary' 
-                                : 'bg-cyan-400 shadow-lg shadow-cyan-400/50 animate-pulse'
-                              : 'bg-primary'
-                          }`} />
-                          <span className="text-sm font-medium">
-                            {isExtraMission ? 'Extra' : `Missão ${missionId}`}
-                          </span>
-                        </div>
-                        
-                        <div className="text-center">
-                          <div className="text-2xl mb-1">
-                            {isExtraMission ? '🌟' : isCompleted ? '✅' : '🎯'}
-                          </div>
-                          <div className="text-xs text-muted-foreground">
-                            {isExtraMission 
-                              ? mission5Completed 
-                                ? 'Concluída' 
-                                : 'Fast Track'
-                              : isCompleted 
-                                ? 'Concluída' 
-                                : 'Finalizada'
-                            }
-                          </div>
-                        </div>
+                    <div className="text-center">
+                      <div className="text-2xl mb-1">✅</div>
+                      <div className="text-xs text-muted-foreground">Concluída</div>
+                    </div>
+                  </div>
+                ))}
+                
+                {/* Extra Mission (only if should show) */}
+                {shouldShowExtraMission() && (
+                  <div
+                    className={`relative p-4 rounded-lg border-2 transition-all duration-300 ${
+                      mission5Completed 
+                        ? 'bg-primary/20 border-primary shadow-sm cursor-default' 
+                        : 'bg-cyan-500/20 border-cyan-400 hover:border-cyan-300 shadow-lg shadow-cyan-400/30 cursor-pointer hover:scale-105' 
+                    }`}
+                    onClick={() => {
+                      if (!mission5Completed) {
+                        handleExtraMissionClick();
+                      }
+                    }}
+                  >
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className={`w-3 h-3 rounded-full ${
+                        mission5Completed 
+                          ? 'bg-primary' 
+                          : 'bg-cyan-400 shadow-lg shadow-cyan-400/50 animate-pulse'
+                      }`} />
+                      <span className="text-sm font-medium">Extra</span>
+                    </div>
+                    
+                    <div className="text-center">
+                      <div className="text-2xl mb-1">
+                        {mission5Completed ? '✅' : '🌟'}
                       </div>
-                    );
-                  })}
-                </div>
+                      <div className="text-xs text-muted-foreground">
+                        {mission5Completed ? 'Concluída' : 'Fast Track'}
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
-            )}
+            </div>
 
             {/* Technical Skills Section */}
             <TechnicalSkillsDisplay userId={userId} />
