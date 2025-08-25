@@ -79,8 +79,8 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
 
       if (error) throw error;
 
-      // Notify parent that response was submitted
-      onResponseSubmitted?.();
+      // Notify parent that response was submitted only for certain cases
+      // Don't call onResponseSubmitted here as it triggers refresh that interferes with flow
 
       if (!wantToParticipate) {
         // Show decline message and notify parent immediately
