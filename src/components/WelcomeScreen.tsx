@@ -1412,42 +1412,66 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; u
               className="max-w-none"
             />
 
-            {/* Extra Mission Section */}
+            {/* Mission Cards Grid */}
             {shouldShowExtraMission() && (
               <div className="space-y-4">
                 <h3 className="text-xl font-bold text-center bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
                   🚀 Missão Extra Desbloqueada!
                 </h3>
                 
-                {mission5Completed ? (
-                  <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-green-500/50 p-6 shadow-neon text-center">
-                    <div className="flex items-center justify-center space-x-2 text-green-400">
-                      <span className="text-2xl">✅</span>
-                      <span className="text-lg font-semibold">Missão Extra Concluída!</span>
-                    </div>
-                    <p className="text-muted-foreground mt-2">
-                      Parabéns! Você já completou a missão extra.
-                    </p>
-                  </div>
-                ) : (
-                  <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-primary/50 p-6 shadow-neon space-y-4">
-                    <div className="text-center space-y-2">
-                      <div className="text-4xl">🌟</div>
-                      <h4 className="text-lg font-semibold text-primary">Fast Track - Programa de Aceleração</h4>
-                      <p className="text-muted-foreground">
-                        Uma oportunidade especial para acelerar sua jornada digital
-                      </p>
-                    </div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+                  {[1, 2, 3, 4, 5].map((missionId) => {
+                    const isCompleted = missionId === 5 ? mission5Completed : true; // All main missions are completed in final screen
+                    const isExtraMission = missionId === 5;
                     
-                    <Button
-                      onClick={handleExtraMissionClick}
-                      className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-white font-semibold py-3 px-6 rounded-lg shadow-neon transition-all duration-300 hover:shadow-lg hover:scale-105"
-                    >
-                      <span className="mr-2">🚀</span>
-                      Iniciar Missão Extra
-                    </Button>
-                  </div>
-                )}
+                    return (
+                      <div
+                        key={missionId}
+                        className={`relative p-4 rounded-lg border-2 transition-all duration-300 ${
+                          isExtraMission
+                            ? mission5Completed 
+                              ? 'bg-primary/20 border-primary shadow-sm cursor-default' 
+                              : 'bg-cyan-500/20 border-cyan-400 hover:border-cyan-300 shadow-lg shadow-cyan-400/30 cursor-pointer hover:scale-105' 
+                            : 'bg-primary/20 border-primary shadow-sm cursor-default'
+                        }`}
+                        onClick={() => {
+                          if (isExtraMission && !mission5Completed) {
+                            handleExtraMissionClick();
+                          }
+                        }}
+                      >
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className={`w-3 h-3 rounded-full ${
+                            isExtraMission 
+                              ? mission5Completed 
+                                ? 'bg-primary' 
+                                : 'bg-cyan-400 shadow-lg shadow-cyan-400/50 animate-pulse'
+                              : 'bg-primary'
+                          }`} />
+                          <span className="text-sm font-medium">
+                            {isExtraMission ? 'Extra' : `Missão ${missionId}`}
+                          </span>
+                        </div>
+                        
+                        <div className="text-center">
+                          <div className="text-2xl mb-1">
+                            {isExtraMission ? '🌟' : isCompleted ? '✅' : '🎯'}
+                          </div>
+                          <div className="text-xs text-muted-foreground">
+                            {isExtraMission 
+                              ? mission5Completed 
+                                ? 'Concluída' 
+                                : 'Fast Track'
+                              : isCompleted 
+                                ? 'Concluída' 
+                                : 'Finalizada'
+                            }
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             )}
 
