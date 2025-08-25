@@ -6,6 +6,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 import { ScrollArea } from './ui/scroll-area';
 import { useUserRole } from '@/hooks/useUserRole';
+import { useExtraMissionState } from '@/hooks/useExtraMissionState';
 import { QuizDigital } from './QuizDigital';
 import { MissaoDois } from './MissaoDois';
 import { MissaoTres } from './MissaoTres';
@@ -1197,9 +1198,7 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; u
   const [shouldAnimateXP, setShouldAnimateXP] = useState(false);
   const [currentXp, setCurrentXp] = useState(gameData.xp);
   
-  // Extra mission states
-  const [extraMissionReleaseDate, setExtraMissionReleaseDate] = useState<string | null>(null);
-  const [mission5Completed, setMission5Completed] = useState(false);
+  // Extra mission states (now handled by useExtraMissionState hook)
   
   useEffect(() => {
     const loadPhrase = async () => {
@@ -1305,35 +1304,8 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; u
     }
   };
 
-  // Load extra mission settings and check completion status
-  useEffect(() => {
-    const loadExtraMissionData = async () => {
-      try {
-        // Load game settings for extra mission release date
-        const { data: gameSettings } = await supabase
-          .from('game_settings')
-          .select('extra_mission_release_date')
-          .single();
-        
-        setExtraMissionReleaseDate(gameSettings?.extra_mission_release_date || null);
-        
-        // Check if user completed mission 5
-        if (userId) {
-          const { data: progress } = await supabase
-            .from('user_progress')
-            .select('missao_5_completed')
-            .eq('user_id', userId)
-            .single();
-          
-          setMission5Completed(progress?.missao_5_completed || false);
-        }
-      } catch (error) {
-        console.error('Error loading extra mission data:', error);
-      }
-    };
-    
-    loadExtraMissionData();
-  }, [userId]);
+  // Use extra mission hook
+  const { state: extraMissionState, releaseDate: extraMissionReleaseDate } = useExtraMissionState(userId, profile.profile);
 
   // Execute bonus check on component mount
   useEffect(() => {
@@ -1343,21 +1315,29 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; u
     }
   }, [userId]);
   
-  // Check if extra mission should be shown
+  // Check if extra mission should be shown (always show for non-Beginners except hidden state)
   const shouldShowExtraMission = () => {
-    // Only show for non-Beginner users
-    if (profile.profile === 'Beginner') return false;
-    
-    // Must have release date configured
-    if (!extraMissionReleaseDate) return false;
-    
-    // Check if release date has passed
-    const today = new Date();
-    const releaseDate = new Date(extraMissionReleaseDate + 'T00:00:00');
-    today.setHours(0, 0, 0, 0);
-    releaseDate.setHours(0, 0, 0, 0);
-    
-    return today >= releaseDate;
+    return extraMissionState !== 'hidden';
+  };
+
+  // Get mission display text based on state
+  const getExtraMissionDisplay = () => {
+    switch (extraMissionState) {
+      case 'available':
+        return { title: 'Missão Liberada', icon: '🌟', isClickable: true };
+      case 'blocked':
+        return { 
+          title: `Missão Bloqueada até: ${extraMissionReleaseDate ? new Date(extraMissionReleaseDate).toLocaleDateString('pt-BR') : ''}`, 
+          icon: '🔒', 
+          isClickable: false 
+        };
+      case 'completed':
+        return { title: 'Fast Track', icon: '✅', isClickable: false };
+      case 'declined':
+        return { title: 'Fim do Jogo!', icon: '⚫', isClickable: false };
+      default:
+        return { title: 'Missão Extra', icon: '🌟', isClickable: false };
+    }
   };
 
   // Navigate to extra mission
@@ -1374,7 +1354,7 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; u
     currentXp,
     timeBonus,
     shouldShowExtra: shouldShowExtraMission(),
-    mission5Completed,
+    extraMissionState,
     extraMissionReleaseDate
   });
 
@@ -1438,38 +1418,50 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; u
                 ))}
                 
                 {/* Extra Mission (only if should show) */}
-                {shouldShowExtraMission() && (
-                  <div
-                    className={`relative p-4 rounded-lg border-2 transition-all duration-300 ${
-                      mission5Completed 
-                        ? 'bg-primary/20 border-primary shadow-sm cursor-default' 
-                        : 'bg-cyan-500/20 border-cyan-400 hover:border-cyan-300 shadow-lg shadow-cyan-400/30 cursor-pointer hover:scale-105' 
-                    }`}
-                    onClick={() => {
-                      if (!mission5Completed) {
-                        handleExtraMissionClick();
-                      }
-                    }}
-                  >
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className={`w-3 h-3 rounded-full ${
-                        mission5Completed 
-                          ? 'bg-primary' 
-                          : 'bg-cyan-400 shadow-lg shadow-cyan-400/50 animate-pulse'
-                      }`} />
-                      <span className="text-sm font-medium">Extra</span>
-                    </div>
-                    
-                    <div className="text-center">
-                      <div className="text-2xl mb-1">
-                        {mission5Completed ? '✅' : '🌟'}
+                {shouldShowExtraMission() && (() => {
+                  const missionDisplay = getExtraMissionDisplay();
+                  const isDeclined = extraMissionState === 'declined';
+                  const isBlocked = extraMissionState === 'blocked';
+                  const isAvailable = extraMissionState === 'available';
+                  
+                  return (
+                    <div
+                      className={`relative p-3 rounded-lg border-2 transition-all duration-300 ${
+                        isDeclined 
+                          ? 'bg-gray-500/20 border-gray-400 cursor-default' 
+                          : isBlocked || !missionDisplay.isClickable
+                          ? 'bg-cyan-500/20 border-cyan-400 cursor-default'
+                          : 'bg-cyan-500/20 border-cyan-400 hover:border-cyan-300 shadow-lg shadow-cyan-400/30 cursor-pointer hover:scale-105'
+                      } ${(isAvailable || isBlocked) && !isDeclined ? 'animate-pulse' : ''}`}
+                      onClick={() => {
+                        if (missionDisplay.isClickable) {
+                          handleExtraMissionClick();
+                        }
+                      }}
+                    >
+                      <div className="flex items-center gap-1 mb-1">
+                        <div className={`w-2 h-2 rounded-full ${
+                          isDeclined 
+                            ? 'bg-gray-400' 
+                            : 'bg-cyan-400 shadow-lg shadow-cyan-400/50'
+                        } ${(isAvailable || isBlocked) && !isDeclined ? 'animate-pulse' : ''}`} />
+                        <span className="text-xs font-medium">MISSÃO EXTRA</span>
                       </div>
-                      <div className="text-xs text-muted-foreground">
-                        {mission5Completed ? 'Concluída' : 'Fast Track'}
+                      
+                      <div className="text-center space-y-1">
+                        <div className="text-xs font-semibold text-cyan-400">
+                          Aliança Digital
+                        </div>
+                        <div className="text-lg">
+                          {missionDisplay.icon}
+                        </div>
+                        <div className="text-xs text-muted-foreground leading-tight">
+                          {missionDisplay.title}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                )}
+                  );
+                })()}
               </div>
             </div>
 
