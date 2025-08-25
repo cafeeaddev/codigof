@@ -60,8 +60,8 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
   const [extraMissionRefreshTrigger, setExtraMissionRefreshTrigger] = useState(0);
   const UNLOCK_DELAY = 1000; // ms
   
-  // Estado local para controlar exibição da missão extra antes do perfil final
-  const [showExtraMissionEarly] = useState(false); // Sempre false para não mostrar prematuramente
+  // Hook para estado da missão extra
+  const { state: extraMissionState, releaseDate: hookExtraMissionReleaseDate, refreshState } = useExtraMissionState(userId, 'Unknown', extraMissionRefreshTrigger);
   useEffect(() => {
     const seen = localStorage.getItem('tutorialSeen');
     if (!seen) setShowTutorial(true);
@@ -722,8 +722,8 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
             <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-4 shadow-neon">
               {/* Desktop Mission Cards */}
               {(() => {
-                // Determinar missões a exibir - não mostrar missão extra antes do final
-                const shouldShowExtraMission = showExtraMissionEarly;
+                // Determinar missões a exibir baseado no estado da missão extra
+                const shouldShowExtraMission = extraMissionState !== 'hidden';
                 const missions = shouldShowExtraMission ? [1, 2, 3, 4, 5] : [1, 2, 3, 4];
                 const gridCols = shouldShowExtraMission ? 'grid-cols-5' : 'grid-cols-4';
                 
@@ -733,7 +733,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                   const isCompleted = completedMissions.has(missionId);
                   const isCurrent = currentMission === missionId;
                   const isExtraMission = missionId === 5;
-                  const isExtraMissionAvailable = false; // Sempre false antes do final
+                  const isExtraMissionAvailable = extraMissionState === 'available';
                   const isLocked = isExtraMission 
                     ? !isExtraMissionAvailable // Missão extra bloqueada se não disponível
                     : missionId > currentMission && !isCompleted; // Lógica normal para outras missões
@@ -743,7 +743,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                       key={missionId}
                         className={`relative p-4 rounded-lg border-2 transition-all duration-300 cursor-pointer hover:scale-105 ${
                           isExtraMission
-                            ? (false // Nunca declined antes do final
+                            ? (extraMissionState === 'declined'
                                 ? 'bg-muted/30 border-muted-foreground/30 opacity-60' 
                                 : isExtraMissionAvailable 
                                   ? 'bg-cyan-500/20 border-cyan-400 hover:border-cyan-300 shadow-lg shadow-cyan-400/30 animate-pulse' 
@@ -768,7 +768,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                        <div className="flex items-center gap-2 mb-2">
                         <div className={`w-3 h-3 rounded-full ${
                           isExtraMission 
-                            ? false // Nunca declined antes do final
+                            ? extraMissionState === 'declined'
                               ? 'bg-muted-foreground/50' // Estado 3: Fim de Jogo
                               : isExtraMissionAvailable 
                                 ? 'bg-cyan-400 shadow-lg shadow-cyan-400/50 animate-pulse' // Estado 2: Liberada
@@ -777,7 +777,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                         }`}></div>
                         <span className={`text-sm font-bold tracking-wider ${
                           isExtraMission 
-                            ? false // Nunca declined antes do final
+                            ? extraMissionState === 'declined'
                               ? 'text-muted-foreground/70' // Estado 3: Fim de Jogo
                               : isExtraMissionAvailable 
                                 ? 'text-cyan-300 animate-pulse' // Estado 2: Liberada
@@ -790,7 +790,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                       
                        <div className={`text-xs mb-2 font-medium ${
                          isExtraMission 
-                            ? false // Nunca declined antes do final
+                           ? extraMissionState === 'declined'
                              ? 'text-muted-foreground/60' // Estado 3: Fim de Jogo
                              : isExtraMissionAvailable 
                                ? 'text-blue-300 font-bold' // Estado 2: Liberada
@@ -804,8 +804,13 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                         {missionId === 5 && extraMissionReleaseDate && (
                           <span>
                             {(() => {
-                               // Sempre bloqueada antes do final do jogo
-                               return "Bloqueada";
+                              if (extraMissionState === 'declined') {
+                                return "Fim de Jogo";
+                              }
+                              
+                              if (extraMissionState === 'available') {
+                                return "Missão Liberada!";
+                              }
                               
                               const releaseDate = new Date(extraMissionReleaseDate + 'T00:00:00');
                               return `Missão Bloqueada até ${releaseDate.toLocaleDateString('pt-BR')}`;
@@ -816,7 +821,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                       
                        <div className={`text-xs mb-2 ${
                          isExtraMission 
-                           ? false // Nunca declined antes do final
+                           ? extraMissionState === 'declined'
                              ? 'text-muted-foreground/60' // Estado 3: Fim de Jogo
                              : isExtraMissionAvailable 
                                ? 'text-cyan-200 font-semibold' // Estado 2: Liberada
@@ -848,13 +853,19 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                             <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                           </svg>
                         </div>
-                       ) : (isLocked || (isExtraMission && !showExtraMissionEarly)) ? (
+                       ) : (isLocked || (isExtraMission && extraMissionState === 'hidden')) ? (
                         <div className="absolute top-2 right-2 w-4 h-4 bg-muted-foreground/50 rounded-full flex items-center justify-center">
                           <Lock className="w-2.5 h-2.5 text-muted-foreground/70" />
                         </div>
-                       ) : isExtraMission && showExtraMissionEarly ? (
-                         <div className="absolute top-2 right-2 w-4 h-4 rounded-full flex items-center justify-center shadow-lg bg-blue-400/30">
-                           {false ? (
+                       ) : isExtraMission && extraMissionState !== 'hidden' ? (
+                        <div className={`absolute top-2 right-2 w-4 h-4 rounded-full flex items-center justify-center shadow-lg ${
+                          extraMissionState === 'declined'
+                            ? 'bg-muted-foreground/50' // Estado 3: Fim de Jogo
+                            : isExtraMissionAvailable 
+                              ? 'bg-cyan-400 shadow-cyan-400/50 animate-pulse' // Estado 2: Liberada (com pulse)
+                              : 'bg-blue-400/30' // Estado 1: Bloqueada (sem pulse)
+                        }`}>
+                          {extraMissionState === 'declined' ? (
                             <svg className="w-2.5 h-2.5 text-muted-foreground/70" fill="currentColor" viewBox="0 0 20 20">
                               <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
                             </svg>
@@ -1318,40 +1329,6 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; u
               timeBonus={timeBonus}
               className="max-w-none"
             />
-
-            {/* Extra Mission Card - Show when available */}
-            {shouldShowExtraMission() && (
-              <div className="mt-6">
-                {(() => {
-                  const extraMissionDisplay = getExtraMissionDisplay();
-                  return (
-                    <div 
-                      className={`
-                        bg-gradient-to-r from-purple-500/20 to-pink-500/20 
-                        border border-purple-500/30 rounded-xl p-6 
-                        text-center cursor-pointer transition-all duration-300
-                        ${extraMissionDisplay.isClickable ? 'hover:scale-105 hover:border-purple-400/50' : 'cursor-not-allowed opacity-70'}
-                        ${extraMissionDisplay.shouldPulse ? 'animate-pulse' : ''}
-                      `}
-                      onClick={extraMissionDisplay.isClickable ? handleExtraMissionClick : undefined}
-                    >
-                      <div className="text-4xl mb-2">{extraMissionDisplay.icon}</div>
-                      <h3 className="text-xl font-bold text-foreground mb-2">
-                        Fast Track Program
-                      </h3>
-                      <p className="text-muted-foreground">
-                        {extraMissionDisplay.title}
-                      </p>
-                      {extraMissionState === 'blocked' && extraMissionReleaseDate && (
-                        <p className="text-sm text-muted-foreground/70 mt-2">
-                          Disponível em: {new Date(extraMissionReleaseDate).toLocaleDateString('pt-BR')}
-                        </p>
-                      )}
-                    </div>
-                  );
-                })()}
-              </div>
-            )}
 
             {/* Spacer for better layout */}
             <div className="h-4"></div>
