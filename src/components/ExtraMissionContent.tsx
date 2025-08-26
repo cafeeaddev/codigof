@@ -272,6 +272,16 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
                             <p className="text-lg">
                               Seguimos juntos e nos encontraremos em uma próxima jornada digital!
                             </p>
+                            
+                            {/* Card da MISSÃO EXTRA - Fim de Jogo */}
+                            <div className="mt-6 pt-4 border-t border-gray-500/30">
+                              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 border-gray-500/30 bg-gray-600/20">
+                                <span className="text-lg">❌</span>
+                                <span className="text-sm font-bold text-gray-400">
+                                  Fim de Jogo!
+                                </span>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>
