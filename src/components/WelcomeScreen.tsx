@@ -279,12 +279,17 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
             setCompletedMissions(completed);
             
             // Determine current mission based on completion
-            // PRIORIDADE: Se há progresso na missão 5, deve mostrar a tela da missão extra
-            if (progress.missao_5_current_question > 0 || progress.missao_5_completed || 
-                (progress.current_position && (progress.current_position.includes('extra') || 
-                 progress.current_position.includes('hero') || 
-                 progress.current_position.includes('fasttrack')))) {
-              console.log('[WelcomeScreen] 🎯 Detectado progresso na missão extra, restaurando estado');
+            // PRIORIDADE: Só redirecionar para missão extra se o usuário JÁ INTERAGIU com ela
+            // Não apenas se tem acesso, mas se realmente começou a missão extra
+            if ((progress.missao_5_current_question > 0) || 
+                progress.missao_5_completed || 
+                (progress.current_position && (
+                  progress.current_position.includes('extra_mission_terms') || 
+                  progress.current_position.includes('extra_mission_fasttrack') || 
+                  progress.current_position.includes('extra_mission_completed') ||
+                  progress.current_position.includes('extra_mission_declined')
+                ))) {
+              console.log('[WelcomeScreen] 🎯 Detectado progresso efetivo na missão extra, restaurando estado');
               setCurrentMission(5);
               setShowExtraMissionScreen(true);
             } else if (!progress.missao_1_completed) {
