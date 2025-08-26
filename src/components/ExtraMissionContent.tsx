@@ -164,6 +164,24 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
       if (!user?.id) return;
       
       try {
+        console.log('🔍 [ExtraMissionContent] Loading initial state for user:', user.id);
+        
+        // Verificar progresso do usuário primeiro
+        const { data: userProgress } = await supabase
+          .from('user_progress')
+          .select('current_position, missao_5_completed')
+          .eq('user_id', user.id)
+          .maybeSingle();
+          
+        console.log('🎯 [ExtraMissionContent] User progress:', userProgress);
+        
+        // Se já completou a missão extra (current_position completed), mostrar thank you
+        if (userProgress?.current_position === 'extra_mission_completed' || userProgress?.missao_5_completed) {
+          console.log('✅ [ExtraMissionContent] User already completed extra mission - showing thank you');
+          setShowThankYou(true);
+          return;
+        }
+        
         // Verificar se usuário já respondeu aos termos
         const { data: termsResponse } = await supabase
           .from('fast_track_terms_responses')
@@ -178,18 +196,29 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
           .eq('user_id', user.id)
           .maybeSingle();
           
+        console.log('🔍 [ExtraMissionContent] Database checks:', {
+          termsResponse: !!termsResponse,
+          fastTrackResponse: !!fastTrackResponse,
+          wantToParticipate: termsResponse?.want_to_participate
+        });
+          
         if (fastTrackResponse) {
           // Usuário já completou tudo, mostrar tela de agradecimento
+          console.log('✅ [ExtraMissionContent] FastTrack completed - showing thank you');
           setShowThankYou(true);
         } else if (termsResponse) {
           // Usuário já respondeu aos termos
           if (!termsResponse.want_to_participate) {
+            console.log('🔍 [ExtraMissionContent] User declined terms - showing decline message');
             setShowDeclineMessage(true);
             setUserChoice('decline');
           } else {
             // Usuário quer participar, mostrar formulário
+            console.log('🔍 [ExtraMissionContent] User accepted terms - showing form');
             setShowFastTrackForm(true);
           }
+        } else {
+          console.log('🔍 [ExtraMissionContent] No previous response - showing terms');
         }
         // Se não há resposta anterior, mantém na tela de termos
       } catch (error) {
