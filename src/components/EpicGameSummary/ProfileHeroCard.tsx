@@ -254,7 +254,40 @@ export const ProfileHeroCard: React.FC<ProfileHeroCardProps> = ({
                 />
               </div>
 
-              {/* Missão Extra removida daqui - aparece apenas na área de grid das missões */}
+              {/* Missão Extra - aparece quando relevante */}
+              {extraMissionDisplay && (
+                <div className="mt-4">
+                  <div 
+                    className={cn(
+                      "inline-flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3 rounded-full border-2 transition-all duration-300",
+                      extraMissionDisplay.shouldPulse && "animate-pulse",
+                      extraMissionDisplay.isClickable && "cursor-pointer hover:scale-105"
+                    )}
+                    style={{
+                      borderColor: extraMissionDisplay.borderColor.includes('neon-cyan') ? 'hsl(var(--neon-cyan))' : 'hsl(var(--muted-foreground))',
+                      backgroundColor: extraMissionDisplay.bgColor.includes('neon-cyan') ? 'hsl(var(--neon-cyan) / 0.2)' : 'hsl(var(--muted) / 0.2)'
+                    }}
+                    onClick={handleExtraMissionClick}
+                  >
+                    <span className="text-lg sm:text-xl">{extraMissionDisplay.icon}</span>
+                    <div className="text-center">
+                      <span 
+                        className="text-sm sm:text-base lg:text-lg font-bold block"
+                        style={{ 
+                          color: extraMissionDisplay.textColor.includes('neon-cyan') ? 'hsl(var(--neon-cyan))' : 'hsl(var(--muted-foreground))'
+                        }}
+                      >
+                        {extraMissionDisplay.title}
+                      </span>
+                      {extraMissionDisplay.subtitle && (
+                        <span className="text-xs sm:text-sm text-muted-foreground block">
+                          {extraMissionDisplay.subtitle}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
             </div>
           </div>
