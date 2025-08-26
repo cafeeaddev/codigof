@@ -825,7 +825,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                             ? (extraMissionState === 'declined'
                                 ? 'bg-muted/30 border-muted-foreground/30 opacity-60' 
                                 : isExtraMissionAvailable 
-                                  ? 'bg-cyan-500/20 border-cyan-400 hover:border-cyan-300 shadow-lg shadow-cyan-400/30' 
+                                  ? 'bg-cyan-500/20 border-cyan-400 hover:border-cyan-300 shadow-lg shadow-cyan-400/30 animate-pulse' 
                                   : 'bg-muted/30 border-muted-foreground/30 opacity-60')
                             : isCompleted
                            ? 'bg-primary/20 border-primary shadow-sm hover:border-primary/80'
@@ -893,11 +893,11 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                               }
                               
                               if (extraMissionState === 'available') {
-                                return "Missão Extra";
+                                return "Missão Liberada";
                               }
                               
                               const releaseDate = new Date(extraMissionReleaseDate + 'T00:00:00');
-                              return `Missão Bloqueada até ${releaseDate.toLocaleDateString('pt-BR')}`;
+                              return `Missão Bloqueada Até: ${releaseDate.toLocaleDateString('pt-BR')}`;
                             })()}
                           </span>
                         )}
