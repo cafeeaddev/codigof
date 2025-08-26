@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Button } from './ui/button';
 import { ScrollArea } from './ui/scroll-area';
-import { Checkbox } from './ui/checkbox';
+import { RadioGroup, RadioGroupItem } from './ui/radio-group';
+import { Label } from './ui/label';
 import { Shield } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -19,18 +20,17 @@ interface ExtraMissionContentProps {
 export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onResponseSubmitted }: ExtraMissionContentProps) => {
   const { toast } = useToast();
   const { user } = useAuth();
-  const [acceptedTerms, setAcceptedTerms] = useState(false);
-  const [wantToParticipate, setWantToParticipate] = useState(true);
+  const [userChoice, setUserChoice] = useState<'accept' | 'decline' | ''>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showDeclineMessage, setShowDeclineMessage] = useState(false);
   const [showFastTrackForm, setShowFastTrackForm] = useState(false);
   const [showThankYou, setShowThankYou] = useState(false);
 
   const handleSubmit = async () => {
-    if (!acceptedTerms && wantToParticipate) {
+    if (!userChoice) {
       toast({
         title: "Erro",
-        description: "Para participar, você deve aceitar os termos.",
+        description: "Por favor, faça uma escolha antes de confirmar.",
         variant: "destructive",
       });
       return;
@@ -51,13 +51,13 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
       // Check if response already exists to prevent duplicates
       const { data: existingResponse } = await supabase
         .from('fast_track_terms_responses')
-        .select('id')
+        .select('want_to_participate')
         .eq('user_id', user.id)
         .maybeSingle();
 
       if (existingResponse) {
         // User already responded, just update parent state
-        if (!wantToParticipate) {
+        if (!existingResponse.want_to_participate) {
           setShowDeclineMessage(true);
           onDeclineShown?.(true);
         } else {
@@ -73,8 +73,8 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
           user_id: user.id,
           nome: userName,
           email: user.email || '',
-          accepted_terms: acceptedTerms,
-          want_to_participate: wantToParticipate
+          accepted_terms: userChoice === 'accept',
+          want_to_participate: userChoice === 'accept'
         });
 
       if (error) throw error;
@@ -91,15 +91,15 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
       // Notify parent that response was submitted only for certain cases
       // Don't call onResponseSubmitted here as it triggers refresh that interferes with flow
 
-      if (!wantToParticipate) {
+      if (userChoice === 'decline') {
         // Atualizar posição para indicar recusa
         await supabase
           .from('user_progress')
           .update({ current_position: 'extra_mission_declined' })
           .eq('user_id', user.id);
           
-        // Voltar para WelcomeScreen onde a barra original mostrará "Fim de Jogo!"
-        onBack();
+        // Mostrar tela de decline PRIMEIRO antes de voltar
+        setShowDeclineMessage(true);
         onDeclineShown?.(true);
       } else {
         // Show FastTrack form instead of going back
@@ -183,7 +183,7 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
           // Usuário já respondeu aos termos
           if (!termsResponse.want_to_participate) {
             setShowDeclineMessage(true);
-            setWantToParticipate(false);
+            setUserChoice('decline');
           } else {
             // Usuário quer participar, mostrar formulário
             setShowFastTrackForm(true);
@@ -353,37 +353,33 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
                           {termsContent}
                         </div>
 
-                        {/* Formulário de aceitação */}
+                        {/* Formulário de escolha única */}
                         <div className="space-y-6 pt-4 border-t border-cyan-400/20">
-                          <div className="flex items-start space-x-3">
-                            <Checkbox
-                              id="accept-terms"
-                              checked={acceptedTerms}
-                              onCheckedChange={(checked) => setAcceptedTerms(checked as boolean)}
-                              className="mt-1"
-                            />
-                            <label htmlFor="accept-terms" className="text-sm text-foreground/90 cursor-pointer">
-                              Li e concordo com os termos acima.
-                            </label>
-                          </div>
+                          <RadioGroup 
+                            value={userChoice} 
+                            onValueChange={(value) => setUserChoice(value as 'accept' | 'decline')}
+                            className="space-y-4"
+                          >
+                            <div className="flex items-center space-x-3">
+                              <RadioGroupItem value="accept" id="accept-terms" />
+                              <Label htmlFor="accept-terms" className="text-sm text-foreground/90 cursor-pointer">
+                                Li e concordo com os termos acima e quero participar do Fast Track.
+                              </Label>
+                            </div>
 
-                          <div className="flex items-start space-x-3">
-                            <Checkbox
-                              id="want-participate"
-                              checked={!wantToParticipate}
-                              onCheckedChange={(checked) => setWantToParticipate(!checked)}
-                              className="mt-1"
-                            />
-                            <label htmlFor="want-participate" className="text-sm text-foreground/90 cursor-pointer">
-                              Não concordo e não vou participar.
-                            </label>
-                          </div>
+                            <div className="flex items-center space-x-3">
+                              <RadioGroupItem value="decline" id="decline-terms" />
+                              <Label htmlFor="decline-terms" className="text-sm text-foreground/90 cursor-pointer">
+                                Não concordo e não vou participar.
+                              </Label>
+                            </div>
+                          </RadioGroup>
 
                           <div className="flex gap-4 pt-4">
                             <Button
                               onClick={handleSubmit}
-                              disabled={isSubmitting}
-                              className="w-full bg-cyan-600 hover:bg-cyan-700 text-white"
+                              disabled={isSubmitting || !userChoice}
+                              className="w-full bg-cyan-600 hover:bg-cyan-700 text-white disabled:opacity-50"
                             >
                               {isSubmitting ? 'Enviando...' : 'Confirmar'}
                             </Button>
