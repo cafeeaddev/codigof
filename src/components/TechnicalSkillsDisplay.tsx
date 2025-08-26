@@ -146,9 +146,6 @@ export const TechnicalSkillsDisplay = ({ userId }: TechnicalSkillsDisplayProps) 
                     />
                   ))}
                 </div>
-                <h3 className="text-lg font-semibold">
-                  {getRatingLabel(rating)} ({skills.length} ferramenta{skills.length !== 1 ? 's' : ''})
-                </h3>
               </div>
               
               <div className="flex flex-wrap gap-2">
