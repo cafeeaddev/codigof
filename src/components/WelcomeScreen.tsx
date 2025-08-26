@@ -809,6 +809,18 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                 // IMPORTANTE: Sempre mostrar missão extra quando declined (tela "Poxa"), mesmo para perfis não-Beginner
                 // OU quando o estado explicitamente é 'declined' (garante que apareça após F5)
                 const shouldShowExtraMission = (isGameComplete && !isBeginnerProfile && ['blocked', 'available', 'completed', 'declined'].includes(extraMissionState)) || extraMissionState === 'declined';
+                
+                // DEBUG: Log para investigar o problema
+                console.log('🐛 [WelcomeScreen] Extra Mission Debug:', {
+                  isGameComplete,
+                  isBeginnerProfile,
+                  extraMissionState,
+                  shouldShowExtraMission,
+                  completedMissionsSize: completedMissions.size,
+                  gameData: !!gameData,
+                  profileFromGameData: gameData ? getDigitalProfile(gameData.score.total).profile : 'no-gameData'
+                });
+                
                 const missions = shouldShowExtraMission ? [1, 2, 3, 4, 5] : [1, 2, 3, 4];
                 const gridCols = shouldShowExtraMission ? 'grid-cols-5' : 'grid-cols-4';
                 

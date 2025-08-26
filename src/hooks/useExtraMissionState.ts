@@ -75,6 +75,7 @@ export const useExtraMissionState = (userId: string | undefined, profileName: st
 
       // CRÍTICO: Se o usuário recusou, sempre mostrar como declined, independente de outras condições
       if (termsResponse && !termsResponse.want_to_participate) {
+        console.log('🐛 [useExtraMissionState] User declined, setting state to declined');
         setState('declined');
         setIsLoading(false);
         return;
@@ -109,6 +110,8 @@ export const useExtraMissionState = (userId: string | undefined, profileName: st
       checkExtraMissionState();
     }
   };
-
+  
+  console.log('🐛 [useExtraMissionState] Final state:', { state, userId, profileName, isLoading });
+  
   return { state, releaseDate, isLoading, refreshState };
 };
