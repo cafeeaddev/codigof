@@ -232,7 +232,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
 
           if (progress) {
             // Recalcular total_xp baseado no número real de missões completadas
-            // para corrigir dados incorretos no banco
+            // mas preservar o bônus de tempo se existir
             const completedMissionsCount = [
               progress.missao_1_completed,
               progress.missao_2_completed,
@@ -240,24 +240,28 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
               progress.missao_4_completed
             ].filter(Boolean).length;
             
-            const correctTotalXP = completedMissionsCount * 25;
+            const expectedBaseXP = completedMissionsCount * 25;
+            const timeBonus = progress.time_bonus_xp || 0;
+            const expectedTotalXP = expectedBaseXP + timeBonus;
             
             console.log('[WelcomeScreen] XP Validation:', {
               dbTotalXP: progress.total_xp,
               completedMissions: completedMissionsCount,
-              correctTotalXP,
-              needsCorrection: progress.total_xp !== correctTotalXP
+              expectedBaseXP,
+              timeBonus,
+              expectedTotalXP,
+              needsCorrection: progress.total_xp !== expectedTotalXP
             });
             
-            // Se o XP no banco está incorreto, corrigir
-            if (progress.total_xp !== correctTotalXP) {
-              console.log(`[WelcomeScreen] 🔧 Corrigindo XP incorreto: ${progress.total_xp} → ${correctTotalXP}`);
+            // Se o XP no banco está incorreto (considerando bônus), corrigir
+            if (progress.total_xp !== expectedTotalXP) {
+              console.log(`[WelcomeScreen] 🔧 Corrigindo XP incorreto: ${progress.total_xp} → ${expectedTotalXP} (base: ${expectedBaseXP} + bônus: ${timeBonus})`);
               
               // Atualizar no banco de dados
               try {
                 await supabase
                   .from('user_progress')
-                  .update({ total_xp: correctTotalXP })
+                  .update({ total_xp: expectedTotalXP })
                   .eq('user_id', userId);
                   
                 console.log('[WelcomeScreen] ✅ XP corrigido no banco de dados');
@@ -267,7 +271,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
             }
             
             setUserProgress({ 
-              total_xp: correctTotalXP, // Usar sempre o valor correto
+              total_xp: expectedTotalXP, // Usar sempre o valor correto incluindo bônus
               completedMissionsCount
             });
             
@@ -803,7 +807,8 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                 // Verificar se é perfil Beginner na tela final
                 const isBeginnerProfile = isGameComplete && gameData && getDigitalProfile(gameData.score.total).profile === 'Beginner';
                 // IMPORTANTE: Sempre mostrar missão extra quando declined (tela "Poxa"), mesmo para perfis não-Beginner
-                const shouldShowExtraMission = isGameComplete && !isBeginnerProfile && ['blocked', 'available', 'completed', 'declined'].includes(extraMissionState);
+                // OU quando o estado explicitamente é 'declined' (garante que apareça após F5)
+                const shouldShowExtraMission = (isGameComplete && !isBeginnerProfile && ['blocked', 'available', 'completed', 'declined'].includes(extraMissionState)) || extraMissionState === 'declined';
                 const missions = shouldShowExtraMission ? [1, 2, 3, 4, 5] : [1, 2, 3, 4];
                 const gridCols = shouldShowExtraMission ? 'grid-cols-5' : 'grid-cols-4';
                 
@@ -1407,10 +1412,10 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; u
     { id: 4, title: achievementNames[3], done: gameData.medals.m4 },
   ];
 
-  // Add extra medal for non-Beginner profiles
+  // Add extra medal for non-Beginner profiles - sempre mostrar como não conquistada quando declined
   const isNonBeginner = profile.profile !== 'Beginner';
   const achievementsWithExtra = isNonBeginner 
-    ? [...achievements, { id: 5, title: "Universo", done: false }]
+    ? [...achievements, { id: 5, title: "Universo", done: gameSummaryExtraMissionState === 'completed' }]
     : achievements;
 
   return (
