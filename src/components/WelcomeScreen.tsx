@@ -230,14 +230,44 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
           setUserDeclinedFastTrack(fastTrackResponse?.want_to_participate === false);
 
           if (progress) {
+            // Recalcular total_xp baseado no número real de missões completadas
+            // para corrigir dados incorretos no banco
+            const completedMissionsCount = [
+              progress.missao_1_completed,
+              progress.missao_2_completed,
+              progress.missao_3_completed,
+              progress.missao_4_completed
+            ].filter(Boolean).length;
+            
+            const correctTotalXP = completedMissionsCount * 25;
+            
+            console.log('[WelcomeScreen] XP Validation:', {
+              dbTotalXP: progress.total_xp,
+              completedMissions: completedMissionsCount,
+              correctTotalXP,
+              needsCorrection: progress.total_xp !== correctTotalXP
+            });
+            
+            // Se o XP no banco está incorreto, corrigir
+            if (progress.total_xp !== correctTotalXP) {
+              console.log(`[WelcomeScreen] 🔧 Corrigindo XP incorreto: ${progress.total_xp} → ${correctTotalXP}`);
+              
+              // Atualizar no banco de dados
+              try {
+                await supabase
+                  .from('user_progress')
+                  .update({ total_xp: correctTotalXP })
+                  .eq('user_id', userId);
+                  
+                console.log('[WelcomeScreen] ✅ XP corrigido no banco de dados');
+              } catch (error) {
+                console.error('[WelcomeScreen] ❌ Erro ao corrigir XP no banco:', error);
+              }
+            }
+            
             setUserProgress({ 
-              total_xp: progress.total_xp, 
-              completedMissionsCount: [
-                progress.missao_1_completed,
-                progress.missao_2_completed,
-                progress.missao_3_completed,
-                progress.missao_4_completed
-              ].filter(Boolean).length
+              total_xp: correctTotalXP, // Usar sempre o valor correto
+              completedMissionsCount
             });
             
             // Set completed missions and determine current mission
