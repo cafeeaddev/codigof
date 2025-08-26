@@ -56,19 +56,18 @@ export const StarRatingsAnalytics = ({ responses, questions, profiles }: StarRat
             
             console.log(`Question ${i}: software=${software}, points=${points}`);
             
-            if (points > 0) { // Só incluir se há pontuação válida
-              ratings.push({
-                userId: response.user_id,
-                userName: response.nome,
-                userEmail: response.email,
-                userArea: userProfile?.area || 'Não informado',
-                software: software,
-                rating: points,
-                ratingLabel: getRatingLabel(points),
-                category: 'Universal',
-                questionType: 'multiple-choice'
-              });
-            }
+            // Incluir todos os softwares das questões 1-9, mesmo com 0 pontos
+            ratings.push({
+              userId: response.user_id,
+              userName: response.nome,
+              userEmail: response.email,
+              userArea: userProfile?.area || 'Não informado',
+              software: software,
+              rating: points,
+              ratingLabel: getRatingLabel(points),
+              category: 'Universal',
+              questionType: 'multiple-choice'
+            });
           }
         }
       }
