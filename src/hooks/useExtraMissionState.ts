@@ -73,12 +73,7 @@ export const useExtraMissionState = (userId: string | undefined, profileName: st
         .eq('user_id', userId)
         .maybeSingle();
 
-      console.log('[useExtraMissionState] Debug - userId:', userId);
-      console.log('[useExtraMissionState] Debug - progress:', progress);
-      console.log('[useExtraMissionState] Debug - fastTrackResponse:', fastTrackResponse);
-
       if (progress?.missao_5_completed || fastTrackResponse) {
-        console.log('[useExtraMissionState] Setting state to completed');
         setState('completed');
         setIsLoading(false);
         return;
