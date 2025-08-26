@@ -64,12 +64,14 @@ export const FastTrackThankYou = ({ userName, onBack }: FastTrackThankYouProps) 
                           </div>
                           
                           <div className="pt-6">
-                            <button
-                              onClick={onBack}
-                              className="px-8 py-3 bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg font-medium transition-colors"
+                            <a
+                              href="https://mazars.cafeead.com.br/"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-block px-8 py-3 bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg font-medium transition-colors"
                             >
-                              Voltar ao Jogo
-                            </button>
+                              Entrar na UM
+                            </a>
                           </div>
                         </div>
                       </div>
