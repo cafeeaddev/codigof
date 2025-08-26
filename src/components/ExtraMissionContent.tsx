@@ -226,6 +226,63 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
   if (showDeclineMessage) {
     return (
       <div className="w-full h-full min-h-screen md:min-h-0 relative overflow-hidden">
+        {/* Mission Cards Grid */}
+        <div className="bg-card/50 backdrop-blur-xl border-b border-secondary/30 p-4">
+          <div className="max-w-7xl mx-auto">
+            <div className="grid grid-cols-5 gap-4">
+              {[1, 2, 3, 4, 5].map((missionId) => {
+                const isExtraMission = missionId === 5;
+                
+                return (
+                  <div
+                    key={missionId}
+                    className={`
+                      relative p-4 rounded-xl border-2 transition-all duration-300 cursor-pointer group h-32
+                      ${isExtraMission 
+                        ? 'bg-muted/30 border-muted/50 opacity-60' // Declined state - gray and muted
+                        : 'bg-primary/20 border-primary/50' // Other missions - completed
+                      }
+                    `}
+                  >
+                    {/* Check Icon */}
+                    <div className={`absolute top-2 right-2 w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold
+                      ${isExtraMission ? 'bg-muted/50 text-muted-foreground' : 'bg-primary text-primary-foreground'}
+                    `}>
+                      ✓
+                    </div>
+                    
+                    {/* Mission Number */}
+                    <div className={`text-sm font-bold mb-2 ${isExtraMission ? 'text-muted-foreground/80' : 'text-primary'}`}>
+                      {isExtraMission ? 'MISSÃO EXTRA' : `MISSÃO ${missionId}`}
+                    </div>
+                    
+                    {/* Mission Description */}
+                    <div className={`text-xs mb-2 font-medium ${isExtraMission ? 'text-muted-foreground/60' : 'text-primary/80'}`}>
+                      {missionId === 1 && "Como você encara o digital?"}
+                      {missionId === 2 && "O digital no seu dia a dia"}
+                      {missionId === 3 && "Quando o desafio é maior"}
+                      {missionId === 4 && "Seu Radar de Ferramentas"}
+                      {missionId === 5 && "Fim de Jogo"}
+                    </div>
+                    
+                    {/* Mission Subtitle */}
+                    <div className={`text-xs mb-2 ${isExtraMission ? 'text-muted-foreground/60' : 'text-primary'}`}>
+                      {isExtraMission ? 'Aliança Digital' : 'Vale 25 XP'}
+                    </div>
+                    
+                    {/* Progress Bar */}
+                    <div className="w-full bg-muted/30 rounded-full h-2">
+                      <div className={`h-full rounded-full transition-all duration-300 
+                        ${isExtraMission ? 'bg-muted/50 w-0' : 'bg-primary w-full'}
+                      `}></div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+        
         <ScrollArea className="h-full w-full">
           <div className="p-4 md:p-6">
             <div className="mb-8">
