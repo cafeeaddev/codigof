@@ -56,6 +56,8 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
     medals: { m1: false, m2: false, m3: false, m4: false },
     score: { mission1: 0, mission2: 0, mission3: 0, mission4: 0, total: 0 },
     finalScore: 0, // Score final salvo no banco de dados
+    final_profile: null as string | null, // Perfil salvo no banco
+    final_score: null as number | null, // Score salvo no banco
     isDataLoaded: false // Flag para identificar se dados reais foram carregados
   });
   const [extraMissionReleaseDate, setExtraMissionReleaseDate] = useState<string | null>(null);
@@ -63,13 +65,16 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
   const [extraMissionRefreshTrigger, setExtraMissionRefreshTrigger] = useState(0);
   const UNLOCK_DELAY = 1000; // ms
   
-  // Hook para estado da missão extra - só usar perfil quando dados reais foram carregados
-  // Evita o bug do perfil "Beginner" temporário
-  const currentProfile = gameData.isDataLoaded ? getDigitalProfile(gameData.finalScore || 0).profile : 'Unknown';
+  // Hook para estado da missão extra - usar dados do banco quando disponível
+  const currentProfile = gameData.isDataLoaded ? 
+    (gameData.final_profile || getDigitalProfile(gameData.finalScore || 0).profile) : 
+    'Unknown';
   console.log('🎯 [WelcomeScreen] Current profile for useExtraMissionState:', { 
     currentProfile, 
+    finalProfile: gameData.final_profile,
     finalScore: gameData.finalScore, 
-    isDataLoaded: gameData.isDataLoaded 
+    isDataLoaded: gameData.isDataLoaded,
+    SOURCE: gameData.final_profile ? 'DATABASE' : 'CALCULATED'
   });
   const { state: extraMissionState, releaseDate: hookExtraMissionReleaseDate, refreshState } = useExtraMissionState(userId, currentProfile, extraMissionRefreshTrigger);
   useEffect(() => {
@@ -542,9 +547,18 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
         console.error('Erro ao salvar perfil final e pontuação:', error);
       }
 
-      // 🎯 CORREÇÃO: Sempre usar score.total recém-calculado (não o valor desatualizado do banco)
-      console.log('🔧 [WelcomeScreen] Setting finalScore to:', score.total, 'Profile will be:', getDigitalProfile(score.total).profile);
-      setGameData({ nome, xp, medals, score, finalScore: score.total, isDataLoaded: true });
+      // 🚨 SOLUÇÃO: Usar dados já salvos no banco diretamente
+      console.log('🔧 [WelcomeScreen] Using database final_score:', fullUserProgress.final_score, 'final_profile:', fullUserProgress.final_profile);
+      setGameData({ 
+        nome, 
+        xp, 
+        medals, 
+        score, 
+        finalScore: fullUserProgress.final_score || score.total,
+        final_profile: fullUserProgress.final_profile,
+        final_score: fullUserProgress.final_score,
+        isDataLoaded: true 
+      });
       setIsLoadingProfile(false);
       setShowGameSummary(true);
       
@@ -1330,13 +1344,21 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
 
 // Internal Game Summary Component with Bonus System
 const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; userId: string; onXpUpdate?: (newXp: number) => void }) => {
-  // 🚨 CORREÇÃO: Usar finalScore que já foi calculado corretamente
-  const finalScore = gameData.finalScore || 0;
-  const profile = getDigitalProfile(finalScore);
-  console.log('🎯 [GameSummaryContent] Profile calculation:', { 
-    finalScore, 
+  // 🚨 SOLUÇÃO: Usar dados já salvos no banco diretamente
+  const finalScore = gameData.final_score || gameData.finalScore || 0;
+  const finalProfile = gameData.final_profile;
+  
+  // Se temos perfil no banco, usar ele; senão calcular como fallback
+  const profile = finalProfile ? 
+    { profile: finalProfile, sublevel: getDigitalProfile(finalScore).sublevel } : 
+    getDigitalProfile(finalScore);
+    
+  console.log('🎯 [GameSummaryContent] Using database data:', { 
+    finalScore,
+    finalProfile,
+    usingBankProfile: !!finalProfile,
     calculatedProfile: profile.profile,
-    EXPECTED: 'Should be Ninja for score 55'
+    SOURCE: finalProfile ? 'DATABASE' : 'CALCULATED'
   });
   const [phrase, setPhrase] = useState<string>('');
   
