@@ -885,7 +885,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                           <span>
                             {(() => {
                               if (extraMissionState === 'declined') {
-                                return "Missão Recusada";
+                                return "Fim de Jogo";
                               }
                               
                               if (extraMissionState === 'completed') {
