@@ -677,7 +677,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                       </p>
                     </div>
                   </div>
-                ) : showGameSummary || (completedMissions.size === 4 && gameData) ? (
+                ) : showGameSummary || (completedMissions.size === 4 && gameData) || (extraMissionState === 'completed') || (extraMissionState === 'declined') ? (
                   <GameSummaryContent gameData={gameData} userId={userId} onXpUpdate={handleXpUpdate} />
                 ) : completedMissions.size === 4 ? (
                   <div className="h-full flex flex-col items-center justify-center space-y-4 p-4">
