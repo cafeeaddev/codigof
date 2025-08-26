@@ -34,6 +34,7 @@ interface WelcomeScreenProps {
 }
 
 export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeScreenProps) => {
+  console.log('🚀 [WelcomeScreen] Component mounted with userId:', userId);
   const navigate = useNavigate();
   const { isAdmin } = useUserRole();
   const [isLoading, setIsLoading] = useState(true);

@@ -11,6 +11,7 @@ interface ExtraMissionStateResult {
 }
 
 export const useExtraMissionState = (userId: string | undefined, profileName: string, refreshTrigger?: number) => {
+  console.log('🚀 [useExtraMissionState] Hook called with:', { userId, profileName, refreshTrigger });
   const [state, setState] = useState<ExtraMissionState>('hidden');
   const [releaseDate, setReleaseDate] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
