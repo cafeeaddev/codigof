@@ -1054,9 +1054,9 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                       <ExtraMissionContent 
                         userName={userProfile.nome}
                       onBack={() => {
-                        // Uma vez na missão extra, sempre permanece nela
-                        // setShowExtraMissionScreen(false);
-                        // setCurrentMission(1);
+                        console.log('🔥 [WelcomeScreen] ExtraMissionContent onBack called');
+                        setShowExtraMissionScreen(false);
+                        setCurrentMission(1);
                       }}
                         onDeclineShown={(declined) => {
                           setIsGameEnded(declined);
@@ -1155,9 +1155,9 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                     <ExtraMissionContent 
                       userName={userProfile.nome}
                       onBack={() => {
-                        // Uma vez na missão extra, sempre permanece nela
-                        // setShowExtraMissionScreen(false);
-                        // setCurrentMission(1);
+                        console.log('🔥 [WelcomeScreen] ExtraMissionContent onBack called');
+                        setShowExtraMissionScreen(false);
+                        setCurrentMission(1);
                       }}
                       onDeclineShown={(declined) => {
                         console.log('Setting userDeclinedFastTrack to:', declined);
