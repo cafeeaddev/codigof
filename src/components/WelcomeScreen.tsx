@@ -574,7 +574,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
               showTitle={true}
               medalNames={
                 (showGameSummary || (completedMissions.size === 4 && gameData)) && gameData ? (
-                  // Na tela final, se perfil não for Beginner, mostrar 5 medalhas
+                  // Na tela final, sempre mostrar 5 medalhas se não for Beginner (incluindo quando declined)
                   getDigitalProfile(gameData.score.total).profile !== 'Beginner' 
                     ? ["Satélite", "Planeta", "Estrela", "Galáxia", "Universo"]
                     : ["Satélite", "Planeta", "Estrela", "Galáxia"]
@@ -802,7 +802,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                 const isGameComplete = completedMissions.size === 4 && gameData;
                 // Verificar se é perfil Beginner na tela final
                 const isBeginnerProfile = isGameComplete && gameData && getDigitalProfile(gameData.score.total).profile === 'Beginner';
-                // IMPORTANTE: Nunca mostrar missão extra para Beginners, mesmo na tela final
+                // IMPORTANTE: Sempre mostrar missão extra quando declined (tela "Poxa"), mesmo para perfis não-Beginner
                 const shouldShowExtraMission = isGameComplete && !isBeginnerProfile && ['blocked', 'available', 'completed', 'declined'].includes(extraMissionState);
                 const missions = shouldShowExtraMission ? [1, 2, 3, 4, 5] : [1, 2, 3, 4];
                 const gridCols = shouldShowExtraMission ? 'grid-cols-5' : 'grid-cols-4';
@@ -824,7 +824,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                         className={`relative p-4 rounded-lg border-2 transition-all duration-300 cursor-pointer ${
                           isExtraMission
                             ? (extraMissionState === 'declined'
-                                ? 'bg-muted/20 border-muted-foreground/20 opacity-50' 
+                                ? 'bg-muted/20 border-muted-foreground/20 opacity-70 cursor-not-allowed' 
                                 : isExtraMissionAvailable 
                                   ? 'bg-cyan-500/20 border-cyan-400 hover:border-cyan-300 shadow-lg shadow-cyan-400/30 animate-pulse hover:scale-105' 
                                   : 'bg-muted/30 border-muted-foreground/30 opacity-60 hover:scale-105')
@@ -837,6 +837,10 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                            : 'bg-card border-secondary/50 hover:border-accent/50'
                         }`}
                         onClick={() => {
+                        // Bloquear clique se missão extra foi recusada
+                        if (isExtraMission && extraMissionState === 'declined') {
+                          return; // Não fazer nada se foi recusada
+                        }
                         if (isExtraMission && isExtraMissionAvailable) {
                           setCurrentMission(5);
                           setShowExtraMissionScreen(true);
@@ -851,9 +855,11 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                            isExtraMission 
                             ? extraMissionState === 'declined'
                               ? 'bg-muted-foreground/30' // Estado 3: Fim de Jogo - mais cinza
-                              : isExtraMissionAvailable 
-                                ? 'bg-cyan-400 shadow-lg shadow-cyan-400/50' // Estado 2: Liberada
-                                : 'bg-blue-400/30' // Estado 1: Bloqueada
+                               : isExtraMissionAvailable 
+                                 ? 'bg-cyan-400 shadow-lg shadow-cyan-400/50' // Estado 2: Liberada
+                                 : extraMissionState === 'completed'
+                                   ? 'bg-primary' // Estado 4: Completada
+                                   : 'bg-blue-400/30' // Estado 1: Bloqueada
                             : isCompleted ? 'bg-primary' : isCurrent ? 'bg-accent' : isLocked ? 'bg-muted-foreground/50' : 'bg-muted'
                         }`}></div>
                         <span className={`text-sm font-bold tracking-wider ${
@@ -862,7 +868,9 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                               ? 'text-muted-foreground/50' // Estado 3: Fim de Jogo - mais cinza
                               : isExtraMissionAvailable 
                                 ? 'text-cyan-300' // Estado 2: Liberada
-                                : 'text-blue-300/60' // Estado 1: Bloqueada
+                                : extraMissionState === 'completed'
+                                  ? 'text-primary' // Estado 4: Completada
+                                  : 'text-blue-300/60' // Estado 1: Bloqueada
                             : isCompleted ? 'text-primary' : isCurrent ? 'text-accent' : isLocked ? 'text-muted-foreground/70' : 'text-foreground'
                         }`}>
                           {isExtraMission ? 'MISSÃO EXTRA' : `MISSÃO ${missionId}`}
@@ -873,9 +881,11 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                          isExtraMission 
                             ? extraMissionState === 'declined'
                               ? 'text-muted-foreground/40' // Estado 3: Fim de Jogo - mais cinza
-                             : isExtraMissionAvailable 
-                               ? 'text-blue-300 font-bold' // Estado 2: Liberada
-                               : 'text-blue-200/60' // Estado 1: Bloqueada
+                              : isExtraMissionAvailable 
+                                ? 'text-blue-300 font-bold' // Estado 2: Liberada
+                                : extraMissionState === 'completed'
+                                  ? 'text-primary/80' // Estado 4: Completada
+                                  : 'text-blue-200/60' // Estado 1: Bloqueada
                            : isCompleted ? 'text-primary/80' : isCurrent ? 'text-accent/80' : isLocked ? 'text-muted-foreground/60' : 'text-foreground/70'
                        }`}>
                         {missionId === 1 && "Como você encara o digital?"}
@@ -908,9 +918,11 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                          isExtraMission 
                             ? extraMissionState === 'declined'
                               ? 'text-muted-foreground/40' // Estado 3: Fim de Jogo - mais cinza
-                             : isExtraMissionAvailable 
-                               ? 'text-cyan-200 font-semibold' // Estado 2: Liberada
-                               : 'text-blue-300/50' // Estado 1: Bloqueada
+                              : isExtraMissionAvailable 
+                                ? 'text-cyan-200 font-semibold' // Estado 2: Liberada
+                                : extraMissionState === 'completed'
+                                  ? 'text-primary' // Estado 4: Completada
+                                  : 'text-blue-300/50' // Estado 1: Bloqueada
                            : isCompleted ? 'text-primary' : isCurrent ? 'text-accent' : 'text-muted-foreground'
                        }`}>
                         {isExtraMission ? 'Aliança Digital' : 'Vale 25 XP'}
@@ -923,9 +935,11 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                              isExtraMission 
                                ? userDeclinedFastTrack 
                                  ? 'bg-muted-foreground/30 w-full' // Estado 3: Fim de Jogo
-                                 : isExtraMissionAvailable 
-                                   ? 'bg-gradient-to-r from-blue-400 to-purple-400 w-full shadow-lg shadow-blue-400/50' // Estado 2: Liberada
-                                   : 'bg-blue-400/30 w-0' // Estado 1: Bloqueada
+                                  : isExtraMissionAvailable 
+                                    ? 'bg-gradient-to-r from-blue-400 to-purple-400 w-full shadow-lg shadow-blue-400/50' // Estado 2: Liberada
+                                    : extraMissionState === 'completed'
+                                      ? 'bg-primary w-full' // Estado 4: Completada
+                                      : 'bg-blue-400/30 w-0' // Estado 1: Bloqueada
                                : isCompleted ? 'bg-primary w-full' : isCurrent ? 'bg-accent w-1/2' : 'bg-muted w-0'
                            }`}
                         ></div>
@@ -944,11 +958,13 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                         </div>
                        ) : isExtraMission && extraMissionState !== 'hidden' ? (
                         <div className={`absolute top-2 right-2 w-4 h-4 rounded-full flex items-center justify-center shadow-lg ${
-                          extraMissionState === 'declined'
-                            ? 'bg-muted-foreground/50' // Estado 3: Fim de Jogo
-                            : isExtraMissionAvailable 
-                              ? 'bg-cyan-400 shadow-cyan-400/50 animate-pulse' // Estado 2: Liberada (com pulse)
-                              : 'bg-blue-400/30' // Estado 1: Bloqueada (sem pulse)
+                           extraMissionState === 'declined'
+                             ? 'bg-muted-foreground/50' // Estado 3: Fim de Jogo
+                             : isExtraMissionAvailable 
+                               ? 'bg-cyan-400 shadow-cyan-400/50 animate-pulse' // Estado 2: Liberada (com pulse)
+                               : extraMissionState === 'completed'
+                                 ? 'bg-primary shadow-primary/50' // Estado 4: Completada
+                                 : 'bg-blue-400/30' // Estado 1: Bloqueada (sem pulse)
                         }`}>
                           {extraMissionState === 'declined' ? (
                             <svg className="w-2.5 h-2.5 text-muted-foreground/70" fill="currentColor" viewBox="0 0 20 20">

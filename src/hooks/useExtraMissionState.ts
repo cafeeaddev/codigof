@@ -47,19 +47,6 @@ export const useExtraMissionState = (userId: string | undefined, profileName: st
         return;
       }
 
-      // Check if user declined the mission
-      const { data: termsResponse } = await supabase
-        .from('fast_track_terms_responses')
-        .select('want_to_participate')
-        .eq('user_id', userId)
-        .maybeSingle();
-
-      if (termsResponse && !termsResponse.want_to_participate) {
-        setState('declined');
-        setIsLoading(false);
-        return;
-      }
-
       // Check if user completed mission 5 OR submitted fast track form
       const { data: progress } = await supabase
         .from('user_progress')
@@ -75,6 +62,20 @@ export const useExtraMissionState = (userId: string | undefined, profileName: st
 
       if (progress?.missao_5_completed || fastTrackResponse) {
         setState('completed');
+        setIsLoading(false);
+        return;
+      }
+
+      // Check if user declined the mission - PRIORIZAR ESTE CHECK
+      const { data: termsResponse } = await supabase
+        .from('fast_track_terms_responses')
+        .select('want_to_participate')
+        .eq('user_id', userId)
+        .maybeSingle();
+
+      // CRÍTICO: Se o usuário recusou, sempre mostrar como declined, independente de outras condições
+      if (termsResponse && !termsResponse.want_to_participate) {
+        setState('declined');
         setIsLoading(false);
         return;
       }
