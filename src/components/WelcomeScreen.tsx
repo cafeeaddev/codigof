@@ -802,7 +802,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                 // Verificar se é perfil Beginner na tela final
                 const isBeginnerProfile = isGameComplete && gameData && getDigitalProfile(gameData.score.total).profile === 'Beginner';
                 // IMPORTANTE: Nunca mostrar missão extra para Beginners, mesmo na tela final
-                const shouldShowExtraMission = isGameComplete && !isBeginnerProfile && extraMissionState !== 'hidden';
+                const shouldShowExtraMission = isGameComplete && !isBeginnerProfile && ['available', 'completed', 'declined'].includes(extraMissionState);
                 const missions = shouldShowExtraMission ? [1, 2, 3, 4, 5] : [1, 2, 3, 4];
                 const gridCols = shouldShowExtraMission ? 'grid-cols-5' : 'grid-cols-4';
                 
