@@ -259,18 +259,18 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
   // Show decline message screen
   if (showDeclineMessage) {
     return (
-      <div className="w-full h-full min-h-[100dvh] md:min-h-0 relative overflow-hidden">
-        <ScrollArea className="h-full w-full">
-          <div className="p-4 md:p-6 pb-safe-area-inset-bottom">
+      <div className="w-full h-full min-h-screen relative flex flex-col">
+        <div className="flex-1 overflow-y-auto overflow-x-hidden">
+          <div className="p-4 md:p-6 pb-24 md:pb-6">
             <div className="mb-8">
               <div className="relative overflow-hidden animate-epic-entry bg-background/95 backdrop-blur-sm border-2 border-cyan-400/30 bg-gradient-to-br from-cyan-500/10 to-purple-600/10 rounded-xl">
-                <div className="relative p-6 md:p-8">
-                  <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12 relative z-10">
+                <div className="relative p-4 md:p-6 lg:p-8">
+                  <div className="flex flex-col lg:flex-row items-center gap-6 lg:gap-12 relative z-10">
                     
                     {/* Avatar do Cody */}
                     <div className="flex-shrink-0 text-center lg:text-left">
-                      <div className="relative mb-6">
-                        <div className="w-32 h-32 sm:w-48 sm:h-48 md:w-64 md:h-64 lg:w-72 lg:h-72 rounded-full bg-gradient-to-r from-neon-purple via-neon-purple to-neon-cyan p-1 shadow-glow mx-auto lg:mx-0">
+                      <div className="relative mb-4">
+                        <div className="w-24 h-24 sm:w-32 sm:h-32 md:w-48 md:h-48 lg:w-64 lg:h-64 rounded-full bg-gradient-to-r from-neon-purple via-neon-purple to-neon-cyan p-1 shadow-glow mx-auto lg:mx-0">
                           <div className="w-full h-full rounded-full bg-background/20 backdrop-blur-xl overflow-hidden relative">
                             <video 
                               className="w-full h-full object-cover rounded-full"
@@ -289,7 +289,7 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
                     </div>
 
                     {/* Mensagem de despedida */}
-                    <div className="flex-1 text-center lg:text-left space-y-4 sm:space-y-6 w-full">
+                    <div className="flex-1 text-center lg:text-left space-y-4 w-full">
                       <div className="relative">
                         <div 
                           className="absolute inset-0 bg-gradient-to-r opacity-10 blur-sm rounded-lg"
@@ -297,28 +297,15 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
                             background: 'linear-gradient(45deg, hsl(var(--primary))20, transparent, hsl(var(--primary))20)' 
                           }}
                         />
-                        <div className="relative text-foreground/90 leading-relaxed p-6 rounded-lg border border-border/50 bg-background/30 text-center">
+                        <div className="relative text-foreground/90 leading-relaxed p-4 md:p-6 rounded-lg border border-border/50 bg-background/30 text-center">
                           <div className="space-y-4">
-                            <h3 className="text-2xl font-bold text-cyan-300">Poxa 🙁!!</h3>
-                            <p className="text-lg">
+                            <h3 className="text-xl md:text-2xl font-bold text-cyan-300">Poxa 🙁!!</h3>
+                            <p className="text-base md:text-lg">
                               Tudo bem, entendemos que esse pode não ser o momento ideal para você.
                             </p>
-                            <p className="text-lg">
+                            <p className="text-base md:text-lg">
                               Seguimos juntos e nos encontraremos em uma próxima jornada digital!
                             </p>
-                            <div className="mt-6 sticky bottom-0 bg-background/95 backdrop-blur-sm -mx-6 px-6 pb-4 md:pb-0 md:static md:bg-transparent">
-                              <Button 
-                                onClick={() => {
-                                  console.log('🔥 [ExtraMissionContent] User clicked Voltar - going back to main screen');
-                                  // 🔥 CORREÇÃO: Garantir refresh antes de voltar
-                                  onResponseSubmitted?.();
-                                  onBack();
-                                }}
-                                className="w-full bg-cyan-500 hover:bg-cyan-600 text-black font-semibold px-8 py-3 rounded-lg transition-all duration-300 min-h-[48px] text-base"
-                              >
-                                Ver Resultados Finais
-                              </Button>
-                            </div>
                           </div>
                         </div>
                       </div>
@@ -328,27 +315,41 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
               </div>
             </div>
           </div>
-        </ScrollArea>
+        </div>
+
+        {/* Botão fixo na parte inferior */}
+        <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50 p-4 z-50 md:relative md:bg-transparent md:border-t-0 md:p-6">
+          <Button 
+            onClick={() => {
+              console.log('🔥 [ExtraMissionContent] User clicked Voltar - going back to main screen');
+              onResponseSubmitted?.();
+              onBack();
+            }}
+            className="w-full bg-cyan-500 hover:bg-cyan-600 text-black font-semibold px-8 py-3 rounded-lg transition-all duration-300 min-h-[48px] text-base"
+          >
+            Ver Resultados Finais
+          </Button>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="w-full h-full min-h-[100dvh] md:min-h-0 relative overflow-hidden">
-      {/* Layout principal com ScrollArea */}
-      <ScrollArea className="h-full w-full">
-        <div className="p-4 md:p-6 pb-safe-area-inset-bottom">
+    <div className="w-full h-full min-h-screen relative flex flex-col">
+      {/* Conteúdo principal com scroll nativo */}
+      <div className="flex-1 overflow-y-auto overflow-x-hidden">
+        <div className="p-4 md:p-6 pb-24 md:pb-6">
           {/* Hero Card da Missão Extra */}
           <div className="mb-4 md:mb-8">
             {/* Hero Card simplificado para Fast Track */}
             <div className="relative overflow-hidden animate-epic-entry bg-background/95 backdrop-blur-sm border-2 border-cyan-400/30 bg-gradient-to-br from-cyan-500/10 to-purple-600/10 rounded-xl">
-              <div className="relative p-6 md:p-8">
-                <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12 relative z-10">
+              <div className="relative p-4 md:p-6 lg:p-8">
+                <div className="flex flex-col lg:flex-row items-center gap-6 lg:gap-12 relative z-10">
                   
                   {/* Avatar do Cody */}
                   <div className="flex-shrink-0 text-center lg:text-left">
-                    <div className="relative mb-6">
-                      <div className="w-32 h-32 sm:w-48 sm:h-48 md:w-64 md:h-64 lg:w-72 lg:h-72 rounded-full bg-gradient-to-r from-neon-purple via-neon-purple to-neon-cyan p-1 shadow-glow mx-auto lg:mx-0">
+                    <div className="relative mb-4">
+                      <div className="w-24 h-24 sm:w-32 sm:h-32 md:w-48 md:h-48 lg:w-64 lg:h-64 rounded-full bg-gradient-to-r from-neon-purple via-neon-purple to-neon-cyan p-1 shadow-glow mx-auto lg:mx-0">
                         <div className="w-full h-full rounded-full bg-background/20 backdrop-blur-xl overflow-hidden relative">
                           <video 
                             className="w-full h-full object-cover rounded-full"
@@ -367,14 +368,14 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
                     
                     {/* Texto abaixo do Cody */}
                     <div className="text-center">
-                      <p className="text-lg font-semibold text-cyan-300">
+                      <p className="text-base lg:text-lg font-semibold text-cyan-300">
                         Vamos juntos para a próxima fase?
                       </p>
                     </div>
                   </div>
 
                   {/* Conteúdo dos termos */}
-                  <div className="flex-1 text-center lg:text-left space-y-4 sm:space-y-6 w-full">
+                  <div className="flex-1 text-center lg:text-left space-y-4 w-full">
                     <div className="relative">
                       <div 
                         className="absolute inset-0 bg-gradient-to-r opacity-10 blur-sm rounded-lg"
@@ -382,45 +383,39 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
                           background: 'linear-gradient(45deg, hsl(var(--primary))20, transparent, hsl(var(--primary))20)' 
                         }}
                       />
-                      <div className="relative text-foreground/90 leading-relaxed p-6 rounded-lg border border-border/50 bg-background/30">
-                        <h3 className="text-xl font-bold text-cyan-300 mb-4">Fast Track do Código F - Termos de Participação</h3>
+                      <div className="relative text-foreground/90 leading-relaxed p-4 md:p-6 rounded-lg border border-border/50 bg-background/30">
+                        <h3 className="text-lg md:text-xl font-bold text-cyan-300 mb-4">Fast Track do Código F - Termos de Participação</h3>
                         <div className="text-left mb-6">
                           {termsContent}
                         </div>
 
                         {/* Formulário de escolha única */}
-                        <div className="space-y-4 md:space-y-6 pt-4 border-t border-cyan-400/20">
+                        <div className="space-y-4 pt-4 border-t border-cyan-400/20">
                           <RadioGroup 
                             value={userChoice} 
                             onValueChange={(value) => setUserChoice(value as 'accept' | 'decline')}
-                            className="space-y-3 md:space-y-4"
+                            className="space-y-3"
                           >
                             <div className="flex items-start space-x-3">
                               <RadioGroupItem value="accept" id="accept-terms" className="mt-1" />
-                              <Label htmlFor="accept-terms" className="text-sm text-foreground/90 cursor-pointer leading-relaxed">
-                                Li e concordo com os termos acima e quero participar do Fast Track.
+                              <Label 
+                                htmlFor="accept-terms" 
+                                className="cursor-pointer text-left flex-1 text-sm md:text-base leading-relaxed"
+                              >
+                                <span className="font-semibold text-cyan-300">Aceito</span> os termos e compromissos acima e tenho interesse em participar do <strong>Fast Track do Código F</strong>.
                               </Label>
                             </div>
-
+                            
                             <div className="flex items-start space-x-3">
                               <RadioGroupItem value="decline" id="decline-terms" className="mt-1" />
-                              <Label htmlFor="decline-terms" className="text-sm text-foreground/90 cursor-pointer leading-relaxed">
-                                Prefiro não participar no momento.
+                              <Label 
+                                htmlFor="decline-terms" 
+                                className="cursor-pointer text-left flex-1 text-sm md:text-base leading-relaxed"
+                              >
+                                <span className="font-semibold text-cyan-300">Não aceito</span> ou não tenho interesse em participar neste momento.
                               </Label>
                             </div>
                           </RadioGroup>
-
-                          {/* Botão de confirmação */}
-                          <div className="pt-4 border-t border-cyan-400/10 sticky bottom-0 bg-background/95 backdrop-blur-sm -mx-6 px-6 pb-4 md:pb-0 md:static md:bg-transparent">
-                            <Button
-                              onClick={handleSubmit}
-                              disabled={!userChoice || isSubmitting}
-                              className="w-full bg-cyan-600 hover:bg-cyan-700 text-white min-h-[48px] text-base"
-                            >
-                              <Shield className="w-4 h-4 mr-2" />
-                              {isSubmitting ? 'Confirmando...' : 'Confirmar'}
-                            </Button>
-                          </div>
                         </div>
                       </div>
                     </div>
@@ -429,9 +424,44 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
               </div>
             </div>
           </div>
-
         </div>
-      </ScrollArea>
+      </div>
+
+      {/* Botão fixo na parte inferior - mobile */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50 p-4 z-50">
+        <Button 
+          onClick={handleSubmit}
+          disabled={!userChoice || isSubmitting}
+          className="w-full bg-cyan-500 hover:bg-cyan-600 text-black font-semibold px-6 py-3 rounded-lg transition-all duration-300 min-h-[48px] text-base"
+        >
+          {isSubmitting ? (
+            <div className="flex items-center justify-center space-x-2">
+              <div className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin"></div>
+              <span>Confirmando...</span>
+            </div>
+          ) : (
+            'Confirmar Escolha'
+          )}
+        </Button>
+      </div>
+
+      {/* Botão inline - desktop */}
+      <div className="hidden md:block p-6">
+        <Button 
+          onClick={handleSubmit}
+          disabled={!userChoice || isSubmitting}
+          className="w-full bg-cyan-500 hover:bg-cyan-600 text-black font-semibold px-8 py-3 rounded-lg transition-all duration-300 min-h-[56px] text-base"
+        >
+          {isSubmitting ? (
+            <div className="flex items-center justify-center space-x-2">
+              <div className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin"></div>
+              <span>Confirmando...</span>
+            </div>
+          ) : (
+            'Confirmar Escolha'
+          )}
+        </Button>
+      </div>
     </div>
   );
 };
