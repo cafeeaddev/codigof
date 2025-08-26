@@ -1471,7 +1471,7 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate, extraMissionRefreshT
   const [currentXp, setCurrentXp] = useState(gameData.xp);
   
   // Use extra mission hook with correct profile  
-  const { state: gameSummaryExtraMissionState, releaseDate: extraMissionReleaseDate } = useExtraMissionState(userId, profile.profile);
+  const { state: gameSummaryExtraMissionState, releaseDate: extraMissionReleaseDate } = useExtraMissionState(userId, profile.profile, extraMissionRefreshTrigger);
   
   useEffect(() => {
     const loadPhrase = async () => {
