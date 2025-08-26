@@ -55,6 +55,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
     xp: 0,
     medals: { m1: false, m2: false, m3: false, m4: false },
     score: { mission1: 0, mission2: 0, mission3: 0, mission4: 0, total: 0 },
+    finalScore: 0, // Score final salvo no banco de dados
     isDataLoaded: false // Flag para identificar se dados reais foram carregados
   });
   const [extraMissionReleaseDate, setExtraMissionReleaseDate] = useState<string | null>(null);
@@ -64,7 +65,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
   
   // Hook para estado da missão extra - só usar perfil quando dados reais foram carregados
   // Evita o bug do perfil "Beginner" temporário
-  const currentProfile = gameData.isDataLoaded ? getDigitalProfile(gameData.score.total).profile : 'Unknown';
+  const currentProfile = gameData.isDataLoaded ? getDigitalProfile(gameData.finalScore || gameData.score.total).profile : 'Unknown';
   const { state: extraMissionState, releaseDate: hookExtraMissionReleaseDate, refreshState } = useExtraMissionState(userId, currentProfile, extraMissionRefreshTrigger);
   useEffect(() => {
     const seen = localStorage.getItem('tutorialSeen');
@@ -536,7 +537,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
         console.error('Erro ao salvar perfil final e pontuação:', error);
       }
 
-      setGameData({ nome, xp, medals, score, isDataLoaded: true });
+      setGameData({ nome, xp, medals, score, finalScore: fullUserProgress?.final_score || score.total, isDataLoaded: true });
       setIsLoadingProfile(false);
       setShowGameSummary(true);
       
@@ -1322,7 +1323,9 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
 
 // Internal Game Summary Component with Bonus System
 const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; userId: string; onXpUpdate?: (newXp: number) => void }) => {
-  const profile = getDigitalProfile(gameData.score.total);
+  // 🚨 CORREÇÃO: Usar final_score do banco se disponível, senão calcular
+  const finalScore = gameData.finalScore || gameData.score?.total || 0;
+  const profile = getDigitalProfile(finalScore);
   const [phrase, setPhrase] = useState<string>('');
   
   // Bonus system states
