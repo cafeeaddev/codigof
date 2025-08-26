@@ -425,11 +425,19 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
         m1, m2, m3, m4,
         totalScore: score.total,
         userId,
-        rawResponses: { r1: r1.data?.length, r2: r2.data?.length, r3: r3.data?.length, r4: r4.data?.length }
+        rawResponses: { r1: r1.data?.length, r2: r2.data?.length, r3: r3.data?.length, r4: r4.data?.length },
+        'CRITICAL': 'Mission 4 is EXCLUDED from profile calculation'
       });
 
-      // Calcular e salvar perfil final
+      // Calcular e salvar perfil final - APENAS com missões 1-3
       const { profile } = getDigitalProfile(score.total);
+      
+      console.log('🚨 [PROFILE CALCULATION VERIFICATION]:', {
+        totalScoreForProfile: score.total,
+        calculatedProfile: profile,
+        'EXPECTED_FOR_ADRIANO': 'Should be Ninja if score >= 47',
+        'ACTUAL_THRESHOLDS': { ninja: 47, proplayer: 34, explorer: 23, beginnerplus: 16 }
+      });
       
       console.log('🏅 [PROFILE CALCULATION DEBUG]:', {
         totalScore: score.total,
@@ -490,6 +498,9 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
       // 🔥 CRÍTICO: Forçar atualização do hook useExtraMissionState após carregar dados reais
       console.log('🔄 [TRIGGER REFRESH] Forçando refresh do useExtraMissionState com perfil:', profile);
       setExtraMissionRefreshTrigger(prev => prev + 1);
+      
+      // 🚨 DEBUG: Forçar refresh da página para testar logs
+      console.log('🔄 [DEBUG] Profile calculation complete - dados atualizados');
     } catch (error) {
       console.error('Error loading game summary:', error);
       setIsLoadingProfile(false);
