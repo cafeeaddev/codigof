@@ -537,7 +537,9 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
         console.error('Erro ao salvar perfil final e pontuação:', error);
       }
 
-      setGameData({ nome, xp, medals, score, finalScore: fullUserProgress?.final_score || score.total, isDataLoaded: true });
+      // 🎯 CORREÇÃO: Sempre usar score.total recém-calculado (não o valor desatualizado do banco)
+      console.log('🔧 [WelcomeScreen] Setting finalScore to:', score.total, 'Profile will be:', getDigitalProfile(score.total).profile);
+      setGameData({ nome, xp, medals, score, finalScore: score.total, isDataLoaded: true });
       setIsLoadingProfile(false);
       setShowGameSummary(true);
       
