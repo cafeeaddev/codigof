@@ -321,7 +321,7 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
                     {/* Texto abaixo do Cody */}
                     <div className="text-center">
                       <p className="text-lg font-semibold text-cyan-300">
-                        Pronto para esta etapa final?
+                        Vamos juntos para a próxima fase?
                       </p>
                     </div>
                   </div>
