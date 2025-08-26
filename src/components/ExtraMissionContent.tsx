@@ -273,6 +273,17 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
                             <p className="text-lg">
                               Seguimos juntos e nos encontraremos em uma próxima jornada digital!
                             </p>
+                            <div className="mt-6">
+                              <Button 
+                                onClick={() => {
+                                  console.log('🔥 [ExtraMissionContent] User clicked Voltar - going back to main screen');
+                                  onBack();
+                                }}
+                                className="bg-cyan-500 hover:bg-cyan-600 text-black font-semibold px-8 py-3 rounded-lg transition-all duration-300"
+                              >
+                                Voltar ao Menu Principal
+                              </Button>
+                            </div>
                           </div>
                         </div>
                       </div>
