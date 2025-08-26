@@ -60,8 +60,9 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
   const [extraMissionRefreshTrigger, setExtraMissionRefreshTrigger] = useState(0);
   const UNLOCK_DELAY = 1000; // ms
   
-  // Hook para estado da missão extra (temporário - será substituído pelo correto na tela final)
-  const { state: extraMissionState, releaseDate: hookExtraMissionReleaseDate, refreshState } = useExtraMissionState(userId, 'Unknown', extraMissionRefreshTrigger);
+  // Hook para estado da missão extra - usar perfil correto quando disponível
+  const currentProfile = gameData ? getDigitalProfile(gameData.score.total).profile : 'Unknown';
+  const { state: extraMissionState, releaseDate: hookExtraMissionReleaseDate, refreshState } = useExtraMissionState(userId, currentProfile, extraMissionRefreshTrigger);
   useEffect(() => {
     const seen = localStorage.getItem('tutorialSeen');
     if (!seen) setShowTutorial(true);
