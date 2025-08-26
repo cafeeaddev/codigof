@@ -240,6 +240,7 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
       <FastTrackThankYou 
         userName={userName}
         onBack={onBack}
+        onResponseSubmitted={onResponseSubmitted}
       />
     );
   }
@@ -250,6 +251,7 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
       <FastTrackForm 
         userName={userName}
         onComplete={() => setShowThankYou(true)}
+        onResponseSubmitted={onResponseSubmitted}
       />
     );
   }

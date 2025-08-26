@@ -11,9 +11,10 @@ import { useAuth } from '@/contexts/AuthContext';
 interface FastTrackFormProps {
   userName: string;
   onComplete: () => void;
+  onResponseSubmitted?: () => void;
 }
 
-export const FastTrackForm = ({ userName, onComplete }: FastTrackFormProps) => {
+export const FastTrackForm = ({ userName, onComplete, onResponseSubmitted }: FastTrackFormProps) => {
   const { toast } = useToast();
   const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -86,6 +87,8 @@ export const FastTrackForm = ({ userName, onComplete }: FastTrackFormProps) => {
         description: "Respostas enviadas com sucesso!",
       });
       
+      // Força refresh do estado da missão extra ANTES de completar
+      onResponseSubmitted?.();
       onComplete();
     } catch (error) {
       console.error('Erro ao salvar respostas:', error);

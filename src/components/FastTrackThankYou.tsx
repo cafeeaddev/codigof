@@ -3,9 +3,10 @@ import { ScrollArea } from './ui/scroll-area';
 interface FastTrackThankYouProps {
   userName: string;
   onBack: () => void;
+  onResponseSubmitted?: () => void;
 }
 
-export const FastTrackThankYou = ({ userName, onBack }: FastTrackThankYouProps) => {
+export const FastTrackThankYou = ({ userName, onBack, onResponseSubmitted }: FastTrackThankYouProps) => {
   return (
     <div className="w-full h-full min-h-screen md:min-h-0 relative overflow-hidden">
       <ScrollArea className="h-full w-full">
@@ -62,7 +63,11 @@ export const FastTrackThankYou = ({ userName, onBack }: FastTrackThankYouProps) 
                           
                           <div className="pt-6 flex flex-col sm:flex-row gap-4 justify-center">
                             <button
-                              onClick={onBack}
+                              onClick={() => {
+                                // Força refresh do estado da missão extra ANTES de voltar
+                                onResponseSubmitted?.();
+                                onBack();
+                              }}
                               className="px-8 py-3 bg-cyan-500 hover:bg-cyan-600 text-white rounded-lg font-medium transition-colors"
                             >
                               Ver Resultados Finais

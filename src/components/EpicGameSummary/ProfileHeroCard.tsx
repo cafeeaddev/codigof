@@ -24,6 +24,7 @@ interface ProfileHeroCardProps {
   timeBonus?: number;
   className?: string;
   userId: string;
+  refreshTrigger?: number;
 }
 
 export const ProfileHeroCard: React.FC<ProfileHeroCardProps> = ({
@@ -36,7 +37,8 @@ export const ProfileHeroCard: React.FC<ProfileHeroCardProps> = ({
   totalScore,
   timeBonus = 0,
   className,
-  userId
+  userId,
+  refreshTrigger
 }) => {
   const profileColor = 'hsl(var(--neon-cyan))'; // Always use neon cyan
   const [isExpanded, setIsExpanded] = useState(false);
@@ -44,7 +46,7 @@ export const ProfileHeroCard: React.FC<ProfileHeroCardProps> = ({
   const [isCardReady, setIsCardReady] = useState(false);
   
   // Hook para estado da missão extra - REGRA: só aparece se perfil for diferente de Beginner
-  const { state: extraMissionState, releaseDate: extraMissionReleaseDate } = useExtraMissionState(userId, profile);
+  const { state: extraMissionState, releaseDate: extraMissionReleaseDate } = useExtraMissionState(userId, profile, refreshTrigger);
 
   // Garante que o cardRef está pronto antes de passar para ShareActions
   useEffect(() => {

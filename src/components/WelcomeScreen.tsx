@@ -956,7 +956,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                     </div>
                   </div>
                 ) : showGameSummary || (completedMissions.size === 4 && gameData) || (extraMissionState === 'completed') || (extraMissionState === 'declined') ? (
-                  <GameSummaryContent gameData={gameData} userId={userId} onXpUpdate={handleXpUpdate} />
+                      <GameSummaryContent gameData={gameData} userId={userId} onXpUpdate={handleXpUpdate} extraMissionRefreshTrigger={extraMissionRefreshTrigger} />
                 ) : completedMissions.size === 4 ? (
                   <div className="h-full flex flex-col items-center justify-center space-y-4 p-4">
                     <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center">
@@ -1260,7 +1260,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                         }}
                       />
                     ) : showGameSummary || (completedMissions.size === 4 && gameData) ? (
-                      <GameSummaryContent gameData={gameData} userId={userId} onXpUpdate={handleXpUpdate} />
+                       <GameSummaryContent gameData={gameData} userId={userId} onXpUpdate={handleXpUpdate} extraMissionRefreshTrigger={extraMissionRefreshTrigger} />
                     ) : completedMissions.size === 4 ? (
                       <div className="h-full flex flex-col items-center justify-center space-y-4">
                         <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center">
@@ -1374,7 +1374,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                       </div>
                     </div>
                   ) : showGameSummary || (completedMissions.size === 4 && gameData) ? (
-                    <GameSummaryContent gameData={gameData} userId={userId} onXpUpdate={handleXpUpdate} />
+                    <GameSummaryContent gameData={gameData} userId={userId} onXpUpdate={handleXpUpdate} extraMissionRefreshTrigger={extraMissionRefreshTrigger} />
                   ) : completedMissions.size === 4 ? (
                     <div className="h-full flex flex-col items-center justify-center space-y-4">
                       <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center">
@@ -1435,7 +1435,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
 };
 
 // Internal Game Summary Component with Bonus System
-const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; userId: string; onXpUpdate?: (newXp: number) => void }) => {
+const GameSummaryContent = ({ gameData, userId, onXpUpdate, extraMissionRefreshTrigger }: { gameData: any; userId: string; onXpUpdate?: (newXp: number) => void; extraMissionRefreshTrigger?: number }) => {
   console.log('🔍 [GameSummaryContent] RAW gameData received:', {
     final_score: gameData.final_score,
     finalScore: gameData.finalScore,
@@ -1664,6 +1664,7 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; u
               timeBonus={timeBonus}
               className="max-w-none"
               userId={userId}
+              refreshTrigger={extraMissionRefreshTrigger}
             />
 
             {/* Spacer for better layout */}
