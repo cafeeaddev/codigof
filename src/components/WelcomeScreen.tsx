@@ -534,38 +534,50 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
 
       // Salvar perfil final e pontuação total na tabela user_progress
       try {
-        await supabase
+        const { data: updatedProgress, error } = await supabase
           .from('user_progress')
           .update({ 
             final_profile: profile,
             final_score: score.total,
             game_base_xp: correctGameBaseXP // Usar o valor correto ao invés de userProgress.total_xp
           })
-          .eq('user_id', userId);
+          .eq('user_id', userId)
+          .select('*')
+          .single(); // Retorna o registro atualizado
           
-        console.log('✅ Game base XP atualizado para:', correctGameBaseXP);
+        if (error) {
+          console.error('Erro ao salvar perfil final e pontuação:', error);
+        } else {
+          console.log('✅ Game base XP atualizado para:', correctGameBaseXP);
+          console.log('✅ Dados atualizados no banco:', updatedProgress);
+          
+          // 🚨 SOLUÇÃO DEFINITIVA: Usar dados REAIS do banco após atualização
+          setGameData({ 
+            nome, 
+            xp, 
+            medals, 
+            score, 
+            finalScore: updatedProgress.final_score,     // ← Dados do banco
+            final_profile: updatedProgress.final_profile, // ← Dados do banco  
+            final_score: updatedProgress.final_score,    // ← Dados do banco
+            isDataLoaded: true 
+          });
+        }
       } catch (error) {
         console.error('Erro ao salvar perfil final e pontuação:', error);
+        // Fallback: usar dados calculados se der erro
+        setGameData({ 
+          nome, 
+          xp, 
+          medals, 
+          score, 
+          finalScore: score.total,
+          final_profile: profile,
+          final_score: score.total,
+          isDataLoaded: true 
+        });
       }
-
-      // 🚨 SOLUÇÃO CORRETA: Usar os valores que acabamos de calcular e salvar no banco
-      console.log('🔧 [WelcomeScreen] Using UPDATED values:', {
-        'NEW final_score': score.total,
-        'NEW final_profile': profile,
-        'OLD fullUserProgress.final_score': fullUserProgress.final_score,
-        'OLD fullUserProgress.final_profile': fullUserProgress.final_profile
-      });
       
-      setGameData({ 
-        nome, 
-        xp, 
-        medals, 
-        score, 
-        finalScore: score.total,     // ← Usar valor recém-calculado
-        final_profile: profile,      // ← Usar valor recém-calculado  
-        final_score: score.total,    // ← Usar valor recém-calculado
-        isDataLoaded: true 
-      });
       setIsLoadingProfile(false);
       setShowGameSummary(true);
       
