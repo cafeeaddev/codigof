@@ -12,6 +12,7 @@ export const useAdminDashboard = () => {
   const [adminUsers, setAdminUsers] = useState<{ data: any[] } | null>(null);
   const [allProfiles, setAllProfiles] = useState<any[]>([]);
   const [totalProfiles, setTotalProfiles] = useState(0);
+  const [fastTrackData, setFastTrackData] = useState<Map<string, boolean>>(new Map());
   const [isLoading, setIsLoading] = useState(true);
 
   // Função para calcular pontuação total de um usuário (apenas missões 1, 2 e 3)
@@ -155,7 +156,7 @@ export const useAdminDashboard = () => {
     try {
       setIsLoading(true);
       
-      const [res1, res2, res3, res4, progressData, profilesCount, adminUsers, allProfiles] = await Promise.all([
+      const [res1, res2, res3, res4, progressData, profilesCount, adminUsers, allProfiles, fastTrackTerms] = await Promise.all([
         supabase.from('respostas').select('*').order('id', { ascending: false }),
         supabase.from('respostas_missao2').select('*').order('created_at', { ascending: false }),
         supabase.from('respostas_missao3').select('*').order('created_at', { ascending: false }),
@@ -163,7 +164,8 @@ export const useAdminDashboard = () => {
         supabase.from('user_progress').select('*'),
         supabase.from('profiles').select('id', { count: 'exact', head: true }),
         supabase.from('user_roles').select('user_id').eq('role', 'admin'),
-        supabase.from('profiles').select('user_id, nome, email, cargo, area, area_id, areas!profiles_area_id_fkey(*)')
+        supabase.from('profiles').select('user_id, nome, email, cargo, area, area_id, areas!profiles_area_id_fkey(*)'),
+        supabase.from('fast_track_terms_responses').select('user_id, want_to_participate')
       ]);
 
       // Define o total de profiles
@@ -268,6 +270,16 @@ export const useAdminDashboard = () => {
         };
       }));
 
+      
+      // Processar dados da missão extra (Fast Track)
+      const fastTrackMap = new Map<string, boolean>();
+      if (fastTrackTerms.data) {
+        fastTrackTerms.data.forEach(item => {
+          fastTrackMap.set(item.user_id, item.want_to_participate || false);
+        });
+      }
+      setFastTrackData(fastTrackMap);
+
       setProgressData({ 
         data: progressData.data || [], 
         userProfiles, 
@@ -307,6 +319,7 @@ export const useAdminDashboard = () => {
     getDigitalProfile,
     getProfileColor,
     loadAllResponses,
+    fastTrackData,
     questions: []
   };
 };

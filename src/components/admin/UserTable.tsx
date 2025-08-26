@@ -27,6 +27,7 @@ interface UserTableProps {
     missao4: any[];
   };
   questions: any[];
+  fastTrackData: Map<string, boolean>;
   onUserAnalysis: (user: UserProgress, userProfile: UserProfile) => void;
 }
 
@@ -41,6 +42,7 @@ export const UserTable = ({
   getProfileColor,
   allResponses,
   questions,
+  fastTrackData,
   onUserAnalysis
 }: UserTableProps) => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -307,6 +309,7 @@ export const UserTable = ({
               <TableHead>Missão 2</TableHead>
               <TableHead>Missão 3</TableHead>
               <TableHead>Missão 4</TableHead>
+              <TableHead>Missão Extra</TableHead>
               <TableHead>Ações</TableHead>
             </TableRow>
           </TableHeader>
@@ -406,6 +409,35 @@ export const UserTable = ({
                       <span className="text-xs text-muted-foreground ml-1">
                         {progress.missao_4_completed ? 'Concluída' : `${progress.missao_4_current_question}/5`}
                       </span>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-1">
+                      {(() => {
+                        const accepted = fastTrackData.get(progress.user_id);
+                        if (accepted === true) {
+                          return (
+                            <>
+                              <span className="text-green-500 font-medium">SIM</span>
+                              <span className="text-xs text-muted-foreground ml-1">Aceitou</span>
+                            </>
+                          );
+                        } else if (accepted === false) {
+                          return (
+                            <>
+                              <span className="text-red-500 font-medium">NÃO</span>
+                              <span className="text-xs text-muted-foreground ml-1">Recusou</span>
+                            </>
+                          );
+                        } else {
+                          return (
+                            <>
+                              <span className="text-gray-500">-</span>
+                              <span className="text-xs text-muted-foreground ml-1">Não respondeu</span>
+                            </>
+                          );
+                        }
+                      })()}
                     </div>
                   </TableCell>
                   <TableCell>

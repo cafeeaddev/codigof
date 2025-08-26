@@ -51,7 +51,8 @@ const AdminDashboard = () => {
     calculateUserTotalScore,
     getDigitalProfile,
     getProfileColor,
-    questions
+    questions,
+    fastTrackData
   } = useAdminDashboard();
 
   const {
@@ -259,6 +260,7 @@ const AdminDashboard = () => {
                         missao4: responses4
                       }}
                       questions={questions || []}
+                      fastTrackData={fastTrackData}
                       onUserAnalysis={handleUserAnalysis}
                     />
                   )}
