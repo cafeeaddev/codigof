@@ -160,6 +160,8 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
     const loadInitialState = async () => {
       if (!user?.id) return;
       
+      console.log('[ExtraMissionContent] Loading initial state for user:', user.id);
+      
       try {
         // Verificar se usuário já respondeu aos termos
         const { data: termsResponse } = await supabase
@@ -175,18 +177,27 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
           .eq('user_id', user.id)
           .maybeSingle();
           
+        console.log('[ExtraMissionContent] Debug - termsResponse:', termsResponse);
+        console.log('[ExtraMissionContent] Debug - fastTrackResponse:', fastTrackResponse);
+          
         if (fastTrackResponse) {
           // Usuário já completou tudo, mostrar tela de agradecimento
+          console.log('[ExtraMissionContent] User completed FastTrack, showing thank you');
           setShowThankYou(true);
         } else if (termsResponse) {
           // Usuário já respondeu aos termos
+          console.log('[ExtraMissionContent] User has terms response:', termsResponse);
           if (!termsResponse.want_to_participate) {
+            console.log('[ExtraMissionContent] User declined, showing decline message');
             setShowDeclineMessage(true);
             setWantToParticipate(false);
           } else {
             // Usuário quer participar, mostrar formulário
+            console.log('[ExtraMissionContent] User wants to participate, showing form');
             setShowFastTrackForm(true);
           }
+        } else {
+          console.log('[ExtraMissionContent] No previous response, showing terms');
         }
         // Se não há resposta anterior, mantém na tela de termos
       } catch (error) {
