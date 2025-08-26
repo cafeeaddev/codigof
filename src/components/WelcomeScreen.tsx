@@ -1336,6 +1336,7 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; u
               totalScore={gameData.score.total}
               timeBonus={timeBonus}
               className="max-w-none"
+              userId={userId}
             />
 
             {/* Spacer for better layout */}

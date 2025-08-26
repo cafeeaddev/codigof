@@ -3,8 +3,9 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { getProfileColor } from '@/lib/digitalProfile';
 import { cn } from '@/lib/utils';
-import { Brain, Zap, Star, Target, ChevronDown, ChevronUp, Medal, Trophy, Award, Check } from 'lucide-react';
+import { Brain, Zap, Star, Target, ChevronDown, ChevronUp, Medal, Trophy, Award, Check, Lock } from 'lucide-react';
 import { ShareActions } from './ShareActions';
+import { useExtraMissionState } from '@/hooks/useExtraMissionState';
 
 interface Medal {
   id: string | number;
@@ -22,6 +23,7 @@ interface ProfileHeroCardProps {
   totalScore: number;
   timeBonus?: number;
   className?: string;
+  userId: string;
 }
 
 export const ProfileHeroCard: React.FC<ProfileHeroCardProps> = ({
@@ -33,12 +35,16 @@ export const ProfileHeroCard: React.FC<ProfileHeroCardProps> = ({
   xp,
   totalScore,
   timeBonus = 0,
-  className
+  className,
+  userId
 }) => {
   const profileColor = 'hsl(var(--neon-cyan))'; // Always use neon cyan
   const [isExpanded, setIsExpanded] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
   const [isCardReady, setIsCardReady] = useState(false);
+  
+  // Hook para estado da missão extra - REGRA: só aparece se perfil for diferente de Beginner
+  const { state: extraMissionState, releaseDate: extraMissionReleaseDate } = useExtraMissionState(userId, profile);
 
   // Garante que o cardRef está pronto antes de passar para ShareActions
   useEffect(() => {
@@ -61,6 +67,67 @@ export const ProfileHeroCard: React.FC<ProfileHeroCardProps> = ({
 
   const ProfileIcon = getProfileIcon();
   const completedMedals = medals.filter(medal => medal.done).length;
+
+  // Lógica da missão extra baseada nas regras
+  const shouldShowExtraMission = profile !== 'Beginner' && extraMissionState !== 'hidden';
+  
+  const getExtraMissionDisplay = () => {
+    if (!shouldShowExtraMission) return null;
+    
+    switch (extraMissionState) {
+      case 'completed':
+        return { 
+          title: 'Missão Finalizada com Sucesso', 
+          icon: '🌟', 
+          isClickable: false, 
+          shouldPulse: true,
+          bgColor: 'from-neon-cyan/20 to-neon-purple/20',
+          borderColor: 'border-neon-cyan/30',
+          textColor: 'text-neon-cyan'
+        };
+      case 'available':
+        return { 
+          title: 'Missão Extra', 
+          icon: '🎯', 
+          isClickable: true, 
+          shouldPulse: true,
+          bgColor: 'from-neon-cyan/20 to-neon-purple/20',
+          borderColor: 'border-neon-cyan/30',
+          textColor: 'text-neon-cyan'
+        };
+      case 'blocked':
+        return { 
+          title: `Missão Bloqueada`, 
+          subtitle: extraMissionReleaseDate ? `Liberação em ${new Date(extraMissionReleaseDate).toLocaleDateString('pt-BR')}` : '',
+          icon: '🔒', 
+          isClickable: false, 
+          shouldPulse: false,
+          bgColor: 'from-gray-600/20 to-gray-700/20',
+          borderColor: 'border-gray-500/30',
+          textColor: 'text-gray-400'
+        };
+      case 'declined':
+        return { 
+          title: 'Fim de Jogo', 
+          icon: '❌', 
+          isClickable: false, 
+          shouldPulse: false,
+          bgColor: 'from-gray-600/20 to-gray-700/20',
+          borderColor: 'border-gray-500/30',
+          textColor: 'text-gray-400'
+        };
+      default:
+        return null;
+    }
+  };
+
+  const extraMissionDisplay = getExtraMissionDisplay();
+
+  const handleExtraMissionClick = () => {
+    if (extraMissionDisplay?.isClickable) {
+      window.dispatchEvent(new CustomEvent('startExtraMission'));
+    }
+  };
 
   return (
     <div className={cn("relative", className)}>
@@ -186,6 +253,38 @@ export const ProfileHeroCard: React.FC<ProfileHeroCardProps> = ({
                   sublevel={sublevel}
                 />
               </div>
+
+              {/* Missão Extra Card - REGRA: só mostra se não for Beginner */}
+              {extraMissionDisplay && (
+                <div className="mt-6">
+                  <Button
+                    onClick={handleExtraMissionClick}
+                    disabled={!extraMissionDisplay.isClickable}
+                    className={cn(
+                      "w-full p-6 h-auto bg-gradient-to-r border-2 rounded-xl transition-all duration-300",
+                      extraMissionDisplay.bgColor,
+                      extraMissionDisplay.borderColor,
+                      extraMissionDisplay.isClickable 
+                        ? "hover:scale-105 cursor-pointer" 
+                        : "cursor-not-allowed opacity-80",
+                      extraMissionDisplay.shouldPulse && "animate-pulse"
+                    )}
+                    variant="ghost"
+                  >
+                    <div className="flex flex-col items-center space-y-2">
+                      <span className="text-2xl">{extraMissionDisplay.icon}</span>
+                      <span className={cn("font-bold text-lg", extraMissionDisplay.textColor)}>
+                        {extraMissionDisplay.title}
+                      </span>
+                      {extraMissionDisplay.subtitle && (
+                        <span className="text-sm text-muted-foreground">
+                          {extraMissionDisplay.subtitle}
+                        </span>
+                      )}
+                    </div>
+                  </Button>
+                </div>
+              )}
             </div>
             </div>
           </div>
