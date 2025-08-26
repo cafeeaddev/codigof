@@ -60,7 +60,13 @@ export const FastTrackThankYou = ({ userName, onBack }: FastTrackThankYouProps) 
                             </p>
                           </div>
                           
-                          <div className="pt-6">
+                          <div className="pt-6 flex flex-col sm:flex-row gap-4 justify-center">
+                            <button
+                              onClick={onBack}
+                              className="px-8 py-3 bg-cyan-500 hover:bg-cyan-600 text-white rounded-lg font-medium transition-colors"
+                            >
+                              Ver Resultados Finais
+                            </button>
                             <a
                               href="https://mazars.cafeead.com.br/"
                               target="_blank"
