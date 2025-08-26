@@ -65,7 +65,12 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
   
   // Hook para estado da missão extra - só usar perfil quando dados reais foram carregados
   // Evita o bug do perfil "Beginner" temporário
-  const currentProfile = gameData.isDataLoaded ? getDigitalProfile(gameData.finalScore || gameData.score.total).profile : 'Unknown';
+  const currentProfile = gameData.isDataLoaded ? getDigitalProfile(gameData.finalScore || 0).profile : 'Unknown';
+  console.log('🎯 [WelcomeScreen] Current profile for useExtraMissionState:', { 
+    currentProfile, 
+    finalScore: gameData.finalScore, 
+    isDataLoaded: gameData.isDataLoaded 
+  });
   const { state: extraMissionState, releaseDate: hookExtraMissionReleaseDate, refreshState } = useExtraMissionState(userId, currentProfile, extraMissionRefreshTrigger);
   useEffect(() => {
     const seen = localStorage.getItem('tutorialSeen');
@@ -667,7 +672,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
               medalNames={
                 (showGameSummary || (completedMissions.size === 4 && gameData)) && gameData ? (
                   // Na tela final, sempre mostrar 5 medalhas se não for Beginner (incluindo quando declined)
-                  getDigitalProfile(gameData.score.total).profile !== 'Beginner' 
+                  getDigitalProfile(gameData.finalScore || 0).profile !== 'Beginner' 
                     ? ["Satélite", "Planeta", "Estrela", "Galáxia", "Universo"]
                     : ["Satélite", "Planeta", "Estrela", "Galáxia"]
                 ) : ["Satélite", "Planeta", "Estrela", "Galáxia"]
@@ -755,7 +760,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                 medalNames={
                   (showGameSummary || (completedMissions.size === 4 && gameData)) && gameData ? (
                     // Na tela final, se perfil não for Beginner, mostrar 5 medalhas
-                    getDigitalProfile(gameData.score.total).profile !== 'Beginner' 
+                    getDigitalProfile(gameData.finalScore || 0).profile !== 'Beginner' 
                       ? ["Satélite", "Planeta", "Estrela", "Galáxia", "Universo"]
                       : ["Satélite", "Planeta", "Estrela", "Galáxia"]
                   ) : ["Satélite", "Planeta", "Estrela", "Galáxia"]
@@ -1325,9 +1330,14 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
 
 // Internal Game Summary Component with Bonus System
 const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; userId: string; onXpUpdate?: (newXp: number) => void }) => {
-  // 🚨 CORREÇÃO: Usar final_score do banco se disponível, senão calcular
-  const finalScore = gameData.finalScore || gameData.score?.total || 0;
+  // 🚨 CORREÇÃO: Usar finalScore que já foi calculado corretamente
+  const finalScore = gameData.finalScore || 0;
   const profile = getDigitalProfile(finalScore);
+  console.log('🎯 [GameSummaryContent] Profile calculation:', { 
+    finalScore, 
+    calculatedProfile: profile.profile,
+    EXPECTED: 'Should be Ninja for score 55'
+  });
   const [phrase, setPhrase] = useState<string>('');
   
   // Bonus system states
@@ -1487,8 +1497,9 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; u
     window.dispatchEvent(new CustomEvent('startExtraMission'));
   };
   
-  console.log('DEBUG GameSummary:', { 
-    score: gameData.score.total, 
+  console.log('🎯 [GameSummary] DEBUG - USING CORRECT FINAL SCORE:', { 
+    finalScore: gameData.finalScore, 
+    scoreTotal: gameData.score.total,
     profile: profile.profile, 
     sublevel: profile.sublevel, 
     phrase,
@@ -1496,7 +1507,8 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; u
     timeBonus,
     shouldShowExtra: shouldShowExtraMission(),
     extraMissionState: gameSummaryExtraMissionState,
-    extraMissionReleaseDate
+    extraMissionReleaseDate,
+    IMPORTANT: 'Profile calculated from finalScore, not score.total'
   });
 
   const achievementNames = ["Satélite", "Planeta", "Estrela", "Galáxia"];
@@ -1528,7 +1540,7 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; u
               userName={gameData.nome}
               medals={achievementsWithExtra}
               xp={currentXp}
-              totalScore={gameData.score.total}
+              totalScore={gameData.finalScore}
               timeBonus={timeBonus}
               className="max-w-none"
               userId={userId}
