@@ -317,10 +317,11 @@ export const UserTable = ({
               const userCargo = formatCargo(userProfile?.cargo);
               const totalScore = calculateUserTotalScore(progress.user_id);
               
-              // Verifica se completou as missões necessárias para definir perfil (1, 2 e 3)
+              // Verifica se completou todas as missões necessárias para definir perfil (1, 2, 3 e 4)
               const hasCompletedRequiredMissions = progress.missao_1_completed && 
                                                    progress.missao_2_completed && 
-                                                   progress.missao_3_completed;
+                                                   progress.missao_3_completed &&
+                                                   progress.missao_4_completed;
               
               const profile = hasCompletedRequiredMissions 
                 ? getDigitalProfile(totalScore)
