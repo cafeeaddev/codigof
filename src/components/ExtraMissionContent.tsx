@@ -92,14 +92,20 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
       // Don't call onResponseSubmitted here as it triggers refresh that interferes with flow
 
       if (!wantToParticipate) {
-        // Show decline message and notify parent immediately
-        setShowDeclineMessage(true);
-        onDeclineShown?.(true);
         // Atualizar posição para indicar recusa
         await supabase
           .from('user_progress')
           .update({ current_position: 'extra_mission_declined' })
           .eq('user_id', user.id);
+          
+        // Voltar para a tela principal após um breve delay para mostrar o grid com "Fim de Jogo!"
+        setTimeout(() => {
+          onBack(); // Volta para WelcomeScreen onde o grid ficará visível
+        }, 2000);
+        
+        // Show decline message temporarily
+        setShowDeclineMessage(true);
+        onDeclineShown?.(true);
       } else {
         // Show FastTrack form instead of going back
         setShowFastTrackForm(true);
