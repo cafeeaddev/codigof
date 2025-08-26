@@ -8,9 +8,9 @@ interface FastTrackThankYouProps {
 
 export const FastTrackThankYou = ({ userName, onBack, onResponseSubmitted }: FastTrackThankYouProps) => {
   return (
-    <div className="w-full h-full min-h-screen relative flex flex-col">
-      <div className="flex-1 overflow-y-auto overflow-x-hidden">
-        <div className="p-4 md:p-6 pb-24 md:pb-6">
+    <div className="h-full flex flex-col bg-background overflow-hidden">
+      <ScrollArea className="flex-1">
+        <div className="p-4 md:p-6 pb-[calc(100px+env(safe-area-inset-bottom,0px))]">
           <div className="mb-4 md:mb-8">
             <div className="relative overflow-hidden animate-epic-entry bg-background/95 backdrop-blur-sm border-2 border-cyan-400/30 bg-gradient-to-br from-cyan-500/10 to-purple-600/10 rounded-xl">
               <div className="relative p-4 md:p-6 lg:p-8">
@@ -69,10 +69,10 @@ export const FastTrackThankYou = ({ userName, onBack, onResponseSubmitted }: Fas
             </div>
           </div>
         </div>
-      </div>
+      </ScrollArea>
 
-      {/* Botões fixos na parte inferior - mobile */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50 p-4 z-50">
+      {/* Botões fixos na parte inferior */}
+      <div className="bg-background border-t p-4 safe-area-inset-bottom">
         <div className="flex flex-col gap-3">
           <button
             onClick={() => {
@@ -88,29 +88,6 @@ export const FastTrackThankYou = ({ userName, onBack, onResponseSubmitted }: Fas
             target="_blank"
             rel="noopener noreferrer"
             className="w-full inline-block px-8 py-3 bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg font-medium transition-colors text-center min-h-[48px] text-base flex items-center justify-center"
-          >
-            Entrar na UM
-          </a>
-        </div>
-      </div>
-
-      {/* Botões inline - desktop */}
-      <div className="hidden md:block p-6">
-        <div className="flex flex-col gap-3 md:flex-row md:gap-4 justify-center">
-          <button
-            onClick={() => {
-              onResponseSubmitted?.();
-              onBack();
-            }}
-            className="w-full md:w-auto px-8 py-3 bg-cyan-500 hover:bg-cyan-600 text-black rounded-lg font-medium transition-colors min-h-[48px] text-base"
-          >
-            Ver Resultados Finais
-          </button>
-          <a
-            href="https://mazars.cafeead.com.br/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-full md:w-auto inline-block px-8 py-3 bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg font-medium transition-colors text-center min-h-[48px] text-base flex items-center justify-center"
           >
             Entrar na UM
           </a>

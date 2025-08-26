@@ -335,10 +335,9 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
   }
 
   return (
-    <div className="w-full h-full min-h-screen relative flex flex-col">
-      {/* Conteúdo principal com scroll nativo */}
-      <div className="flex-1 overflow-y-auto overflow-x-hidden">
-        <div className="p-4 md:p-6 pb-24 md:pb-6">
+    <div className="h-full flex flex-col bg-background overflow-hidden">
+      <ScrollArea className="flex-1">
+        <div className="p-4 md:p-6 pb-[calc(100px+env(safe-area-inset-bottom,0px))]">
           {/* Hero Card da Missão Extra */}
           <div className="mb-4 md:mb-8">
             {/* Hero Card simplificado para Fast Track */}
@@ -425,32 +424,14 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
             </div>
           </div>
         </div>
-      </div>
+      </ScrollArea>
 
-      {/* Botão fixo na parte inferior - mobile */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50 p-4 z-50">
+      {/* Botão fixo na parte inferior */}
+      <div className="bg-background border-t p-4 safe-area-inset-bottom">
         <Button 
           onClick={handleSubmit}
           disabled={!userChoice || isSubmitting}
           className="w-full bg-cyan-500 hover:bg-cyan-600 text-black font-semibold px-6 py-3 rounded-lg transition-all duration-300 min-h-[48px] text-base"
-        >
-          {isSubmitting ? (
-            <div className="flex items-center justify-center space-x-2">
-              <div className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin"></div>
-              <span>Confirmando...</span>
-            </div>
-          ) : (
-            'Confirmar Escolha'
-          )}
-        </Button>
-      </div>
-
-      {/* Botão inline - desktop */}
-      <div className="hidden md:block p-6">
-        <Button 
-          onClick={handleSubmit}
-          disabled={!userChoice || isSubmitting}
-          className="w-full bg-cyan-500 hover:bg-cyan-600 text-black font-semibold px-8 py-3 rounded-lg transition-all duration-300 min-h-[56px] text-base"
         >
           {isSubmitting ? (
             <div className="flex items-center justify-center space-x-2">

@@ -103,9 +103,9 @@ export const FastTrackForm = ({ userName, onComplete, onResponseSubmitted }: Fas
   };
 
   return (
-    <div className="w-full h-full min-h-[100dvh] md:min-h-0 relative overflow-hidden">
-      <ScrollArea className="h-full w-full">
-        <div className="p-4 md:p-6 pb-safe-area-inset-bottom">
+    <div className="h-full flex flex-col bg-background overflow-hidden">
+      <ScrollArea className="flex-1">
+        <div className="p-4 md:p-6 pb-[calc(100px+env(safe-area-inset-bottom,0px))]">
           <div className="mb-4 md:mb-8">
             <div className="relative overflow-hidden animate-epic-entry bg-background/95 backdrop-blur-sm border-2 border-cyan-400/30 bg-gradient-to-br from-cyan-500/10 to-purple-600/10 rounded-xl">
               <div className="relative p-6 md:p-8">
@@ -238,16 +238,6 @@ export const FastTrackForm = ({ userName, onComplete, onResponseSubmitted }: Fas
                             )}
                           </div>
 
-                          {/* Botão de envio */}
-                          <div className="pt-4 md:pt-6 border-t border-cyan-400/20 sticky bottom-0 bg-background/95 backdrop-blur-sm -mx-6 px-6 pb-4 md:pb-0 md:static md:bg-transparent">
-                            <Button
-                              onClick={handleSubmit}
-                              disabled={isSubmitting}
-                              className="w-full bg-cyan-600 hover:bg-cyan-700 text-white min-h-[48px] text-base"
-                            >
-                              {isSubmitting ? 'Enviando...' : 'Finalizar Missão'}
-                            </Button>
-                          </div>
                         </div>
                       </div>
                     </div>
@@ -258,6 +248,17 @@ export const FastTrackForm = ({ userName, onComplete, onResponseSubmitted }: Fas
           </div>
         </div>
       </ScrollArea>
+
+      {/* Botão fixo na parte inferior */}
+      <div className="bg-background border-t p-4 safe-area-inset-bottom">
+        <Button
+          onClick={handleSubmit}
+          disabled={isSubmitting}
+          className="w-full bg-cyan-600 hover:bg-cyan-700 text-white min-h-[48px] text-base"
+        >
+          {isSubmitting ? 'Enviando...' : 'Finalizar Missão'}
+        </Button>
+      </div>
     </div>
   );
 };
