@@ -47,11 +47,8 @@ export const FastTrackThankYou = ({ userName, onBack }: FastTrackThankYouProps) 
                       />
                       <div className="relative text-foreground/90 leading-relaxed p-6 rounded-lg border border-border/50 bg-background/30 text-center">
                         <div className="space-y-6">
-                          <h3 className="text-3xl font-bold text-cyan-300">🎉 Parabéns!</h3>
+                          <h3 className="text-3xl font-bold text-cyan-300">🎉 Parabéns por se inscrever no Fast Track!</h3>
                           <div className="space-y-4">
-                            <p className="text-xl font-semibold">
-                              Parabéns por se inscrever no Fast Track!
-                            </p>
                             <p className="text-lg">
                               Sua jornada de aceleração está apenas começando. Nos próximos dias, você receberá todas as informações sobre o programa.
                             </p>
