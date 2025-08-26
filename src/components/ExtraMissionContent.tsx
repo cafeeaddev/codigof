@@ -227,6 +227,76 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
     return (
       <div className="w-full h-full min-h-screen md:min-h-0 relative overflow-hidden">
         <ScrollArea className="h-full w-full">
+          {/* Grid de Missões no topo */}
+          <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-4 shadow-neon mx-4 mt-4">
+            <div className="grid grid-cols-5 gap-4">
+              {[1, 2, 3, 4, 5].map((missionId) => {
+                const isExtraMission = missionId === 5;
+                const isCompleted = missionId <= 4; // Missões 1-4 estão completas para chegar aqui
+                
+                return (
+                  <div key={missionId} className="relative">
+                    <div className={`
+                      bg-gradient-to-br p-4 rounded-xl border-2 relative overflow-hidden
+                      ${isExtraMission 
+                        ? 'from-gray-600/20 to-gray-700/20 border-gray-500/30' 
+                        : 'from-neon-purple/20 to-neon-cyan/20 border-neon-purple/30'
+                      }
+                    `}>
+                      {/* Checkmark ou X */}
+                      <div className="absolute top-2 right-2">
+                        {isExtraMission ? (
+                          <div className="w-6 h-6 rounded-full bg-gray-600/50 flex items-center justify-center">
+                            <span className="text-xs text-gray-400">❌</span>
+                          </div>
+                        ) : (
+                          <div className="w-6 h-6 rounded-full bg-neon-cyan/20 border border-neon-cyan/50 flex items-center justify-center">
+                            <span className="text-xs text-neon-cyan">✓</span>
+                          </div>
+                        )}
+                      </div>
+                      
+                      {/* Título da missão */}
+                      <h3 className={`text-sm font-bold mb-2 ${
+                        isExtraMission ? 'text-gray-400' : 'text-neon-purple'
+                      }`}>
+                        {isExtraMission ? 'MISSÃO EXTRA' : `MISSÃO ${missionId}`}
+                      </h3>
+                      
+                      {/* Descrição */}
+                      <p className="text-xs text-foreground/70 mb-3">
+                        {isExtraMission 
+                          ? 'Fim de Jogo!' 
+                          : missionId === 1 ? 'Como você encara o digital?' 
+                          : missionId === 2 ? 'O digital no seu dia a dia'
+                          : missionId === 3 ? 'Quando o desafio é maior'
+                          : 'Seu Radar de Ferramentas'
+                        }
+                      </p>
+                      
+                      {/* XP */}
+                      <div className="text-xs">
+                        <span className={isExtraMission ? 'text-gray-500' : 'text-foreground/60'}>
+                          Vale 25 XP
+                        </span>
+                      </div>
+                      
+                      {/* Barra de progresso */}
+                      <div className="mt-2 w-full bg-background/30 rounded-full h-1">
+                        <div 
+                          className={`h-1 rounded-full ${
+                            isExtraMission ? 'bg-gray-600' : 'bg-neon-purple'
+                          }`}
+                          style={{ width: isCompleted ? '100%' : '0%' }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+          
           <div className="p-4 md:p-6">
             <div className="mb-8">
               <div className="relative overflow-hidden animate-epic-entry bg-background/95 backdrop-blur-sm border-2 border-cyan-400/30 bg-gradient-to-br from-cyan-500/10 to-purple-600/10 rounded-xl">
@@ -272,16 +342,6 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
                             <p className="text-lg">
                               Seguimos juntos e nos encontraremos em uma próxima jornada digital!
                             </p>
-                            
-                            {/* Card da MISSÃO EXTRA - Fim de Jogo */}
-                            <div className="mt-6 pt-4 border-t border-gray-500/30">
-                              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 border-gray-500/30 bg-gray-600/20">
-                                <span className="text-lg">❌</span>
-                                <span className="text-sm font-bold text-gray-400">
-                                  Fim de Jogo!
-                                </span>
-                              </div>
-                            </div>
                           </div>
                         </div>
                       </div>
