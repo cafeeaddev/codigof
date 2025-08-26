@@ -803,20 +803,16 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
             <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-4 shadow-neon">
               {/* Desktop Mission Cards */}
               {(() => {
-                // Só mostrar missão extra na tela final após completar as 4 missões
-                const isGameComplete = completedMissions.size === 4 && gameData;
-                // Verificar se é perfil Beginner na tela final
-                const isBeginnerProfile = isGameComplete && gameData && getDigitalProfile(gameData.score.total).profile === 'Beginner';
+                // NOVA LÓGICA: Sempre mostrar missão extra se 4 missões completas E perfil não é Beginner
+                // Usar o hook extraMissionState que já tem a lógica correta
+                const shouldShowExtraMission = completedMissions.size === 4 && extraMissionState !== 'hidden';
                 
-                // SIMPLIFICADO: Se 4 missões completas E (não é Beginner OU estado é declined), mostrar card
-                const shouldShowExtraMission = completedMissions.size === 4 && (!isBeginnerProfile || extraMissionState === 'declined');
-                
-                console.log('🔥 MISSÃO EXTRA DEBUG:', {
+                console.log('🔥 MISSÃO EXTRA DEBUG - NOVA LÓGICA:', {
                   completedMissions: completedMissions.size,
-                  isBeginnerProfile,
                   extraMissionState,
                   shouldShowExtraMission,
-                  'WILL_SHOW_5_CARDS': shouldShowExtraMission
+                  'WILL_SHOW_5_CARDS': shouldShowExtraMission,
+                  'CARD_SHOULD_APPEAR': shouldShowExtraMission ? 'SIM - 5 CARDS' : 'NÃO - 4 CARDS'
                 });
                 
                 const missions = shouldShowExtraMission ? [1, 2, 3, 4, 5] : [1, 2, 3, 4];
