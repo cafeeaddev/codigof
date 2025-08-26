@@ -79,6 +79,15 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
 
       if (error) throw error;
 
+      // Atualizar progresso para indicar que está na missão extra
+      await supabase
+        .from('user_progress')
+        .update({
+          missao_5_current_question: 1,
+          current_position: 'extra_mission_terms'
+        })
+        .eq('user_id', user.id);
+
       // Notify parent that response was submitted only for certain cases
       // Don't call onResponseSubmitted here as it triggers refresh that interferes with flow
 
@@ -86,9 +95,19 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
         // Show decline message and notify parent immediately
         setShowDeclineMessage(true);
         onDeclineShown?.(true);
+        // Atualizar posição para indicar recusa
+        await supabase
+          .from('user_progress')
+          .update({ current_position: 'extra_mission_declined' })
+          .eq('user_id', user.id);
       } else {
         // Show FastTrack form instead of going back
         setShowFastTrackForm(true);
+        // Atualizar posição para formulário FastTrack
+        await supabase
+          .from('user_progress')
+          .update({ current_position: 'extra_mission_fasttrack' })
+          .eq('user_id', user.id);
       }
     } catch (error) {
       console.error('Erro ao salvar resposta:', error);
@@ -135,6 +154,48 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
       </div>
     </div>
   );
+
+  // Carregar estado inicial baseado no progresso do usuário
+  useEffect(() => {
+    const loadInitialState = async () => {
+      if (!user?.id) return;
+      
+      try {
+        // Verificar se usuário já respondeu aos termos
+        const { data: termsResponse } = await supabase
+          .from('fast_track_terms_responses')
+          .select('*')
+          .eq('user_id', user.id)
+          .maybeSingle();
+          
+        // Verificar se usuário já preencheu o formulário FastTrack
+        const { data: fastTrackResponse } = await supabase
+          .from('fast_track_responses')
+          .select('*')
+          .eq('user_id', user.id)
+          .maybeSingle();
+          
+        if (fastTrackResponse) {
+          // Usuário já completou tudo, mostrar tela de agradecimento
+          setShowThankYou(true);
+        } else if (termsResponse) {
+          // Usuário já respondeu aos termos
+          if (!termsResponse.want_to_participate) {
+            setShowDeclineMessage(true);
+            setWantToParticipate(false);
+          } else {
+            // Usuário quer participar, mostrar formulário
+            setShowFastTrackForm(true);
+          }
+        }
+        // Se não há resposta anterior, mantém na tela de termos
+      } catch (error) {
+        console.error('Erro ao carregar estado inicial:', error);
+      }
+    };
+    
+    loadInitialState();
+  }, [user?.id]);
 
   // Notify parent when decline message is shown/hidden
   useEffect(() => {
