@@ -285,7 +285,7 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
                                 }}
                                 className="bg-cyan-500 hover:bg-cyan-600 text-black font-semibold px-8 py-3 rounded-lg transition-all duration-300"
                               >
-                                Voltar ao Menu Principal
+                                Ver Resultados Finais
                               </Button>
                             </div>
                           </div>
