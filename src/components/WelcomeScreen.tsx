@@ -387,29 +387,73 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
         supabase.from('respostas_missao4').select('*').eq('user_id', userId).order('created_at', { ascending: false }),
       ]);
 
+      // 🔍 DEBUG: Verificar dados brutos das respostas
+      console.log('🔍 [RAW DATA DEBUG] Email do usuário:', userProfile.email);
+      console.log('🔍 [RAW DATA DEBUG] Responses encontradas:', {
+        r1_count: r1.data?.length || 0,
+        r2_count: r2.data?.length || 0, 
+        r3_count: r3.data?.length || 0,
+        r4_count: r4.data?.length || 0,
+        r1_data: r1.data,
+        r2_data: r2.data,
+        r3_data: r3.data
+      });
+
       // Calcular pontuações
       let m1 = 0;
       (r1.data || []).forEach((row: any) => {
+        console.log('🎯 [MISSION 1] Processando linha:', { email: row.email, respostas: row.respostas });
         const resp = row.respostas;
         if (Array.isArray(resp)) {
-          m1 += resp.reduce((s: number, it: any) => s + (it?.pontuacao || 0), 0);
+          const pontuacaoMissao1 = resp.reduce((s: number, it: any) => {
+            console.log('M1 item:', it, 'pontuacao:', it?.pontuacao || 0);
+            return s + (it?.pontuacao || 0);
+          }, 0);
+          m1 += pontuacaoMissao1;
+          console.log('🎯 [MISSION 1] Subtotal:', pontuacaoMissao1);
         } else if (resp && typeof resp === 'object') {
           const arr = (resp as any)?.data || (resp as any);
-          if (Array.isArray(arr)) m1 += arr.reduce((s: number, it: any) => s + (it?.pontuacao || 0), 0);
+          if (Array.isArray(arr)) {
+            const pontuacaoMissao1 = arr.reduce((s: number, it: any) => {
+              console.log('M1 item (objeto):', it, 'pontuacao:', it?.pontuacao || 0);
+              return s + (it?.pontuacao || 0);
+            }, 0);
+            m1 += pontuacaoMissao1;
+            console.log('🎯 [MISSION 1] Subtotal (objeto):', pontuacaoMissao1);
+          }
         }
       });
+      console.log('🎯 [MISSION 1 TOTAL]:', m1);
 
       let m2 = 0;
       (r2.data || []).forEach((row: any) => {
+        console.log('🎯 [MISSION 2] Processando linha:', { email: row.email, respostas: row.respostas });
         const arr = row.respostas;
-        if (Array.isArray(arr)) m2 += arr.reduce((s: number, it: any) => s + (it?.points || 0), 0);
+        if (Array.isArray(arr)) {
+          const pontuacaoMissao2 = arr.reduce((s: number, it: any) => {
+            console.log('M2 item:', it, 'points:', it?.points || 0);
+            return s + (it?.points || 0);
+          }, 0);
+          m2 += pontuacaoMissao2;
+          console.log('🎯 [MISSION 2] Subtotal:', pontuacaoMissao2);
+        }
       });
+      console.log('🎯 [MISSION 2 TOTAL]:', m2);
 
       let m3 = 0;
       (r3.data || []).forEach((row: any) => {
+        console.log('🎯 [MISSION 3] Processando linha:', { email: row.email, respostas: row.respostas });
         const arr = row.respostas;
-        if (Array.isArray(arr)) m3 += arr.reduce((s: number, it: any) => s + (it?.points || 0), 0);
+        if (Array.isArray(arr)) {
+          const pontuacaoMissao3 = arr.reduce((s: number, it: any) => {
+            console.log('M3 item:', it, 'points:', it?.points || 0);
+            return s + (it?.points || 0);
+          }, 0);
+          m3 += pontuacaoMissao3;
+          console.log('🎯 [MISSION 3] Subtotal:', pontuacaoMissao3);
+        }
       });
+      console.log('🎯 [MISSION 3 TOTAL]:', m3);
 
       let m4 = 0;
       (r4.data || []).forEach((row: any) => {
@@ -418,6 +462,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
           m4 += respostas.totalScore;
         }
       });
+      console.log('🎯 [MISSION 4 TOTAL (não conta para perfil)]:', m4);
 
       const score = { mission1: m1, mission2: m2, mission3: m3, mission4: m4, total: parseFloat((m1 + m2 + m3).toFixed(2)) };
 
