@@ -419,7 +419,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
         }
       });
 
-      const score = { mission1: m1, mission2: m2, mission3: m3, mission4: m4, total: parseFloat((m1 + m2 + m3 + m4).toFixed(2)) };
+      const score = { mission1: m1, mission2: m2, mission3: m3, mission4: m4, total: parseFloat((m1 + m2 + m3).toFixed(2)) };
 
       console.log('🎯 [SCORE CALCULATION DEBUG]:', {
         m1, m2, m3, m4,
