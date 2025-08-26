@@ -78,10 +78,59 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
     SOURCE: gameData.final_profile ? 'DATABASE' : 'CALCULATED'
   });
   const { state: extraMissionState, releaseDate: hookExtraMissionReleaseDate, refreshState } = useExtraMissionState(userId, currentProfile, extraMissionRefreshTrigger);
+  // Tutorial control - verificar localStorage e banco de dados
   useEffect(() => {
-    const seen = localStorage.getItem('tutorialSeen');
-    if (!seen) setShowTutorial(true);
-  }, []);
+    const checkTutorialStatus = async () => {
+      try {
+        console.log('🎯 [WelcomeScreen] Checking tutorial status for user:', userId);
+        
+        // Primeiro, verificar localStorage
+        const localTutorialSeen = localStorage.getItem('tutorialSeen');
+        console.log('🔍 [WelcomeScreen] LocalStorage tutorialSeen:', localTutorialSeen);
+        
+        if (localTutorialSeen === 'true') {
+          console.log('✅ [WelcomeScreen] Tutorial already seen in localStorage - not showing');
+          setShowTutorial(false);
+          return;
+        }
+        
+        // Verificar no banco de dados se usuário já viu tutorial
+        const { data: userProgress } = await supabase
+          .from('user_progress')
+          .select('current_position, missao_1_completed, missao_2_completed, missao_3_completed, missao_4_completed')
+          .eq('user_id', userId)
+          .maybeSingle();
+          
+        console.log('🔍 [WelcomeScreen] User progress for tutorial check:', userProgress);
+        
+        // Se usuário já tem progresso significativo, não mostrar tutorial
+        if (userProgress && (
+          userProgress.missao_1_completed || 
+          userProgress.missao_2_completed || 
+          userProgress.missao_3_completed || 
+          userProgress.missao_4_completed ||
+          userProgress.current_position !== 'inicio'
+        )) {
+          console.log('✅ [WelcomeScreen] User has progress - marking tutorial as seen');
+          localStorage.setItem('tutorialSeen', 'true');
+          setShowTutorial(false);
+          return;
+        }
+        
+        // Se é primeira vez mesmo, mostrar tutorial
+        console.log('🎯 [WelcomeScreen] First time user - showing tutorial');
+        setShowTutorial(true);
+        
+      } catch (error) {
+        console.error('❌ [WelcomeScreen] Error checking tutorial status:', error);
+        // Em caso de erro, usar apenas localStorage
+        const localTutorialSeen = localStorage.getItem('tutorialSeen');
+        setShowTutorial(localTutorialSeen !== 'true');
+      }
+    };
+    
+    checkTutorialStatus();
+  }, [userId]);
 
   useEffect(() => {
     try {
@@ -1373,7 +1422,8 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
           stage="ingame"
           onClose={() => setShowTutorial(false)}
           onDontShowAgain={() => {
-            localStorage.setItem('tutorialSeen','1');
+            console.log('✅ [WelcomeScreen] User clicked "Don\'t show again" - marking tutorial as seen');
+            localStorage.setItem('tutorialSeen', 'true');
             setShowTutorial(false);
           }}
         />
