@@ -101,6 +101,8 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
         // Mostrar tela de decline PRIMEIRO antes de voltar
         setShowDeclineMessage(true);
         onDeclineShown?.(true);
+        // 🔥 CORREÇÃO: Chamar onResponseSubmitted para forçar refresh do estado
+        onResponseSubmitted?.();
       } else {
         // Show FastTrack form instead of going back
         setShowFastTrackForm(true);
@@ -277,6 +279,8 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
                               <Button 
                                 onClick={() => {
                                   console.log('🔥 [ExtraMissionContent] User clicked Voltar - going back to main screen');
+                                  // 🔥 CORREÇÃO: Garantir refresh antes de voltar
+                                  onResponseSubmitted?.();
                                   onBack();
                                 }}
                                 className="bg-cyan-500 hover:bg-cyan-600 text-black font-semibold px-8 py-3 rounded-lg transition-all duration-300"
