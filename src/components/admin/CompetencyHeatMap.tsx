@@ -41,7 +41,7 @@ export const CompetencyHeatMap = ({ data }: CompetencyHeatMapProps) => {
   }, [data]);
 
   const getColorClass = (rating: number | undefined): string => {
-    if (!rating) return "bg-muted";
+    if (rating === undefined) return "bg-muted";
     if (rating <= 1) return "bg-red-200 dark:bg-red-900";
     if (rating <= 2) return "bg-orange-200 dark:bg-orange-900";
     if (rating <= 3) return "bg-yellow-200 dark:bg-yellow-900";
@@ -109,7 +109,7 @@ export const CompetencyHeatMap = ({ data }: CompetencyHeatMapProps) => {
                             className={`w-24 h-12 p-2 text-xs text-center flex items-center justify-center cursor-pointer transition-opacity hover:opacity-80 ${getColorClass(rating)}`}
                           >
                             <span className="font-semibold text-slate-800 dark:text-slate-200">
-                              {rating ? rating.toFixed(1) : '-'}
+                              {rating !== undefined ? rating.toFixed(1) : '-'}
                             </span>
                           </div>
                         </TooltipTrigger>
@@ -117,7 +117,7 @@ export const CompetencyHeatMap = ({ data }: CompetencyHeatMapProps) => {
                           <div className="text-center">
                             <div className="font-medium">{user}</div>
                             <div className="text-sm">{software}</div>
-                            {rating ? (
+                            {rating !== undefined ? (
                               <>
                                 <div className="text-sm">Nota: {rating.toFixed(1)}/5</div>
                                 <div className="text-sm">Nível: {getRatingLabel(rating)}</div>
