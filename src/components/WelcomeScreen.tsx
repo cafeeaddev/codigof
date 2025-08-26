@@ -548,7 +548,13 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
       }
 
       // 🚨 SOLUÇÃO: Usar dados já salvos no banco diretamente
-      console.log('🔧 [WelcomeScreen] Using database final_score:', fullUserProgress.final_score, 'final_profile:', fullUserProgress.final_profile);
+      console.log('🔧 [WelcomeScreen] Database values check:', {
+        'fullUserProgress.final_score': fullUserProgress.final_score,
+        'fullUserProgress.final_profile': fullUserProgress.final_profile,
+        'score.total': score.total,
+        'calculated_profile': getDigitalProfile(fullUserProgress.final_score || score.total).profile
+      });
+      
       setGameData({ 
         nome, 
         xp, 
