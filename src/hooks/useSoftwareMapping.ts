@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useCallback } from 'react';
 import { useMissionQuestions } from './useMissionQuestions';
 
 // Mapeamento das questões 1-9 para softwares específicos
@@ -36,17 +36,17 @@ export const useSoftwareMapping = () => {
     }));
   }, [questions]);
 
-  const getPointsForAnswer = (questionOrderPosition: number, answerLetter: string): number => {
+  const getPointsForAnswer = useCallback((questionOrderPosition: number, answerLetter: string): number => {
     const question = softwareQuestions.find(q => q.orderPosition === questionOrderPosition);
     if (!question) return 0;
     
     const option = question.options.find(opt => opt.letter === answerLetter);
     return option ? option.points : 0;
-  };
+  }, [softwareQuestions]);
 
-  const getSoftwareForQuestion = (questionOrderPosition: number): string => {
+  const getSoftwareForQuestion = useCallback((questionOrderPosition: number): string => {
     return QUESTION_SOFTWARE_MAP[questionOrderPosition] || `Questão ${questionOrderPosition}`;
-  };
+  }, []);
 
   return {
     softwareQuestions,
