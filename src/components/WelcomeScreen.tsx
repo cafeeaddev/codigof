@@ -820,13 +820,13 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                   return (
                      <div
                       key={missionId}
-                        className={`relative p-4 rounded-lg border-2 transition-all duration-300 cursor-pointer hover:scale-105 ${
+                        className={`relative p-4 rounded-lg border-2 transition-all duration-300 cursor-pointer ${
                           isExtraMission
                             ? (extraMissionState === 'declined'
-                                ? 'bg-muted/30 border-muted-foreground/30 opacity-60' 
+                                ? 'bg-muted/20 border-muted-foreground/20 opacity-50' 
                                 : isExtraMissionAvailable 
-                                  ? 'bg-cyan-500/20 border-cyan-400 hover:border-cyan-300 shadow-lg shadow-cyan-400/30 animate-pulse' 
-                                  : 'bg-muted/30 border-muted-foreground/30 opacity-60')
+                                  ? 'bg-cyan-500/20 border-cyan-400 hover:border-cyan-300 shadow-lg shadow-cyan-400/30 animate-pulse hover:scale-105' 
+                                  : 'bg-muted/30 border-muted-foreground/30 opacity-60 hover:scale-105')
                             : isCompleted
                            ? 'bg-primary/20 border-primary shadow-sm hover:border-primary/80'
                            : isCurrent
@@ -847,9 +847,9 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                     >
                        <div className="flex items-center gap-2 mb-2">
                         <div className={`w-3 h-3 rounded-full ${
-                          isExtraMission 
+                           isExtraMission 
                             ? extraMissionState === 'declined'
-                              ? 'bg-muted-foreground/50' // Estado 3: Fim de Jogo
+                              ? 'bg-muted-foreground/30' // Estado 3: Fim de Jogo - mais cinza
                               : isExtraMissionAvailable 
                                 ? 'bg-cyan-400 shadow-lg shadow-cyan-400/50' // Estado 2: Liberada
                                 : 'bg-blue-400/30' // Estado 1: Bloqueada
@@ -858,7 +858,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                         <span className={`text-sm font-bold tracking-wider ${
                           isExtraMission 
                             ? extraMissionState === 'declined'
-                              ? 'text-muted-foreground/70' // Estado 3: Fim de Jogo
+                              ? 'text-muted-foreground/50' // Estado 3: Fim de Jogo - mais cinza
                               : isExtraMissionAvailable 
                                 ? 'text-cyan-300' // Estado 2: Liberada
                                 : 'text-blue-300/60' // Estado 1: Bloqueada
@@ -870,8 +870,8 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                       
                        <div className={`text-xs mb-2 font-medium ${
                          isExtraMission 
-                           ? extraMissionState === 'declined'
-                             ? 'text-muted-foreground/60' // Estado 3: Fim de Jogo
+                            ? extraMissionState === 'declined'
+                              ? 'text-muted-foreground/40' // Estado 3: Fim de Jogo - mais cinza
                              : isExtraMissionAvailable 
                                ? 'text-blue-300 font-bold' // Estado 2: Liberada
                                : 'text-blue-200/60' // Estado 1: Bloqueada
@@ -905,8 +905,8 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                       
                        <div className={`text-xs mb-2 ${
                          isExtraMission 
-                           ? extraMissionState === 'declined'
-                             ? 'text-muted-foreground/60' // Estado 3: Fim de Jogo
+                            ? extraMissionState === 'declined'
+                              ? 'text-muted-foreground/40' // Estado 3: Fim de Jogo - mais cinza
                              : isExtraMissionAvailable 
                                ? 'text-cyan-200 font-semibold' // Estado 2: Liberada
                                : 'text-blue-300/50' // Estado 1: Bloqueada
