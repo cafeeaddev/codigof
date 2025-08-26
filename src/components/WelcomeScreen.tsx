@@ -764,7 +764,8 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                         if (isExtraMission && isExtraMissionAvailable) {
                           setCurrentMission(5);
                           setShowExtraMissionScreen(true);
-                        } else if (!isLocked && !isExtraMission) {
+                        } else if (!isLocked && !isExtraMission && !showExtraMissionScreen) {
+                          // Só permite navegar para missões normais se não estiver na missão extra
                           setCurrentMission(missionId as 1 | 2 | 3 | 4);
                         }
                       }}
@@ -945,10 +946,11 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                  ) : showExtraMissionScreen && currentMission === 5 ? (
                       <ExtraMissionContent 
                         userName={userProfile.nome}
-                        onBack={() => {
-                          setShowExtraMissionScreen(false);
-                          setCurrentMission(1);
-                        }}
+                      onBack={() => {
+                        // Uma vez na missão extra, sempre permanece nela
+                        // setShowExtraMissionScreen(false);
+                        // setCurrentMission(1);
+                      }}
                         onDeclineShown={(declined) => {
                           setIsGameEnded(declined);
                           setUserDeclinedFastTrack(declined);
@@ -1046,8 +1048,9 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                     <ExtraMissionContent 
                       userName={userProfile.nome}
                       onBack={() => {
-                        setShowExtraMissionScreen(false);
-                        setCurrentMission(1);
+                        // Uma vez na missão extra, sempre permanece nela
+                        // setShowExtraMissionScreen(false);
+                        // setCurrentMission(1);
                       }}
                       onDeclineShown={(declined) => {
                         console.log('Setting userDeclinedFastTrack to:', declined);
