@@ -54,15 +54,17 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
     nome: '',
     xp: 0,
     medals: { m1: false, m2: false, m3: false, m4: false },
-    score: { mission1: 0, mission2: 0, mission3: 0, total: 0 }
+    score: { mission1: 0, mission2: 0, mission3: 0, mission4: 0, total: 0 },
+    isDataLoaded: false // Flag para identificar se dados reais foram carregados
   });
   const [extraMissionReleaseDate, setExtraMissionReleaseDate] = useState<string | null>(null);
   const [userDeclinedFastTrack, setUserDeclinedFastTrack] = useState(false);
   const [extraMissionRefreshTrigger, setExtraMissionRefreshTrigger] = useState(0);
   const UNLOCK_DELAY = 1000; // ms
   
-  // Hook para estado da missão extra - usar perfil correto quando disponível
-  const currentProfile = gameData ? getDigitalProfile(gameData.score.total).profile : 'Unknown';
+  // Hook para estado da missão extra - só usar perfil quando dados reais foram carregados
+  // Evita o bug do perfil "Beginner" temporário
+  const currentProfile = gameData.isDataLoaded ? getDigitalProfile(gameData.score.total).profile : 'Unknown';
   const { state: extraMissionState, releaseDate: hookExtraMissionReleaseDate, refreshState } = useExtraMissionState(userId, currentProfile, extraMissionRefreshTrigger);
   useEffect(() => {
     const seen = localStorage.getItem('tutorialSeen');
@@ -468,7 +470,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
         console.error('Erro ao salvar perfil final e pontuação:', error);
       }
 
-      setGameData({ nome, xp, medals, score });
+      setGameData({ nome, xp, medals, score, isDataLoaded: true });
       setIsLoadingProfile(false);
       setShowGameSummary(true);
     } catch (error) {

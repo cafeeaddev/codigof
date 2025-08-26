@@ -12,6 +12,11 @@ interface ExtraMissionStateResult {
 
 export const useExtraMissionState = (userId: string | undefined, profileName: string, refreshTrigger?: number) => {
   console.log('🚀 [useExtraMissionState] Hook called with:', { userId, profileName, refreshTrigger });
+  
+  // Se o perfil ainda é Unknown/temporário, aguardar dados reais
+  if (profileName === 'Unknown') {
+    console.log('⏳ [useExtraMissionState] Aguardando dados reais - perfil ainda é Unknown');
+  }
   const [state, setState] = useState<ExtraMissionState>('hidden');
   const [releaseDate, setReleaseDate] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -20,6 +25,14 @@ export const useExtraMissionState = (userId: string | undefined, profileName: st
     setIsLoading(true);
     
     try {
+      // CRÍTICO: Aguardar dados reais antes de processar
+      if (profileName === 'Unknown') {
+        console.log('⏳ [useExtraMissionState] Aguardando dados reais serem carregados');
+        setState('hidden');
+        setIsLoading(false);
+        return;
+      }
+
       // Hidden for Beginner profiles
       if (profileName === 'Beginner') {
         setState('hidden');
