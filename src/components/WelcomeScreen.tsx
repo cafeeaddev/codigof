@@ -96,6 +96,29 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
     }
   }, []);
 
+  // 🚨 CRÍTICO: Carregar dados finais se o usuário já completou todas as missões
+  useEffect(() => {
+    const checkAndLoadFinalData = async () => {
+      if (!userId) return;
+      
+      const completedCount = completedMissions.size;
+      console.log('🔍 [Final Data Check] Checking if should load final data...', {
+        userId: !!userId,
+        completedCount,
+        allCompleted: completedCount >= 4,
+        hasGameData: !!gameData.final_profile
+      });
+      
+      // Se completou todas as missões mas não tem dados finais carregados
+      if (completedCount >= 4 && !gameData.final_profile) {
+        console.log('✅ [Final Data Check] Loading final game data...');
+        await loadGameSummaryData();
+      }
+    };
+    
+    checkAndLoadFinalData();
+  }, [userId, completedMissions.size, gameData.final_profile]);
+
   console.log('[WelcomeScreen] Props received:', { 
     userProfile: userProfile.nome, 
     userId,
