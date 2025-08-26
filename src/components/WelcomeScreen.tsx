@@ -21,6 +21,7 @@ import { ShareActions } from './EpicGameSummary/ShareActions';
 import { TechnicalSkillsDisplay } from './TechnicalSkillsDisplay';
 import { ExtraMissionContent } from './ExtraMissionContent';
 import { useExtraMissionState } from '@/hooks/useExtraMissionState';
+import { MobileNavigation } from './MobileNavigation';
 
 interface WelcomeScreenProps {
   user: {
@@ -902,14 +903,30 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
       <div className="h-[calc(100svh-5.25rem)] md:h-[calc(100svh-4.5rem)] overflow-hidden p-2 md:p-4 relative z-10">
         <div className="max-w-7xl mx-auto h-full flex flex-col">
           
-          {/* Layout Mobile: Apenas a missão ativa em tela cheia */}
-          <div className="block md:hidden h-full">
-            <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-4 shadow-neon h-full overflow-hidden flex flex-col min-h-0">
+          {/* Layout Mobile: Navegação + missão ativa */}
+          <div className="block md:hidden h-full flex flex-col">
+            {/* Navegação de Missões Mobile */}
+            <MobileNavigation
+              completedMissions={completedMissions}
+              currentMission={currentMission}
+              extraMissionState={extraMissionState}
+              onMissionSelect={(missionId) => {
+                if (missionId === 5) {
+                  setCurrentMission(5);
+                  setShowExtraMissionScreen(true);
+                } else {
+                  setCurrentMission(missionId as 1 | 2 | 3 | 4);
+                  setShowExtraMissionScreen(false);
+                }
+              }}
+            />
+            
+            <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-4 shadow-neon flex-1 overflow-hidden flex flex-col min-h-0">
               <div className="flex items-center justify-between mb-4 p-3 bg-muted/50 rounded-lg">
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 bg-accent rounded-full"></div>
                   <span className="text-accent text-sm font-bold tracking-wider">
-                    MISSÃO {currentMission} ATIVADA
+                    {currentMission === 5 ? 'MISSÃO EXTRA' : `MISSÃO ${currentMission}`} ATIVADA
                   </span>
                 </div>
               </div>
@@ -931,6 +948,21 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                       </p>
                     </div>
                   </div>
+                ) : currentMission === 5 && showExtraMissionScreen ? (
+                  <ExtraMissionContent 
+                    userName={userProfile.nome}
+                    onBack={() => {
+                      setExtraMissionRefreshTrigger(prev => prev + 1);
+                      setShowExtraMissionScreen(false);
+                      setCurrentMission(4);
+                    }}
+                    onResponseSubmitted={() => {
+                      setExtraMissionRefreshTrigger(prev => prev + 1);
+                      setShowExtraMissionScreen(false);
+                      // Força carregamento do game summary
+                      loadGameSummaryData();
+                    }}
+                  />
                 ) : currentMission === 1 && !completedMissions.has(1) ? (
                   <QuizDigital 
                     userId={userId}
