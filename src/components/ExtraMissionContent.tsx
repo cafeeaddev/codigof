@@ -92,14 +92,15 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
       // Don't call onResponseSubmitted here as it triggers refresh that interferes with flow
 
       if (!wantToParticipate) {
-        // Show decline message and notify parent immediately
-        setShowDeclineMessage(true);
-        onDeclineShown?.(true);
         // Atualizar posição para indicar recusa
         await supabase
           .from('user_progress')
           .update({ current_position: 'extra_mission_declined' })
           .eq('user_id', user.id);
+          
+        // Voltar para WelcomeScreen onde a barra original mostrará "Fim de Jogo!"
+        onBack();
+        onDeclineShown?.(true);
       } else {
         // Show FastTrack form instead of going back
         setShowFastTrackForm(true);
@@ -227,78 +228,6 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
     return (
       <div className="w-full h-full min-h-screen md:min-h-0 relative overflow-hidden">
         <ScrollArea className="h-full w-full">
-          {/* Grid de Missões - igual ao WelcomeScreen */}
-          <div className="hidden md:flex flex-col h-full gap-4 p-4">
-            <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-4 shadow-neon">
-              <div className="grid grid-cols-5 gap-4">
-                {[1, 2, 3, 4, 5].map((missionId) => {
-                  const isCompleted = missionId <= 4; // Missões 1-4 completas
-                  const isExtraMission = missionId === 5;
-                  
-                  return (
-                    <div key={missionId} className="relative">
-                      <div className={`
-                        bg-gradient-to-br p-4 rounded-xl border-2 relative overflow-hidden transition-all duration-300
-                        ${isExtraMission 
-                          ? 'from-gray-600/20 to-gray-700/20 border-gray-500/30' 
-                          : 'from-neon-purple/20 to-neon-cyan/20 border-neon-purple/30'
-                        }
-                      `}>
-                        {/* Checkmark ou X */}
-                        <div className="absolute top-2 right-2">
-                          {isExtraMission ? (
-                            <div className="w-6 h-6 rounded-full bg-gray-600/50 flex items-center justify-center">
-                              <span className="text-sm">❌</span>
-                            </div>
-                          ) : (
-                            <div className="w-6 h-6 rounded-full bg-neon-cyan/20 border border-neon-cyan/50 flex items-center justify-center">
-                              <span className="text-sm text-neon-cyan">✓</span>
-                            </div>
-                          )}
-                        </div>
-                        
-                        {/* Título da missão */}
-                        <h3 className={`text-sm font-bold mb-2 ${
-                          isExtraMission ? 'text-gray-400' : 'text-neon-purple'
-                        }`}>
-                          {isExtraMission ? 'MISSÃO EXTRA' : `MISSÃO ${missionId}`}
-                        </h3>
-                        
-                        {/* Descrição */}
-                        <p className="text-xs text-foreground/70 mb-3">
-                          {isExtraMission 
-                            ? 'Fim de Jogo!' 
-                            : missionId === 1 ? 'Como você encara o digital?' 
-                            : missionId === 2 ? 'O digital no seu dia a dia'
-                            : missionId === 3 ? 'Quando o desafio é maior'
-                            : 'Seu Radar de Ferramentas'
-                          }
-                        </p>
-                        
-                        {/* XP */}
-                        <div className="text-xs mb-2">
-                          <span className={isExtraMission ? 'text-gray-500' : 'text-foreground/60'}>
-                            Vale 25 XP
-                          </span>
-                        </div>
-                        
-                        {/* Barra de progresso */}
-                        <div className="w-full bg-background/30 rounded-full h-1">
-                          <div 
-                            className={`h-1 rounded-full transition-all duration-500 ${
-                              isExtraMission ? 'bg-gray-600' : 'bg-neon-purple'
-                            }`}
-                            style={{ width: isCompleted ? '100%' : '0%' }}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-          
           <div className="p-4 md:p-6">
             <div className="mb-8">
               <div className="relative overflow-hidden animate-epic-entry bg-background/95 backdrop-blur-sm border-2 border-cyan-400/30 bg-gradient-to-br from-cyan-500/10 to-purple-600/10 rounded-xl">
