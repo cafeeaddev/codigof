@@ -421,8 +421,21 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
 
       const score = { mission1: m1, mission2: m2, mission3: m3, mission4: m4, total: parseFloat((m1 + m2 + m3 + m4).toFixed(2)) };
 
+      console.log('🎯 [SCORE CALCULATION DEBUG]:', {
+        m1, m2, m3, m4,
+        totalScore: score.total,
+        userId,
+        rawResponses: { r1: r1.data?.length, r2: r2.data?.length, r3: r3.data?.length, r4: r4.data?.length }
+      });
+
       // Calcular e salvar perfil final
       const { profile } = getDigitalProfile(score.total);
+      
+      console.log('🏅 [PROFILE CALCULATION DEBUG]:', {
+        totalScore: score.total,
+        calculatedProfile: profile,
+        userId
+      });
       
       // Buscar dados completos do usuário para calcular XP correto
       const { data: fullUserProgress, error: progressError } = await supabase
@@ -473,6 +486,10 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
       setGameData({ nome, xp, medals, score, isDataLoaded: true });
       setIsLoadingProfile(false);
       setShowGameSummary(true);
+      
+      // 🔥 CRÍTICO: Forçar atualização do hook useExtraMissionState após carregar dados reais
+      console.log('🔄 [TRIGGER REFRESH] Forçando refresh do useExtraMissionState com perfil:', profile);
+      setExtraMissionRefreshTrigger(prev => prev + 1);
     } catch (error) {
       console.error('Error loading game summary:', error);
       setIsLoadingProfile(false);
