@@ -103,10 +103,10 @@ export const FastTrackForm = ({ userName, onComplete, onResponseSubmitted }: Fas
   };
 
   return (
-    <div className="w-full h-full min-h-screen md:min-h-0 relative overflow-hidden">
+    <div className="w-full h-full min-h-[100dvh] md:min-h-0 relative overflow-hidden">
       <ScrollArea className="h-full w-full">
-        <div className="p-4 md:p-6">
-          <div className="mb-8">
+        <div className="p-4 md:p-6 pb-safe-area-inset-bottom">
+          <div className="mb-4 md:mb-8">
             <div className="relative overflow-hidden animate-epic-entry bg-background/95 backdrop-blur-sm border-2 border-cyan-400/30 bg-gradient-to-br from-cyan-500/10 to-purple-600/10 rounded-xl">
               <div className="relative p-6 md:p-8">
                 <div className="flex flex-col lg:flex-row items-start gap-8 lg:gap-12 relative z-10">
@@ -150,9 +150,9 @@ export const FastTrackForm = ({ userName, onComplete, onResponseSubmitted }: Fas
                       <div className="relative text-foreground/90 leading-relaxed p-6 rounded-lg border border-border/50 bg-background/30">
                         <h3 className="text-xl font-bold text-cyan-300 mb-6">Inscrição FastTrack Digital</h3>
                         
-                        <div className="space-y-8">
+                        <div className="space-y-6 md:space-y-8">
                           {/* Pergunta 1 */}
-                          <div className="space-y-4">
+                          <div className="space-y-3 md:space-y-4">
                             <Label className="text-base font-medium text-foreground">
                               1. Você tem interesse em participar do programa FastTrack Digital (programa de aceleração digital)?
                             </Label>
@@ -173,7 +173,7 @@ export const FastTrackForm = ({ userName, onComplete, onResponseSubmitted }: Fas
                           </div>
 
                           {/* Pergunta 2 */}
-                          <div className="space-y-4">
+                          <div className="space-y-3 md:space-y-4">
                             <Label className="text-base font-medium text-foreground">
                               2. Quanto tempo por semana você acredita que pode dedicar ao programa FastTrack?
                             </Label>
@@ -198,7 +198,7 @@ export const FastTrackForm = ({ userName, onComplete, onResponseSubmitted }: Fas
                           </div>
 
                           {/* Pergunta 3 */}
-                          <div className="space-y-4">
+                          <div className="space-y-3 md:space-y-4">
                             <Label className="text-base font-medium text-foreground">
                               3. Qual seu principal objetivo ao participar do FastTrack Digital?
                             </Label>
@@ -239,11 +239,11 @@ export const FastTrackForm = ({ userName, onComplete, onResponseSubmitted }: Fas
                           </div>
 
                           {/* Botão de envio */}
-                          <div className="pt-6 border-t border-cyan-400/20">
+                          <div className="pt-4 md:pt-6 border-t border-cyan-400/20 sticky bottom-0 bg-background/95 backdrop-blur-sm -mx-6 px-6 pb-4 md:pb-0 md:static md:bg-transparent">
                             <Button
                               onClick={handleSubmit}
                               disabled={isSubmitting}
-                              className="w-full bg-cyan-600 hover:bg-cyan-700 text-white"
+                              className="w-full bg-cyan-600 hover:bg-cyan-700 text-white min-h-[48px] text-base"
                             >
                               {isSubmitting ? 'Enviando...' : 'Finalizar Missão'}
                             </Button>

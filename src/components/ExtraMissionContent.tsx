@@ -259,9 +259,9 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
   // Show decline message screen
   if (showDeclineMessage) {
     return (
-      <div className="w-full h-full min-h-screen md:min-h-0 relative overflow-hidden">
+      <div className="w-full h-full min-h-[100dvh] md:min-h-0 relative overflow-hidden">
         <ScrollArea className="h-full w-full">
-          <div className="p-4 md:p-6">
+          <div className="p-4 md:p-6 pb-safe-area-inset-bottom">
             <div className="mb-8">
               <div className="relative overflow-hidden animate-epic-entry bg-background/95 backdrop-blur-sm border-2 border-cyan-400/30 bg-gradient-to-br from-cyan-500/10 to-purple-600/10 rounded-xl">
                 <div className="relative p-6 md:p-8">
@@ -306,7 +306,7 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
                             <p className="text-lg">
                               Seguimos juntos e nos encontraremos em uma próxima jornada digital!
                             </p>
-                            <div className="mt-6">
+                            <div className="mt-6 sticky bottom-0 bg-background/95 backdrop-blur-sm -mx-6 px-6 pb-4 md:pb-0 md:static md:bg-transparent">
                               <Button 
                                 onClick={() => {
                                   console.log('🔥 [ExtraMissionContent] User clicked Voltar - going back to main screen');
@@ -314,7 +314,7 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
                                   onResponseSubmitted?.();
                                   onBack();
                                 }}
-                                className="bg-cyan-500 hover:bg-cyan-600 text-black font-semibold px-8 py-3 rounded-lg transition-all duration-300"
+                                className="w-full bg-cyan-500 hover:bg-cyan-600 text-black font-semibold px-8 py-3 rounded-lg transition-all duration-300 min-h-[48px] text-base"
                               >
                                 Ver Resultados Finais
                               </Button>
@@ -334,12 +334,12 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
   }
 
   return (
-    <div className="w-full h-full min-h-screen md:min-h-0 relative overflow-hidden">
+    <div className="w-full h-full min-h-[100dvh] md:min-h-0 relative overflow-hidden">
       {/* Layout principal com ScrollArea */}
       <ScrollArea className="h-full w-full">
-        <div className="p-4 md:p-6">
+        <div className="p-4 md:p-6 pb-safe-area-inset-bottom">
           {/* Hero Card da Missão Extra */}
-          <div className="mb-8">
+          <div className="mb-4 md:mb-8">
             {/* Hero Card simplificado para Fast Track */}
             <div className="relative overflow-hidden animate-epic-entry bg-background/95 backdrop-blur-sm border-2 border-cyan-400/30 bg-gradient-to-br from-cyan-500/10 to-purple-600/10 rounded-xl">
               <div className="relative p-6 md:p-8">
@@ -389,34 +389,36 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
                         </div>
 
                         {/* Formulário de escolha única */}
-                        <div className="space-y-6 pt-4 border-t border-cyan-400/20">
+                        <div className="space-y-4 md:space-y-6 pt-4 border-t border-cyan-400/20">
                           <RadioGroup 
                             value={userChoice} 
                             onValueChange={(value) => setUserChoice(value as 'accept' | 'decline')}
-                            className="space-y-4"
+                            className="space-y-3 md:space-y-4"
                           >
-                            <div className="flex items-center space-x-3">
-                              <RadioGroupItem value="accept" id="accept-terms" />
-                              <Label htmlFor="accept-terms" className="text-sm text-foreground/90 cursor-pointer">
+                            <div className="flex items-start space-x-3">
+                              <RadioGroupItem value="accept" id="accept-terms" className="mt-1" />
+                              <Label htmlFor="accept-terms" className="text-sm text-foreground/90 cursor-pointer leading-relaxed">
                                 Li e concordo com os termos acima e quero participar do Fast Track.
                               </Label>
                             </div>
 
-                            <div className="flex items-center space-x-3">
-                              <RadioGroupItem value="decline" id="decline-terms" />
-                              <Label htmlFor="decline-terms" className="text-sm text-foreground/90 cursor-pointer">
-                                Não concordo e não vou participar.
+                            <div className="flex items-start space-x-3">
+                              <RadioGroupItem value="decline" id="decline-terms" className="mt-1" />
+                              <Label htmlFor="decline-terms" className="text-sm text-foreground/90 cursor-pointer leading-relaxed">
+                                Prefiro não participar no momento.
                               </Label>
                             </div>
                           </RadioGroup>
 
-                          <div className="flex gap-4 pt-4">
+                          {/* Botão de confirmação */}
+                          <div className="pt-4 border-t border-cyan-400/10 sticky bottom-0 bg-background/95 backdrop-blur-sm -mx-6 px-6 pb-4 md:pb-0 md:static md:bg-transparent">
                             <Button
                               onClick={handleSubmit}
-                              disabled={isSubmitting || !userChoice}
-                              className="w-full bg-cyan-600 hover:bg-cyan-700 text-white disabled:opacity-50"
+                              disabled={!userChoice || isSubmitting}
+                              className="w-full bg-cyan-600 hover:bg-cyan-700 text-white min-h-[48px] text-base"
                             >
-                              {isSubmitting ? 'Enviando...' : 'Confirmar'}
+                              <Shield className="w-4 h-4 mr-2" />
+                              {isSubmitting ? 'Confirmando...' : 'Confirmar'}
                             </Button>
                           </div>
                         </div>

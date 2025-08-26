@@ -8,10 +8,10 @@ interface FastTrackThankYouProps {
 
 export const FastTrackThankYou = ({ userName, onBack, onResponseSubmitted }: FastTrackThankYouProps) => {
   return (
-    <div className="w-full h-full min-h-screen md:min-h-0 relative overflow-hidden">
+    <div className="w-full h-full min-h-[100dvh] md:min-h-0 relative overflow-hidden">
       <ScrollArea className="h-full w-full">
-        <div className="p-4 md:p-6">
-          <div className="mb-8">
+        <div className="p-4 md:p-6 pb-safe-area-inset-bottom">
+          <div className="mb-4 md:mb-8">
             <div className="relative overflow-hidden animate-epic-entry bg-background/95 backdrop-blur-sm border-2 border-cyan-400/30 bg-gradient-to-br from-cyan-500/10 to-purple-600/10 rounded-xl">
               <div className="relative p-6 md:p-8">
                 <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12 relative z-10">
@@ -61,25 +61,27 @@ export const FastTrackThankYou = ({ userName, onBack, onResponseSubmitted }: Fas
                             </p>
                           </div>
                           
-                          <div className="pt-6 flex flex-col sm:flex-row gap-4 justify-center">
-                            <button
-                              onClick={() => {
-                                // Força refresh do estado da missão extra ANTES de voltar
-                                onResponseSubmitted?.();
-                                onBack();
-                              }}
-                              className="px-8 py-3 bg-cyan-500 hover:bg-cyan-600 text-white rounded-lg font-medium transition-colors"
-                            >
-                              Ver Resultados Finais
-                            </button>
-                            <a
-                              href="https://mazars.cafeead.com.br/"
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-block px-8 py-3 bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg font-medium transition-colors"
-                            >
-                              Entrar na UM
-                            </a>
+                          <div className="pt-4 md:pt-6 sticky bottom-0 bg-background/95 backdrop-blur-sm -mx-6 px-6 pb-4 md:pb-0 md:static md:bg-transparent">
+                            <div className="flex flex-col gap-3 md:flex-row md:gap-4 justify-center">
+                              <button
+                                onClick={() => {
+                                  // Força refresh do estado da missão extra ANTES de voltar
+                                  onResponseSubmitted?.();
+                                  onBack();
+                                }}
+                                className="w-full md:w-auto px-8 py-3 bg-cyan-500 hover:bg-cyan-600 text-white rounded-lg font-medium transition-colors min-h-[48px] text-base"
+                              >
+                                Ver Resultados Finais
+                              </button>
+                              <a
+                                href="https://mazars.cafeead.com.br/"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="w-full md:w-auto inline-block px-8 py-3 bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg font-medium transition-colors text-center min-h-[48px] text-base flex items-center justify-center"
+                              >
+                                Entrar na UM
+                              </a>
+                            </div>
                           </div>
                         </div>
                       </div>
