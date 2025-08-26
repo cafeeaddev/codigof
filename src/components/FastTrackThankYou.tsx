@@ -50,14 +50,16 @@ export const FastTrackThankYou = ({ userName, onBack }: FastTrackThankYouProps) 
                           <h3 className="text-3xl font-bold text-cyan-300">🎉 Parabéns!</h3>
                           <div className="space-y-4">
                             <p className="text-xl font-semibold">
-                              Obrigado por se inscrever no FastTrack Digital!
+                              Parabéns por se inscrever no Fast Track!
                             </p>
                             <p className="text-lg">
-                              Sua jornada de aceleração digital está apenas começando. 
-                              Em breve você receberá mais informações sobre o programa.
+                              Sua jornada de aceleração está apenas começando. Nos próximos dias, você receberá todas as informações sobre o programa.
                             </p>
                             <p className="text-lg">
-                              Continue explorando, continue aprendendo e continue inovando!
+                              Enquanto isso, conheça o Espaço de Tecnologia da UM, um ambiente 100% dedicado aos treinamentos de tecnologia.
+                            </p>
+                            <p className="text-lg">
+                              A Cody vai guiá-lo(a) em um tour virtual pela plataforma, mostrando tudo que você pode explorar e aproveitar.
                             </p>
                           </div>
                           
