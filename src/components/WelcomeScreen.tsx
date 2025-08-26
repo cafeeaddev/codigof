@@ -364,6 +364,36 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
       // Calcular e salvar perfil final
       const { profile } = getDigitalProfile(score.total);
       
+      // Buscar dados completos do usuário para calcular XP correto
+      const { data: fullUserProgress, error: progressError } = await supabase
+        .from('user_progress')
+        .select('*')
+        .eq('user_id', userId)
+        .single();
+        
+      if (progressError) {
+        console.error('Erro ao buscar progresso completo:', progressError);
+        return;
+      }
+      
+      // Calcular game_base_xp corretamente baseado nas missões completadas
+      const completedMissionsCount = [
+        fullUserProgress.missao_1_completed,
+        fullUserProgress.missao_2_completed, 
+        fullUserProgress.missao_3_completed,
+        fullUserProgress.missao_4_completed
+      ].filter(Boolean).length;
+      
+      const correctGameBaseXP = completedMissionsCount * 25; // 25 XP por missão
+      
+      console.log('🔍 XP Calculation Debug:', {
+        completedMissionsCount,
+        correctGameBaseXP,
+        currentTotalXP: fullUserProgress.total_xp,
+        previousGameBaseXP: fullUserProgress.game_base_xp,
+        userId
+      });
+
       // Salvar perfil final e pontuação total na tabela user_progress
       try {
         await supabase
@@ -371,9 +401,11 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
           .update({ 
             final_profile: profile,
             final_score: score.total,
-            game_base_xp: userProgress.total_xp
+            game_base_xp: correctGameBaseXP // Usar o valor correto ao invés de userProgress.total_xp
           })
           .eq('user_id', userId);
+          
+        console.log('✅ Game base XP atualizado para:', correctGameBaseXP);
       } catch (error) {
         console.error('Erro ao salvar perfil final e pontuação:', error);
       }

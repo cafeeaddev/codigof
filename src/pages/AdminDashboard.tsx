@@ -21,6 +21,7 @@ import { QuestionManager } from '@/components/admin/QuestionManager';
 import { StarRatingsAnalytics } from '@/components/admin/StarRatingsAnalytics';
 import { UserAnalysisDialog } from '@/components/admin/UserAnalysisDialog';
 import { TimeDataManager } from '@/components/admin/TimeDataManager';
+import { XPFixUtility } from '@/components/admin/XPFixUtility';
 import { useAdminDashboard } from '@/hooks/useAdminDashboard';
 import { useFilters } from '@/hooks/useFilters';
 import { ResponseData, UserProgress, UserProfile } from '@/types/admin';
@@ -278,6 +279,9 @@ const AdminDashboard = () => {
             <TabsContent value="configuracoes" className="space-y-8">
               {/* Game Settings */}
               <GameSettings className="animate-fade-in" />
+
+              {/* XP Fix Utility */}
+              <XPFixUtility />
 
               {/* Time Data Manager */}
               <TimeDataManager />
