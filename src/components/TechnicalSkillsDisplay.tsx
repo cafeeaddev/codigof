@@ -89,7 +89,7 @@ export const TechnicalSkillsDisplay = ({ userId }: TechnicalSkillsDisplayProps) 
     if (userId) {
       loadTechnicalSkills();
     }
-  }, [userId, getSoftwareForQuestion]);
+  }, [userId]);
 
   if (isLoading) {
     return null;
