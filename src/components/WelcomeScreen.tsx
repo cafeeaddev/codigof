@@ -65,15 +65,16 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
   const [extraMissionRefreshTrigger, setExtraMissionRefreshTrigger] = useState(0);
   const UNLOCK_DELAY = 1000; // ms
   
-  // Hook para estado da missão extra - usar dados do banco quando disponível
-  const currentProfile = gameData.isDataLoaded ? 
-    (gameData.final_profile || getDigitalProfile(gameData.finalScore || 0).profile) : 
-    'Unknown';
+  // Hook para estado da missão extra - usar dados reais do banco quando disponível
+  const currentProfile = (gameData.final_profile && gameData.finalScore !== null) ? 
+    gameData.final_profile : 
+    (gameData.finalScore !== null ? getDigitalProfile(gameData.finalScore).profile : 'Unknown');
+  
   console.log('🎯 [WelcomeScreen] Current profile for useExtraMissionState:', { 
     currentProfile, 
     finalProfile: gameData.final_profile,
     finalScore: gameData.finalScore, 
-    isDataLoaded: gameData.isDataLoaded,
+    hasRealData: gameData.final_profile && gameData.finalScore !== null,
     SOURCE: gameData.final_profile ? 'DATABASE' : 'CALCULATED'
   });
   const { state: extraMissionState, releaseDate: hookExtraMissionReleaseDate, refreshState } = useExtraMissionState(userId, currentProfile, extraMissionRefreshTrigger);
@@ -1350,6 +1351,12 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
 
 // Internal Game Summary Component with Bonus System
 const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; userId: string; onXpUpdate?: (newXp: number) => void }) => {
+  console.log('🔍 [GameSummaryContent] RAW gameData received:', {
+    final_score: gameData.final_score,
+    finalScore: gameData.finalScore,
+    final_profile: gameData.final_profile
+  });
+  
   // 🚨 SOLUÇÃO: Usar dados já salvos no banco diretamente
   const finalScore = gameData.final_score || gameData.finalScore || 0;
   const finalProfile = gameData.final_profile;
@@ -1359,11 +1366,11 @@ const GameSummaryContent = ({ gameData, userId, onXpUpdate }: { gameData: any; u
     { profile: finalProfile, sublevel: getDigitalProfile(finalScore).sublevel } : 
     getDigitalProfile(finalScore);
     
-  console.log('🎯 [GameSummaryContent] Using database data:', { 
+  console.log('🎯 [GameSummaryContent] FINAL DECISION:', { 
     finalScore,
     finalProfile,
+    profile_used: profile.profile,
     usingBankProfile: !!finalProfile,
-    calculatedProfile: profile.profile,
     SOURCE: finalProfile ? 'DATABASE' : 'CALCULATED'
   });
   const [phrase, setPhrase] = useState<string>('');
