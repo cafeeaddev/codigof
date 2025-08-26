@@ -254,37 +254,7 @@ export const ProfileHeroCard: React.FC<ProfileHeroCardProps> = ({
                 />
               </div>
 
-              {/* Missão Extra Card - REGRA: só mostra se não for Beginner */}
-              {extraMissionDisplay && (
-                <div className="mt-6">
-                  <Button
-                    onClick={handleExtraMissionClick}
-                    disabled={!extraMissionDisplay.isClickable}
-                    className={cn(
-                      "w-full p-6 h-auto bg-gradient-to-r border-2 rounded-xl transition-all duration-300",
-                      extraMissionDisplay.bgColor,
-                      extraMissionDisplay.borderColor,
-                      extraMissionDisplay.isClickable 
-                        ? "hover:scale-105 cursor-pointer" 
-                        : "cursor-not-allowed opacity-80",
-                      extraMissionDisplay.shouldPulse && "animate-pulse"
-                    )}
-                    variant="ghost"
-                  >
-                    <div className="flex flex-col items-center space-y-2">
-                      <span className="text-2xl">{extraMissionDisplay.icon}</span>
-                      <span className={cn("font-bold text-lg", extraMissionDisplay.textColor)}>
-                        {extraMissionDisplay.title}
-                      </span>
-                      {extraMissionDisplay.subtitle && (
-                        <span className="text-sm text-muted-foreground">
-                          {extraMissionDisplay.subtitle}
-                        </span>
-                      )}
-                    </div>
-                  </Button>
-                </div>
-              )}
+              {/* Missão Extra removida daqui - aparece apenas na área de grid das missões */}
             </div>
             </div>
           </div>
