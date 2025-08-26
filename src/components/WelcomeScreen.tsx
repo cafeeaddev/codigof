@@ -378,10 +378,11 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
       console.log('🏆 Debug medals:', medals);
 
       // Carrega pontuações das missões
-      const [r1, r2, r3] = await Promise.all([
+      const [r1, r2, r3, r4] = await Promise.all([
         supabase.from('respostas').select('*').eq('user_id', userId).order('id', { ascending: false }),
         supabase.from('respostas_missao2').select('*').eq('user_id', userId).order('created_at', { ascending: false }),
         supabase.from('respostas_missao3').select('*').eq('user_id', userId).order('created_at', { ascending: false }),
+        supabase.from('respostas_missao4').select('*').eq('user_id', userId).order('created_at', { ascending: false }),
       ]);
 
       // Calcular pontuações
@@ -408,7 +409,15 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
         if (Array.isArray(arr)) m3 += arr.reduce((s: number, it: any) => s + (it?.points || 0), 0);
       });
 
-      const score = { mission1: m1, mission2: m2, mission3: m3, total: parseFloat((m1 + m2 + m3).toFixed(2)) };
+      let m4 = 0;
+      (r4.data || []).forEach((row: any) => {
+        const respostas = row.respostas;
+        if (respostas && respostas.totalScore) {
+          m4 += respostas.totalScore;
+        }
+      });
+
+      const score = { mission1: m1, mission2: m2, mission3: m3, mission4: m4, total: parseFloat((m1 + m2 + m3 + m4).toFixed(2)) };
 
       // Calcular e salvar perfil final
       const { profile } = getDigitalProfile(score.total);
