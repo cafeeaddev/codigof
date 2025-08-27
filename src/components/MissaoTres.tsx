@@ -282,7 +282,7 @@ export const MissaoTres = ({ onComplete }: MissaoTresProps) => {
           boxShadow: '0 -10px 30px rgba(0,0,0,0.3)'
         }}
       >
-        <div className="max-w-4xl mx-auto flex justify-between items-center gap-4 px-4 py-4 h-full">
+        <div className="max-w-4xl mx-auto flex justify-between items-center gap-4 px-4 py-4 h-full md:py-2">
           <Button
             variant="outline"
             onClick={goToPreviousQuestion}
