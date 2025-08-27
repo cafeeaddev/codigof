@@ -39,14 +39,14 @@ export const MobileNavigation = ({
     return 'available';
   };
 
-  const getMissionStyles = (status: string) => {
+  const getMissionStyles = (status: string, isClickable: boolean) => {
     switch (status) {
       case 'completed':
         return 'bg-primary/20 border-primary text-primary';
       case 'current':
         return 'bg-accent/20 border-accent text-accent ring-2 ring-accent/30';
       case 'available':
-        return 'bg-cyan-500/20 border-cyan-400 text-cyan-400 animate-pulse';
+        return `bg-cyan-500/20 border-cyan-400 text-cyan-400 ${isClickable ? 'animate-pulse' : ''}`;
       case 'declined':
         return 'bg-muted/20 border-muted-foreground/20 text-muted-foreground opacity-70';
       case 'locked':
@@ -74,17 +74,15 @@ export const MobileNavigation = ({
   };
 
   return (
-    <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-3 shadow-neon mb-4">
-      <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center gap-2">
-          <div className="w-3 h-3 bg-accent rounded-full"></div>
-          <span className="text-accent text-sm font-bold tracking-wider">
-            NAVEGAÇÃO DE MISSÕES
-          </span>
-        </div>
+    <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-2.5 shadow-neon mb-4">
+      <div className="flex items-center gap-2 mb-2.5">
+        <div className="w-2.5 h-2.5 bg-accent rounded-full"></div>
+        <span className="text-accent text-xs font-bold tracking-wider">
+          MISSÕES
+        </span>
       </div>
       
-      <div className="flex gap-2 overflow-x-auto">
+      <div className="flex gap-2.5 overflow-x-auto pb-1">
         {missions.map((missionId) => {
           const status = getMissionStatus(missionId);
           const isClickable = isMissionClickable(status);
@@ -94,9 +92,9 @@ export const MobileNavigation = ({
             <div
               key={missionId}
               className={cn(
-                'flex-shrink-0 flex flex-col items-center p-3 rounded-lg border-2 transition-all duration-300 min-w-[70px]',
-                getMissionStyles(status),
-                isClickable ? 'cursor-pointer hover:scale-105' : 'cursor-not-allowed'
+                'flex-shrink-0 flex flex-col items-center p-3 rounded-xl border-2 transition-all duration-300 min-w-[85px] min-h-[90px] relative',
+                getMissionStyles(status, isClickable),
+                isClickable ? 'cursor-pointer hover:scale-105 active:scale-95' : 'cursor-not-allowed'
               )}
               onClick={() => {
                 if (isClickable) {
@@ -104,28 +102,31 @@ export const MobileNavigation = ({
                 }
               }}
             >
-              <div className="flex flex-col items-center gap-1">
+              <div className="flex flex-col items-center gap-1.5 relative z-10">
                 {getMissionIcon(status)}
-                <span className="text-xs font-bold">
+                <span className="text-sm font-bold">
                   {isExtraMission ? 'M5' : `M${missionId}`}
                 </span>
-                {isExtraMission && (
-                  <span className="text-[10px] opacity-80">
-                    {status === 'available' ? 'Disponível' : 
-                     status === 'completed' ? 'Completa' :
-                     status === 'declined' ? 'Recusada' : 'Bloqueada'}
+                
+                {/* Status integrado */}
+                <div className="text-center">
+                  <span className="text-[9px] font-semibold uppercase tracking-wider leading-none">
+                    {status === 'completed' && 'COMPLETA'}
+                    {status === 'current' && 'ATIVA'}
+                    {status === 'available' && (isExtraMission ? 'DISPONÍVEL' : 'DESBLOQUEADA')}
+                    {status === 'declined' && 'RECUSADA'}
+                    {status === 'locked' && 'BLOQUEADA'}
                   </span>
-                )}
+                </div>
               </div>
+              
+              {/* Background decoration para missão atual */}
+              {status === 'current' && (
+                <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-accent/10 to-transparent"></div>
+              )}
             </div>
           );
         })}
-      </div>
-      
-      <div className="mt-3 text-center">
-        <p className="text-xs text-muted-foreground">
-          Toque em uma missão para navegar
-        </p>
       </div>
     </div>
   );
