@@ -395,25 +395,25 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
                             onValueChange={(value) => setUserChoice(value as 'accept' | 'decline')}
                             className="space-y-3"
                           >
-                            <div className="flex items-start space-x-3">
-                              <RadioGroupItem value="accept" id="accept-terms" className="mt-1" />
-                              <Label 
-                                htmlFor="accept-terms" 
-                                className="cursor-pointer text-left flex-1 text-sm md:text-base leading-relaxed"
-                              >
+                            <Label 
+                              htmlFor="accept-terms" 
+                              className="cursor-pointer text-left flex-1 flex items-start space-x-3 w-full"
+                            >
+                              <RadioGroupItem value="accept" id="accept-terms" className="mt-0.5" />
+                              <span className="text-xs md:text-sm leading-relaxed">
                                 <span className="font-semibold text-cyan-300">Aceito</span> os termos e compromissos acima e tenho interesse em participar do <strong>Fast Track do Código F</strong>.
-                              </Label>
-                            </div>
+                              </span>
+                            </Label>
                             
-                            <div className="flex items-start space-x-3">
-                              <RadioGroupItem value="decline" id="decline-terms" className="mt-1" />
-                              <Label 
-                                htmlFor="decline-terms" 
-                                className="cursor-pointer text-left flex-1 text-sm md:text-base leading-relaxed"
-                              >
+                            <Label 
+                              htmlFor="decline-terms" 
+                              className="cursor-pointer text-left flex-1 flex items-start space-x-3 w-full"
+                            >
+                              <RadioGroupItem value="decline" id="decline-terms" className="mt-0.5" />
+                              <span className="text-xs md:text-sm leading-relaxed">
                                 <span className="font-semibold text-cyan-300">Não aceito</span> ou não tenho interesse em participar neste momento.
-                              </Label>
-                            </div>
+                              </span>
+                            </Label>
                           </RadioGroup>
                         </div>
                       </div>
