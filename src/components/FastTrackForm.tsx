@@ -29,18 +29,18 @@ export const FastTrackForm = ({ userName, onComplete, onResponseSubmitted }: Fas
     // Validação
     if (!interestLevel || !timeCommitment || !mainObjective) {
       toast({
-        title: "Erro",
-        description: "Por favor, responda todas as perguntas.",
-        variant: "destructive",
+        title: "Informações necessárias",
+        description: "Para continuar, complete todas as perguntas do formulário.",
+        variant: "default",
       });
       return;
     }
 
     if (mainObjective === 'outro' && !otherObjective.trim()) {
       toast({
-        title: "Erro",
-        description: "Por favor, especifique seu objetivo.",
-        variant: "destructive",
+        title: "Informação adicional necessária",
+        description: "Conte-nos mais sobre seu objetivo específico.",
+        variant: "default",
       });
       return;
     }
