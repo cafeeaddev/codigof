@@ -9,6 +9,7 @@ interface MedalBadgesProps {
     m2: boolean;
     m3: boolean;
     m4: boolean;
+    m5?: boolean;
   };
   size?: "sm" | "md";
   className?: string;
@@ -45,7 +46,7 @@ export const MedalBadges: React.FC<MedalBadgesProps> = ({ completed, size = "md"
   
   // Add extra mission if medalNames has 5 items (indicating extra medal should be shown)
   const items = medalNames && medalNames.length === 5 
-    ? [...baseItems, { id: 5, label: "Missão Extra", done: false, medalName: "Universo", description: medalDescriptions[4] }]
+    ? [...baseItems, { id: 5, label: "Missão Extra", done: completed.m5 || false, medalName: "Universo", description: medalDescriptions[4] }]
     : baseItems;
 
   const iconSize = size === "sm" ? 16 : 20;

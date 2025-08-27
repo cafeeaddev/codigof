@@ -771,6 +771,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                 m2: completedMissions.has(2),
                 m3: completedMissions.has(3),
                 m4: completedMissions.has(4),
+                m5: extraMissionState === 'completed',
               }}
               size="md"
               className="pl-2 ml-2 border-l border-border/50"
@@ -859,6 +860,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                   m2: completedMissions.has(2),
                   m3: completedMissions.has(3),
                   m4: completedMissions.has(4),
+                  m5: extraMissionState === 'completed',
                 }}
                 size="sm"
                 className="flex justify-center"
