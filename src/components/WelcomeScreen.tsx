@@ -1057,38 +1057,36 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                   const isExtraMissionAvailable = extraMissionState === 'available';
                   const isLocked = isExtraMission 
                     ? !isExtraMissionAvailable // Missão extra bloqueada se não disponível
-                    : missionId > currentMission && !isCompleted; // Lógica normal para outras missões
+                    : missionId !== currentMission; // Só permitir clique na missão atual
                   
                   return (
                      <div
                       key={missionId}
-                        className={`relative p-4 rounded-lg border-2 transition-all duration-300 cursor-pointer ${
+                         className={`relative p-4 rounded-lg border-2 transition-all duration-300 ${
                           isExtraMission
                             ? (extraMissionState === 'declined'
                                 ? 'bg-muted/20 border-muted-foreground/20 opacity-70 cursor-not-allowed' 
                                 : isExtraMissionAvailable 
-                                  ? 'bg-cyan-500/20 border-cyan-400 hover:border-cyan-300 shadow-lg shadow-cyan-400/30 animate-pulse hover:scale-105' 
-                                  : 'bg-muted/30 border-muted-foreground/30 opacity-60 hover:scale-105')
+                                  ? 'bg-cyan-500/20 border-cyan-400 hover:border-cyan-300 shadow-lg shadow-cyan-400/30 animate-pulse hover:scale-105 cursor-pointer' 
+                                  : 'bg-muted/30 border-muted-foreground/30 opacity-60 cursor-not-allowed')
                             : isCompleted
-                           ? 'bg-primary/20 border-primary shadow-sm hover:border-primary/80'
+                           ? 'bg-primary/20 border-primary shadow-sm opacity-70 cursor-not-allowed'
                            : isCurrent
-                           ? 'bg-accent/20 border-accent shadow-sm hover:border-accent/80 ring-2 ring-accent/30'
+                           ? 'bg-accent/20 border-accent shadow-sm hover:border-accent/80 ring-2 ring-accent/30 cursor-pointer hover:scale-105'
                            : isLocked
-                           ? 'bg-muted/30 border-muted-foreground/30 opacity-60'
-                           : 'bg-card border-secondary/50 hover:border-accent/50'
+                           ? 'bg-muted/30 border-muted-foreground/30 opacity-60 cursor-not-allowed'
+                           : 'bg-card border-secondary/50 cursor-not-allowed opacity-60'
                         }`}
                         onClick={() => {
-                        // Bloquear clique se missão extra foi recusada
-                        if (isExtraMission && extraMissionState === 'declined') {
-                          return; // Não fazer nada se foi recusada
-                        }
-                        if (isExtraMission && isExtraMissionAvailable) {
+                        // Só permitir clique na missão atual ou missão extra disponível
+                        if (isExtraMission && extraMissionState === 'available') {
                           setCurrentMission(5);
                           setShowExtraMissionScreen(true);
-                        } else if (!isLocked && !isExtraMission && !showExtraMissionScreen) {
-                          // Só permite navegar para missões normais se não estiver na missão extra
+                        } else if (missionId === currentMission && !isExtraMission) {
+                          // Só permite navegar para a missão atual
                           setCurrentMission(missionId as 1 | 2 | 3 | 4);
                         }
+                        // Bloquear todos os outros cliques
                       }}
                     >
                        <div className="flex items-center gap-2 mb-2">

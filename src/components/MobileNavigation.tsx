@@ -70,7 +70,7 @@ export const MobileNavigation = ({
   };
 
   const isMissionClickable = (status: string) => {
-    return status !== 'locked' && status !== 'declined';
+    return status === 'current' || status === 'available';
   };
 
   return (
@@ -97,7 +97,10 @@ export const MobileNavigation = ({
                 isClickable ? 'cursor-pointer hover:scale-105 active:scale-95' : 'cursor-not-allowed'
               )}
               onClick={() => {
-                if (isClickable) {
+                // Só permitir clique na missão atual ou missão extra disponível
+                if (isExtraMission && status === 'available') {
+                  onMissionSelect(missionId);
+                } else if (status === 'current') {
                   onMissionSelect(missionId);
                 }
               }}
