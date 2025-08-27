@@ -83,8 +83,8 @@ export const FastTrackForm = ({ userName, onComplete, onResponseSubmitted }: Fas
       }
 
       toast({
-        title: "Sucesso",
-        description: "Respostas enviadas com sucesso!",
+        title: "Missão Finalizada! Medalha Conquistada: Universo",
+        description: "Você está prestes a conquistar o universo. Mestre do cosmos!",
       });
       
       // Força refresh do estado da missão extra ANTES de completar
