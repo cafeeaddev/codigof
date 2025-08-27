@@ -58,14 +58,14 @@ export const MobileNavigation = ({
   const getMissionIcon = (status: string) => {
     switch (status) {
       case 'completed':
-        return <CheckCircle className="w-4 h-4" />;
+        return <CheckCircle className="w-3.5 h-3.5" />;
       case 'current':
       case 'available':
-        return <Play className="w-4 h-4" />;
+        return <Play className="w-3.5 h-3.5" />;
       case 'declined':
       case 'locked':
       default:
-        return <Lock className="w-4 h-4" />;
+        return <Lock className="w-3.5 h-3.5" />;
     }
   };
 
@@ -74,15 +74,15 @@ export const MobileNavigation = ({
   };
 
   return (
-    <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-2.5 shadow-neon mb-4">
-      <div className="flex items-center gap-2 mb-2.5">
-        <div className="w-2.5 h-2.5 bg-accent rounded-full"></div>
-        <span className="text-accent text-xs font-bold tracking-wider">
+    <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-2 shadow-neon mb-2">
+      <div className="flex items-center gap-1.5 mb-2">
+        <div className="w-2 h-2 bg-accent rounded-full"></div>
+        <span className="text-accent text-[10px] font-bold tracking-wider">
           MISSÕES
         </span>
       </div>
       
-      <div className="flex gap-2.5 overflow-x-auto pb-1">
+      <div className="flex gap-1.5 overflow-x-auto pb-1">
         {missions.map((missionId) => {
           const status = getMissionStatus(missionId);
           const isClickable = isMissionClickable(status);
@@ -92,7 +92,7 @@ export const MobileNavigation = ({
             <div
               key={missionId}
               className={cn(
-                'flex-shrink-0 flex flex-col items-center p-3 rounded-xl border-2 transition-all duration-300 min-w-[85px] min-h-[90px] relative',
+                'flex-shrink-0 flex flex-col items-center p-2 rounded-lg border-2 transition-all duration-300 min-w-[55px] min-h-[65px] relative',
                 getMissionStyles(status, isClickable),
                 isClickable ? 'cursor-pointer hover:scale-105 active:scale-95' : 'cursor-not-allowed'
               )}
@@ -102,15 +102,15 @@ export const MobileNavigation = ({
                 }
               }}
             >
-              <div className="flex flex-col items-center gap-1.5 relative z-10">
+              <div className="flex flex-col items-center gap-1 relative z-10">
                 {getMissionIcon(status)}
-                <span className="text-sm font-bold">
+                <span className="text-xs font-bold">
                   {isExtraMission ? 'M5' : `M${missionId}`}
                 </span>
                 
                 {/* Status integrado */}
                 <div className="text-center">
-                  <span className="text-[9px] font-semibold uppercase tracking-wider leading-none">
+                  <span className="text-[8px] font-semibold uppercase tracking-wider leading-none">
                     {status === 'completed' && 'COMPLETA'}
                     {status === 'current' && 'ATIVA'}
                     {status === 'available' && (isExtraMission ? 'DISPONÍVEL' : 'DESBLOQUEADA')}

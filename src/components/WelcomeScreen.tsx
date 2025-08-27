@@ -922,14 +922,6 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
             />
             
             <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-4 shadow-neon flex-1 overflow-hidden flex flex-col min-h-0">
-              <div className="flex items-center justify-between mb-4 p-3 bg-muted/50 rounded-lg">
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-accent rounded-full"></div>
-                  <span className="text-accent text-sm font-bold tracking-wider">
-                    {currentMission === 5 ? 'MISSÃO EXTRA' : `MISSÃO ${currentMission}`} ATIVADA
-                  </span>
-                </div>
-              </div>
 
               <div className="flex-1 overflow-hidden min-h-0">
                 {justCompleted !== null ? (
