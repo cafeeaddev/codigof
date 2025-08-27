@@ -340,7 +340,7 @@ export const MissaoDois = ({ onComplete, userId }: MissaoDoisProps) => {
 
       {/* Fixed Navigation Buttons */}
       <div 
-        className="fixed bottom-0 left-0 right-0 bg-background border-t-2 border-primary/30 z-[100]"
+        className="fixed bottom-4 md:bottom-6 left-0 right-0 bg-background border-t-2 border-primary/30 z-[100]"
         style={{ 
           minHeight: '90px',
           paddingBottom: 'max(env(safe-area-inset-bottom, 0px), 20px)',
