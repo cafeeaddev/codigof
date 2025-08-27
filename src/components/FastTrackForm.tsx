@@ -87,9 +87,9 @@ export const FastTrackForm = ({ userName, onComplete, onResponseSubmitted }: Fas
         description: "Você está prestes a conquistar o universo. Mestre do cosmos!",
       });
       
-      // Força refresh do estado da missão extra ANTES de completar
-      onResponseSubmitted?.();
+      // Mostra tela FastTrackThankYou ANTES do refresh
       onComplete();
+      onResponseSubmitted?.();
     } catch (error) {
       console.error('Erro ao salvar respostas:', error);
       toast({
