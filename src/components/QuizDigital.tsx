@@ -47,7 +47,7 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
     }))
   }));
 
-  // Carregar progresso salvo ao iniciar
+  // Carregar progresso salvo ao iniciar com validações robustas
   useEffect(() => {
     const loadProgress = async () => {
       try {
@@ -62,26 +62,56 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
             .maybeSingle();
 
           console.log('[QuizDigital] Loaded progress data:', progress, 'error:', error);
+          console.log('[QuizDigital] Available questions count:', quizQuestions.length);
           
           if (progress) {
-            const questionIndex = (progress.missao_1_current_question as number) - 1;
+            const savedQuestionIndex = (progress.missao_1_current_question as number) - 1;
             const savedAnswers = (progress.missao_1_answers as Record<number, string>) || {};
-            console.log('[QuizDigital] Setting question to:', questionIndex, 'answers:', savedAnswers);
-            setCurrentQuestion(questionIndex);
-            setAnswers(savedAnswers);
+            
+            // Validação robusta do índice da pergunta
+            const validQuestionIndex = Math.max(0, Math.min(savedQuestionIndex, quizQuestions.length - 1));
+            
+            // Se o índice salvo é inválido, resetar progresso
+            if (savedQuestionIndex < 0 || savedQuestionIndex >= quizQuestions.length) {
+              console.warn('[QuizDigital] Invalid saved question index:', savedQuestionIndex, 'resetting to 0');
+              setCurrentQuestion(0);
+              setAnswers({});
+              
+              // Resetar progresso no banco
+              await supabase
+                .from('user_progress')
+                .update({
+                  missao_1_current_question: 1,
+                  missao_1_answers: {}
+                })
+                .eq('user_id', currentUserId);
+            } else {
+              console.log('[QuizDigital] Setting valid question to:', validQuestionIndex, 'answers:', savedAnswers);
+              setCurrentQuestion(validQuestionIndex);
+              setAnswers(savedAnswers);
+            }
+          } else {
+            console.log('[QuizDigital] No saved progress found, starting from beginning');
+            setCurrentQuestion(0);
+            setAnswers({});
           }
         } else {
-          console.log('[QuizDigital] No userId available for loading progress');
+          console.log('[QuizDigital] No userId or questions not ready, starting from beginning');
+          setCurrentQuestion(0);
+          setAnswers({});
         }
       } catch (error) {
         console.error('[QuizDigital] Error loading quiz progress:', error);
+        // Em caso de erro, começar do início
+        setCurrentQuestion(0);
+        setAnswers({});
       } finally {
         setIsLoading(false);
       }
     };
 
     loadProgress();
-  }, [authUser, userId]);
+  }, [authUser, userId, questionsLoading, quizQuestions.length]);
 
   // Salvar progresso quando resposta for selecionada
   const saveProgress = async (questionIndex: number, newAnswers: Record<number, string>) => {
@@ -123,14 +153,22 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
   };
 
   const goToNextQuestion = () => {
-    if (currentQuestion < quizQuestions.length - 1) {
-      setCurrentQuestion(currentQuestion + 1);
+    const nextIndex = currentQuestion + 1;
+    if (nextIndex < quizQuestions.length) {
+      console.log('[QuizDigital] Moving to next question:', nextIndex);
+      setCurrentQuestion(nextIndex);
+    } else {
+      console.warn('[QuizDigital] Cannot go to next question, already at last:', currentQuestion);
     }
   };
 
   const goToPreviousQuestion = () => {
-    if (currentQuestion > 0) {
-      setCurrentQuestion(currentQuestion - 1);
+    const prevIndex = currentQuestion - 1;
+    if (prevIndex >= 0) {
+      console.log('[QuizDigital] Moving to previous question:', prevIndex);
+      setCurrentQuestion(prevIndex);
+    } else {
+      console.warn('[QuizDigital] Cannot go to previous question, already at first:', currentQuestion);
     }
   };
 
@@ -253,18 +291,36 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
     );
   }
 
-  const currentQuestionData = quizQuestions[currentQuestion];
+  // Validação robusta do índice atual e dados da pergunta
+  const safeCurrentQuestion = Math.max(0, Math.min(currentQuestion, quizQuestions.length - 1));
+  const currentQuestionData = quizQuestions[safeCurrentQuestion];
+  
+  console.log('[QuizDigital] Current question index:', currentQuestion, 'safe index:', safeCurrentQuestion, 'total questions:', quizQuestions.length);
   
   // Verificação adicional para garantir que currentQuestionData existe
   if (!currentQuestionData) {
+    console.error('[QuizDigital] No question data available at index:', safeCurrentQuestion);
     return (
       <div className="h-full flex flex-col items-center justify-center space-y-4 p-4">
-        <p className="text-sm text-muted-foreground">Erro ao carregar pergunta atual.</p>
-        <Button onClick={() => setCurrentQuestion(0)} variant="outline">
+        <p className="text-sm text-destructive">Erro ao carregar pergunta atual.</p>
+        <p className="text-xs text-muted-foreground">Índice: {currentQuestion}, Total: {quizQuestions.length}</p>
+        <Button 
+          onClick={() => {
+            console.log('[QuizDigital] Resetting to first question');
+            setCurrentQuestion(0);
+          }} 
+          variant="outline"
+        >
           Voltar ao início
         </Button>
       </div>
     );
+  }
+
+  // Sincronizar índice se necessário
+  if (currentQuestion !== safeCurrentQuestion) {
+    console.log('[QuizDigital] Syncing question index from', currentQuestion, 'to', safeCurrentQuestion);
+    setCurrentQuestion(safeCurrentQuestion);
   }
 
   const answeredCount = Object.keys(answers).length;
