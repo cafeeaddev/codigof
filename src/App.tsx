@@ -9,6 +9,7 @@ import Index from "./pages/Index";
 import AdminDashboard from "./pages/AdminDashboard";
 import NotFound from "./pages/NotFound";
 import FixedBrandLogos from "./components/FixedBrandLogos";
+import { SEOHead } from "@/components/SEOHead";
 
 const queryClient = new QueryClient();
 
@@ -25,6 +26,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
+          <SEOHead />
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/admin" element={<AdminDashboard />} />

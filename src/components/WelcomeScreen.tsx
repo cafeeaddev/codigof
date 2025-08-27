@@ -22,6 +22,9 @@ import { TechnicalSkillsDisplay } from './TechnicalSkillsDisplay';
 import { ExtraMissionContent } from './ExtraMissionContent';
 import { useExtraMissionState } from '@/hooks/useExtraMissionState';
 import { MobileNavigation } from './MobileNavigation';
+import { ProfileLoadingSkeleton, MissionLoadingSkeleton } from './ui/loading-skeleton';
+import { AccessibilityEnhancer } from './AccessibilityEnhancer';
+import { usePerformanceMonitor } from '@/hooks/usePerformanceMonitor';
 
 interface WelcomeScreenProps {
   user: {
@@ -36,6 +39,7 @@ interface WelcomeScreenProps {
 
 export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeScreenProps) => {
   console.log('🚀 [WelcomeScreen] Component mounted with userId:', userId);
+  const { measureAsyncOperation } = usePerformanceMonitor('WelcomeScreen');
   const navigate = useNavigate();
   const { isAdmin } = useUserRole();
   const [isLoading, setIsLoading] = useState(true);
@@ -818,6 +822,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
             size="sm"
             className="bg-transparent border-secondary text-secondary hover:bg-secondary hover:text-secondary-foreground relative z-50 cursor-pointer"
             style={{ pointerEvents: 'auto' }}
+            aria-label="Sair do jogo"
           >
             <LogOut className="w-3 h-3 md:w-4 md:h-4 md:mr-2" />
             <span className="hidden md:inline">SAIR</span>
@@ -882,6 +887,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
             <Button
               onClick={() => setShowTutorial(true)}
               className="bg-transparent border-2 border-cyan-400 rounded-full p-1 shadow-none hover:opacity-95 hover:scale-105 hover:border-cyan-300 transition-all duration-300 w-[45px] h-[45px] flex items-center justify-center"
+              aria-label="Abrir tutorial e assistente IA"
             >
               {codyVideoUrl && (
                 <video
@@ -970,10 +976,11 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                 ) : currentMission === 4 && !completedMissions.has(4) ? (
                   <MissaoQuatro onComplete={() => handleMissionComplete(4)} />
                 ) : isLoadingProfile ? (
-                  <div className="h-full flex flex-col items-center justify-center space-y-4 p-4">
-                    <div className="w-16 h-16 border-4 border-primary/30 border-t-primary rounded-full animate-spin"></div>
-                    <div className="text-center">
-                      <h4 className="text-lg font-bold text-primary mb-1">
+                  <div className="h-full flex flex-col items-center justify-center space-y-6 p-4" role="status" aria-live="polite">
+                    <ProfileLoadingSkeleton />
+                    <div className="text-center space-y-2">
+                      <div className="w-12 h-12 border-4 border-primary/30 border-t-primary rounded-full animate-spin mx-auto" aria-hidden="true"></div>
+                      <h4 className="text-lg font-bold text-primary mb-1" data-mission-title="Carregamento do Perfil">
                         Carregando seu Perfil Digital...
                       </h4>
                       <p className="text-sm text-muted-foreground">
@@ -1258,10 +1265,11 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                     ) : currentMission === 4 && !completedMissions.has(4) ? (
                       <MissaoQuatro onComplete={() => handleMissionComplete(4)} />
                     ) : isLoadingProfile ? (
-                      <div className="h-full flex flex-col items-center justify-center space-y-4">
-                        <div className="w-16 h-16 border-4 border-primary/30 border-t-primary rounded-full animate-spin"></div>
-                        <div className="text-center">
-                          <h4 className="text-lg font-bold text-primary mb-1">
+                      <div className="h-full flex flex-col items-center justify-center space-y-6 p-4" role="status" aria-live="polite">
+                        <MissionLoadingSkeleton />
+                        <div className="text-center space-y-2">
+                          <div className="w-12 h-12 border-4 border-primary/30 border-t-primary rounded-full animate-spin mx-auto" aria-hidden="true"></div>
+                          <h4 className="text-lg font-bold text-primary mb-1" data-mission-title="Carregamento do Perfil">
                             Carregando seu Perfil Digital...
                           </h4>
                           <p className="text-sm text-muted-foreground">
@@ -1388,10 +1396,11 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                        }}
                     />
                   ) : isLoadingProfile ? (
-                    <div className="h-full flex flex-col items-center justify-center space-y-4">
-                      <div className="w-16 h-16 border-4 border-primary/30 border-t-primary rounded-full animate-spin"></div>
-                      <div className="text-center">
-                        <h4 className="text-lg font-bold text-primary mb-1">
+                    <div className="h-full flex flex-col items-center justify-center space-y-6 p-4" role="status" aria-live="polite">
+                      <ProfileLoadingSkeleton />
+                      <div className="text-center space-y-2">
+                        <div className="w-12 h-12 border-4 border-primary/30 border-t-primary rounded-full animate-spin mx-auto" aria-hidden="true"></div>
+                        <h4 className="text-lg font-bold text-primary mb-1" data-mission-title="Carregamento do Perfil">
                           Carregando seu Perfil Digital...
                         </h4>
                         <p className="text-sm text-muted-foreground">

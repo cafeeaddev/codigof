@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, memo } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { getProfileColor } from '@/lib/digitalProfile';
@@ -27,7 +27,7 @@ interface ProfileHeroCardProps {
   refreshTrigger?: number;
 }
 
-export const ProfileHeroCard: React.FC<ProfileHeroCardProps> = ({
+export const ProfileHeroCard: React.FC<ProfileHeroCardProps> = memo(({
   profile,
   sublevel,
   phrase,
@@ -270,4 +270,4 @@ export const ProfileHeroCard: React.FC<ProfileHeroCardProps> = ({
       </Card>
     </div>
   );
-};
+});

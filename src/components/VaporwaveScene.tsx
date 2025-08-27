@@ -1,6 +1,6 @@
 import { Canvas } from '@react-three/fiber';
 import { VaporwaveTerrain } from './VaporwaveTerrain';
-import { Suspense, useMemo, useState } from 'react';
+import { Suspense, useMemo, useState, memo } from 'react';
 import { Html, PerformanceMonitor } from '@react-three/drei';
 
 import * as THREE from 'three';
@@ -11,7 +11,7 @@ interface VaporwaveSceneProps {
   cameraFov: number;
 }
 
-export const VaporwaveScene = ({ cameraPosition, cameraFov }: VaporwaveSceneProps) => {
+export const VaporwaveScene = memo(({ cameraPosition, cameraFov }: VaporwaveSceneProps) => {
   const webglSupported = useMemo(() => {
     if (typeof window === 'undefined') return true; // SSR-safe default
     try {
@@ -106,4 +106,4 @@ export const VaporwaveScene = ({ cameraPosition, cameraFov }: VaporwaveSceneProp
       </Canvas>
     </div>
   );
-};
+});
