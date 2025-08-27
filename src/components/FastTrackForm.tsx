@@ -156,25 +156,19 @@ export const FastTrackForm = ({ userName, onComplete, onResponseSubmitted }: Fas
                             <Label className="text-base font-medium text-foreground">
                               1. Você tem interesse em participar do programa FastTrack Digital (programa de aceleração digital)?
                             </Label>
-                            <RadioGroup value={interestLevel} onValueChange={setInterestLevel}>
-                              <div className="flex items-center space-x-2">
+                            <RadioGroup value={interestLevel} onValueChange={setInterestLevel} className="space-y-2">
+                              <Label htmlFor="interesse-sim" className="cursor-pointer flex items-center space-x-2 text-sm md:text-base">
                                 <RadioGroupItem value="muito-interessado" id="interesse-sim" />
-                                <Label htmlFor="interesse-sim" className="cursor-pointer text-sm md:text-base">
-                                  Sim, muito interessado(a)
-                                </Label>
-                              </div>
-                              <div className="flex items-center space-x-2">
+                                <span>Sim, muito interessado(a)</span>
+                              </Label>
+                              <Label htmlFor="interesse-talvez" className="cursor-pointer flex items-center space-x-2 text-sm md:text-base">
                                 <RadioGroupItem value="gostaria-mas-sem-tempo" id="interesse-talvez" />
-                                <Label htmlFor="interesse-talvez" className="cursor-pointer text-sm md:text-base">
-                                  Gostaria, mas devido as minhas demandas atuais não vou conseguir participar
-                                </Label>
-                              </div>
-                              <div className="flex items-center space-x-2">
+                                <span>Gostaria, mas devido as minhas demandas atuais não vou conseguir participar</span>
+                              </Label>
+                              <Label htmlFor="interesse-nao" className="cursor-pointer flex items-center space-x-2 text-sm md:text-base">
                                 <RadioGroupItem value="sem-interesse" id="interesse-nao" />
-                                <Label htmlFor="interesse-nao" className="cursor-pointer text-sm md:text-base">
-                                  Não tenho interesse no momento
-                                </Label>
-                              </div>
+                                <span>Não tenho interesse no momento</span>
+                              </Label>
                             </RadioGroup>
                           </div>
 
@@ -183,31 +177,23 @@ export const FastTrackForm = ({ userName, onComplete, onResponseSubmitted }: Fas
                             <Label className="text-base font-medium text-foreground">
                               2. Quanto tempo por semana você acredita que pode dedicar ao programa FastTrack?
                             </Label>
-                            <RadioGroup value={timeCommitment} onValueChange={setTimeCommitment}>
-                              <div className="flex items-center space-x-2">
+                            <RadioGroup value={timeCommitment} onValueChange={setTimeCommitment} className="space-y-2">
+                              <Label htmlFor="tempo-1" className="cursor-pointer flex items-center space-x-2 text-sm md:text-base">
                                 <RadioGroupItem value="menos-1h" id="tempo-1" />
-                                <Label htmlFor="tempo-1" className="cursor-pointer text-sm md:text-base">
-                                  Menos de 1 hora
-                                </Label>
-                              </div>
-                              <div className="flex items-center space-x-2">
+                                <span>Menos de 1 hora</span>
+                              </Label>
+                              <Label htmlFor="tempo-2" className="cursor-pointer flex items-center space-x-2 text-sm md:text-base">
                                 <RadioGroupItem value="1-2h" id="tempo-2" />
-                                <Label htmlFor="tempo-2" className="cursor-pointer text-sm md:text-base">
-                                  1 a 2 horas
-                                </Label>
-                              </div>
-                              <div className="flex items-center space-x-2">
+                                <span>1 a 2 horas</span>
+                              </Label>
+                              <Label htmlFor="tempo-3" className="cursor-pointer flex items-center space-x-2 text-sm md:text-base">
                                 <RadioGroupItem value="3-4h" id="tempo-3" />
-                                <Label htmlFor="tempo-3" className="cursor-pointer text-sm md:text-base">
-                                  3 a 4 horas
-                                </Label>
-                              </div>
-                              <div className="flex items-center space-x-2">
+                                <span>3 a 4 horas</span>
+                              </Label>
+                              <Label htmlFor="tempo-4" className="cursor-pointer flex items-center space-x-2 text-sm md:text-base">
                                 <RadioGroupItem value="mais-4h" id="tempo-4" />
-                                <Label htmlFor="tempo-4" className="cursor-pointer text-sm md:text-base">
-                                  Mais de 4 horas
-                                </Label>
-                              </div>
+                                <span>Mais de 4 horas</span>
+                              </Label>
                             </RadioGroup>
                           </div>
 
@@ -216,37 +202,27 @@ export const FastTrackForm = ({ userName, onComplete, onResponseSubmitted }: Fas
                             <Label className="text-base font-medium text-foreground">
                               3. Qual seu principal objetivo ao participar do FastTrack Digital?
                             </Label>
-                            <RadioGroup value={mainObjective} onValueChange={setMainObjective}>
-                              <div className="flex items-center space-x-2">
+                            <RadioGroup value={mainObjective} onValueChange={setMainObjective} className="space-y-2">
+                              <Label htmlFor="obj-1" className="cursor-pointer flex items-center space-x-2 text-sm md:text-base">
                                 <RadioGroupItem value="habilidades-tecnicas" id="obj-1" />
-                                <Label htmlFor="obj-1" className="cursor-pointer text-sm md:text-base">
-                                  Melhorar minhas habilidades técnicas
-                                </Label>
-                              </div>
-                              <div className="flex items-center space-x-2">
+                                <span>Melhorar minhas habilidades técnicas</span>
+                              </Label>
+                              <Label htmlFor="obj-2" className="cursor-pointer flex items-center space-x-2 text-sm md:text-base">
                                 <RadioGroupItem value="carreira" id="obj-2" />
-                                <Label htmlFor="obj-2" className="cursor-pointer text-sm md:text-base">
-                                  Acelerar minha carreira na empresa
-                                </Label>
-                              </div>
-                              <div className="flex items-center space-x-2">
+                                <span>Acelerar minha carreira na empresa</span>
+                              </Label>
+                              <Label htmlFor="obj-3" className="cursor-pointer flex items-center space-x-2 text-sm md:text-base">
                                 <RadioGroupItem value="inovacao" id="obj-3" />
-                                <Label htmlFor="obj-3" className="cursor-pointer text-sm md:text-base">
-                                  Aplicar inovação e tecnologia no meu trabalho
-                                </Label>
-                              </div>
-                              <div className="flex items-center space-x-2">
+                                <span>Aplicar inovação e tecnologia no meu trabalho</span>
+                              </Label>
+                              <Label htmlFor="obj-4" className="cursor-pointer flex items-center space-x-2 text-sm md:text-base">
                                 <RadioGroupItem value="ferramentas" id="obj-4" />
-                                <Label htmlFor="obj-4" className="cursor-pointer text-sm md:text-base">
-                                  Conhecer novas ferramentas digitais
-                                </Label>
-                              </div>
-                              <div className="flex items-center space-x-2">
+                                <span>Conhecer novas ferramentas digitais</span>
+                              </Label>
+                              <Label htmlFor="obj-5" className="cursor-pointer flex items-center space-x-2 text-sm md:text-base">
                                 <RadioGroupItem value="outro" id="obj-5" />
-                                <Label htmlFor="obj-5" className="cursor-pointer text-sm md:text-base">
-                                  Outro (especifique):
-                                </Label>
-                              </div>
+                                <span>Outro (especifique):</span>
+                              </Label>
                             </RadioGroup>
                             
                             {mainObjective === 'outro' && (
