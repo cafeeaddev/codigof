@@ -1208,6 +1208,9 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                 );
               })()}
             </div>
+            
+            {/* Borda de fechamento visual das missões */}
+            <div className="mt-6 h-px border-t border-secondary/50 bg-gradient-to-r from-transparent via-secondary/40 to-transparent opacity-80"></div>
 
             {/* Conteúdo da missão no desktop */}
             <div className="flex-1 overflow-hidden min-h-0">
@@ -1311,9 +1314,6 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                     )}
                   </div>
                 </ScrollArea>
-                
-                {/* Borda de fechamento visual */}
-                <div className="mt-4 h-px border-t border-secondary/50 bg-gradient-to-r from-transparent via-secondary/40 to-transparent opacity-80"></div>
               </div>
             </div>
           </div>
