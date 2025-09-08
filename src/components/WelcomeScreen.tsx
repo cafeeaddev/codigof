@@ -1089,18 +1089,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                         // Bloquear todos os outros cliques
                       }}
                     >
-                       <div className="flex items-center gap-2 mb-2">
-                        <div className={`w-3 h-3 rounded-full ${
-                           isExtraMission 
-                            ? extraMissionState === 'declined'
-                              ? 'bg-muted-foreground/30' // Estado 3: Fim de Jogo - mais cinza
-                               : isExtraMissionAvailable 
-                                 ? 'bg-cyan-400 shadow-lg shadow-cyan-400/50' // Estado 2: Liberada
-                                 : extraMissionState === 'completed'
-                                   ? 'bg-primary' // Estado 4: Completada
-                                   : 'bg-blue-400/30' // Estado 1: Bloqueada
-                            : isCompleted ? 'bg-primary' : isCurrent ? 'bg-accent' : isLocked ? 'bg-muted-foreground/50' : 'bg-muted'
-                        }`}></div>
+                       <div className="mb-2">
                         <div className={`text-sm font-bold tracking-wider mb-2 ${
                            isExtraMission 
                              ? extraMissionState === 'declined'
