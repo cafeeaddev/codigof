@@ -1030,7 +1030,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
           {/* Layout Desktop: Grade com barra de missões no topo */}
           <div className="hidden md:flex flex-col h-full gap-4">
             {/* Barra Horizontal das Missões - Desktop */}
-            <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-4 shadow-neon">
+            <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-2 shadow-neon">
               {/* Desktop Mission Cards */}
               {(() => {
                 // NOVA LÓGICA: Sempre mostrar missão extra se 4 missões completas E perfil não é Beginner
