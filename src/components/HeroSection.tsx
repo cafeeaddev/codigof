@@ -34,13 +34,9 @@ export const HeroSection = ({ onLoginClick, onContinueClick }: HeroSectionProps)
             {/* CÓDIGO F - moved here and made larger */}
             <div className="mb-4 sm:mb-6 flex justify-center">
               <img 
-                src="/lovable-uploads/4061b8c5-4567-4621-931f-242fb9214fae.png" 
+                src="/lovable-uploads/c7f81f08-b72c-47c1-a3d2-ae5388cf81e0.png" 
                 alt="Código F" 
                 className="h-8 sm:h-12 lg:h-16 w-auto"
-                style={{
-                  filter: 'brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(100%) contrast(100%)',
-                  mixBlendMode: 'screen'
-                }}
               />
             </div>
             
