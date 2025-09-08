@@ -5,10 +5,11 @@ import { Label } from '@/components/ui/label';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
+import { missionLogger } from '@/utils/logger';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { ScrollArea } from './ui/scroll-area';
 import { StarRating } from './StarRating';
-import { useMission4Questions } from '@/hooks/useMission4Questions';
+import { useMissionQuestions } from '@/hooks/useMissionQuestions';
 import { useAreas } from '@/hooks/useAreas';
 
 interface MissaoQuatroProps {
@@ -26,7 +27,7 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
   console.log('MissaoQuatro - userArea:', userArea);
   
   // Buscar perguntas da missão 4 com base na área do usuário
-  const { questions: dbQuestions, isLoading: loadingQuestions, error } = useMission4Questions(userArea?.id);
+  const { questions: dbQuestions, isLoading: loadingQuestions, error } = useMissionQuestions(4, userArea?.id);
   
   // Convert to the format expected by the component
   const questions = dbQuestions.map(q => ({
@@ -34,12 +35,20 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
     question: q.question_text,
     type: q.question_type === 'star-rating' ? 'star-rating' : 'regular',
     softwares: q.softwares || [],
-    starLegends: q.star_legends || {},
-    options: q.options ? Object.entries(q.options).map(([letter, option]: [string, any]) => ({
-      letter,
-      text: option.text,
-      points: option.points
-    })) : []
+    starLegends: q.question_type === 'star-rating' 
+      ? q.options.reduce((acc, opt) => {
+          acc[opt.option_letter] = {
+            text: opt.option_text,
+            points: opt.points || 0
+          };
+          return acc;
+        }, {} as any)
+      : {},
+    options: q.options.map(opt => ({
+      letter: opt.option_letter,
+      text: opt.option_text,
+      points: opt.points
+    }))
   }));
 
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -210,7 +219,10 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
       });
       onComplete();
     } catch (error) {
-      console.error('Error submitting quiz:', error);
+      missionLogger.error('Error submitting Mission 4 quiz', { 
+        userId: user?.id, 
+        data: error 
+      });
       toast({
         title: "Erro",
         description: "Erro ao salvar respostas. Tente novamente.",

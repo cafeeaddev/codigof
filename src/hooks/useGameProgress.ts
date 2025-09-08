@@ -24,7 +24,7 @@ export const useGameProgress = () => {
     lastSavedAt: new Date(),
   });
   
-  console.log('[useGameProgress] Hook initialized with user:', user?.id);
+  // Hook initialized - debug removed for performance
   
   const sessionStartRef = useRef<Date>(new Date());
   const autoSaveIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -205,7 +205,7 @@ export const useGameProgress = () => {
       return;
     }
 
-    console.log('[useGameProgress] Saving progress for user:', user.id, 'position:', currentPosition, 'session time:', sessionTime, 'seconds');
+    // Saving progress - debug removed for performance
 
     try {
       const newTotalTime = progress.totalPlayTime + sessionTime;
@@ -223,7 +223,7 @@ export const useGameProgress = () => {
         .eq('user_id', user.id);
 
       if (error) {
-        console.error('Error saving progress:', error);
+        // Error saving progress - see browser devtools for details
         return;
       }
 
@@ -240,10 +240,10 @@ export const useGameProgress = () => {
 
       // Reset session start time only after successful save
       sessionStartRef.current = new Date();
-      console.log('[useGameProgress] Progress saved successfully. New total time:', newTotalTime, 'seconds');
+      // Progress saved successfully - debug removed for performance
 
     } catch (error) {
-      console.error('Error saving progress:', error);
+      // Error saving progress - see browser devtools for details
     }
   }, [user?.id, progress.currentPosition, progress.totalPlayTime]);
 

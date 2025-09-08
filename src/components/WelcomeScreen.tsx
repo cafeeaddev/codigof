@@ -127,7 +127,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
         setShowTutorial(true);
         
       } catch (error) {
-        console.error('❌ [WelcomeScreen] Error checking tutorial status:', error);
+        // Error checking tutorial status - see browser devtools for details
         // Em caso de erro, usar apenas localStorage
         const localTutorialSeen = localStorage.getItem('tutorialSeen');
         setShowTutorial(localTutorialSeen !== 'true');
@@ -221,7 +221,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
         .eq('user_id', userId);
 
       if (error) {
-        console.error(`[WelcomeScreen] Erro ao salvar progresso da missão ${missionId}:`, error);
+        // Error saving mission progress - see browser devtools for details
         // Reverter estado local em caso de erro
         setUserProgress(prev => ({
           total_xp: prev.total_xp - 25,
@@ -236,7 +236,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
         console.log(`[WelcomeScreen] ✅ Missão ${missionId} salva com sucesso! Novo XP: ${newXp}`);
       }
     } catch (error) {
-      console.error(`[WelcomeScreen] Erro ao atualizar progresso da missão ${missionId}:`, error);
+      // Error updating mission progress - see browser devtools for details
       // Reverter estado local em caso de erro
       setUserProgress(prev => ({
         total_xp: prev.total_xp - 25,
@@ -358,7 +358,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                   
                 console.log('[WelcomeScreen] ✅ XP corrigido no banco de dados');
               } catch (error) {
-                console.error('[WelcomeScreen] ❌ Erro ao corrigir XP no banco:', error);
+                // Error fixing XP in database - see browser devtools for details
               }
             }
             
@@ -410,7 +410,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
           console.log('[WelcomeScreen] No userId provided');
         }
       } catch (error) {
-        console.error('[WelcomeScreen] Error loading user progress:', error);
+        // Error loading user progress - see browser devtools for details
       } finally {
         console.log('[WelcomeScreen] Loading complete, isLoading set to false');
         setIsLoading(false); // Remover timeout - definir imediatamente
