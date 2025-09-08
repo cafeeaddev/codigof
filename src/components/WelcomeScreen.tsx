@@ -1090,7 +1090,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                       }}
                     >
                        <div className="mb-2">
-                        <div className={`text-sm font-bold tracking-wider mb-2 ${
+                        <div className={`text-xs font-bold tracking-wider mb-2 ${
                            isExtraMission 
                              ? extraMissionState === 'declined'
                                ? 'text-muted-foreground/50' // Estado 3: Fim de Jogo - mais cinza
