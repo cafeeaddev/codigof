@@ -78,6 +78,7 @@ export type Database = {
         Row: {
           accepted_terms: boolean
           created_at: string
+          decline_reason: string | null
           email: string
           id: string
           nome: string
@@ -88,6 +89,7 @@ export type Database = {
         Insert: {
           accepted_terms?: boolean
           created_at?: string
+          decline_reason?: string | null
           email: string
           id?: string
           nome: string
@@ -98,6 +100,7 @@ export type Database = {
         Update: {
           accepted_terms?: boolean
           created_at?: string
+          decline_reason?: string | null
           email?: string
           id?: string
           nome?: string

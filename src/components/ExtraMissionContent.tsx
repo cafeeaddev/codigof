@@ -3,6 +3,7 @@ import { Button } from './ui/button';
 import { ScrollArea } from './ui/scroll-area';
 import { RadioGroup, RadioGroupItem } from './ui/radio-group';
 import { Label } from './ui/label';
+import { Textarea } from './ui/textarea';
 import { Shield } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -21,6 +22,7 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
   const { toast } = useToast();
   const { user } = useAuth();
   const [userChoice, setUserChoice] = useState<'accept' | 'decline' | ''>('');
+  const [declineReason, setDeclineReason] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showDeclineMessage, setShowDeclineMessage] = useState(false);
   const [showFastTrackForm, setShowFastTrackForm] = useState(false);
@@ -31,6 +33,15 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
       toast({
         title: "Erro",
         description: "Por favor, faça uma escolha antes de confirmar.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (userChoice === 'decline' && !declineReason.trim()) {
+      toast({
+        title: "Justificativa necessária",
+        description: "Por favor, informe o motivo para não participar.",
         variant: "destructive",
       });
       return;
@@ -74,7 +85,8 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
           nome: userName,
           email: user.email || '',
           accepted_terms: userChoice === 'accept',
-          want_to_participate: userChoice === 'accept'
+          want_to_participate: userChoice === 'accept',
+          decline_reason: userChoice === 'decline' ? declineReason.trim() : null
         });
 
       if (error) throw error;
@@ -416,7 +428,24 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
                                 <span className="font-semibold text-cyan-300">Não aceito</span> ou não tenho interesse em participar neste momento.
                               </Label>
                             </div>
-                          </RadioGroup>
+                           </RadioGroup>
+
+                           {/* Campo de justificativa para recusa */}
+                           {userChoice === 'decline' && (
+                             <div className="mt-4 space-y-2">
+                               <Label htmlFor="decline-reason" className="text-sm font-medium text-cyan-300">
+                                 Por favor, informe o motivo:
+                               </Label>
+                               <Textarea
+                                 id="decline-reason"
+                                 placeholder="Descreva brevemente o motivo para não participar do Fast Track..."
+                                 value={declineReason}
+                                 onChange={(e) => setDeclineReason(e.target.value)}
+                                 className="min-h-[80px] bg-background/50 border-border/50 focus:border-cyan-400/50 text-sm"
+                                 required
+                               />
+                             </div>
+                           )}
                         </div>
                       </div>
                     </div>
@@ -432,7 +461,7 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
       <div className="bg-background border-t p-4 safe-area-inset-bottom">
         <Button 
           onClick={handleSubmit}
-          disabled={!userChoice || isSubmitting}
+          disabled={!userChoice || isSubmitting || (userChoice === 'decline' && !declineReason.trim())}
           className="w-full bg-cyan-500 hover:bg-cyan-600 text-black font-semibold px-6 py-3 rounded-lg transition-all duration-300 min-h-[48px] text-base"
         >
           {isSubmitting ? (
