@@ -882,28 +882,30 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
             </div>
           </div>
           
-          {/* Assistente IA */}
-          <div className="flex flex-col items-center">
-            <Button
-              onClick={() => setShowTutorial(true)}
-              className="bg-transparent border-2 border-cyan-400 rounded-full p-1 shadow-none hover:opacity-95 hover:scale-105 hover:border-cyan-300 transition-all duration-300 w-[45px] h-[45px] flex items-center justify-center"
-              aria-label="Abrir tutorial e assistente IA"
-            >
-              {codyVideoUrl && (
-                <video
-                  src={codyVideoUrl}
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  className="w-8 h-8 rounded-full object-cover"
-                />
-              )}
-            </Button>
-            <div className="text-secondary/90 text-xs mt-0.5 text-center leading-none font-medium">
-              Ajuda?
+          {/* Assistente IA - ocultar na tela final em mobile/tablet */}
+          {!(showGameSummary || (completedMissions.size === 4 && gameData)) && (
+            <div className="flex flex-col items-center">
+              <Button
+                onClick={() => setShowTutorial(true)}
+                className="bg-transparent border-2 border-cyan-400 rounded-full p-1 shadow-none hover:opacity-95 hover:scale-105 hover:border-cyan-300 transition-all duration-300 w-[45px] h-[45px] flex items-center justify-center"
+                aria-label="Abrir tutorial e assistente IA"
+              >
+                {codyVideoUrl && (
+                  <video
+                    src={codyVideoUrl}
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className="w-8 h-8 rounded-full object-cover"
+                  />
+                )}
+              </Button>
+              <div className="text-secondary/90 text-xs mt-0.5 text-center leading-none font-medium">
+                Ajuda?
+              </div>
             </div>
-          </div>
+          )}
           
         </div>
         </div>
