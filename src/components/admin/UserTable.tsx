@@ -430,23 +430,30 @@ export const UserTable = ({
                                <span className="text-xs text-muted-foreground ml-1">Aceitou</span>
                              </>
                            );
-                         } else if (fastTrackInfo?.accepted === false) {
-                           return (
-                             <div className="flex items-center gap-1">
-                               <span className="text-red-500 font-medium">NÃO</span>
-                               <span className="text-xs text-muted-foreground ml-1">Recusou</span>
-                               {fastTrackInfo.reason && (
-                                 <Tooltip>
-                                   <TooltipTrigger asChild>
-                                     <Info className="h-3 w-3 text-muted-foreground cursor-help ml-1" />
-                                   </TooltipTrigger>
-                                   <TooltipContent side="top" className="max-w-xs">
-                                     <p className="text-sm">{fastTrackInfo.reason}</p>
-                                   </TooltipContent>
-                                 </Tooltip>
-                               )}
-                             </div>
-                           );
+                          } else if (fastTrackInfo?.accepted === false) {
+                            return (
+                              <div className="flex items-center gap-1">
+                                <span className="text-red-500 font-medium">NÃO</span>
+                                <span className="text-xs text-muted-foreground ml-1">
+                                  {fastTrackInfo.reason ? 'Recusou - Ver motivo' : 'Recusou'}
+                                </span>
+                                {fastTrackInfo.reason && (
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <div className="flex items-center">
+                                        <Info className="h-4 w-4 text-blue-500 cursor-help ml-1 hover:text-blue-600 transition-colors" />
+                                      </div>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="top" className="max-w-xs p-3 bg-popover border">
+                                      <div className="space-y-1">
+                                        <p className="font-medium text-sm">Motivo da recusa:</p>
+                                        <p className="text-sm text-muted-foreground">{fastTrackInfo.reason}</p>
+                                      </div>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                )}
+                              </div>
+                            );
                          } else {
                            return (
                              <>
