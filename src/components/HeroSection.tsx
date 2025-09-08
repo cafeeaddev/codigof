@@ -34,7 +34,7 @@ export const HeroSection = ({ onLoginClick, onContinueClick }: HeroSectionProps)
             {/* CÓDIGO F - moved here and made larger */}
             <div className="mb-4 sm:mb-6 flex justify-center">
               <img 
-                src="/lovable-uploads/c7f81f08-b72c-47c1-a3d2-ae5388cf81e0.png" 
+                src="/lovable-uploads/afeabae2-dbef-4355-b942-f2a770f98af5.png" 
                 alt="Código F" 
                 className="h-8 sm:h-12 lg:h-16 w-auto"
               />
