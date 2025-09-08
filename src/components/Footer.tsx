@@ -66,7 +66,7 @@ export const Footer = () => {
         <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-8 shadow-neon">
 
           <div className="text-center mb-6">
-            <h2 className="text-secondary text-xl font-bold mb-2">CÓDIGO F – QUIZ DE MATURIDADE DIGITAL</h2>
+            <h2 className="text-secondary text-xl font-bold mb-2">CÓDIGO F - SCANNER DIGITAL</h2>
           </div>
 
           {/* Login form */}
