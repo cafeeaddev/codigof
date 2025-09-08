@@ -15,8 +15,8 @@ export const useScalabilityOptimization = () => {
   const { user } = useAuth();
   const [state, setState] = useState<OptimizationState>({
     isOptimized: false,
-    starCount: 800,
-    saveInterval: 300000, // 5 minutes
+    starCount: 1000, // Pro plan - mais estrelas base
+    saveInterval: 180000, // 3 minutes - Pro plan
     throttleEnabled: false,
     concurrentUsers: 0,
     status: 'healthy'
@@ -43,11 +43,11 @@ export const useScalabilityOptimization = () => {
         
         switch (type) {
           case 'reduce-stars':
-            newState.starCount = concurrentUsers > 200 ? 400 : 600;
+            newState.starCount = concurrentUsers > 180 ? 600 : 800; // Pro plan - limiares maiores
             newState.isOptimized = true;
             break;
           case 'increase-save-interval':
-            newState.saveInterval = concurrentUsers > 200 ? 600000 : 450000; // 10 ou 7.5 min
+            newState.saveInterval = concurrentUsers > 180 ? 360000 : 240000; // 6 ou 4 min - Pro
             newState.isOptimized = true;
             break;
           case 'enable-throttling':

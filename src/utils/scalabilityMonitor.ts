@@ -29,9 +29,9 @@ export class ScalabilityMonitor {
 
   constructor() {
     this.config = {
-      maxConcurrentUsers: 300,
-      warningThreshold: 150,
-      criticalThreshold: 250,
+      maxConcurrentUsers: 400, // Pro plan - mais capacidade
+      warningThreshold: 200,   // Pro plan - limiar maior
+      criticalThreshold: 300,  // Pro plan - mais resiliente
       autoOptimize: true
     };
   }

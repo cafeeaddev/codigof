@@ -13,7 +13,7 @@ interface GameProgress {
 
 const MAX_SESSION_TIME = 8 * 60 * 60; // 8 hours in seconds
 const INACTIVITY_TIMEOUT = 5 * 60 * 1000; // 5 minutes in milliseconds
-const AUTO_SAVE_INTERVAL = 300 * 1000; // 5 minutes in milliseconds for better scalability
+const AUTO_SAVE_INTERVAL = 180 * 1000; // 3 minutes - Pro plan permite maior frequência
 
 export const useGameProgress = () => {
   const { user } = useAuth();
