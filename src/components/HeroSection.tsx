@@ -33,8 +33,11 @@ export const HeroSection = ({ onLoginClick, onContinueClick }: HeroSectionProps)
           >
             {/* CÓDIGO F - moved here and made larger */}
             <div className="mb-4 sm:mb-6">
-              <span className="text-secondary text-2xl sm:text-3xl lg:text-4xl font-bold tracking-wide">CÓDIGO</span>{' '}
-              <span className="text-neon-purple text-2xl sm:text-3xl lg:text-4xl font-bold">F</span>
+              <img 
+                src="/lovable-uploads/4061b8c5-4567-4621-931f-242fb9214fae.png" 
+                alt="Código F" 
+                className="h-8 sm:h-12 lg:h-16 w-auto"
+              />
             </div>
             
           <p className="text-white text-xs sm:text-sm lg:text-base uppercase tracking-[0.15em] sm:tracking-[0.2em] font-medium mb-4 sm:mb-6 px-4 drop-shadow-[0_2px_10px_hsl(var(--background)_/_0.9)]">
