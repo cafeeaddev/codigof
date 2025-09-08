@@ -244,25 +244,29 @@ const AdminDashboard = () => {
                 </CardHeader>
                 <CardContent>
                   {progressData && (
-                    <UserTable
-                      filteredUsers={filteredUsers}
-                      progressData={progressData}
-                      filters={filters}
-                      updateFilter={updateFilter}
-                      filterOptions={filterOptions}
-                      calculateUserTotalScore={calculateUserTotalScore}
-                      getDigitalProfile={getDigitalProfile}
-                      getProfileColor={getProfileColor}
-                      allResponses={{
-                        missao1: responses1,
-                        missao2: responses2,
-                        missao3: responses3,
-                        missao4: responses4
-                      }}
-                      questions={questions || []}
-                      fastTrackData={fastTrackData}
-                      onUserAnalysis={handleUserAnalysis}
-                    />
+                     <UserTable
+                       filteredUsers={filteredUsers}
+                       progressData={progressData}
+                       filters={filters}
+                       updateFilter={updateFilter}
+                       filterOptions={filterOptions}
+                       calculateUserTotalScore={calculateUserTotalScore}
+                       getDigitalProfile={getDigitalProfile}
+                       getProfileColor={getProfileColor}
+                       allResponses={{
+                         missao1: responses1,
+                         missao2: responses2,
+                         missao3: responses3,
+                         missao4: responses4
+                       }}
+                       questions={questions || []}
+                       fastTrackData={fastTrackData}
+                       onUserAnalysis={handleUserAnalysis}
+                       onDataRefresh={() => {
+                         // Força recarregamento dos dados
+                         window.location.reload();
+                       }}
+                     />
                   )}
                 </CardContent>
               </Card>

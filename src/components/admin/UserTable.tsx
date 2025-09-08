@@ -6,8 +6,9 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { ChevronLeft, ChevronRight, Search, Users, Eye, ChevronDown } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Search, Users, Eye, ChevronDown, RotateCcw } from 'lucide-react';
 import { UserProgress, UserProfile, AdminFilters } from '@/types/admin';
+import { ResetProgressDialog } from './ResetProgressDialog';
 
 interface UserTableProps {
   filteredUsers: UserProgress[];
@@ -29,6 +30,7 @@ interface UserTableProps {
   questions: any[];
   fastTrackData: Map<string, boolean>;
   onUserAnalysis: (user: UserProgress, userProfile: UserProfile) => void;
+  onDataRefresh: () => void;
 }
 
 export const UserTable = ({
@@ -43,11 +45,15 @@ export const UserTable = ({
   allResponses,
   questions,
   fastTrackData,
-  onUserAnalysis
+  onUserAnalysis,
+  onDataRefresh
 }: UserTableProps) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortColumn, setSortColumn] = useState<string>('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  const [resetDialogOpen, setResetDialogOpen] = useState(false);
+  const [selectedUserForReset, setSelectedUserForReset] = useState<UserProgress | null>(null);
+  const [selectedUserProfileForReset, setSelectedUserProfileForReset] = useState<UserProfile | null>(null);
   const itemsPerPage = 10;
 
   const handleSort = (column: string) => {
@@ -440,16 +446,32 @@ export const UserTable = ({
                       })()}
                     </div>
                   </TableCell>
-                  <TableCell>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => onUserAnalysis(progress, userProfile)}
-                      className="h-8 w-8 p-0"
-                    >
-                      <Eye className="h-4 w-4" />
-                    </Button>
-                  </TableCell>
+                   <TableCell>
+                     <div className="flex items-center gap-1">
+                       <Button
+                         variant="outline"
+                         size="sm"
+                         onClick={() => onUserAnalysis(progress, userProfile)}
+                         className="h-8 w-8 p-0"
+                         title="Analisar usuário"
+                       >
+                         <Eye className="h-4 w-4" />
+                       </Button>
+                       <Button
+                         variant="outline"
+                         size="sm"
+                         onClick={() => {
+                           setSelectedUserForReset(progress);
+                           setSelectedUserProfileForReset(userProfile || null);
+                           setResetDialogOpen(true);
+                         }}
+                         className="h-8 w-8 p-0 hover:bg-destructive/10 hover:border-destructive/20"
+                         title="Resetar progresso"
+                       >
+                         <RotateCcw className="h-4 w-4 text-destructive" />
+                       </Button>
+                     </div>
+                   </TableCell>
                 </TableRow>
               );
             })}
@@ -496,6 +518,21 @@ export const UserTable = ({
           </div>
         </div>
       )}
+
+      {/* Dialog de Reset */}
+      <ResetProgressDialog
+        isOpen={resetDialogOpen}
+        onClose={() => {
+          setResetDialogOpen(false);
+          setSelectedUserForReset(null);
+          setSelectedUserProfileForReset(null);
+        }}
+        user={selectedUserForReset}
+        userProfile={selectedUserProfileForReset}
+        onResetSuccess={() => {
+          onDataRefresh();
+        }}
+      />
     </div>
   );
 };

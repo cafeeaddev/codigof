@@ -659,6 +659,10 @@ export type Database = {
         Args: { cpf_value: string }
         Returns: string
       }
+      reset_user_progress: {
+        Args: { _target_user_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
       app_role: "admin" | "user"
