@@ -110,16 +110,20 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
           .update({ current_position: 'extra_mission_declined' })
           .eq('user_id', user.id);
           
-        // Mostrar tela de decline PRIMEIRO antes de voltar
+        console.log('📱 [Mobile Fix] Decline selected - forcing state update');
+        
+        // 🔥 FORÇA IMEDIATA no mobile: atualizar estado sem dependências
         setShowDeclineMessage(true);
         onDeclineShown?.(true);
         
-        // 📱 CORREÇÃO MOBILE: Usar setTimeout para dar tempo ao estado atualizar
-        console.log('📱 [Mobile Fix] Setting timeout for mobile state refresh...');
-        setTimeout(() => {
-          console.log('📱 [Mobile Fix] Triggering state refresh after UI update');
-          onResponseSubmitted?.();
-        }, 100); // Pequeno delay para permitir que a UI atualize primeiro
+        // Força refresh no mobile se necessário
+        const isMobile = window.innerWidth <= 768;
+        if (isMobile) {
+          console.log('📱 [Mobile Fix] Forcing page refresh for mobile...');
+          setTimeout(() => {
+            window.location.reload();
+          }, 50);
+        }
       } else {
         // Show FastTrack form instead of going back
         setShowFastTrackForm(true);
@@ -277,8 +281,10 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
   if (showDeclineMessage) {
     return (
       <div className="w-full h-screen relative flex flex-col">
-        <div className="flex-1 h-full overflow-y-auto overflow-x-hidden">
-          <div className="p-4 md:p-6 min-h-full">
+        <div className="flex-1 overflow-y-auto overflow-x-hidden">
+          <div className="p-4 md:p-6 pb-safe-area space-y-6">
+            {/* 🔥 Conteúdo extra para forçar scroll em telas pequenas */}
+            <div className="h-4 opacity-0" aria-hidden="true"></div>
             <div className="mb-8">
               <div className="relative overflow-hidden animate-epic-entry bg-background/95 backdrop-blur-sm border-2 border-cyan-400/30 bg-gradient-to-br from-cyan-500/10 to-purple-600/10 rounded-xl">
                 <div className="relative p-4 md:p-6 lg:p-8">
@@ -324,31 +330,35 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
                                Seguimos juntos e nos encontraremos em uma próxima jornada digital!
                              </p>
                              
-                             {/* Botão logo após o texto */}
-                             <div className="pt-6">
-                               <Button 
-                                 onClick={() => {
-                                   console.log("🔥 [ExtraMissionContent] User clicked Voltar - going back to main screen");
-                                   onResponseSubmitted?.();
-                                   onBack();
-                                 }}
-                                 className="w-full bg-cyan-500 hover:bg-cyan-600 text-black font-semibold px-8 py-3 rounded-lg transition-all duration-300 min-h-[48px] text-base"
-                               >
-                                 Ver Resultados Finais
-                               </Button>
-                             </div>
-                           </div>
-                         </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div>
+                              {/* Botão logo após o texto */}
+                              <div className="pt-6">
+                                <Button 
+                                  onClick={() => {
+                                    console.log("🔥 [ExtraMissionContent] User clicked Voltar - going back to main screen");
+                                    onResponseSubmitted?.();
+                                    onBack();
+                                  }}
+                                  className="w-full bg-cyan-500 hover:bg-cyan-600 text-black font-semibold px-8 py-3 rounded-lg transition-all duration-300 min-h-[48px] text-base"
+                                >
+                                  Ver Resultados Finais
+                                </Button>
+                              </div>
+                            </div>
+                          </div>
+                       </div>
+                     </div>
+                   </div>
+                 </div>
+               </div>
+             </div>
+             
+             {/* 🔥 Espaçamento extra para garantir scroll no mobile */}
+             <div className="h-48 opacity-0" aria-hidden="true"></div>
+             <div className="h-48 opacity-0" aria-hidden="true"></div>
+             <div className="h-48 opacity-0" aria-hidden="true"></div>
+           </div>
+         </div>
+       </div>
     );
   }
 
