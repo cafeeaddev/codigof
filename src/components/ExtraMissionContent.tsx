@@ -271,9 +271,9 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
   // Show decline message screen
   if (showDeclineMessage) {
     return (
-      <div className="w-full h-full min-h-screen max-h-screen relative flex flex-col">
-        <div className="flex-1 overflow-y-auto overflow-x-hidden h-full">
-          <div className="p-4 md:p-6">
+      <div className="w-full min-h-screen relative flex flex-col">
+        <div className="flex-1 overflow-x-hidden">
+          <div className="p-4 md:p-6 max-h-screen overflow-y-auto">
             <div className="mb-8">
               <div className="relative overflow-hidden animate-epic-entry bg-background/95 backdrop-blur-sm border-2 border-cyan-400/30 bg-gradient-to-br from-cyan-500/10 to-purple-600/10 rounded-xl">
                 <div className="relative p-4 md:p-6 lg:p-8">
