@@ -1314,6 +1314,9 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
               </div>
             </div>
           </div>
+          
+          {/* Borda de fechamento visual */}
+          <div className="border-t border-secondary/30 bg-gradient-to-r from-transparent via-secondary/20 to-transparent"></div>
 
           {/* Área Principal das Perguntas (mobile apenas) */}
           <div className="md:hidden flex-1 overflow-hidden min-h-0">
