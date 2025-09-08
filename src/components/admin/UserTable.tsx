@@ -10,6 +10,7 @@ import { ChevronLeft, ChevronRight, Search, Users, Eye, ChevronDown, RotateCcw, 
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { UserProgress, UserProfile, AdminFilters } from '@/types/admin';
 import { ResetProgressDialog } from './ResetProgressDialog';
+import { FastTrackDetailsDialog } from './FastTrackDetailsDialog';
 
 interface UserTableProps {
   filteredUsers: UserProgress[];
@@ -30,6 +31,7 @@ interface UserTableProps {
   };
   questions: any[];
   fastTrackData: Map<string, { accepted: boolean; reason?: string }>;
+  fastTrackResponses: Map<string, { interestLevel: string; timeCommitment: string; mainObjective: string; otherObjective?: string }>;
   onUserAnalysis: (user: UserProgress, userProfile: UserProfile) => void;
   onDataRefresh: () => void;
 }
@@ -46,6 +48,7 @@ export const UserTable = ({
   allResponses,
   questions,
   fastTrackData,
+  fastTrackResponses,
   onUserAnalysis,
   onDataRefresh
 }: UserTableProps) => {
@@ -55,6 +58,8 @@ export const UserTable = ({
   const [resetDialogOpen, setResetDialogOpen] = useState(false);
   const [selectedUserForReset, setSelectedUserForReset] = useState<UserProgress | null>(null);
   const [selectedUserProfileForReset, setSelectedUserProfileForReset] = useState<UserProfile | null>(null);
+  const [fastTrackDetailsOpen, setFastTrackDetailsOpen] = useState(false);
+  const [selectedFastTrackUser, setSelectedFastTrackUser] = useState<{ name: string; details: any } | null>(null);
   const itemsPerPage = 10;
 
   const handleSort = (column: string) => {
@@ -421,15 +426,32 @@ export const UserTable = ({
                   </TableCell>
                    <TableCell>
                      <div className="flex items-center gap-1">
-                       {(() => {
-                         const fastTrackInfo = fastTrackData.get(progress.user_id);
-                         if (fastTrackInfo?.accepted === true) {
-                           return (
-                             <>
-                               <span className="text-green-500 font-medium">SIM</span>
-                               <span className="text-xs text-muted-foreground ml-1">Aceitou</span>
-                             </>
-                           );
+                        {(() => {
+                          const fastTrackInfo = fastTrackData.get(progress.user_id);
+                          const fastTrackDetails = fastTrackResponses.get(progress.user_id);
+                          
+                          if (fastTrackInfo?.accepted === true) {
+                            return (
+                              <div className="flex items-center gap-2">
+                                <span className="text-green-500 font-medium">SIM</span>
+                                {fastTrackDetails && (
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => {
+                                      setSelectedFastTrackUser({
+                                        name: userName,
+                                        details: fastTrackDetails
+                                      });
+                                      setFastTrackDetailsOpen(true);
+                                    }}
+                                    className="h-6 px-2 text-xs"
+                                  >
+                                    Ver Detalhes
+                                  </Button>
+                                )}
+                              </div>
+                            );
                           } else if (fastTrackInfo?.accepted === false) {
                             return (
                               <div className="flex items-center gap-1">
@@ -551,6 +573,13 @@ export const UserTable = ({
         onResetSuccess={() => {
           onDataRefresh();
         }}
+      />
+
+      <FastTrackDetailsDialog
+        open={fastTrackDetailsOpen}
+        onOpenChange={setFastTrackDetailsOpen}
+        userName={selectedFastTrackUser?.name || ''}
+        details={selectedFastTrackUser?.details || null}
       />
       </div>
     </TooltipProvider>

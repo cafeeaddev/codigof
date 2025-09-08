@@ -13,6 +13,7 @@ export const useAdminDashboard = () => {
   const [allProfiles, setAllProfiles] = useState<any[]>([]);
   const [totalProfiles, setTotalProfiles] = useState(0);
   const [fastTrackData, setFastTrackData] = useState<Map<string, { accepted: boolean; reason?: string }>>(new Map());
+  const [fastTrackResponses, setFastTrackResponses] = useState<Map<string, { interestLevel: string; timeCommitment: string; mainObjective: string; otherObjective?: string }>>(new Map());
   const [isLoading, setIsLoading] = useState(true);
 
   // Função para calcular pontuação total de um usuário (apenas missões 1, 2 e 3)
@@ -157,7 +158,7 @@ export const useAdminDashboard = () => {
     try {
       setIsLoading(true);
       
-      const [res1, res2, res3, res4, progressData, profilesCount, adminUsers, allProfiles, fastTrackTerms] = await Promise.all([
+      const [res1, res2, res3, res4, progressData, profilesCount, adminUsers, allProfiles, fastTrackTerms, fastTrackDetails] = await Promise.all([
         supabase.from('respostas').select('*').order('id', { ascending: false }),
         supabase.from('respostas_missao2').select('*').order('created_at', { ascending: false }),
         supabase.from('respostas_missao3').select('*').order('created_at', { ascending: false }),
@@ -166,7 +167,8 @@ export const useAdminDashboard = () => {
         supabase.from('profiles').select('id', { count: 'exact', head: true }),
         supabase.from('user_roles').select('user_id').eq('role', 'admin'),
         supabase.from('profiles').select('user_id, nome, email, cargo, area, area_id, areas!profiles_area_id_fkey(*)'),
-        supabase.from('fast_track_terms_responses').select('user_id, want_to_participate, decline_reason')
+        supabase.from('fast_track_terms_responses').select('user_id, want_to_participate, decline_reason'),
+        supabase.from('fast_track_responses').select('user_id, interest_level, time_commitment, main_objective, other_objective')
       ]);
 
       // Define o total de profiles
@@ -284,6 +286,20 @@ export const useAdminDashboard = () => {
       }
       setFastTrackData(fastTrackMap);
 
+      // Processar respostas detalhadas do Fast Track
+      const fastTrackResponsesMap = new Map<string, { interestLevel: string; timeCommitment: string; mainObjective: string; otherObjective?: string }>();
+      if (fastTrackDetails.data) {
+        fastTrackDetails.data.forEach(item => {
+          fastTrackResponsesMap.set(item.user_id, {
+            interestLevel: item.interest_level || '',
+            timeCommitment: item.time_commitment || '',
+            mainObjective: item.main_objective || '',
+            otherObjective: item.other_objective || undefined
+          });
+        });
+      }
+      setFastTrackResponses(fastTrackResponsesMap);
+
       setProgressData({ 
         data: progressData.data || [], 
         userProfiles, 
@@ -324,6 +340,7 @@ export const useAdminDashboard = () => {
     getProfileColor,
     loadAllResponses,
     fastTrackData,
+    fastTrackResponses,
     questions: []
   };
 };
