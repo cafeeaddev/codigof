@@ -342,7 +342,6 @@ export const MissaoQuatro = ({ onComplete }: MissaoQuatroProps) => {
                         htmlFor={`q${currentQuestionData.id}-${option.letter}`}
                         className="text-xs md:text-sm text-foreground cursor-pointer flex-1 leading-relaxed"
                       >
-                        <span className="font-medium mr-2">{option.letter})</span>
                         {option.text}
                       </Label>
                     </div>
