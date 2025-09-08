@@ -1101,57 +1101,49 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                                    : 'bg-blue-400/30' // Estado 1: Bloqueada
                             : isCompleted ? 'bg-primary' : isCurrent ? 'bg-accent' : isLocked ? 'bg-muted-foreground/50' : 'bg-muted'
                         }`}></div>
-                        <span className={`text-sm font-bold tracking-wider ${
-                          isExtraMission 
-                            ? extraMissionState === 'declined'
-                              ? 'text-muted-foreground/50' // Estado 3: Fim de Jogo - mais cinza
-                              : isExtraMissionAvailable 
-                                ? 'text-cyan-300' // Estado 2: Liberada
-                                : extraMissionState === 'completed'
-                                  ? 'text-primary' // Estado 4: Completada
-                                  : 'text-blue-300/60' // Estado 1: Bloqueada
-                            : isCompleted ? 'text-primary' : isCurrent ? 'text-accent' : isLocked ? 'text-muted-foreground/70' : 'text-foreground'
-                        }`}>
-                          {isExtraMission ? 'MISSÃO EXTRA' : `MISSÃO ${missionId}`}
-                        </span>
-                      </div>
-                      
-                       <div className={`text-xs mb-2 font-medium ${
-                         isExtraMission 
-                            ? extraMissionState === 'declined'
-                              ? 'text-muted-foreground/40' // Estado 3: Fim de Jogo - mais cinza
-                              : isExtraMissionAvailable 
-                                ? 'text-blue-300 font-bold' // Estado 2: Liberada
-                                : extraMissionState === 'completed'
-                                  ? 'text-primary/80' // Estado 4: Completada
-                                  : 'text-blue-200/60' // Estado 1: Bloqueada
-                           : isCompleted ? 'text-primary/80' : isCurrent ? 'text-accent/80' : isLocked ? 'text-muted-foreground/60' : 'text-foreground/70'
-                       }`}>
-                        {missionId === 1 && "Como você encara o digital?"}
-                        {missionId === 2 && "O digital no seu dia a dia"}
-                        {missionId === 3 && "Quando o desafio é maior"}
-                        {missionId === 4 && "Seu Radar de Ferramentas"}
-                        {missionId === 5 && extraMissionReleaseDate && (
-                          <span>
-                            {(() => {
-                              if (extraMissionState === 'declined') {
-                                return "Fim de Jogo";
-                              }
-                              
-                              if (extraMissionState === 'completed') {
-                                return "Missão Finalizada com Sucesso";
-                              }
-                              
-                              if (extraMissionState === 'available') {
-                                return "Missão Liberada";
-                              }
-                              
-                              const releaseDate = new Date(extraMissionReleaseDate + 'T00:00:00');
-                              return `Missão Bloqueada Até: ${releaseDate.toLocaleDateString('pt-BR')}`;
-                            })()}
-                          </span>
-                        )}
-                      </div>
+                        <div className={`text-sm font-bold tracking-wider mb-2 ${
+                           isExtraMission 
+                             ? extraMissionState === 'declined'
+                               ? 'text-muted-foreground/50' // Estado 3: Fim de Jogo - mais cinza
+                               : isExtraMissionAvailable 
+                                 ? 'text-cyan-300' // Estado 2: Liberada
+                                 : extraMissionState === 'completed'
+                                   ? 'text-primary' // Estado 4: Completada
+                                   : 'text-blue-300/60' // Estado 1: Bloqueada
+                             : isCompleted ? 'text-primary' : isCurrent ? 'text-accent' : isLocked ? 'text-muted-foreground/70' : 'text-foreground'
+                         }`}>
+                           {/* Combinar nome e título da missão */}
+                           {isExtraMission ? (
+                             <span>
+                               MISSÃO EXTRA: {extraMissionReleaseDate && (() => {
+                                 if (extraMissionState === 'declined') {
+                                   return "Fim de Jogo";
+                                 }
+                                 if (extraMissionState === 'completed') {
+                                   return "Missão Finalizada com Sucesso";
+                                 }
+                                 if (extraMissionState === 'available') {
+                                   return "Missão Liberada";
+                                 }
+                                 const releaseDate = new Date(extraMissionReleaseDate + 'T00:00:00');
+                                 return `Missão Bloqueada Até: ${releaseDate.toLocaleDateString('pt-BR')}`;
+                               })()}
+                             </span>
+                           ) : (
+                             <span>
+                               MISSÃO {missionId}: {
+                                 missionId === 1 && "Como você encara o digital?"
+                               }{
+                                 missionId === 2 && "O digital no seu dia a dia"
+                               }{
+                                 missionId === 3 && "Quando o desafio é maior"
+                               }{
+                                 missionId === 4 && "Seu Radar de Ferramentas"
+                               }
+                             </span>
+                           )}
+                         </div>
+                       </div>
                       
                        <div className={`text-xs mb-2 ${
                          isExtraMission 
@@ -1336,13 +1328,13 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
           <div className="md:hidden flex-1 overflow-hidden min-h-0">
             <div className="bg-card/90 backdrop-blur-xl rounded-xl border border-secondary/50 p-4 h-full flex flex-col overflow-hidden min-h-0">
               <div className="flex items-center gap-2 mb-4 p-2 bg-muted/50 rounded-lg">
-                <span className="text-accent text-sm font-bold tracking-wider">
-                  {currentMission === 1 && "MISSÃO 1 – Como você encara o digital?"}
-                  {currentMission === 2 && "MISSÃO 2 – O digital no seu dia a dia"}
-                  {currentMission === 3 && "MISSÃO 3 – Quando o desafio é maior"}
-                  {currentMission === 4 && "MISSÃO 4 – Seu Radar de Ferramentas"}
-                  {currentMission === 5 && "MISSÃO EXTRA – Aliança Digital"}
-                </span>
+                 <span className="text-accent text-sm font-bold tracking-wider">
+                   {currentMission === 1 && "MISSÃO 1: Como você encara o digital?"}
+                   {currentMission === 2 && "MISSÃO 2: O digital no seu dia a dia"}
+                   {currentMission === 3 && "MISSÃO 3: Quando o desafio é maior"}
+                   {currentMission === 4 && "MISSÃO 4: Seu Radar de Ferramentas"}
+                   {currentMission === 5 && "MISSÃO EXTRA: Aliança Digital"}
+                 </span>
               </div>
 
               <ScrollArea className="flex-1">
