@@ -1280,7 +1280,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                           setExtraMissionRefreshTrigger(prev => prev + 1);
                         }}
                       />
-                    ) : showGameSummary || (completedMissions.size === 4 && gameData) ? (
+                    ) : showGameSummary || (completedMissions.size === 4 && gameData) || (extraMissionState === 'completed') || (extraMissionState === 'declined') ? (
                        <GameSummaryContent gameData={gameData} userId={userId} onXpUpdate={handleXpUpdate} extraMissionRefreshTrigger={extraMissionRefreshTrigger} />
                     ) : completedMissions.size === 4 ? (
                       <div className="h-full flex flex-col items-center justify-center space-y-4">
@@ -1395,7 +1395,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                         </p>
                       </div>
                     </div>
-                  ) : showGameSummary || (completedMissions.size === 4 && gameData) ? (
+                  ) : showGameSummary || (completedMissions.size === 4 && gameData) || (extraMissionState === 'completed') || (extraMissionState === 'declined') ? (
                     <GameSummaryContent gameData={gameData} userId={userId} onXpUpdate={handleXpUpdate} extraMissionRefreshTrigger={extraMissionRefreshTrigger} />
                   ) : completedMissions.size === 4 ? (
                     <div className="h-full flex flex-col items-center justify-center space-y-4">
