@@ -12,7 +12,7 @@ export const useAdminDashboard = () => {
   const [adminUsers, setAdminUsers] = useState<{ data: any[] } | null>(null);
   const [allProfiles, setAllProfiles] = useState<any[]>([]);
   const [totalProfiles, setTotalProfiles] = useState(0);
-  const [fastTrackData, setFastTrackData] = useState<Map<string, boolean>>(new Map());
+  const [fastTrackData, setFastTrackData] = useState<Map<string, { accepted: boolean; reason?: string }>>(new Map());
   const [isLoading, setIsLoading] = useState(true);
 
   // Função para calcular pontuação total de um usuário (apenas missões 1, 2 e 3)
@@ -166,7 +166,7 @@ export const useAdminDashboard = () => {
         supabase.from('profiles').select('id', { count: 'exact', head: true }),
         supabase.from('user_roles').select('user_id').eq('role', 'admin'),
         supabase.from('profiles').select('user_id, nome, email, cargo, area, area_id, areas!profiles_area_id_fkey(*)'),
-        supabase.from('fast_track_terms_responses').select('user_id, want_to_participate')
+        supabase.from('fast_track_terms_responses').select('user_id, want_to_participate, decline_reason')
       ]);
 
       // Define o total de profiles
@@ -273,10 +273,13 @@ export const useAdminDashboard = () => {
 
       
       // Processar dados da missão extra (Fast Track)
-      const fastTrackMap = new Map<string, boolean>();
+      const fastTrackMap = new Map<string, { accepted: boolean; reason?: string }>();
       if (fastTrackTerms.data) {
         fastTrackTerms.data.forEach(item => {
-          fastTrackMap.set(item.user_id, item.want_to_participate || false);
+          fastTrackMap.set(item.user_id, {
+            accepted: item.want_to_participate || false,
+            reason: item.decline_reason || undefined
+          });
         });
       }
       setFastTrackData(fastTrackMap);

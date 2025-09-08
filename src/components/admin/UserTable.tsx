@@ -6,7 +6,8 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { ChevronLeft, ChevronRight, Search, Users, Eye, ChevronDown, RotateCcw } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Search, Users, Eye, ChevronDown, RotateCcw, Info } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { UserProgress, UserProfile, AdminFilters } from '@/types/admin';
 import { ResetProgressDialog } from './ResetProgressDialog';
 
@@ -28,7 +29,7 @@ interface UserTableProps {
     missao4: any[];
   };
   questions: any[];
-  fastTrackData: Map<string, boolean>;
+  fastTrackData: Map<string, { accepted: boolean; reason?: string }>;
   onUserAnalysis: (user: UserProgress, userProfile: UserProfile) => void;
   onDataRefresh: () => void;
 }
@@ -189,8 +190,9 @@ export const UserTable = ({
   };
 
   return (
-    <div className="space-y-6 animate-fade-in">
-      <ProfileLegend />
+    <TooltipProvider>
+      <div className="space-y-6 animate-fade-in">
+        <ProfileLegend />
       {/* Filtros */}
       <div className="flex flex-wrap gap-4 items-center">
         <div className="flex-1 min-w-64">
@@ -417,35 +419,45 @@ export const UserTable = ({
                       </span>
                     </div>
                   </TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-1">
-                      {(() => {
-                        const accepted = fastTrackData.get(progress.user_id);
-                        if (accepted === true) {
-                          return (
-                            <>
-                              <span className="text-green-500 font-medium">SIM</span>
-                              <span className="text-xs text-muted-foreground ml-1">Aceitou</span>
-                            </>
-                          );
-                        } else if (accepted === false) {
-                          return (
-                            <>
-                              <span className="text-red-500 font-medium">NÃO</span>
-                              <span className="text-xs text-muted-foreground ml-1">Recusou</span>
-                            </>
-                          );
-                        } else {
-                          return (
-                            <>
-                              <span className="text-gray-500">-</span>
-                              <span className="text-xs text-muted-foreground ml-1">Não respondeu</span>
-                            </>
-                          );
-                        }
-                      })()}
-                    </div>
-                  </TableCell>
+                   <TableCell>
+                     <div className="flex items-center gap-1">
+                       {(() => {
+                         const fastTrackInfo = fastTrackData.get(progress.user_id);
+                         if (fastTrackInfo?.accepted === true) {
+                           return (
+                             <>
+                               <span className="text-green-500 font-medium">SIM</span>
+                               <span className="text-xs text-muted-foreground ml-1">Aceitou</span>
+                             </>
+                           );
+                         } else if (fastTrackInfo?.accepted === false) {
+                           return (
+                             <div className="flex items-center gap-1">
+                               <span className="text-red-500 font-medium">NÃO</span>
+                               <span className="text-xs text-muted-foreground ml-1">Recusou</span>
+                               {fastTrackInfo.reason && (
+                                 <Tooltip>
+                                   <TooltipTrigger asChild>
+                                     <Info className="h-3 w-3 text-muted-foreground cursor-help ml-1" />
+                                   </TooltipTrigger>
+                                   <TooltipContent side="top" className="max-w-xs">
+                                     <p className="text-sm">{fastTrackInfo.reason}</p>
+                                   </TooltipContent>
+                                 </Tooltip>
+                               )}
+                             </div>
+                           );
+                         } else {
+                           return (
+                             <>
+                               <span className="text-gray-500">-</span>
+                               <span className="text-xs text-muted-foreground ml-1">Não respondeu</span>
+                             </>
+                           );
+                         }
+                       })()}
+                     </div>
+                   </TableCell>
                    <TableCell>
                      <div className="flex items-center gap-1">
                        <Button
@@ -533,6 +545,7 @@ export const UserTable = ({
           onDataRefresh();
         }}
       />
-    </div>
+      </div>
+    </TooltipProvider>
   );
 };
