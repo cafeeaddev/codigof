@@ -113,8 +113,13 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
         // Mostrar tela de decline PRIMEIRO antes de voltar
         setShowDeclineMessage(true);
         onDeclineShown?.(true);
-        // 🔥 CORREÇÃO: Chamar onResponseSubmitted para forçar refresh do estado
-        onResponseSubmitted?.();
+        
+        // 📱 CORREÇÃO MOBILE: Usar setTimeout para dar tempo ao estado atualizar
+        console.log('📱 [Mobile Fix] Setting timeout for mobile state refresh...');
+        setTimeout(() => {
+          console.log('📱 [Mobile Fix] Triggering state refresh after UI update');
+          onResponseSubmitted?.();
+        }, 100); // Pequeno delay para permitir que a UI atualize primeiro
       } else {
         // Show FastTrack form instead of going back
         setShowFastTrackForm(true);
