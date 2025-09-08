@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUserRole } from '@/hooks/useUserRole';
+import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
@@ -29,6 +30,7 @@ import { ResponseData, UserProgress, UserProfile } from '@/types/admin';
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const { isAdmin, isLoading: roleLoading } = useUserRole();
+  const { signOut } = useAuth();
   
   const [email, setEmail] = useState('cafeead@cafeead.com.br');
   const [password, setPassword] = useState('');
@@ -122,23 +124,12 @@ const AdminDashboard = () => {
 
   const handleLogout = async () => {
     try {
-      const { error } = await supabase.auth.signOut();
-      
-      if (error) {
-        console.error('Logout error:', error);
-        toast({
-          title: "Erro ao sair",
-          description: error.message || "Erro durante logout",
-          variant: "destructive",
-        });
-      } else {
-        toast({
-          title: "Logout realizado",
-          description: "Você foi desconectado com sucesso",
-        });
-        // Reload to update auth status
-        window.location.reload();
-      }
+      await signOut();
+      toast({
+        title: "Logout realizado",
+        description: "Você foi desconectado com sucesso",
+      });
+      navigate('/');
     } catch (error) {
       console.error('Logout error:', error);
       toast({
