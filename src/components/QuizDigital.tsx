@@ -604,7 +604,7 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
         </ScrollArea>
 
         {/* Desktop Fixed Buttons */}
-        <div className="fixed bottom-12 left-0 right-0 bg-background border-t border-border/50 p-4 shadow-[0_-4px_20px_rgba(0,0,0,0.15)]">
+        <div className="fixed bottom-12 left-0 right-0 bg-background p-4 shadow-[0_-4px_20px_rgba(0,0,0,0.15)]">
           <div className="max-w-4xl mx-auto flex justify-between items-center gap-4">
             <Button
               type="button"
