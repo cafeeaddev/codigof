@@ -273,7 +273,7 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
     return (
       <div className="w-full h-full min-h-screen relative flex flex-col">
         <div className="flex-1 overflow-y-auto overflow-x-hidden">
-          <div className="p-4 md:p-6 pb-32 md:pb-6">
+          <div className="p-4 md:p-6 pb-28 md:pb-6">
             <div className="mb-8">
               <div className="relative overflow-hidden animate-epic-entry bg-background/95 backdrop-blur-sm border-2 border-cyan-400/30 bg-gradient-to-br from-cyan-500/10 to-purple-600/10 rounded-xl">
                 <div className="relative p-4 md:p-6 lg:p-8">
@@ -330,7 +330,7 @@ export const ExtraMissionContent = ({ userName, onBack, onDeclineShown, onRespon
         </div>
 
         {/* Botão fixo na parte inferior */}
-        <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50 p-4 pb-safe z-50 md:relative md:bg-transparent md:border-t-0 md:p-6">
+        <div className="fixed bottom-6 left-4 right-4 bg-background/95 backdrop-blur-sm border border-border/50 rounded-lg p-4 z-50 md:relative md:bg-transparent md:border-0 md:rounded-none md:p-6 md:bottom-auto md:left-auto md:right-auto">
           <Button 
             onClick={() => {
               console.log('🔥 [ExtraMissionContent] User clicked Voltar - going back to main screen');
