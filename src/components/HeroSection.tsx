@@ -32,11 +32,11 @@ export const HeroSection = ({ onLoginClick, onContinueClick }: HeroSectionProps)
             className="mb-6 sm:mb-8 lg:mb-12"
           >
             {/* CÓDIGO F - moved here and made larger */}
-            <div className="mb-4 sm:mb-6">
+            <div className="mb-4 sm:mb-6 flex justify-center">
               <img 
                 src="/lovable-uploads/4061b8c5-4567-4621-931f-242fb9214fae.png" 
                 alt="Código F" 
-                className="h-8 sm:h-12 lg:h-16 w-auto"
+                className="h-8 sm:h-12 lg:h-16 w-auto brightness-0 invert"
               />
             </div>
             
