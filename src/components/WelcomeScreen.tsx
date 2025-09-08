@@ -958,6 +958,10 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                       setShowExtraMissionScreen(false);
                       setCurrentMission(4);
                     }}
+                    onDeclineShown={(declined) => {
+                      setIsGameEnded(declined);
+                      setUserDeclinedFastTrack(declined);
+                    }}
                     onResponseSubmitted={() => {
                       setExtraMissionRefreshTrigger(prev => prev + 1);
                       setShowExtraMissionScreen(false);
