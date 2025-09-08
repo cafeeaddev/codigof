@@ -1208,9 +1208,6 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                 );
               })()}
             </div>
-            
-            {/* Borda de fechamento visual das missões */}
-            <div className="mt-6 h-px border-t border-secondary/50 bg-gradient-to-r from-transparent via-secondary/40 to-transparent opacity-80"></div>
 
             {/* Conteúdo da missão no desktop */}
             <div className="flex-1 overflow-hidden min-h-0">
