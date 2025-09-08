@@ -1134,36 +1134,38 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
                          </div>
                        </div>
                       
-                       <div className={`text-xs mb-2 ${
-                         isExtraMission 
-                            ? extraMissionState === 'declined'
-                              ? 'text-muted-foreground/40' // Estado 3: Fim de Jogo - mais cinza
-                              : isExtraMissionAvailable 
-                                ? 'text-cyan-200 font-semibold' // Estado 2: Liberada
-                                : extraMissionState === 'completed'
-                                  ? 'text-primary' // Estado 4: Completada
-                                  : 'text-blue-300/50' // Estado 1: Bloqueada
-                           : isCompleted ? 'text-primary' : isCurrent ? 'text-accent' : 'text-muted-foreground'
-                       }`}>
-                        {isExtraMission ? 'Aliança Digital' : 'Vale 25 XP'}
-                      </div>
-                      
-                      {/* Barra de Progresso */}
-                      <div className="w-full bg-muted/30 rounded-full h-2">
-                         <div
-                           className={`h-2 rounded-full transition-all duration-500 ${
-                             isExtraMission 
-                               ? userDeclinedFastTrack 
-                                 ? 'bg-muted-foreground/30 w-full' // Estado 3: Fim de Jogo
-                                  : isExtraMissionAvailable 
-                                    ? 'bg-gradient-to-r from-blue-400 to-purple-400 w-full shadow-lg shadow-blue-400/50' // Estado 2: Liberada
-                                    : extraMissionState === 'completed'
-                                      ? 'bg-primary w-full' // Estado 4: Completada
-                                      : 'bg-blue-400/30 w-0' // Estado 1: Bloqueada
-                               : isCompleted ? 'bg-primary w-full' : isCurrent ? 'bg-accent w-1/2' : 'bg-muted w-0'
-                           }`}
-                        ></div>
-                      </div>
+                       
+                        {/* Barra de Progresso com XP */}
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex-1 mr-2 bg-muted/30 rounded-full h-2">
+                            <div
+                              className={`h-2 rounded-full transition-all duration-500 ${
+                                isExtraMission 
+                                  ? userDeclinedFastTrack 
+                                    ? 'bg-muted-foreground/30 w-full' // Estado 3: Fim de Jogo
+                                     : isExtraMissionAvailable 
+                                       ? 'bg-gradient-to-r from-blue-400 to-purple-400 w-full shadow-lg shadow-blue-400/50' // Estado 2: Liberada
+                                       : extraMissionState === 'completed'
+                                         ? 'bg-primary w-full' // Estado 4: Completada
+                                         : 'bg-blue-400/30 w-0' // Estado 1: Bloqueada
+                                  : isCompleted ? 'bg-primary w-full' : isCurrent ? 'bg-accent w-1/2' : 'bg-muted w-0'
+                              }`}
+                           ></div>
+                          </div>
+                          <div className={`text-xs font-semibold ${
+                            isExtraMission 
+                               ? extraMissionState === 'declined'
+                                 ? 'text-muted-foreground/40' // Estado 3: Fim de Jogo - mais cinza
+                                 : isExtraMissionAvailable 
+                                   ? 'text-cyan-200' // Estado 2: Liberada
+                                   : extraMissionState === 'completed'
+                                     ? 'text-primary' // Estado 4: Completada
+                                     : 'text-blue-300/50' // Estado 1: Bloqueada
+                              : isCompleted ? 'text-primary' : isCurrent ? 'text-accent' : 'text-muted-foreground'
+                          }`}>
+                           {isExtraMission ? 'Aliança' : '25 XP'}
+                         </div>
+                        </div>
                       
                       {/* Ícone de Check para missões completadas ou Lock para bloqueadas */}
                       {isCompleted ? (
