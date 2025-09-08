@@ -24,7 +24,7 @@ export const VaporwaveScene = memo(({ cameraPosition, cameraFov }: VaporwaveScen
     }
   }, []);
 
-  const [starCount, setStarCount] = useState(1800);
+  const [starCount, setStarCount] = useState(800); // Optimized for concurrent users
 
   if (!webglSupported) {
     return (
@@ -74,7 +74,7 @@ export const VaporwaveScene = memo(({ cameraPosition, cameraFov }: VaporwaveScen
           }
         }}
       >
-        <PerformanceMonitor onDecline={() => setStarCount(1200)} onIncline={() => setStarCount(1800)}>
+        <PerformanceMonitor onDecline={() => setStarCount(400)} onIncline={() => setStarCount(800)}>
           <Suspense
             fallback={
               <Html center>

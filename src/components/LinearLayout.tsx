@@ -14,6 +14,7 @@ import { useInternalScroll } from '@/hooks/useInternalScroll';
 import { WelcomeScreen } from './WelcomeScreen';
 import { useAuth } from '@/contexts/AuthContext';
 import { useGameProgress } from '@/hooks/useGameProgress';
+import { useScalabilityOptimization } from '@/hooks/useScalabilityOptimization';
 import SecretFAQDialog from './SecretFAQDialog';
 const features = [
   {
@@ -45,6 +46,7 @@ export const LinearLayout = () => {
   const [cameraPosition, setCameraPosition] = useState<[number, number, number]>([0, 1, -8]);
   const [cameraFov, setCameraFov] = useState(65);
   const { user, profile, isLoading, signOut } = useAuth();
+  const { starCount, isOptimized, status } = useScalabilityOptimization();
   
   console.log('[LinearLayout] Auth state:', { 
     user: user ? { id: user.id, email: user.email } : undefined, 
@@ -53,6 +55,11 @@ export const LinearLayout = () => {
     userExists: !!user,
     profileExists: !!profile 
   });
+  
+  // Log escalabilidade quando necessário
+  if (isOptimized) {
+    console.info(`[LinearLayout] Modo otimizado ativo - ${starCount} estrelas, status: ${status}`);
+  }
   
   // Only initialize game progress when user is fully authenticated
   const gameProgressEnabled = !isLoading && !!user?.id;

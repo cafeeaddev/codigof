@@ -13,7 +13,7 @@ interface GameProgress {
 
 const MAX_SESSION_TIME = 8 * 60 * 60; // 8 hours in seconds
 const INACTIVITY_TIMEOUT = 5 * 60 * 1000; // 5 minutes in milliseconds
-const AUTO_SAVE_INTERVAL = 60 * 1000; // 1 minute in milliseconds
+const AUTO_SAVE_INTERVAL = 300 * 1000; // 5 minutes in milliseconds for better scalability
 
 export const useGameProgress = () => {
   const { user } = useAuth();
@@ -193,8 +193,8 @@ export const useGameProgress = () => {
     
     const currentPosition = position || progress.currentPosition;
 
-    // Throttle saves to avoid too frequent database updates (max every 30 seconds unless forced)
-    if (!forceUpdate && !hasUnsavedChangesRef.current && now - lastSaveTimeRef.current < 30000) {
+    // Throttle saves to avoid too frequent database updates (max every 2 minutes unless forced)
+    if (!forceUpdate && !hasUnsavedChangesRef.current && now - lastSaveTimeRef.current < 120000) {
       console.log('[useGameProgress] Save throttled - no changes or too recent');
       return;
     }
