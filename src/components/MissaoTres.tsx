@@ -274,14 +274,15 @@ export const MissaoTres = ({ onComplete }: MissaoTresProps) => {
 
       {/* Fixed Navigation Buttons */}
       <div 
-        className="fixed bottom-0 left-0 right-0 bg-background border-t-2 border-primary/30 z-[100]"
+        className="fixed bottom-0 left-0 right-0 bg-background border-t-2 border-primary/30 z-[100] pb-safe"
         style={{ 
-          minHeight: '90px',
-          paddingBottom: 'max(env(safe-area-inset-bottom, 0px), 20px)',
+          minHeight: '100px',
+          paddingBottom: 'max(env(safe-area-inset-bottom, 0px), 24px)',
+          marginBottom: '0px',
           boxShadow: '0 -10px 30px rgba(0,0,0,0.3)'
         }}
       >
-        <div className="max-w-4xl mx-auto flex justify-between items-center gap-4 px-4 py-4 h-full">
+        <div className="max-w-4xl mx-auto flex justify-between items-center gap-4 px-4 py-5 h-full">
           <Button
             variant="outline"
             onClick={goToPreviousQuestion}
