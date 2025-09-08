@@ -649,8 +649,6 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
             )}
           </div>
           
-          {/* Borda de fechamento visual para desktop */}
-          <div className="mt-6 h-[2px] border-t-2 border-secondary shadow-[0_0_8px_hsl(var(--secondary))] bg-gradient-to-r from-transparent via-secondary to-transparent opacity-100"></div>
         </div>
       </div>
     </>
