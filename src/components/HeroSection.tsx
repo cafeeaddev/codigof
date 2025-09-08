@@ -36,7 +36,10 @@ export const HeroSection = ({ onLoginClick, onContinueClick }: HeroSectionProps)
               <img 
                 src="/lovable-uploads/4094ece8-3dbc-41a2-9f05-8c5c04ecac23.png" 
                 alt="Código F" 
-                className="h-8 sm:h-12 lg:h-16 w-auto"
+                className="h-8 sm:h-12 lg:h-16 w-auto brightness-0 invert"
+                style={{
+                  filter: 'brightness(0) invert(1) hue-rotate(300deg) saturate(2) brightness(1.2)'
+                }}
               />
             </div>
             
