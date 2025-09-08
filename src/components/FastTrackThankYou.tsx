@@ -8,9 +8,11 @@ interface FastTrackThankYouProps {
 
 export const FastTrackThankYou = ({ userName, onBack, onResponseSubmitted }: FastTrackThankYouProps) => {
   return (
-    <div className="h-full flex flex-col bg-background overflow-hidden">
-      <ScrollArea className="flex-1">
-        <div className="p-4 md:p-6 pb-[calc(100px+env(safe-area-inset-bottom,0px))]">
+    <div className="w-full h-screen relative flex flex-col">
+      <div className="flex-1 overflow-y-auto overflow-x-hidden">
+        <div className="p-4 md:p-6 pb-safe-area space-y-6">
+          {/* 🔥 Conteúdo extra para forçar scroll em telas pequenas */}
+          <div className="h-4 opacity-0" aria-hidden="true"></div>
           <div className="mb-4 md:mb-8">
             <div className="relative overflow-hidden animate-epic-entry bg-background/95 backdrop-blur-sm border-2 border-cyan-400/30 bg-gradient-to-br from-cyan-500/10 to-purple-600/10 rounded-xl">
               <div className="relative p-4 md:p-6 lg:p-8">
@@ -68,8 +70,13 @@ export const FastTrackThankYou = ({ userName, onBack, onResponseSubmitted }: Fas
               </div>
             </div>
           </div>
+          
+          {/* 🔥 Espaçamento extra para garantir scroll no mobile */}
+          <div className="h-48 opacity-0" aria-hidden="true"></div>
+          <div className="h-48 opacity-0" aria-hidden="true"></div>
+          <div className="h-48 opacity-0" aria-hidden="true"></div>
         </div>
-      </ScrollArea>
+      </div>
 
       {/* Botões fixos na parte inferior */}
       <div className="bg-background border-t p-4 safe-area-inset-bottom">

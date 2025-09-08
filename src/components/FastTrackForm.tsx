@@ -87,9 +87,22 @@ export const FastTrackForm = ({ userName, onComplete, onResponseSubmitted }: Fas
         description: "Você está prestes a conquistar o universo. Mestre do cosmos!",
       });
       
-      // Mostra tela FastTrackThankYou ANTES do refresh
+      console.log('📱 [Mobile Fix] Fast Track form submitted - forcing state update');
+      
+      // 🔥 FORÇA IMEDIATA no mobile: mostrar tela de obrigado primeiro
       onComplete();
-      onResponseSubmitted?.();
+      
+      // Força refresh no mobile se necessário 
+      const isMobile = window.innerWidth <= 768;
+      if (isMobile) {
+        console.log('📱 [Mobile Fix] Forcing page refresh for mobile after Fast Track form...');
+        setTimeout(() => {
+          onResponseSubmitted?.();
+          window.location.reload();
+        }, 100);
+      } else {
+        onResponseSubmitted?.();
+      }
     } catch (error) {
       console.error('Erro ao salvar respostas:', error);
       toast({
