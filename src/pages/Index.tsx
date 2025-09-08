@@ -3,7 +3,7 @@ import { LinearLayout } from '@/components/LinearLayout';
 
 const Index = () => {
   useEffect(() => {
-    document.title = 'Jogo Digital - Missões e XP | Guia Interativo';
+    document.title = 'Código F - Scanner Digital';
     const metaDesc = document.querySelector('meta[name="description"]');
     if (metaDesc) {
       metaDesc.setAttribute('content', 'Descubra seu perfil digital, cumpra 4 missões e ganhe XP e medalhas com a mentora IA.');
