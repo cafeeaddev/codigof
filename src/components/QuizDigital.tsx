@@ -374,7 +374,6 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
                         htmlFor={`q${currentQuestionData.id}-${option.letter}`}
                         className="text-sm text-foreground cursor-pointer flex-1 leading-relaxed"
                       >
-                        <span className="font-semibold mr-2 text-primary">{option.letter})</span>
                         {option.text}
                       </Label>
                     </div>
@@ -483,7 +482,6 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
                         htmlFor={`q${currentQuestionData.id}-${option.letter}`}
                         className="text-sm text-foreground cursor-pointer flex-1 leading-relaxed"
                       >
-                        <span className="font-semibold mr-2 text-primary">{option.letter})</span>
                         {option.text}
                       </Label>
                     </div>
@@ -592,7 +590,6 @@ export const QuizDigital = ({ onClose, userId }: QuizDigitalProps) => {
                         htmlFor={`q${currentQuestionData.id}-${option.letter}`}
                         className="text-sm text-foreground cursor-pointer flex-1 leading-relaxed"
                       >
-                        <span className="font-semibold mr-2 text-primary">{option.letter})</span>
                         {option.text}
                       </Label>
                     </div>
