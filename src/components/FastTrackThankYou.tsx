@@ -48,58 +48,56 @@ export const FastTrackThankYou = ({ userName, onBack, onResponseSubmitted }: Fas
                           background: 'linear-gradient(45deg, hsl(var(--primary))20, transparent, hsl(var(--primary))20)' 
                         }}
                       />
-                      <div className="relative text-foreground/90 leading-relaxed p-4 md:p-6 rounded-lg border border-border/50 bg-background/30 text-center">
-                        <div className="space-y-4">
-                          <h3 className="text-xl md:text-3xl font-bold text-cyan-300">🎉 Parabéns por se inscrever no Fast Track!</h3>
-                          <div className="space-y-4">
-                            <p className="text-sm md:text-lg">
-                              Sua jornada de aceleração está apenas começando. Nos próximos dias, você receberá todas as informações sobre o programa.
-                            </p>
-                            <p className="text-sm md:text-lg">
-                              Enquanto isso, conheça o Espaço de Tecnologia da UM, um ambiente 100% dedicado aos treinamentos de tecnologia.
-                            </p>
-                            <p className="text-sm md:text-lg">
-                              A Cody vai guiá-lo(a) em um tour virtual pela plataforma, mostrando tudo que você pode explorar e aproveitar.
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          {/* 🔥 Espaçamento extra para garantir scroll no mobile */}
-          <div className="h-48 opacity-0" aria-hidden="true"></div>
-          <div className="h-48 opacity-0" aria-hidden="true"></div>
-          <div className="h-48 opacity-0" aria-hidden="true"></div>
-        </div>
-      </div>
-
-      {/* Botões fixos na parte inferior */}
-      <div className="bg-background border-t p-4 safe-area-inset-bottom">
-        <div className="flex flex-col gap-3">
-          <button
-            onClick={() => {
-              onResponseSubmitted?.();
-              onBack();
-            }}
-            className="w-full px-8 py-3 bg-cyan-500 hover:bg-cyan-600 text-black rounded-lg font-medium transition-colors min-h-[48px] text-base"
-          >
-            Ver Resultados Finais
-          </button>
-          <a
-            href="https://mazars.cafeead.com.br/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-full inline-block px-8 py-3 bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg font-medium transition-colors text-center min-h-[48px] text-base flex items-center justify-center"
-          >
-            Entrar na UM
-          </a>
-        </div>
-      </div>
-    </div>
+                       <div className="relative text-foreground/90 leading-relaxed p-4 md:p-6 rounded-lg border border-border/50 bg-background/30 text-center">
+                         <div className="space-y-4">
+                           <h3 className="text-xl md:text-3xl font-bold text-cyan-300">🎉 Parabéns por se inscrever no Fast Track!</h3>
+                           <div className="space-y-4">
+                             <p className="text-sm md:text-lg">
+                               Sua jornada de aceleração está apenas começando. Nos próximos dias, você receberá todas as informações sobre o programa.
+                             </p>
+                             <p className="text-sm md:text-lg">
+                               Enquanto isso, conheça o Espaço de Tecnologia da UM, um ambiente 100% dedicado aos treinamentos de tecnologia.
+                             </p>
+                             <p className="text-sm md:text-lg">
+                               A Cody vai guiá-lo(a) em um tour virtual pela plataforma, mostrando tudo que você pode explorar e aproveitar.
+                             </p>
+                             
+                             {/* Botões dentro do conteúdo */}
+                             <div className="pt-6 space-y-3">
+                               <button
+                                 onClick={() => {
+                                   onResponseSubmitted?.();
+                                   onBack();
+                                 }}
+                                 className="w-full px-8 py-3 bg-cyan-500 hover:bg-cyan-600 text-black rounded-lg font-medium transition-colors min-h-[48px] text-base"
+                               >
+                                 Ver Resultados Finais
+                               </button>
+                               <a
+                                 href="https://mazars.cafeead.com.br/"
+                                 target="_blank"
+                                 rel="noopener noreferrer"
+                                 className="w-full inline-block px-8 py-3 bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg font-medium transition-colors text-center min-h-[48px] text-base flex items-center justify-center"
+                               >
+                                 Entrar na UM
+                               </a>
+                             </div>
+                           </div>
+                         </div>
+                       </div>
+                     </div>
+                   </div>
+                 </div>
+               </div>
+             </div>
+           </div>
+           
+           {/* 🔥 Espaçamento extra para garantir scroll no mobile */}
+           <div className="h-48 opacity-0" aria-hidden="true"></div>
+           <div className="h-48 opacity-0" aria-hidden="true"></div>
+           <div className="h-48 opacity-0" aria-hidden="true"></div>
+         </div>
+       </div>
+     </div>
   );
 };
