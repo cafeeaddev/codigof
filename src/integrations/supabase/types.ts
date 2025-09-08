@@ -359,24 +359,30 @@ export type Database = {
       }
       respostas: {
         Row: {
-          email: string | null
-          id: number
+          created_at: string
+          email: string
+          id: string
           nome: string
-          respostas: Json | null
+          respostas: Json
+          updated_at: string
           user_id: string | null
         }
         Insert: {
-          email?: string | null
-          id?: number
+          created_at?: string
+          email: string
+          id?: string
           nome: string
-          respostas?: Json | null
+          respostas?: Json
+          updated_at?: string
           user_id?: string | null
         }
         Update: {
-          email?: string | null
-          id?: number
+          created_at?: string
+          email?: string
+          id?: string
           nome?: string
-          respostas?: Json | null
+          respostas?: Json
+          updated_at?: string
           user_id?: string | null
         }
         Relationships: []
