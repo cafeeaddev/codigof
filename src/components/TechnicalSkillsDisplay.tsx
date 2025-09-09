@@ -114,11 +114,11 @@ export const TechnicalSkillsDisplay = ({ userId }: TechnicalSkillsDisplayProps) 
 
   const getRatingColor = (rating: number) => {
     const colors = {
-      5: 'bg-gradient-to-r from-neon-purple to-primary text-white',
+      5: 'bg-gradient-to-r from-purple-500 to-primary text-white',
       4: 'bg-gradient-to-r from-primary to-accent text-white',
       3: 'bg-gradient-to-r from-accent to-secondary text-white',
-      2: 'bg-gradient-to-r from-secondary to-neon-cyan text-white',
-      1: 'bg-gradient-to-r from-neon-cyan to-secondary text-white'
+      2: 'bg-gradient-to-r from-secondary to-cyan-400 text-white',
+      1: 'bg-gradient-to-r from-cyan-400 to-secondary text-white'
     };
     return colors[rating as keyof typeof colors];
   };
