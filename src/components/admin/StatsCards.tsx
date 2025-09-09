@@ -1,8 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Users, Target, Trophy, TrendingUp, Award, Brain } from 'lucide-react';
 import { AdminStats, MissionStats } from '@/types/admin';
-import { ScalabilityDashboard } from './ScalabilityDashboard';
-import { ScalabilityReport } from './ScalabilityReport';
 
 interface StatsCardsProps {
   adminStats: AdminStats;
@@ -12,11 +10,6 @@ interface StatsCardsProps {
 export const StatsCards = ({ adminStats, missionStats }: StatsCardsProps) => {
   return (
     <>
-      {/* Monitor de Escalabilidade */}
-      <ScalabilityDashboard />
-      
-      {/* Relatório de Preparação */}
-      <ScalabilityReport />
       {/* Resumo Geral */}
       <Card className="mb-6 animate-fade-in">
         <CardHeader>
