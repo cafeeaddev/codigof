@@ -1,8 +1,15 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 
 const FixedBrandLogos: React.FC = () => {
-  if (typeof document === 'undefined') return null;
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (typeof document === 'undefined' || !mounted) return null;
+  
   const content = (
     <aside
       aria-label="Logos institucionais"
