@@ -69,6 +69,7 @@ export default function CodyPresentation() {
   const [currentSegment, setCurrentSegment] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
   const [codyVideoUrl, setCodyVideoUrl] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -93,15 +94,20 @@ export default function CodyPresentation() {
     }
   }, []);
 
-  // Auto-start presentation
-  useEffect(() => {
-    if (codyVideoUrl && !hasStarted) {
-      const timer = setTimeout(() => {
-        startPresentation();
-      }, 1000);
-      return () => clearTimeout(timer);
+  const startPresentation = async () => {
+    try {
+      // Ativar narrator com interação do usuário
+      await narrator.activate();
+      setIsInitialized(true);
+      setHasStarted(true);
+      playSegment(0);
+    } catch (error) {
+      console.log('Narrator activation failed, continuing with visual-only presentation');
+      setIsInitialized(true);
+      setHasStarted(true);
+      playSegmentVisual(0);
     }
-  }, [codyVideoUrl, hasStarted]);
+  };
 
   const playSegment = async (segmentIndex: number) => {
     if (narrator.isSpeaking()) {
@@ -110,7 +116,6 @@ export default function CodyPresentation() {
 
     setCurrentSegment(segmentIndex);
     setIsPlaying(true);
-    setHasStarted(true);
 
     if (videoRef.current) {
       videoRef.current.play();
@@ -118,7 +123,46 @@ export default function CodyPresentation() {
 
     const segment = narrativeSegments[segmentIndex];
     
-    await narrator.speak(segment.text, () => {
+    try {
+      await narrator.speak(segment.text, () => {
+        setIsPlaying(false);
+        if (videoRef.current) {
+          videoRef.current.pause();
+        }
+        
+        // Auto-advance to next segment
+        if (segmentIndex < narrativeSegments.length - 1) {
+          setTimeout(() => {
+            playSegment(segmentIndex + 1);
+          }, 1000);
+        } else {
+          // Restart presentation after completion
+          setTimeout(() => {
+            setHasStarted(false);
+            setCurrentSegment(0);
+            setIsPlaying(false);
+            setIsInitialized(false);
+          }, 3000);
+        }
+      });
+    } catch (error) {
+      console.log('Narrator failed, falling back to visual-only');
+      playSegmentVisual(segmentIndex);
+    }
+  };
+
+  const playSegmentVisual = (segmentIndex: number) => {
+    setCurrentSegment(segmentIndex);
+    setIsPlaying(true);
+
+    if (videoRef.current) {
+      videoRef.current.play();
+    }
+
+    // Timer baseado na duração estimada do texto (sem áudio)
+    const estimatedDuration = Math.max(5000, narrativeSegments[segmentIndex].text.length * 50);
+    
+    setTimeout(() => {
       setIsPlaying(false);
       if (videoRef.current) {
         videoRef.current.pause();
@@ -127,7 +171,7 @@ export default function CodyPresentation() {
       // Auto-advance to next segment
       if (segmentIndex < narrativeSegments.length - 1) {
         setTimeout(() => {
-          playSegment(segmentIndex + 1);
+          playSegmentVisual(segmentIndex + 1);
         }, 1000);
       } else {
         // Restart presentation after completion
@@ -135,14 +179,10 @@ export default function CodyPresentation() {
           setHasStarted(false);
           setCurrentSegment(0);
           setIsPlaying(false);
+          setIsInitialized(false);
         }, 3000);
       }
-    });
-  };
-
-
-  const startPresentation = () => {
-    playSegment(0);
+    }, estimatedDuration);
   };
 
   const calculateProgress = () => {
@@ -199,6 +239,31 @@ export default function CodyPresentation() {
         <div className="absolute inset-0 z-5">
           {getVisualElements()}
         </div>
+
+        {/* Tela de Inicialização */}
+        {!isInitialized && (
+          <div className="absolute inset-0 z-30 flex items-center justify-center bg-background/90 backdrop-blur-sm">
+            <div className="text-center space-y-8 max-w-md mx-8">
+              <div className="space-y-4">
+                <h1 className="text-4xl font-bold text-primary animate-fade-in">
+                  Apresentação Cody
+                </h1>
+                <p className="text-lg text-foreground/80 animate-fade-in">
+                  Embarque em uma jornada de transformação digital
+                </p>
+              </div>
+              
+              <Button 
+                onClick={startPresentation}
+                size="lg"
+                className="relative overflow-hidden group bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 transform hover:scale-105 transition-all duration-300"
+              >
+                <span className="relative z-10 text-lg font-semibold">Iniciar Apresentação</span>
+                <div className="absolute inset-0 bg-gradient-to-r from-accent to-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              </Button>
+            </div>
+          </div>
+        )}
 
         {/* Cody Video - Centralizado */}
         <div className="absolute inset-0 z-10 flex items-center justify-center">
