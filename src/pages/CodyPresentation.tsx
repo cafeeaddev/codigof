@@ -1,8 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { Play, Pause, SkipBack, SkipForward, Home, Volume2 } from 'lucide-react';
+import { Home } from 'lucide-react';
 import { VaporwaveScene } from '@/components/VaporwaveScene';
 import { narrator } from '@/utils/tutorialNarrator';
 import { useNavigate } from 'react-router-dom';
@@ -69,8 +68,8 @@ export default function CodyPresentation() {
   const navigate = useNavigate();
   const [currentSegment, setCurrentSegment] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [progress, setProgress] = useState(0);
   const [hasStarted, setHasStarted] = useState(false);
+  const [codyVideoUrl, setCodyVideoUrl] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -79,6 +78,30 @@ export default function CodyPresentation() {
       narrator.stop();
     };
   }, []);
+
+  // Carregar vídeo da Cody dinamicamente (igual ao game)
+  useEffect(() => {
+    try {
+      const url = localStorage.getItem('codyAvatarUrl');
+      if (url) {
+        setCodyVideoUrl(url);
+      } else {
+        setCodyVideoUrl('https://meta.cafeeadhost.com.br/Cody/hero-animation.mp4');
+      }
+    } catch {
+      setCodyVideoUrl('https://meta.cafeeadhost.com.br/Cody/hero-animation.mp4');
+    }
+  }, []);
+
+  // Auto-start presentation
+  useEffect(() => {
+    if (codyVideoUrl && !hasStarted) {
+      const timer = setTimeout(() => {
+        startPresentation();
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [codyVideoUrl, hasStarted]);
 
   const playSegment = async (segmentIndex: number) => {
     if (narrator.isSpeaking()) {
@@ -106,40 +129,24 @@ export default function CodyPresentation() {
         setTimeout(() => {
           playSegment(segmentIndex + 1);
         }, 1000);
+      } else {
+        // Restart presentation after completion
+        setTimeout(() => {
+          setHasStarted(false);
+          setCurrentSegment(0);
+          setIsPlaying(false);
+        }, 3000);
       }
     });
   };
 
-  const togglePlayPause = () => {
-    if (isPlaying) {
-      narrator.stop();
-      setIsPlaying(false);
-      if (videoRef.current) {
-        videoRef.current.pause();
-      }
-    } else {
-      playSegment(currentSegment);
-    }
-  };
-
-  const nextSegment = () => {
-    if (currentSegment < narrativeSegments.length - 1) {
-      playSegment(currentSegment + 1);
-    }
-  };
-
-  const previousSegment = () => {
-    if (currentSegment > 0) {
-      playSegment(currentSegment - 1);
-    }
-  };
 
   const startPresentation = () => {
     playSegment(0);
   };
 
   const calculateProgress = () => {
-    return ((currentSegment + (isPlaying ? 0.5 : 0)) / narrativeSegments.length) * 100;
+    return ((currentSegment + 1) / narrativeSegments.length) * 100;
   };
 
   const getVisualElements = () => {
@@ -193,111 +200,52 @@ export default function CodyPresentation() {
           {getVisualElements()}
         </div>
 
-        {/* Main Content */}
-        <div className="relative z-10 h-full flex flex-col lg:flex-row">
-          {/* Left Side - Cody Video/Image */}
-          <div className="lg:w-1/2 flex items-center justify-center p-6">
-            <div className="relative max-w-md w-full">
-              {/* Video Player */}
-              <div className="relative rounded-xl overflow-hidden border-2 border-primary/30 shadow-2xl">
+        {/* Cody Video - Centralizado */}
+        <div className="absolute inset-0 z-10 flex items-center justify-center">
+          <div className="relative max-w-lg w-full mx-8">
+            <div className="relative rounded-xl overflow-hidden border-2 border-primary/30 shadow-2xl">
+              {codyVideoUrl && (
                 <video
                   ref={videoRef}
                   className="w-full h-auto"
+                  autoPlay
                   loop
                   muted
                   playsInline
                   poster={codyNeonImage}
                 >
-                  <source src="https://meta.cafeeadhost.com.br/Cody/hero-animation.mp4" type="video/mp4" />
+                  <source src={codyVideoUrl} type="video/mp4" />
                   <img src={codyNeonImage} alt="Cody - AI Assistant" className="w-full h-auto" />
                 </video>
-                
-                {/* Glow effect */}
-                <div className="absolute inset-0 -z-10 bg-primary/20 blur-2xl rounded-xl transform scale-110" />
-              </div>
-              
-              {/* Cody Info */}
-              <div className="text-center mt-4">
-                <h2 className="text-2xl font-bold text-primary">Cody</h2>
-                <p className="text-foreground/80">Sua Guia Digital</p>
-              </div>
+              )}
+              <div className="absolute inset-0 -z-10 bg-primary/20 blur-2xl rounded-xl transform scale-110" />
+            </div>
+            
+            <div className="text-center mt-4">
+              <h2 className="text-2xl font-bold text-primary">Cody</h2>
+              <p className="text-foreground/80">Sua Guia Digital</p>
             </div>
           </div>
+        </div>
 
-          {/* Right Side - Content and Controls */}
-          <div className="lg:w-1/2 flex flex-col justify-end p-6 space-y-6">
-            {/* Welcome Card */}
-            {!hasStarted && (
-              <Card className="p-8 bg-background/90 backdrop-blur-sm border border-primary/20">
-                <h1 className="text-3xl font-bold text-primary mb-4">Bem-vindos à Spaceship! 🚀</h1>
-                <p className="text-foreground/80 mb-6">
-                  Embarque conosco em uma jornada extraordinária de transformação digital na Forvis Mazars.
-                </p>
-                <Button onClick={startPresentation} size="lg" className="w-full">
-                  <Play className="w-5 h-5 mr-2" />
-                  Iniciar Apresentação
-                </Button>
-              </Card>
-            )}
-
-            {/* Progress */}
-            {hasStarted && (
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm text-foreground/80">
-                  <span>Segmento {currentSegment + 1} de {narrativeSegments.length}</span>
-                  <span>{narrativeSegments[currentSegment].title}</span>
-                </div>
-                <Progress value={calculateProgress()} className="h-2" />
+        {/* Progress Bar - Topo */}
+        {hasStarted && (
+          <div className="absolute top-0 left-0 right-0 z-20 p-6">
+            <div className="max-w-md mx-auto space-y-2">
+              <div className="text-center text-sm text-foreground/80">
+                <span>{narrativeSegments[currentSegment].title}</span>
               </div>
-            )}
-
-            {/* Controls */}
-            {hasStarted && (
-              <Card className="p-4 bg-background/80 backdrop-blur-sm border border-border">
-                <div className="flex items-center justify-center space-x-4">
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={previousSegment}
-                    disabled={currentSegment === 0}
-                  >
-                    <SkipBack className="w-4 h-4" />
-                  </Button>
-                  
-                  <Button
-                    variant="default"
-                    size="icon"
-                    onClick={togglePlayPause}
-                    className="w-12 h-12"
-                  >
-                    {isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
-                  </Button>
-                  
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={nextSegment}
-                    disabled={currentSegment === narrativeSegments.length - 1}
-                  >
-                    <SkipForward className="w-4 h-4" />
-                  </Button>
-                  
-                  <div className="flex items-center text-foreground/80">
-                    <Volume2 className="w-4 h-4 mr-1" />
-                    <span className="text-xs">Audio ativo</span>
-                  </div>
-                </div>
-              </Card>
-            )}
-
-            {/* Navigation */}
-            <div className="flex justify-center">
-              <Button variant="outline" onClick={() => navigate('/')}>
-                <Home className="w-4 h-4 mr-2" />
-                Voltar ao Início
-              </Button>
+              <Progress value={calculateProgress()} className="h-1 bg-background/50" />
             </div>
           </div>
+        )}
+
+        {/* Botão Voltar - Canto inferior direito */}
+        <div className="absolute bottom-6 right-6 z-20">
+          <Button variant="outline" onClick={() => navigate('/')} className="bg-background/80 backdrop-blur-sm">
+            <Home className="w-4 h-4 mr-2" />
+            Voltar
+          </Button>
         </div>
       </div>
     </>

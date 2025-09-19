@@ -157,69 +157,87 @@ export const CodigoFElements = () => {
 
   return (
     <div className="absolute inset-0 pointer-events-none">
-      {/* Binary Rain Background */}
-      <BinaryRain />
-
-      {/* Matrix-style Grid */}
+      {/* Subtle Matrix Background */}
       <div className="absolute inset-0 opacity-10">
-        <div className="grid grid-cols-12 grid-rows-12 h-full w-full">
-          {Array.from({ length: 144 }).map((_, i) => (
+        <div 
+          className="w-full h-full"
+          style={{
+            backgroundImage: `
+              linear-gradient(90deg, hsl(var(--primary)) 1px, transparent 1px),
+              linear-gradient(hsl(var(--primary)) 1px, transparent 1px)
+            `,
+            backgroundSize: '60px 60px',
+            animation: 'pulse 4s ease-in-out infinite'
+          }}
+        />
+      </div>
+
+      {/* Central Código F Logo */}
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div className="relative animate-fade-in" style={{ animationDuration: '2s' }}>
+          {/* Glow effect */}
+          <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full animate-pulse" />
+          
+          {/* Logo real do Código F */}
+          <img 
+            src="/lovable-uploads/d64d427e-c1fe-4135-8b65-708c8fa4fed0.png" 
+            alt="Código F Logo" 
+            className="w-48 h-48 object-contain relative z-10"
+          />
+          
+          {/* Subtle orbiting dots */}
+          {[...Array(4)].map((_, i) => (
             <div
               key={i}
-              className="border border-accent/30"
+              className="absolute w-1 h-1 bg-primary/60 rounded-full"
               style={{
-                animation: `pulse ${2 + (i % 4)}s infinite`,
-                animationDelay: `${(i % 12) * 0.1}s`
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                animation: `orbit 8s linear infinite`,
+                animationDelay: `${i * 2}s`,
+                transformOrigin: `80px 0px`
               }}
             />
           ))}
         </div>
       </div>
 
-      {/* Code Elements */}
-      {codeElements.map((element, index) => (
-        <CodeElement
-          key={index}
-          icon={element.icon}
-          label={element.label}
-          code={element.code}
-          delay={element.delay}
-          position={element.position}
-        />
-      ))}
-
-      {/* Central F Logo */}
-      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-        <div className="w-20 h-20 bg-accent/20 rounded-full border-2 border-accent flex items-center justify-center animate-pulse">
-          <span className="text-4xl font-bold text-accent">F</span>
+      {/* Floating code snippets */}
+      <div className="absolute top-20 left-20 animate-fade-in opacity-30" style={{ animationDelay: '1s' }}>
+        <div className="text-primary/60 font-mono text-sm">
+          <div>const futuro = () =&gt; &#123;</div>
+          <div>&nbsp;&nbsp;return 'inovação';</div>
+          <div>&#125;;</div>
         </div>
-        
-        {/* Orbiting particles */}
-        {Array.from({ length: 6 }).map((_, i) => (
-          <div
-            key={i}
-            className="absolute w-2 h-2 bg-accent rounded-full"
-            style={{
-              animation: `spin 3s linear infinite`,
-              animationDelay: `${i * 0.5}s`,
-              transformOrigin: '40px 40px',
-              left: '50%',
-              top: '50%',
-              transform: `rotate(${i * 60}deg) translateX(40px)`
-            }}
-          />
-        ))}
+      </div>
+
+      <div className="absolute bottom-20 right-20 animate-fade-in opacity-30" style={{ animationDelay: '1.5s' }}>
+        <div className="text-primary/60 font-mono text-sm">
+          <div>if (conhecimento) &#123;</div>
+          <div>&nbsp;&nbsp;transform();</div>
+          <div>&#125;</div>
+        </div>
       </div>
 
       {/* Title */}
-      <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 text-center">
-        <h3 className="text-2xl font-bold text-accent animate-fade-in">
-          Programa Código F
-        </h3>
-        <p className="text-foreground/80 mt-2 animate-fade-in" style={{ animationDelay: '1s' }}>
-          Inteligência coletiva e inovação
-        </p>
+      <div className="absolute bottom-16 left-0 right-0 text-center animate-fade-in" style={{ animationDelay: '2.5s' }}>
+        <h2 className="text-3xl font-bold text-primary mb-2">Código F</h2>
+        <p className="text-lg text-foreground/70">Desenvolvimento & Inteligência Coletiva</p>
       </div>
+
+      <style dangerouslySetInnerHTML={{
+        __html: `
+          @keyframes orbit {
+            from {
+              transform: translate(-50%, -50%) rotate(0deg) translateX(80px) rotate(0deg);
+            }
+            to {
+              transform: translate(-50%, -50%) rotate(360deg) translateX(80px) rotate(-360deg);
+            }
+          }
+        `
+      }} />
     </div>
   );
 };

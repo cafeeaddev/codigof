@@ -103,71 +103,35 @@ export const BPOToolsElements = () => {
 
   return (
     <div className="absolute inset-0 pointer-events-none">
-      {/* Background Grid */}
-      <div className="absolute inset-0 opacity-20">
-        <div className="grid grid-cols-8 grid-rows-8 h-full w-full">
-          {Array.from({ length: 64 }).map((_, i) => (
-            <div
-              key={i}
-              className="border border-primary/20 animate-pulse"
-              style={{ animationDelay: `${(i % 8) * 0.1}s` }}
-            />
-          ))}
-        </div>
-      </div>
-
-      {/* Floating Particles */}
-      <div className="absolute inset-0">
-        {Array.from({ length: 20 }).map((_, i) => (
-          <div
-            key={i}
-            className="absolute w-2 h-2 bg-primary/60 rounded-full animate-bounce"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 2}s`,
-              animationDuration: `${2 + Math.random() * 2}s`,
-            }}
-          />
-        ))}
-      </div>
-
-      {/* Connection Lines */}
-      {connections.map((connection, index) => (
-        <FloatingConnection
-          key={index}
-          start={connection.start}
-          end={connection.end}
-          delay={connection.delay}
-        />
-      ))}
-
-      {/* Tool Cards */}
+      {/* Tool Cards - Simplified Layout */}
       {tools.map((tool, index) => (
         <ToolCard
           key={index}
           icon={tool.icon}
           name={tool.name}
-          delay={tool.delay}
+          delay={tool.delay * 0.5}
           position={tool.position}
         />
       ))}
 
-      {/* Central Hub */}
-      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-        <div className="w-16 h-16 bg-primary/20 rounded-full border-2 border-primary animate-pulse flex items-center justify-center">
-          <Globe className="w-8 h-8 text-primary animate-spin" style={{ animationDuration: '3s' }} />
+      {/* Central Hub Element */}
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div className="relative w-24 h-24 rounded-full border border-primary/30 bg-primary/5 backdrop-blur-sm animate-fade-in">
+          <div className="absolute inset-0 flex items-center justify-center">
+            <Globe className="w-8 h-8 text-primary animate-pulse" />
+          </div>
+          {/* Simple rotating indicators */}
+          <div className="absolute inset-0 rounded-full animate-spin" style={{ animationDuration: '15s' }}>
+            <div className="absolute w-1 h-1 bg-primary/60 rounded-full" style={{ top: '15%', left: '50%', transform: 'translateX(-50%)' }} />
+            <div className="absolute w-1 h-1 bg-primary/60 rounded-full" style={{ bottom: '15%', left: '50%', transform: 'translateX(-50%)' }} />
+          </div>
         </div>
       </div>
 
       {/* Title */}
-      <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 text-center">
-        <h3 className="text-2xl font-bold text-primary animate-fade-in">
-          Ferramentas BPO Digital
-        </h3>
-        <p className="text-foreground/80 mt-2 animate-fade-in" style={{ animationDelay: '1s' }}>
-          Revolucionando a gestão de processos
-        </p>
+      <div className="absolute bottom-16 left-0 right-0 text-center animate-fade-in" style={{ animationDelay: '1s' }}>
+        <h2 className="text-3xl font-bold text-primary mb-2">Ferramentas BPO</h2>
+        <p className="text-lg text-foreground/70">CSC Digital • Integra • Portal Financeiro • Hubcount</p>
       </div>
     </div>
   );

@@ -131,60 +131,41 @@ export const ForvisMazarsElements = () => {
 
   return (
     <div className="absolute inset-0 pointer-events-none">
-      {/* Background Gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5" />
-
-      {/* Floating Particles */}
-      <div className="absolute inset-0">
-        {Array.from({ length: 25 }).map((_, i) => (
-          <div
-            key={i}
-            className="absolute w-1 h-1 bg-primary/40 rounded-full"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animation: `float 3s ease-in-out infinite`,
-              animationDelay: `${Math.random() * 3}s`,
-            }}
-          />
-        ))}
+      {/* Central Forvis Mazars Logo */}
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div className="relative animate-fade-in" style={{ animationDelay: '0.5s', animationDuration: '2s' }}>
+          {/* Premium glow effect */}
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-accent/20 to-primary/20 blur-2xl rounded-full animate-pulse" />
+          
+          {/* Simple elegant logo representation */}
+          <div className="relative w-64 h-32 bg-gradient-to-r from-primary/10 to-accent/10 rounded-lg border border-primary/20 backdrop-blur-sm flex items-center justify-center">
+            <div className="text-center">
+              <h1 className="text-4xl font-bold text-primary mb-1">FORVIS MAZARS</h1>
+              <div className="h-px bg-gradient-to-r from-transparent via-primary to-transparent w-full"></div>
+              <p className="text-sm text-foreground/70 mt-1 tracking-widest">EXCELLENCE</p>
+            </div>
+          </div>
+        </div>
       </div>
-
-      {/* Central Logo */}
-      <GlowingLogo delay={0} />
-
-      {/* Value Cards */}
-      {values.map((value, index) => (
-        <ValueCard
-          key={index}
-          icon={value.icon}
-          title={value.title}
-          description={value.description}
-          delay={value.delay}
-          position={value.position}
+      
+      {/* Subtle floating elements */}
+      {[...Array(8)].map((_, i) => (
+        <div
+          key={i}
+          className="absolute w-2 h-2 bg-primary/20 rounded-full animate-pulse"
+          style={{
+            left: `${20 + Math.random() * 60}%`,
+            top: `${20 + Math.random() * 60}%`,
+            animationDelay: `${Math.random() * 4}s`,
+            animationDuration: `${3 + Math.random() * 2}s`
+          }}
         />
       ))}
-
-      {/* Company Name */}
-      <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 text-center">
-        <h3 className="text-3xl font-bold text-primary animate-fade-in">
-          Forvis Mazars
-        </h3>
-        <p className="text-foreground/80 mt-2 animate-fade-in" style={{ animationDelay: '1s' }}>
-          Transformação digital e excelência
-        </p>
+      
+      {/* Company Tagline */}
+      <div className="absolute bottom-16 left-0 right-0 text-center animate-fade-in" style={{animationDelay: '2s'}}>
+        <p className="text-xl text-foreground/80">Otimização de Processos & Impacto Significativo</p>
       </div>
-
-      {/* Floating animation handled by CSS variables */}
-      <style dangerouslySetInnerHTML={{
-        __html: `
-          @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            33% { transform: translateY(-10px) rotate(120deg); }
-            66% { transform: translateY(5px) rotate(240deg); }
-          }
-        `
-      }} />
     </div>
   );
 };
