@@ -8,6 +8,11 @@ import { narrator } from '@/utils/tutorialNarrator';
 import { useNavigate } from 'react-router-dom';
 import { SEOHead } from '@/components/SEOHead';
 import codyNeonImage from '@/assets/cody-neon.png';
+import { SpaceshipElements } from '@/components/visual-segments/SpaceshipElements';
+import { TechEvolutionElements } from '@/components/visual-segments/TechEvolutionElements';
+import { BPOToolsElements } from '@/components/visual-segments/BPOToolsElements';
+import { CodigoFElements } from '@/components/visual-segments/CodigoFElements';
+import { ForvisMazarsElements } from '@/components/visual-segments/ForvisMazarsElements';
 
 const narrativeSegments = [
   {
@@ -137,49 +142,36 @@ export default function CodyPresentation() {
     return ((currentSegment + (isPlaying ? 0.5 : 0)) / narrativeSegments.length) * 100;
   };
 
-  const getHighlightCard = () => {
+  const getVisualElements = () => {
+    if (!hasStarted) return null;
+    
     const segment = narrativeSegments[currentSegment];
     
     switch (segment.highlight) {
       case "spaceship":
-        return (
-          <Card className="p-6 bg-background/80 backdrop-blur-sm border border-primary/20 animate-fade-in">
-            <h3 className="text-xl font-bold text-primary mb-3">🚀 Spaceship - Jornada ao Futuro</h3>
-            <p className="text-foreground/80">Embarque conosco nesta aventura de transformação e inovação</p>
-          </Card>
-        );
+        return <SpaceshipElements key="spaceship" />;
+      case "tech-evolution":
+        return <TechEvolutionElements key="tech-evolution" />;
       case "bpo-tools":
-        return (
-          <Card className="p-6 bg-background/80 backdrop-blur-sm border border-accent/20 animate-fade-in">
-            <h3 className="text-xl font-bold text-accent mb-3">🔧 Ferramentas BPO</h3>
-            <div className="space-y-2 text-sm text-foreground/80">
-              <div>• CSC Digital</div>
-              <div>• Integra</div>
-              <div>• Portal Financeiro</div>
-              <div>• Hubcount</div>
-            </div>
-          </Card>
-        );
+        return <BPOToolsElements key="bpo-tools" />;
       case "codigo-f":
-        return (
-          <Card className="p-6 bg-background/80 backdrop-blur-sm border border-secondary/20 animate-fade-in">
-            <h3 className="text-xl font-bold text-secondary mb-3">💡 Programa Código F</h3>
-            <p className="text-foreground/80">Desenvolvimento colaborativo e inteligência coletiva</p>
-          </Card>
-        );
+        return <CodigoFElements key="codigo-f" />;
       case "forvis-mazars":
-        return (
-          <Card className="p-6 bg-background/80 backdrop-blur-sm border border-primary/20 animate-fade-in">
-            <h3 className="text-xl font-bold text-primary mb-3">🏢 Forvis Mazars</h3>
-            <p className="text-foreground/80">Transformação digital e excelência em cada interação</p>
-          </Card>
-        );
+        return <ForvisMazarsElements key="forvis-mazars" />;
       default:
         return (
-          <Card className="p-6 bg-background/80 backdrop-blur-sm border border-border animate-fade-in">
-            <h3 className="text-xl font-bold text-foreground mb-3">{segment.title}</h3>
-            <p className="text-foreground/80 text-sm line-clamp-3">{segment.text}</p>
-          </Card>
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div className="text-center">
+              <h2 className="text-4xl font-bold text-primary mb-4 animate-fade-in">
+                {segment.title}
+              </h2>
+              <div className="flex items-center justify-center space-x-2 text-2xl animate-pulse">
+                <div className="w-3 h-3 bg-primary rounded-full" />
+                <div className="w-3 h-3 bg-accent rounded-full" style={{ animationDelay: '0.2s' }} />
+                <div className="w-3 h-3 bg-secondary rounded-full" style={{ animationDelay: '0.4s' }} />
+              </div>
+            </div>
+          </div>
         );
     }
   };
@@ -194,6 +186,11 @@ export default function CodyPresentation() {
         {/* Vaporwave Background */}
         <div className="absolute inset-0 z-0">
           <VaporwaveScene cameraPosition={[0, 2, 8]} cameraFov={75} />
+        </div>
+
+        {/* Visual Elements Layer */}
+        <div className="absolute inset-0 z-5">
+          {getVisualElements()}
         </div>
 
         {/* Main Content */}
@@ -228,9 +225,9 @@ export default function CodyPresentation() {
           </div>
 
           {/* Right Side - Content and Controls */}
-          <div className="lg:w-1/2 flex flex-col justify-center p-6 space-y-6">
-            {/* Welcome or Highlight Card */}
-            {!hasStarted ? (
+          <div className="lg:w-1/2 flex flex-col justify-end p-6 space-y-6">
+            {/* Welcome Card */}
+            {!hasStarted && (
               <Card className="p-8 bg-background/90 backdrop-blur-sm border border-primary/20">
                 <h1 className="text-3xl font-bold text-primary mb-4">Bem-vindos à Spaceship! 🚀</h1>
                 <p className="text-foreground/80 mb-6">
@@ -241,8 +238,6 @@ export default function CodyPresentation() {
                   Iniciar Apresentação
                 </Button>
               </Card>
-            ) : (
-              getHighlightCard()
             )}
 
             {/* Progress */}
