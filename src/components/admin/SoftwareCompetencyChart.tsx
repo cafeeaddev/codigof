@@ -1,7 +1,11 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Users, Eye } from "lucide-react";
+import { SoftwarePeopleDetails } from "./SoftwarePeopleDetails";
 
 interface CompetencyData {
   userId: string;
@@ -18,6 +22,8 @@ interface SoftwareCompetencyChartProps {
 }
 
 export const SoftwareCompetencyChart = ({ data }: SoftwareCompetencyChartProps) => {
+  const [selectedSoftware, setSelectedSoftware] = useState<string | null>(null);
+
   const softwareStats = useMemo(() => {
     if (!data.length) return [];
 
@@ -106,13 +112,37 @@ export const SoftwareCompetencyChart = ({ data }: SoftwareCompetencyChartProps) 
                   </Badge>
                   <h4 className="font-medium">{stat.software}</h4>
                 </div>
-                <div className="text-right">
-                  <div className={`text-lg font-bold ${getAverageColor(stat.average)}`}>
-                    {stat.average.toFixed(1)}/5
+                <div className="flex items-center gap-3">
+                  <div className="text-right">
+                    <div className={`text-lg font-bold ${getAverageColor(stat.average)}`}>
+                      {stat.average.toFixed(1)}/5
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      {stat.total} avaliações
+                    </div>
                   </div>
-                  <div className="text-sm text-muted-foreground">
-                    {stat.total} avaliações
-                  </div>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="flex items-center gap-2"
+                        onClick={() => setSelectedSoftware(stat.software)}
+                      >
+                        <Users size={14} />
+                        <Eye size={14} />
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+                      <DialogHeader>
+                        <DialogTitle>Pessoas por Nível de Competência</DialogTitle>
+                      </DialogHeader>
+                      <SoftwarePeopleDetails
+                        software={stat.software}
+                        people={data.filter(item => item.software === stat.software)}
+                      />
+                    </DialogContent>
+                  </Dialog>
                 </div>
               </div>
               
@@ -125,27 +155,27 @@ export const SoftwareCompetencyChart = ({ data }: SoftwareCompetencyChartProps) 
                 {/* Distribuição detalhada */}
                 <div className="flex flex-wrap gap-2 text-xs">
                   {stat.distribution.iniciante > 0 && (
-                    <Badge variant="outline" className="text-red-600">
+                    <Badge variant="outline" className="text-red-600 cursor-default">
                       Iniciante: {stat.distribution.iniciante}
                     </Badge>
                   )}
                   {stat.distribution.basico > 0 && (
-                    <Badge variant="outline" className="text-orange-600">
+                    <Badge variant="outline" className="text-orange-600 cursor-default">
                       Básico: {stat.distribution.basico}
                     </Badge>
                   )}
                   {stat.distribution.intermediario > 0 && (
-                    <Badge variant="outline" className="text-yellow-600">
+                    <Badge variant="outline" className="text-yellow-600 cursor-default">
                       Intermediário: {stat.distribution.intermediario}
                     </Badge>
                   )}
                   {stat.distribution.avancado > 0 && (
-                    <Badge variant="outline" className="text-green-600">
+                    <Badge variant="outline" className="text-green-600 cursor-default">
                       Avançado: {stat.distribution.avancado}
                     </Badge>
                   )}
                   {stat.distribution.expert > 0 && (
-                    <Badge variant="outline" className="text-green-700">
+                    <Badge variant="outline" className="text-green-700 cursor-default">
                       Expert: {stat.distribution.expert}
                     </Badge>
                   )}
