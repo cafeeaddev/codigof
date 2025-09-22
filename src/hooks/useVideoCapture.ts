@@ -16,9 +16,9 @@ export const useVideoCapture = () => {
     const {
       width = 1920,
       height = 1080,
-      fps = 30,
+      fps = 60,
       duration = 5,
-      videoBitsPerSecond = 8000000 // 8 Mbps for high quality
+      videoBitsPerSecond = 25000000 // 25 Mbps for ultra high quality
     } = options;
 
     // Check MediaRecorder support
@@ -39,10 +39,11 @@ export const useVideoCapture = () => {
       // Create video stream from canvas
       const stream = canvas.captureStream(fps);
       
-      // Configure MediaRecorder
+      // Configure MediaRecorder with highest quality settings
       const mediaRecorder = new MediaRecorder(stream, {
         mimeType: 'video/mp4; codecs="avc1.42E01E"',
-        videoBitsPerSecond
+        videoBitsPerSecond,
+        audioBitsPerSecond: 128000 // High quality audio
       });
 
       const chunks: Blob[] = [];
@@ -74,8 +75,8 @@ export const useVideoCapture = () => {
         setProgress(Math.round(progress));
       }, 100);
 
-      // Start recording
-      mediaRecorder.start(100); // Collect data every 100ms
+      // Start recording with smaller chunks for better quality
+      mediaRecorder.start(50); // Collect data every 50ms for smoother quality
 
       // Stop recording after duration
       setTimeout(() => {

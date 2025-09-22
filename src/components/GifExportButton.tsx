@@ -18,9 +18,9 @@ export const VideoExportButton = () => {
       const blob = await captureVideo({
         width: 1920,
         height: 1080,
-        fps: 30,
+        fps: 60,
         duration: 5,
-        videoBitsPerSecond: 8000000
+        videoBitsPerSecond: 25000000 // Ultra high quality - 25 Mbps
       });
 
       downloadVideo(blob);
