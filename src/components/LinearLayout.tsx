@@ -3,6 +3,7 @@ import { VaporwaveScene } from './VaporwaveScene';
 import { HeroSection } from './HeroSection';
 import { FeatureSection } from './FeatureSection';
 import { Footer } from './Footer';
+import { GifExportButton } from './GifExportButton';
 
 import { Navigation } from './Navigation';
 import { SectionContainer } from './SectionContainer';
@@ -239,6 +240,9 @@ export const LinearLayout = () => {
           </SecretFAQDialog>
         </div>
       )}
+
+      {/* GIF Export Button */}
+      <GifExportButton />
 
       {/* Scroll Progress Indicator */}
       <ScrollProgress
