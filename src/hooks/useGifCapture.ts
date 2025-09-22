@@ -40,15 +40,12 @@ export const useGifCapture = () => {
         quality: quality,
         width: width,
         height: height,
-      });
-
-      // Track progress
-      gif.on('progress', (p: number) => {
-        setProgress(Math.round(p * 100));
+        workerScript: '/node_modules/gif.js/dist/gif.worker.js'
       });
 
       const totalFrames = duration * fps;
-      const frameDelay = 1000 / fps;
+      const frameInterval = 1000 / fps;
+      let capturedFrames = 0;
 
       // Create a temporary canvas for resizing
       const tempCanvas = document.createElement('canvas');
@@ -60,31 +57,77 @@ export const useGifCapture = () => {
         throw new Error('Não foi possível criar contexto do canvas');
       }
 
-      // Capture frames
+      // Capture frames with better timing control
+      const captureFrame = () => {
+        return new Promise<void>((resolve) => {
+          setTimeout(() => {
+            try {
+              // Resize and capture frame
+              tempCtx.drawImage(canvas, 0, 0, width, height);
+              gif.addFrame(tempCanvas, { delay: frameInterval });
+              
+              capturedFrames++;
+              const captureProgress = (capturedFrames / totalFrames) * 50;
+              setProgress(Math.round(captureProgress));
+              
+              resolve();
+            } catch (error) {
+              console.error('Erro ao capturar frame:', error);
+              resolve(); // Continue even if one frame fails
+            }
+          }, frameInterval);
+        });
+      };
+
+      // Capture all frames sequentially
       for (let i = 0; i < totalFrames; i++) {
-        await new Promise(resolve => setTimeout(resolve, frameDelay));
-        
-        // Resize and capture frame
-        tempCtx.drawImage(canvas, 0, 0, width, height);
-        
-        gif.addFrame(tempCanvas, { delay: frameDelay });
-        
-        // Update progress for capture phase (0-50%)
-        const captureProgress = (i / totalFrames) * 50;
-        setProgress(Math.round(captureProgress));
+        await captureFrame();
       }
 
-      // Render GIF
+      console.log(`Captured ${capturedFrames} frames, starting render...`);
+
+      // Render GIF with timeout
       return new Promise<Blob>((resolve, reject) => {
+        let isFinished = false;
+        
+        // Set timeout to prevent infinite rendering
+        const timeout = setTimeout(() => {
+          if (!isFinished) {
+            console.error('GIF rendering timeout');
+            setIsCapturing(false);
+            setProgress(0);
+            reject(new Error('Timeout na geração do GIF'));
+          }
+        }, 30000); // 30 second timeout
+
+        gif.on('progress', (p: number) => {
+          if (!isFinished) {
+            const renderProgress = 50 + (p * 50);
+            setProgress(Math.round(renderProgress));
+          }
+        });
+
         gif.on('finished', (blob: Blob) => {
-          setProgress(100);
-          setIsCapturing(false);
-          resolve(blob);
+          if (!isFinished) {
+            isFinished = true;
+            clearTimeout(timeout);
+            setProgress(100);
+            setTimeout(() => {
+              setIsCapturing(false);
+              setProgress(0);
+            }, 1000);
+            resolve(blob);
+          }
         });
 
         gif.on('error', (error: Error) => {
-          setIsCapturing(false);
-          reject(error);
+          if (!isFinished) {
+            isFinished = true;
+            clearTimeout(timeout);
+            setIsCapturing(false);
+            setProgress(0);
+            reject(error);
+          }
         });
 
         gif.render();
