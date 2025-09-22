@@ -141,14 +141,26 @@ export const useGifCapture = () => {
   }, []);
 
   const downloadGif = useCallback((blob: Blob, filename = 'vaporwave-background.gif') => {
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    try {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.style.display = 'none';
+      document.body.appendChild(a);
+      a.click();
+      
+      // Cleanup
+      setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }, 100);
+      
+      console.log('GIF download iniciado:', filename);
+    } catch (error) {
+      console.error('Erro no download do GIF:', error);
+      throw error;
+    }
   }, []);
 
   return {
