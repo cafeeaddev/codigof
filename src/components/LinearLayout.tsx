@@ -3,7 +3,7 @@ import { VaporwaveScene } from './VaporwaveScene';
 import { HeroSection } from './HeroSection';
 import { FeatureSection } from './FeatureSection';
 import { Footer } from './Footer';
-import { VideoExportButton } from './GifExportButton';
+
 
 import { Navigation } from './Navigation';
 import { SectionContainer } from './SectionContainer';
@@ -242,7 +242,7 @@ export const LinearLayout = () => {
       )}
 
       {/* Video Export Button */}
-      <VideoExportButton />
+      
 
       {/* Scroll Progress Indicator */}
       <ScrollProgress
