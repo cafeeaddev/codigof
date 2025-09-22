@@ -1,39 +1,39 @@
 import { Button } from './ui/button';
-import { Download, Loader2 } from 'lucide-react';
-import { useGifCapture } from '../hooks/useGifCapture';
+import { Video, Loader2 } from 'lucide-react';
+import { useVideoCapture } from '../hooks/useVideoCapture';
 import { useToast } from '../hooks/use-toast';
 import { Progress } from './ui/progress';
 
-export const GifExportButton = () => {
-  const { captureGif, downloadGif, isCapturing, progress } = useGifCapture();
+export const VideoExportButton = () => {
+  const { captureVideo, downloadVideo, isRecording, progress } = useVideoCapture();
   const { toast } = useToast();
 
-  const handleExportGif = async () => {
+  const handleExportVideo = async () => {
     try {
       toast({
-        title: "Capturando GIF",
-        description: "Gerando GIF do fundo vaporwave...",
+        title: "Gravando Vídeo",
+        description: "Capturando vídeo MP4 do fundo vaporwave...",
       });
 
-      const blob = await captureGif({
-        width: 800,
-        height: 600,
-        fps: 15,
-        duration: 4,
-        quality: 8
+      const blob = await captureVideo({
+        width: 1920,
+        height: 1080,
+        fps: 30,
+        duration: 5,
+        videoBitsPerSecond: 8000000
       });
 
-      downloadGif(blob);
+      downloadVideo(blob);
 
       toast({
-        title: "GIF gerado!",
-        description: "Download do GIF iniciado automaticamente.",
+        title: "Vídeo gravado!",
+        description: "Download do MP4 iniciado automaticamente.",
       });
     } catch (error) {
-      console.error('Erro ao gerar GIF:', error);
+      console.error('Erro ao gravar vídeo:', error);
       toast({
         title: "Erro",
-        description: "Não foi possível gerar o GIF. Tente novamente.",
+        description: "Não foi possível gravar o vídeo. Tente novamente.",
         variant: "destructive",
       });
     }
@@ -42,21 +42,21 @@ export const GifExportButton = () => {
   return (
     <div className="fixed top-4 right-4 z-50 space-y-2">
       <Button
-        onClick={handleExportGif}
-        disabled={isCapturing}
+        onClick={handleExportVideo}
+        disabled={isRecording}
         variant="outline"
         size="sm"
         className="bg-background/80 backdrop-blur-sm border-primary/20 hover:bg-primary/10"
       >
-        {isCapturing ? (
+        {isRecording ? (
           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
         ) : (
-          <Download className="mr-2 h-4 w-4" />
+          <Video className="mr-2 h-4 w-4" />
         )}
-        {isCapturing ? 'Gerando...' : 'Exportar GIF'}
+        {isRecording ? 'Gravando...' : 'Gravar Vídeo'}
       </Button>
       
-      {isCapturing && (
+      {isRecording && (
         <div className="bg-background/80 backdrop-blur-sm border border-primary/20 rounded-lg p-3 min-w-[200px]">
           <div className="text-xs text-muted-foreground mb-2">
             Progresso: {progress}%
