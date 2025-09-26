@@ -22,8 +22,8 @@ export const MissionAnalysis = ({
   allResponses,
   totalScore
 }: MissionAnalysisProps) => {
-  // Hook para buscar perguntas e opções reais do banco
-  const { questions, isLoading, getOptionText, getOptionPoints } = useQuestionOptions([1, 2, 3]);
+  // Hook para buscar perguntas e opções reais do banco apenas se necessário
+  const { questions, isLoading, getOptionText, getOptionPoints } = useQuestionOptions([1]);
 
   // Encontrar respostas do usuário
   const getUserResponse = (responses: any[], userId: string, email: string) => {
@@ -206,7 +206,10 @@ export const MissionAnalysis = ({
                   {/* Renderizar conteúdo baseado no estado de loading da missão 1 */}
                   {mission.number === 1 && isLoading ? (
                     <div className="text-center py-4">
-                      <p className="text-muted-foreground">Carregando opções das perguntas...</p>
+                      <div className="flex items-center justify-center gap-2">
+                        <div className="animate-spin h-4 w-4 border-2 border-primary border-t-transparent rounded-full"></div>
+                        <p className="text-muted-foreground">Carregando perguntas...</p>
+                      </div>
                     </div>
                   ) : (
                     <div className="grid gap-3">
@@ -232,7 +235,41 @@ export const MissionAnalysis = ({
                             
                             if (!dbQuestion) {
                               console.log(`Pergunta não encontrada no banco: ID ${53 + idx}`);
-                              return null;
+                              // Usar pergunta estática como fallback
+                              const fallbackQuestion = {
+                                id: 53 + idx,
+                                question_text: questionText,
+                                mission_number: 1
+                              };
+                              
+                              return (
+                                <div key={idx} className="border rounded-lg p-4 space-y-2">
+                                  <p className="text-sm font-medium">
+                                    {idx + 1}. {fallbackQuestion.question_text}
+                                  </p>
+                                  {answer && (
+                                    <div className="flex items-center gap-2">
+                                      <Badge 
+                                        variant="outline"
+                                        style={{ 
+                                          borderColor: getAnswerColor(answer),
+                                          color: getAnswerColor(answer)
+                                        }}
+                                      >
+                                        {answer}
+                                      </Badge>
+                                      <span className="text-sm text-muted-foreground flex-1">
+                                        {getAnswerText(answer)}
+                                      </span>
+                                      {points > 0 && (
+                                        <span className="text-xs font-medium text-primary">
+                                          {points} pts
+                                        </span>
+                                      )}
+                                    </div>
+                                  )}
+                                </div>
+                              );
                             }
                             
                             // Para missão 1: buscar texto real da opção no banco

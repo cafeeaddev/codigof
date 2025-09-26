@@ -26,6 +26,13 @@ export const useQuestionOptions = (missionNumbers: number[] = [1, 2, 3]) => {
     const fetchQuestionsAndOptions = async () => {
       try {
         setIsLoading(true);
+        setError(null);
+        
+        // Timeout para evitar travamento
+        const timeoutId = setTimeout(() => {
+          setError('Timeout ao carregar perguntas');
+          setIsLoading(false);
+        }, 10000); // 10 segundos
         
         // Buscar perguntas das missões especificadas
         const { data: questionsData, error: questionsError } = await supabase
@@ -35,6 +42,8 @@ export const useQuestionOptions = (missionNumbers: number[] = [1, 2, 3]) => {
           .eq('is_active', true)
           .order('mission_number', { ascending: true })
           .order('order_position', { ascending: true });
+
+        clearTimeout(timeoutId);
 
         if (questionsError) {
           throw questionsError;
@@ -68,6 +77,8 @@ export const useQuestionOptions = (missionNumbers: number[] = [1, 2, 3]) => {
       } catch (err) {
         console.error('Erro ao buscar perguntas e opções:', err);
         setError(err instanceof Error ? err.message : 'Erro desconhecido');
+        // Usar dados vazios em caso de erro para não travar
+        setQuestions([]);
       } finally {
         setIsLoading(false);
       }
