@@ -49,6 +49,42 @@ export const TechnicalCompetencies = ({
   }> = [];
 
   // Extrair competências das respostas
+  
+  // Primeiro, processar respostas básicas (answers: 1-9)
+  if (responses.answers) {
+    const basicQuestions = [
+      { id: '1', software: 'Microsoft Word', category: 'Ferramentas Básicas' },
+      { id: '2', software: 'Microsoft PowerPoint', category: 'Ferramentas Básicas' },
+      { id: '3', software: 'Microsoft Excel', category: 'Ferramentas Básicas' },
+      { id: '4', software: 'Power BI', category: 'Análise de Dados' },
+      { id: '5', software: 'Power Automate', category: 'Automação' },
+      { id: '6', software: 'SharePoint', category: 'Colaboração' },
+      { id: '7', software: 'Power Apps', category: 'Desenvolvimento' },
+      { id: '8', software: 'Banco de Dados / SQL', category: 'Análise de Dados' },
+      { id: '9', software: 'Inteligência Artificial', category: 'Tecnologias Emergentes' }
+    ];
+
+    basicQuestions.forEach(({ id, software, category }) => {
+      const answer = responses.answers[id];
+      if (answer) {
+        // Converter resposta A-E para rating 1-5
+        const ratingMap: { [key: string]: number } = {
+          'A': 1, 'B': 2, 'C': 3, 'D': 4, 'E': 5
+        };
+        const rating = ratingMap[answer] || 0;
+        
+        if (rating > 0) {
+          competencyData.push({
+            software,
+            rating,
+            category
+          });
+        }
+      }
+    });
+  }
+
+  // Segundo, processar avaliações por estrelas (starRatings)
   if (responses.starRatings) {
     // Nova estrutura: starRatings: {"19": {"Atlas": 5, "Audit Report": 5}}
     Object.entries(responses.starRatings).forEach(([questionId, softwares]: [string, any]) => {
@@ -56,13 +92,15 @@ export const TechnicalCompetencies = ({
         Object.entries(softwares).forEach(([software, rating]: [string, any]) => {
           if (rating > 0) {
             // Mapear categoria baseada no questionId ou software
-            let category = 'Ferramentas Gerais';
+            let category = 'Ferramentas de Área';
             if (software.toLowerCase().includes('excel') || software.toLowerCase().includes('power')) {
               category = 'Análise de Dados';
             } else if (software.toLowerCase().includes('atlas') || software.toLowerCase().includes('audit')) {
               category = 'Auditoria e Compliance';
             } else if (software.toLowerCase().includes('tableau') || software.toLowerCase().includes('qlik')) {
               category = 'Business Intelligence';
+            } else if (software.toLowerCase().includes('word') || software.toLowerCase().includes('powerpoint')) {
+              category = 'Ferramentas Básicas';
             }
             
             competencyData.push({
@@ -74,8 +112,10 @@ export const TechnicalCompetencies = ({
         });
       }
     });
-  } else {
-    // Estrutura antiga compatível
+  }
+  
+  // Estrutura antiga compatível (fallback)
+  if (competencyData.length === 0) {
     Object.entries(responses).forEach(([questionId, answer]: [string, any]) => {
       const question = questions.find(q => q.id.toString() === questionId);
       if (question && question.softwares && typeof answer === 'object' && answer.ratings) {
