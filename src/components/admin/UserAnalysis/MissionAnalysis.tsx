@@ -2,7 +2,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { UserProgress, UserProfile } from '@/types/admin';
 import { CheckCircle, Clock, Target } from 'lucide-react';
-import { useQuestionOptions } from '@/hooks/useQuestionOptions';
 
 interface MissionAnalysisProps {
   user: UserProgress;
@@ -22,8 +21,6 @@ export const MissionAnalysis = ({
   allResponses,
   totalScore
 }: MissionAnalysisProps) => {
-  // Hook para buscar perguntas e opções reais do banco apenas se necessário
-  const { questions, isLoading, getOptionText, getOptionPoints } = useQuestionOptions([1]);
 
   // Encontrar respostas do usuário
   const getUserResponse = (responses: any[], userId: string, email: string) => {
@@ -35,6 +32,7 @@ export const MissionAnalysis = ({
   const mission3Response = getUserResponse(allResponses.missao3, user.user_id, userProfile.email || '');
   const mission4Response = getUserResponse(allResponses.missao4, user.user_id, userProfile.email || '');
 
+  // Dados estáticos das missões - mais rápido e direto
   const missions = [
     {
       number: 1,
@@ -46,10 +44,10 @@ export const MissionAnalysis = ({
       response: mission1Response,
       maxScore: 10,
       questions: [
-        'Como você vê a transformação digital na sua organização?',
-        'Qual sua atitude em relação a novas tecnologias?',
-        'Como você lida com mudanças tecnológicas?',
-        'Qual sua perspectiva sobre o futuro digital?'
+        { id: 53, text: 'Como você vê a transformação digital na sua organização?' },
+        { id: 54, text: 'Qual sua atitude em relação a novas tecnologias?' },
+        { id: 55, text: 'Como você lida com mudanças tecnológicas?' },
+        { id: 56, text: 'Qual sua perspectiva sobre o futuro digital?' }
       ]
     },
     {
@@ -62,9 +60,9 @@ export const MissionAnalysis = ({
       response: mission2Response,
       maxScore: 7.5,
       questions: [
-        'Como você se comporta diante de novos sistemas?',
-        'Qual sua abordagem para aprender tecnologias?',
-        'Como você colabora em ambientes digitais?'
+        { id: 57, text: 'Como você se comporta diante de novos sistemas?' },
+        { id: 58, text: 'Qual sua abordagem para aprender tecnologias?' },
+        { id: 59, text: 'Como você colabora em ambientes digitais?' }
       ]
     },
     {
@@ -77,11 +75,11 @@ export const MissionAnalysis = ({
       response: mission3Response,
       maxScore: 12.5,
       questions: [
-        'Como você utiliza ferramentas digitais no trabalho?',
-        'Qual sua experiência com análise de dados?',
-        'Como você gerencia projetos digitais?',
-        'Qual sua abordagem para solução de problemas?',
-        'Como você implementa melhorias tecnológicas?'
+        { id: 60, text: 'Como você utiliza ferramentas digitais no trabalho?' },
+        { id: 61, text: 'Qual sua experiência com análise de dados?' },
+        { id: 62, text: 'Como você gerencia projetos digitais?' },
+        { id: 63, text: 'Qual sua abordagem para solução de problemas?' },
+        { id: 64, text: 'Como você implementa melhorias tecnológicas?' }
       ]
     },
     {
@@ -203,177 +201,72 @@ export const MissionAnalysis = ({
                     Respostas e Análise
                   </h4>
                   
-                  {/* Renderizar conteúdo baseado no estado de loading da missão 1 */}
-                  {mission.number === 1 && isLoading ? (
-                    <div className="text-center py-4">
-                      <div className="flex items-center justify-center gap-2">
-                        <div className="animate-spin h-4 w-4 border-2 border-primary border-t-transparent rounded-full"></div>
-                        <p className="text-muted-foreground">Carregando perguntas...</p>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="grid gap-3">
-                      {(() => {
-                        // Para missão 1: usar perguntas do banco + buscar texto das opções
-                        if (mission.number === 1) {
-                          const missionQuestions = questions.filter(q => q.mission_number === 1);
-                          
-                          return mission.questions.map((questionText, idx) => {
-                            let answer = null;
-                            let points = 0;
-                            
-                            if (mission.response?.respostas && Array.isArray(mission.response.respostas)) {
-                              const questionItem = mission.response.respostas.find((item: any) => 
-                                item.pergunta === (53 + idx)
-                              );
-                              answer = questionItem?.resposta;
-                              points = questionItem?.pontuacao || 0;
-                            }
-                            
-                            // Buscar pergunta do banco correspondente
-                            const dbQuestion = missionQuestions.find(q => q.id === (53 + idx));
-                            
-                            if (!dbQuestion) {
-                              console.log(`Pergunta não encontrada no banco: ID ${53 + idx}`);
-                              // Usar pergunta estática como fallback
-                              const fallbackQuestion = {
-                                id: 53 + idx,
-                                question_text: questionText,
-                                mission_number: 1
-                              };
-                              
-                              return (
-                                <div key={idx} className="border rounded-lg p-4 space-y-2">
-                                  <p className="text-sm font-medium">
-                                    {idx + 1}. {fallbackQuestion.question_text}
-                                  </p>
-                                  {answer && (
-                                    <div className="flex items-center gap-2">
-                                      <Badge 
-                                        variant="outline"
-                                        style={{ 
-                                          borderColor: getAnswerColor(answer),
-                                          color: getAnswerColor(answer)
-                                        }}
-                                      >
-                                        {answer}
-                                      </Badge>
-                                      <span className="text-sm text-muted-foreground flex-1">
-                                        {getAnswerText(answer)}
-                                      </span>
-                                      {points > 0 && (
-                                        <span className="text-xs font-medium text-primary">
-                                          {points} pts
-                                        </span>
-                                      )}
-                                    </div>
-                                  )}
-                                </div>
-                              );
-                            }
-                            
-                            // Para missão 1: buscar texto real da opção no banco
-                            let answerText = `Opção ${answer}`;
-                            
-                            // Buscar texto da opção sempre que possível
-                            if (answer && dbQuestion) {
-                              const optionText = getOptionText(dbQuestion.id, answer);
-                              console.log(`Question ${dbQuestion.id}, Answer ${answer}, Option Text:`, optionText);
-                              
-                              if (optionText && optionText.trim() !== '' && !optionText.startsWith('Opção')) {
-                                answerText = optionText;
-                              }
-                            }
-                            
-                            return (
-                              <div key={idx} className="border rounded-lg p-4 space-y-2">
-                                <p className="text-sm font-medium">
-                                  {idx + 1}. {dbQuestion.question_text}
-                                </p>
-                                {answer && (
-                                  <div className="flex items-center gap-2">
-                                    <Badge 
-                                      variant="outline"
-                                      style={{ 
-                                        borderColor: getAnswerColor(answer),
-                                        color: getAnswerColor(answer)
-                                      }}
-                                    >
-                                      {answer}
-                                    </Badge>
-                                    <span className="text-sm text-muted-foreground flex-1">
-                                      {answerText}
-                                    </span>
-                                    {points > 0 && (
-                                      <span className="text-xs font-medium text-primary">
-                                        {points} pts
-                                      </span>
-                                    )}
-                                  </div>
-                                )}
-                              </div>
+                  <div className="grid gap-3">
+                    {mission.questions.map((question, idx) => {
+                      let answer = null;
+                      let answerText = '';
+                      let points = 0;
+                      
+                      if (mission.response?.respostas) {
+                        if (Array.isArray(mission.response.respostas)) {
+                          if (mission.number === 1) {
+                            // Missão 1: estrutura com pergunta/resposta/pontuacao
+                            const questionItem = mission.response.respostas.find((item: any) => 
+                              item.pergunta === question.id
                             );
-                          });
+                            answer = questionItem?.resposta;
+                            points = questionItem?.pontuacao || 0;
+                            answerText = getAnswerText(answer);
+                          } else {
+                            // Missões 2 e 3: estrutura com selectedAnswer/selectedText
+                            const questionItem = mission.response.respostas.find((item: any) => 
+                              item.questionId === question.id
+                            );
+                            answer = questionItem?.selectedAnswer;
+                            answerText = questionItem?.selectedText || getAnswerText(answer);
+                            points = questionItem?.points || 0;
+                          }
+                        } else {
+                          // Formato antigo de objeto
+                          const questionKey = `pergunta${idx + 1}`;
+                          answer = mission.response.respostas[questionKey];
+                          answerText = getAnswerText(answer);
+                          if (answer === 'C') points = 2.5;
+                          else if (answer === 'B') points = 1.5;
+                          else if (answer === 'A') points = 0.5;
                         }
-                       
-                       // Para missões 2 e 3: usar selectedText que já vem nos dados
-                       else {
-                         // Buscar perguntas do banco ou usar estáticas
-                         const missionQuestions = questions.filter(q => q.mission_number === mission.number);
-                         const questionsToShow = missionQuestions.length > 0 ? missionQuestions : 
-                           mission.questions.map((q, i) => ({ question_text: q, id: i + 1 }));
-                         
-                         return questionsToShow.map((question, idx) => {
-                           let answer = null;
-                           let answerText = '';
-                           let points = 0;
-                           
-                           if (mission.response?.respostas && Array.isArray(mission.response.respostas)) {
-                             // Para missões 2 e 3: estrutura com selectedText
-                             const questionItem = mission.response.respostas.find((item: any) => 
-                               item.questionId === question.id || 
-                               (mission.number === 2 && item.questionId === (56 + idx)) ||
-                               (mission.number === 3 && item.questionId === (59 + idx))
-                             );
-                             
-                             answer = questionItem?.selectedAnswer;
-                             answerText = questionItem?.selectedText || `Opção ${answer}`;
-                             points = questionItem?.points || 0;
-                           }
-                           
-                           return (
-                             <div key={idx} className="border rounded-lg p-4 space-y-2">
-                               <p className="text-sm font-medium">
-                                 {idx + 1}. {question.question_text}
-                               </p>
-                               {answer && (
-                                 <div className="flex items-center gap-2">
-                                   <Badge 
-                                     variant="outline"
-                                     style={{ 
-                                       borderColor: getAnswerColor(answer),
-                                       color: getAnswerColor(answer)
-                                     }}
-                                   >
-                                     {answer}
-                                   </Badge>
-                                   <span className="text-sm text-muted-foreground flex-1">
-                                     {answerText}
-                                   </span>
-                                   {points > 0 && (
-                                     <span className="text-xs font-medium text-primary">
-                                       {points} pts
-                                     </span>
-                                   )}
-                                 </div>
-                               )}
-                             </div>
-                           );
-                         });
-                       }
-                     })()}
-                     </div>
-                   )}
+                      }
+                      
+                      return (
+                        <div key={idx} className="border rounded-lg p-4 space-y-2">
+                          <p className="text-sm font-medium">
+                            {idx + 1}. {question.text}
+                          </p>
+                          {answer && (
+                            <div className="flex items-center gap-2">
+                              <Badge 
+                                variant="outline"
+                                style={{ 
+                                  borderColor: getAnswerColor(answer),
+                                  color: getAnswerColor(answer)
+                                }}
+                              >
+                                {answer}
+                              </Badge>
+                              <span className="text-sm text-muted-foreground flex-1">
+                                {answerText}
+                              </span>
+                              {points > 0 && (
+                                <span className="text-xs font-medium text-primary">
+                                  {points} pts
+                                </span>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
 
                    {/* Análise do padrão de respostas */}
                   {mission.response && (
