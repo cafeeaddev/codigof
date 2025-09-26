@@ -1,8 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
+import { Button } from '@/components/ui/button';
 import { UserProgress, UserProfile } from '@/types/admin';
-import { Star, TrendingUp, Award } from 'lucide-react';
+import { Star, TrendingUp, Award, ChevronDown, ChevronRight, BarChart3 } from 'lucide-react';
+import { useState } from 'react';
 
 interface TechnicalCompetenciesProps {
   user: UserProgress;
@@ -22,6 +24,7 @@ export const TechnicalCompetencies = ({
   allResponses,
   questions
 }: TechnicalCompetenciesProps) => {
+  const [expandedArea, setExpandedArea] = useState<string | null>(null);
   // Encontrar resposta da missão 4 do usuário
   const mission4Response = allResponses.missao4.find(
     r => r.user_id === user.user_id || r.email === userProfile.email
@@ -183,6 +186,39 @@ export const TechnicalCompetencies = ({
     .filter(item => item.rating <= 2)
     .sort((a, b) => a.rating - b.rating)
     .slice(0, 5);
+
+  // Calcular estatísticas por categoria
+  const getCategoryStats = (category: string) => {
+    const categoryItems = competencyData.filter(item => item.category === category);
+    const totalItems = categoryItems.length;
+    const averageRating = totalItems > 0 
+      ? categoryItems.reduce((sum, item) => sum + item.rating, 0) / totalItems 
+      : 0;
+    
+    const distribution = {
+      5: categoryItems.filter(item => item.rating === 5).length,
+      4: categoryItems.filter(item => item.rating === 4).length,
+      3: categoryItems.filter(item => item.rating === 3).length,
+      2: categoryItems.filter(item => item.rating === 2).length,
+      1: categoryItems.filter(item => item.rating === 1).length,
+    };
+
+    const topSkills = categoryItems
+      .filter(item => item.rating >= 4)
+      .sort((a, b) => b.rating - a.rating);
+    
+    const improvementSkills = categoryItems
+      .filter(item => item.rating <= 2)
+      .sort((a, b) => a.rating - b.rating);
+
+    return {
+      totalItems,
+      averageRating,
+      distribution,
+      topSkills,
+      improvementSkills
+    };
+  };
 
   return (
     <div className="space-y-6">
@@ -388,13 +424,41 @@ export const TechnicalCompetencies = ({
           <CardTitle>Competências por Categoria</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-6">
+          <div className="space-y-4">
             {categories.map(category => {
               const categoryItems = competencyData.filter(item => item.category === category);
+              const categoryStats = getCategoryStats(category);
+              const isExpanded = expandedArea === category;
               
               return (
                 <div key={category} className="space-y-3">
-                  <h4 className="font-medium text-primary">{category}</h4>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <h4 className="font-medium text-primary">{category}</h4>
+                      <Badge variant="secondary">
+                        {categoryStats.totalItems} softwares
+                      </Badge>
+                      <Badge variant="outline">
+                        Média: {categoryStats.averageRating.toFixed(1)}⭐
+                      </Badge>
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setExpandedArea(isExpanded ? null : category)}
+                      className="flex items-center gap-2"
+                    >
+                      <BarChart3 className="w-4 h-4" />
+                      Detalhes
+                      {isExpanded ? (
+                        <ChevronDown className="w-4 h-4" />
+                      ) : (
+                        <ChevronRight className="w-4 h-4" />
+                      )}
+                    </Button>
+                  </div>
+
+                  {/* Lista básica de softwares */}
                   <div className="grid gap-2">
                     {categoryItems.map((item, idx) => (
                       <div key={idx} className="flex items-center justify-between py-2 px-3 bg-muted/30 rounded">
@@ -419,6 +483,166 @@ export const TechnicalCompetencies = ({
                       </div>
                     ))}
                   </div>
+
+                  {/* Seção expandida com detalhes */}
+                  {isExpanded && (
+                    <div className="mt-4 p-4 border rounded-lg bg-muted/10 space-y-4">
+                      <h5 className="font-medium flex items-center gap-2">
+                        <BarChart3 className="w-4 h-4" />
+                        Análise Detalhada - {category}
+                      </h5>
+
+                      {/* Estatísticas da categoria */}
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <Card className="bg-background">
+                          <CardHeader className="pb-2">
+                            <CardTitle className="text-sm flex items-center gap-2">
+                              <Star className="w-3 h-3" />
+                              Softwares Avaliados
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent>
+                            <p className="text-xl font-bold">{categoryStats.totalItems}</p>
+                          </CardContent>
+                        </Card>
+                        
+                        <Card className="bg-background">
+                          <CardHeader className="pb-2">
+                            <CardTitle className="text-sm flex items-center gap-2">
+                              <TrendingUp className="w-3 h-3" />
+                              Média da Categoria
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent>
+                            <div className="flex items-center gap-2">
+                              <p className="text-xl font-bold">{categoryStats.averageRating.toFixed(1)}</p>
+                              <div className="flex">
+                                {[1, 2, 3, 4, 5].map(star => (
+                                  <Star
+                                    key={star}
+                                    className={`w-3 h-3 ${
+                                      star <= categoryStats.averageRating 
+                                        ? 'fill-yellow-400 text-yellow-400' 
+                                        : 'text-muted-foreground'
+                                    }`}
+                                  />
+                                ))}
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+
+                        <Card className="bg-background">
+                          <CardHeader className="pb-2">
+                            <CardTitle className="text-sm flex items-center gap-2">
+                              <Award className="w-3 h-3" />
+                              Especialidades
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent>
+                            <p className="text-xl font-bold">{categoryStats.distribution[5]}</p>
+                            <p className="text-xs text-muted-foreground">softwares nível especialista</p>
+                          </CardContent>
+                        </Card>
+                      </div>
+
+                      {/* Distribuição de competências */}
+                      <div>
+                        <h6 className="font-medium mb-3">Distribuição de Competências</h6>
+                        <div className="space-y-2">
+                          {[5, 4, 3, 2, 1].map(rating => {
+                            const count = categoryStats.distribution[rating as keyof typeof categoryStats.distribution];
+                            const percentage = categoryStats.totalItems > 0 ? (count / categoryStats.totalItems) * 100 : 0;
+                            
+                            return (
+                              <div key={rating} className="space-y-1">
+                                <div className="flex items-center justify-between text-sm">
+                                  <div className="flex items-center gap-2">
+                                    <div className="flex">
+                                      {[1, 2, 3, 4, 5].map(star => (
+                                        <Star
+                                          key={star}
+                                          className={`w-3 h-3 ${
+                                            star <= rating 
+                                              ? 'fill-yellow-400 text-yellow-400' 
+                                              : 'text-muted-foreground'
+                                          }`}
+                                        />
+                                      ))}
+                                    </div>
+                                    <span>{getRatingLabel(rating)}</span>
+                                  </div>
+                                  <Badge variant="secondary" className="text-xs">
+                                    {count} ({percentage.toFixed(0)}%)
+                                  </Badge>
+                                </div>
+                                <Progress value={percentage} className="h-1" />
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      {/* Destaques da categoria */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {categoryStats.topSkills.length > 0 && (
+                          <div>
+                            <h6 className="font-medium mb-2 text-green-600 flex items-center gap-1">
+                              <Award className="w-3 h-3" />
+                              Principais Competências
+                            </h6>
+                            <div className="space-y-1">
+                              {categoryStats.topSkills.slice(0, 3).map((skill, idx) => (
+                                <div key={idx} className="text-sm flex items-center justify-between py-1 px-2 bg-green-50 rounded">
+                                  <span>{skill.software}</span>
+                                  <div className="flex">
+                                    {[1, 2, 3, 4, 5].map(star => (
+                                      <Star
+                                        key={star}
+                                        className={`w-3 h-3 ${
+                                          star <= skill.rating 
+                                            ? 'fill-yellow-400 text-yellow-400' 
+                                            : 'text-muted-foreground'
+                                        }`}
+                                      />
+                                    ))}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {categoryStats.improvementSkills.length > 0 && (
+                          <div>
+                            <h6 className="font-medium mb-2 text-orange-600 flex items-center gap-1">
+                              <TrendingUp className="w-3 h-3" />
+                              Oportunidades de Melhoria
+                            </h6>
+                            <div className="space-y-1">
+                              {categoryStats.improvementSkills.slice(0, 3).map((skill, idx) => (
+                                <div key={idx} className="text-sm flex items-center justify-between py-1 px-2 bg-orange-50 rounded">
+                                  <span>{skill.software}</span>
+                                  <div className="flex">
+                                    {[1, 2, 3, 4, 5].map(star => (
+                                      <Star
+                                        key={star}
+                                        className={`w-3 h-3 ${
+                                          star <= skill.rating 
+                                            ? 'fill-yellow-400 text-yellow-400' 
+                                            : 'text-muted-foreground'
+                                        }`}
+                                      />
+                                    ))}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
                 </div>
               );
             })}
