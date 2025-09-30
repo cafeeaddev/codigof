@@ -21,6 +21,7 @@ import { ShareActions } from './EpicGameSummary/ShareActions';
 import { TechnicalSkillsDisplay } from './TechnicalSkillsDisplay';
 import { ExtraMissionContent } from './ExtraMissionContent';
 import { useExtraMissionState } from '@/hooks/useExtraMissionState';
+import { useManualXP } from '@/hooks/useManualXP';
 import { MobileNavigation } from './MobileNavigation';
 import { ProfileLoadingSkeleton, MissionLoadingSkeleton } from './ui/loading-skeleton';
 import { AccessibilityEnhancer } from './AccessibilityEnhancer';
@@ -42,6 +43,7 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
   const { measureAsyncOperation } = usePerformanceMonitor('WelcomeScreen');
   const navigate = useNavigate();
   const { isAdmin } = useUserRole();
+  const { manualXP, hasApplied } = useManualXP();
   const [isLoading, setIsLoading] = useState(true);
   const [currentMission, setCurrentMission] = useState<1 | 2 | 3 | 4 | 5>(1);
   const [completedMissions, setCompletedMissions] = useState<Set<number>>(new Set());
@@ -360,6 +362,13 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
               } catch (error) {
                 // Error fixing XP in database - see browser devtools for details
               }
+            }
+            
+            // Forçar reload após aplicar XP manual para garantir que o valor atualizado seja exibido
+            if (hasApplied) {
+              console.log('[WelcomeScreen] Manual XP was applied, reloading progress...');
+              setTimeout(() => window.location.reload(), 1000);
+              return;
             }
             
             setUserProgress({ 
