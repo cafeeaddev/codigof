@@ -137,6 +137,30 @@ export type Database = {
         }
         Relationships: []
       }
+      manual_xp_adjustments: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          updated_at: string
+          xp_value: number
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          updated_at?: string
+          xp_value?: number
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          updated_at?: string
+          xp_value?: number
+        }
+        Relationships: []
+      }
       mission5_settings: {
         Row: {
           created_at: string
