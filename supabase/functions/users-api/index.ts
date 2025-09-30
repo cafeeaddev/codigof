@@ -19,26 +19,28 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     )
 
-    // Get all users with their progress
-    const { data: users, error: usersError } = await supabase
+    // Get all profiles
+    const { data: profiles, error: profilesError } = await supabase
       .from('profiles')
-      .select(`
-        email,
-        nome,
-        user_progress (
-          total_xp,
-          missao_1_completed,
-          missao_2_completed,
-          missao_3_completed,
-          missao_4_completed,
-          final_profile
-        )
-      `)
+      .select('email, nome, user_id')
 
-    if (usersError) {
-      console.error('Error fetching users:', usersError)
+    if (profilesError) {
+      console.error('Error fetching profiles:', profilesError)
       return new Response(
-        JSON.stringify({ error: 'Failed to fetch users' }),
+        JSON.stringify({ error: 'Failed to fetch profiles' }),
+        { status: 500, headers: corsHeaders }
+      )
+    }
+
+    // Get all user progress
+    const { data: userProgress, error: progressError } = await supabase
+      .from('user_progress')
+      .select('user_id, total_xp, missao_1_completed, missao_2_completed, missao_3_completed, missao_4_completed, final_profile')
+
+    if (progressError) {
+      console.error('Error fetching user progress:', progressError)
+      return new Response(
+        JSON.stringify({ error: 'Failed to fetch user progress' }),
         { status: 500, headers: corsHeaders }
       )
     }
@@ -53,18 +55,19 @@ serve(async (req) => {
     }
 
     // Process users data
-    const processedUsers = users?.map(user => {
-      const progress = user.user_progress?.[0] || {}
+    const processedUsers = profiles?.map(profile => {
+      // Find progress for this user
+      const progress = userProgress?.find(up => up.user_id === profile.user_id) || {}
       
       // Find mission 4 response for this user
-      const mission4Response = mission4Responses?.find(r => r.email === user.email)
+      const mission4Response = mission4Responses?.find(r => r.email === profile.email)
       
       // Extract competencies from star ratings
       const competencies = extractCompetencies(mission4Response?.respostas)
 
       return {
-        email: user.email,
-        nome: user.nome,
+        email: profile.email,
+        nome: profile.nome,
         total_xp: progress.total_xp || 0,
         missions_completed: {
           missao_1: progress.missao_1_completed || false,
