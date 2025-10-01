@@ -197,6 +197,7 @@ const AdminDashboard = () => {
                   responses5={responses5}
                   filteredUsers={filteredUsers}
                   progressData={progressData}
+                  fastTrackResponses={fastTrackResponses}
                   calculateUserTotalScore={calculateUserTotalScore}
                   getDigitalProfile={getDigitalProfile}
                 />

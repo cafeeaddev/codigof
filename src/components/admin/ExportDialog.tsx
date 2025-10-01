@@ -17,6 +17,7 @@ interface ExportDialogProps {
   progressData: {
     userProfiles: Map<string, UserProfile>;
   };
+  fastTrackResponses: Map<string, { interestLevel: string; timeCommitment: string; mainObjective: string; otherObjective?: string }>;
   calculateUserTotalScore: (userId: string) => number;
   getDigitalProfile: (score: number) => { profile: string; sublevel: string };
 }
@@ -29,6 +30,7 @@ export const ExportDialog = ({
   responses5,
   filteredUsers,
   progressData,
+  fastTrackResponses,
   calculateUserTotalScore,
   getDigitalProfile
 }: ExportDialogProps) => {
@@ -110,6 +112,27 @@ export const ExportDialog = ({
     }));
 
     exportToCSV(data, missionName.toLowerCase().replace(/\s+/g, '_'), headers);
+  };
+
+  const exportFastTrackResponses = () => {
+    const headers = ['Nome', 'Email', 'Nível de Interesse', 'Tempo Disponível', 'Objetivo Principal', 'Outro Objetivo'];
+    
+    const data: any[] = [];
+    fastTrackResponses.forEach((details, userId) => {
+      const userProfile = progressData.userProfiles?.get(userId);
+      if (userProfile) {
+        data.push({
+          nome: userProfile.nome,
+          email: userProfile.email,
+          'nível_de_interesse': details.interestLevel,
+          'tempo_disponível': details.timeCommitment,
+          'objetivo_principal': details.mainObjective,
+          'outro_objetivo': details.otherObjective || ''
+        });
+      }
+    });
+
+    exportToCSV(data, 'missao_5_fast_track', headers);
   };
 
   const exportSummaryReport = () => {
@@ -213,8 +236,7 @@ export const ExportDialog = ({
             { responses: responses1, name: 'Missão 1 - Quiz Digital', count: responses1.length },
             { responses: responses2, name: 'Missão 2 - Práticas Digitais', count: responses2.length },
             { responses: responses3, name: 'Missão 3 - Desafios', count: responses3.length },
-            { responses: responses4, name: 'Missão 4 - Ferramentas', count: responses4.length },
-            { responses: responses5, name: 'Missão 5 - Fast Track', count: responses5.length }
+            { responses: responses4, name: 'Missão 4 - Ferramentas', count: responses4.length }
           ].map((mission, index) => (
             <Card key={index} className="hover-scale">
               <CardHeader>
@@ -242,6 +264,33 @@ export const ExportDialog = ({
               </CardContent>
             </Card>
           ))}
+
+          {/* Missão 5 - Fast Track (tratamento especial) */}
+          <Card className="hover-scale">
+            <CardHeader>
+              <CardTitle className="text-base flex items-center gap-2">
+                <FileSpreadsheet className="w-4 h-4" />
+                Missão 5 - Fast Track
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <p className="text-sm text-muted-foreground">
+                Respostas do formulário de inscrição Fast Track.
+              </p>
+              <Badge variant="secondary">
+                {fastTrackResponses.size} respostas
+              </Badge>
+              <Button 
+                onClick={exportFastTrackResponses} 
+                className="w-full"
+                variant="outline"
+                disabled={fastTrackResponses.size === 0}
+              >
+                <FileSpreadsheet className="w-4 h-4 mr-2" />
+                Exportar Respostas
+              </Button>
+            </CardContent>
+          </Card>
         </div>
       </DialogContent>
     </Dialog>
