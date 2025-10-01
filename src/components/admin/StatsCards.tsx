@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Users, Target, Trophy, TrendingUp, Award, Brain } from 'lucide-react';
+import { Users, Target, Trophy, TrendingUp, Award, Brain, Star } from 'lucide-react';
 import { AdminStats, MissionStats } from '@/types/admin';
 
 interface StatsCardsProps {
@@ -53,17 +53,18 @@ export const StatsCards = ({ adminStats, missionStats }: StatsCardsProps) => {
       </Card>
 
       {/* Estatísticas por Missão */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
         {Object.entries(missionStats)
           .filter(([key]) => key !== 'general')
           .map(([key, stat], index) => {
-            const icons = [Target, Brain, Trophy, Award];
+            const icons = [Target, Brain, Trophy, Award, Star];
             const Icon = icons[index] || Target;
             const colors = [
               'hsl(var(--profile-beginner))',
               'hsl(var(--profile-explorer))',
               'hsl(var(--profile-pro-player))',
-              'hsl(var(--profile-ninja))'
+              'hsl(var(--profile-ninja))',
+              'hsl(var(--profile-legend))'
             ];
             
             return (
@@ -75,6 +76,7 @@ export const StatsCards = ({ adminStats, missionStats }: StatsCardsProps) => {
                     {key === 'mission2' && 'Missão 2 - Práticas'}
                     {key === 'mission3' && 'Missão 3 - Desafios'}
                     {key === 'mission4' && 'Missão 4 - Ferramentas'}
+                    {key === 'mission5' && 'Missão 5 - Missão Extra'}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
