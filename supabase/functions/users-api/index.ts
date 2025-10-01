@@ -54,6 +54,15 @@ serve(async (req) => {
       console.error('Error fetching mission 4 responses:', mission4Error)
     }
 
+    // Get manual XP adjustments
+    const { data: manualXPData, error: xpError } = await supabase
+      .from('manual_xp_adjustments')
+      .select('email, xp_value')
+
+    if (xpError) {
+      console.error('Error fetching manual XP adjustments:', xpError)
+    }
+
     // Process users data
     const processedUsers = profiles?.map(profile => {
       // Find progress for this user
@@ -65,10 +74,20 @@ serve(async (req) => {
       // Extract competencies from star ratings
       const competencies = extractCompetencies(mission4Response?.respostas)
 
+      // Find manual XP adjustment for this user
+      const manualXP = manualXPData?.find(xp => xp.email === profile.email)
+
       return {
         email: profile.email,
         nome: profile.nome,
         total_xp: progress.total_xp || 0,
+        manual_xp_adjustment: manualXP ? {
+          xp_value: manualXP.xp_value,
+          has_adjustment: true
+        } : {
+          xp_value: 0,
+          has_adjustment: false
+        },
         missions_completed: {
           missao_1: progress.missao_1_completed || false,
           missao_2: progress.missao_2_completed || false,
