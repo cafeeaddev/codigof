@@ -763,8 +763,8 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
             <div className="text-center">
               <div className="bg-gradient-to-br from-primary/20 to-primary/10 border border-primary/30 rounded-lg px-4 py-2 shadow-lg">
                 <AnimatedXP 
-                  startValue={xpBeforeBonus || userProgress.total_xp}
-                  endValue={userProgress.total_xp}
+                  startValue={xpBeforeBonus || (userProgress.total_xp + manualXP)}
+                  endValue={userProgress.total_xp + manualXP}
                   triggerAnimation={shouldAnimateXP}
                   onAnimationComplete={() => setShouldAnimateXP(false)}
                   className="text-lg font-bold text-primary"
@@ -847,8 +847,8 @@ export const WelcomeScreen = ({ user: userProfile, userId, onLogout }: WelcomeSc
           <div className="flex flex-col items-center">
             <div className="bg-gradient-to-br from-primary/25 to-primary/15 border border-primary/40 rounded-lg px-2 py-1.5 shadow-lg w-[50px] h-[50px] flex flex-col items-center justify-center text-center">
               <AnimatedXP 
-                startValue={xpBeforeBonus || userProgress.total_xp}
-                endValue={userProgress.total_xp}
+                startValue={xpBeforeBonus || (userProgress.total_xp + manualXP)}
+                endValue={userProgress.total_xp + manualXP}
                 triggerAnimation={shouldAnimateXP}
                 onAnimationComplete={() => setShouldAnimateXP(false)}
                 className="text-sm font-bold text-primary leading-none"
