@@ -12,6 +12,7 @@ interface ExportDialogProps {
   responses2: ResponseData[];
   responses3: ResponseData[];
   responses4: ResponseData[];
+  responses5: ResponseData[];
   filteredUsers: UserProgress[];
   progressData: {
     userProfiles: Map<string, UserProfile>;
@@ -25,6 +26,7 @@ export const ExportDialog = ({
   responses2,
   responses3,
   responses4,
+  responses5,
   filteredUsers,
   progressData,
   calculateUserTotalScore,
@@ -211,7 +213,8 @@ export const ExportDialog = ({
             { responses: responses1, name: 'Missão 1 - Quiz Digital', count: responses1.length },
             { responses: responses2, name: 'Missão 2 - Práticas Digitais', count: responses2.length },
             { responses: responses3, name: 'Missão 3 - Desafios', count: responses3.length },
-            { responses: responses4, name: 'Missão 4 - Ferramentas', count: responses4.length }
+            { responses: responses4, name: 'Missão 4 - Ferramentas', count: responses4.length },
+            { responses: responses5, name: 'Missão 5 - Fast Track', count: responses5.length }
           ].map((mission, index) => (
             <Card key={index} className="hover-scale">
               <CardHeader>

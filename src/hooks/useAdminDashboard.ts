@@ -8,6 +8,7 @@ export const useAdminDashboard = () => {
   const [responses2, setResponses2] = useState<ResponseData[]>([]);
   const [responses3, setResponses3] = useState<ResponseData[]>([]);
   const [responses4, setResponses4] = useState<ResponseData[]>([]);
+  const [responses5, setResponses5] = useState<ResponseData[]>([]);
   const [progressData, setProgressData] = useState<{ data: UserProgress[], userProfiles: Map<string, UserProfile>, userProfilesByEmail: Map<string, UserProfile> } | null>(null);
   const [adminUsers, setAdminUsers] = useState<{ data: any[] } | null>(null);
   const [allProfiles, setAllProfiles] = useState<any[]>([]);
@@ -165,11 +166,12 @@ export const useAdminDashboard = () => {
     try {
       setIsLoading(true);
       
-      const [res1, res2, res3, res4, progressData, profilesCount, adminUsers, allProfiles, fastTrackTerms, fastTrackDetails, manualXP] = await Promise.all([
+      const [res1, res2, res3, res4, res5, progressData, profilesCount, adminUsers, allProfiles, fastTrackTerms, fastTrackDetails, manualXP] = await Promise.all([
         supabase.from('respostas').select('*').order('id', { ascending: false }),
         supabase.from('respostas_missao2').select('*').order('created_at', { ascending: false }),
         supabase.from('respostas_missao3').select('*').order('created_at', { ascending: false }),
         supabase.from('respostas_missao4').select('*').order('created_at', { ascending: false }),
+        supabase.from('respostas_missao5').select('*').order('created_at', { ascending: false }),
         supabase.from('user_progress').select('*'),
         supabase.from('profiles').select('id', { count: 'exact', head: true }),
         supabase.from('user_roles').select('user_id').eq('role', 'admin'),
@@ -186,6 +188,7 @@ export const useAdminDashboard = () => {
       if (res2.error) console.error('Error loading mission 2:', res2.error);
       if (res3.error) console.error('Error loading mission 3:', res3.error);
       if (res4.error) console.error('Error loading mission 4:', res4.error);
+      if (res5.error) console.error('Error loading mission 5:', res5.error);
       if (progressData.error) console.error('Error loading progress:', progressData.error);
 
       const userProfilesByEmail = new Map((allProfiles.data || []).map(profile => [
@@ -281,6 +284,17 @@ export const useAdminDashboard = () => {
         };
       }));
 
+      setResponses5((res5.data || []).map(item => {
+        const userProfile = userProfilesByEmail.get(item.email);
+        return {
+          id: item.id,
+          nome: userProfile?.nome || item.nome,
+          email: item.email,
+          respostas: item.respostas,
+          created_at: item.created_at
+        };
+      }));
+
       
       // Processar dados da missão extra (Fast Track)
       const fastTrackMap = new Map<string, { accepted: boolean; reason?: string }>();
@@ -346,6 +360,7 @@ export const useAdminDashboard = () => {
     responses2,
     responses3,
     responses4,
+    responses5,
     progressData,
     adminUsers,
     allProfiles,

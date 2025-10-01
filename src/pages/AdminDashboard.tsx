@@ -44,6 +44,7 @@ const AdminDashboard = () => {
     responses2,
     responses3,
     responses4,
+    responses5,
     progressData,
     adminUsers,
     allProfiles,
@@ -193,6 +194,7 @@ const AdminDashboard = () => {
                   responses2={responses2}
                   responses3={responses3}
                   responses4={responses4}
+                  responses5={responses5}
                   filteredUsers={filteredUsers}
                   progressData={progressData}
                   calculateUserTotalScore={calculateUserTotalScore}
