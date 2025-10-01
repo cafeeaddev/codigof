@@ -97,6 +97,7 @@ export const useAdminDashboard = () => {
     const mission2Completed = nonAdminUsers.filter(p => p.missao_2_completed === true).length;
     const mission3Completed = nonAdminUsers.filter(p => p.missao_3_completed === true).length;
     const mission4Completed = nonAdminUsers.filter(p => p.missao_4_completed === true).length;
+    const mission5Completed = nonAdminUsers.filter(p => p.missao_5_completed === true).length;
     
     const gameCompleted = nonAdminUsers.filter(p => 
       p.missao_1_completed && p.missao_2_completed && p.missao_3_completed && p.missao_4_completed
@@ -135,6 +136,11 @@ export const useAdminDashboard = () => {
           total: totalCollaborators,
           completed: mission4Completed,
           percentage: totalCollaborators > 0 ? (mission4Completed > 0 ? Math.max(0.1, parseFloat(((mission4Completed / totalCollaborators) * 100).toFixed(1))) : 0) : 0
+        },
+        mission5: {
+          total: totalCollaborators,
+          completed: mission5Completed,
+          percentage: totalCollaborators > 0 ? (mission5Completed > 0 ? Math.max(0.1, parseFloat(((mission5Completed / totalCollaborators) * 100).toFixed(1))) : 0) : 0
         },
         general: {
           total: totalCollaborators,

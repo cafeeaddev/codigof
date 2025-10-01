@@ -22,6 +22,7 @@ export interface UserProgress {
   missao_2_completed: boolean;
   missao_3_completed: boolean;
   missao_4_completed: boolean;
+  missao_5_completed: boolean;
   total_xp: number;
   created_at: string;
   updated_at: string;
@@ -38,6 +39,8 @@ export interface UserProgress {
   missao_3_answers: any;
   missao_4_current_question: number;
   missao_4_answers: any;
+  missao_5_current_question: number;
+  missao_5_answers: any;
 }
 
 export interface ResponseData {
