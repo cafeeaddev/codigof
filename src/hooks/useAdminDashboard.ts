@@ -14,6 +14,7 @@ export const useAdminDashboard = () => {
   const [totalProfiles, setTotalProfiles] = useState(0);
   const [fastTrackData, setFastTrackData] = useState<Map<string, { accepted: boolean; reason?: string }>>(new Map());
   const [fastTrackResponses, setFastTrackResponses] = useState<Map<string, { interestLevel: string; timeCommitment: string; mainObjective: string; otherObjective?: string }>>(new Map());
+  const [manualXPAdjustments, setManualXPAdjustments] = useState<Map<string, number>>(new Map());
   const [isLoading, setIsLoading] = useState(true);
 
   // Função para calcular pontuação total de um usuário (apenas missões 1, 2 e 3)
@@ -164,7 +165,7 @@ export const useAdminDashboard = () => {
     try {
       setIsLoading(true);
       
-      const [res1, res2, res3, res4, progressData, profilesCount, adminUsers, allProfiles, fastTrackTerms, fastTrackDetails] = await Promise.all([
+      const [res1, res2, res3, res4, progressData, profilesCount, adminUsers, allProfiles, fastTrackTerms, fastTrackDetails, manualXP] = await Promise.all([
         supabase.from('respostas').select('*').order('id', { ascending: false }),
         supabase.from('respostas_missao2').select('*').order('created_at', { ascending: false }),
         supabase.from('respostas_missao3').select('*').order('created_at', { ascending: false }),
@@ -174,7 +175,8 @@ export const useAdminDashboard = () => {
         supabase.from('user_roles').select('user_id').eq('role', 'admin'),
         supabase.from('profiles').select('user_id, nome, email, cargo, area, area_id, areas!profiles_area_id_fkey(*)'),
         supabase.from('fast_track_terms_responses').select('user_id, want_to_participate, decline_reason'),
-        supabase.from('fast_track_responses').select('user_id, interest_level, time_commitment, main_objective, other_objective')
+        supabase.from('fast_track_responses').select('user_id, interest_level, time_commitment, main_objective, other_objective'),
+        supabase.from('manual_xp_adjustments').select('email, xp_value')
       ]);
 
       // Define o total de profiles
@@ -306,6 +308,15 @@ export const useAdminDashboard = () => {
       }
       setFastTrackResponses(fastTrackResponsesMap);
 
+      // Processar ajustes manuais de XP
+      const manualXPMap = new Map<string, number>();
+      if (manualXP.data) {
+        manualXP.data.forEach(item => {
+          manualXPMap.set(item.email, item.xp_value);
+        });
+      }
+      setManualXPAdjustments(manualXPMap);
+
       setProgressData({ 
         data: progressData.data || [], 
         userProfiles, 
@@ -347,6 +358,7 @@ export const useAdminDashboard = () => {
     loadAllResponses,
     fastTrackData,
     fastTrackResponses,
+    manualXPAdjustments,
     questions: []
   };
 };

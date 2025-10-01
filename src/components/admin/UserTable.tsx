@@ -32,6 +32,7 @@ interface UserTableProps {
   questions: any[];
   fastTrackData: Map<string, { accepted: boolean; reason?: string }>;
   fastTrackResponses: Map<string, { interestLevel: string; timeCommitment: string; mainObjective: string; otherObjective?: string }>;
+  manualXPAdjustments: Map<string, number>;
   onUserAnalysis: (user: UserProgress, userProfile: UserProfile) => void;
   onDataRefresh: () => void;
 }
@@ -49,6 +50,7 @@ export const UserTable = ({
   questions,
   fastTrackData,
   fastTrackResponses,
+  manualXPAdjustments,
   onUserAnalysis,
   onDataRefresh
 }: UserTableProps) => {
@@ -86,8 +88,10 @@ export const UserTable = ({
         bValue = calculateUserTotalScore(b.user_id);
         break;
       case 'xp':
-        aValue = a.total_xp || 0;
-        bValue = b.total_xp || 0;
+        const aEmail = progressData.userProfiles?.get(a.user_id)?.email || '';
+        const bEmail = progressData.userProfiles?.get(b.user_id)?.email || '';
+        aValue = (a.total_xp || 0) + (manualXPAdjustments.get(aEmail) || 0);
+        bValue = (b.total_xp || 0) + (manualXPAdjustments.get(bEmail) || 0);
         break;
       case 'time':
         aValue = a.total_play_time || 0;
@@ -404,7 +408,28 @@ export const UserTable = ({
                       <span className="text-xs text-muted-foreground">{profile.sublevel}</span>
                     </div>
                   </TableCell>
-                  <TableCell className="text-primary font-medium">{progress.total_xp || 0} XP</TableCell>
+                  <TableCell className="text-primary font-medium">
+                    {(() => {
+                      const baseXP = progress.total_xp || 0;
+                      const manualXP = manualXPAdjustments.get(userProfile?.email || '') || 0;
+                      const totalXP = baseXP + manualXP;
+                      return manualXP > 0 ? (
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger>
+                              {totalXP} XP
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <div className="text-xs">
+                                <div>Base: {baseXP} XP</div>
+                                <div className="text-secondary">Bônus Manual: +{manualXP} XP</div>
+                              </div>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      ) : `${totalXP} XP`;
+                    })()}
+                  </TableCell>
                   <TableCell>
                     {(() => {
                       const totalSeconds = progress.total_play_time || 0;

@@ -55,7 +55,8 @@ const AdminDashboard = () => {
     getProfileColor,
     questions,
     fastTrackData,
-    fastTrackResponses
+    fastTrackResponses,
+    manualXPAdjustments
   } = useAdminDashboard();
 
   const {
@@ -254,6 +255,7 @@ const AdminDashboard = () => {
                         questions={questions || []}
                         fastTrackData={fastTrackData}
                         fastTrackResponses={fastTrackResponses}
+                        manualXPAdjustments={manualXPAdjustments}
                         onUserAnalysis={handleUserAnalysis}
                        onDataRefresh={() => {
                          // Força recarregamento dos dados
