@@ -21,7 +21,8 @@ export const useFilters = ({
     searchTerm: '',
     cargoFilter: '',
     areaFilter: '',
-    profileFilter: ''
+    profileFilter: '',
+    missionFilter: ''
   });
 
   const updateFilter = (key: keyof AdminFilters, value: string) => {
@@ -64,7 +65,35 @@ export const useFilters = ({
         matchesProfile = digitalProfile.profile === filters.profileFilter;
       }
       
-      return matchesSearch && matchesCargo && matchesArea && matchesProfile;
+      // Filtro por missão completada
+      let matchesMission = true;
+      if (filters.missionFilter && filters.missionFilter !== "todos") {
+        switch (filters.missionFilter) {
+          case 'missao1':
+            matchesMission = progress.missao_1_completed === true;
+            break;
+          case 'missao2':
+            matchesMission = progress.missao_2_completed === true;
+            break;
+          case 'missao3':
+            matchesMission = progress.missao_3_completed === true;
+            break;
+          case 'missao4':
+            matchesMission = progress.missao_4_completed === true;
+            break;
+          case 'missao5':
+            matchesMission = progress.missao_5_completed === true;
+            break;
+          case 'todas':
+            matchesMission = progress.missao_1_completed === true && 
+                            progress.missao_2_completed === true && 
+                            progress.missao_3_completed === true && 
+                            progress.missao_4_completed === true;
+            break;
+        }
+      }
+      
+      return matchesSearch && matchesCargo && matchesArea && matchesProfile && matchesMission;
     });
   }, [progressData, adminUsers, filters, calculateUserTotalScore, getDigitalProfile]);
 

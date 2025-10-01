@@ -298,6 +298,29 @@ export const UserTable = ({
             </SelectContent>
           </Select>
         </div>
+        
+        <div className="w-48">
+          <Select
+            value={filters.missionFilter}
+            onValueChange={(value) => {
+              updateFilter('missionFilter', value);
+              setCurrentPage(1);
+            }}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Filtrar por missão" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="todos">Todas as missões</SelectItem>
+              <SelectItem value="missao1">Missão 1</SelectItem>
+              <SelectItem value="missao2">Missão 2</SelectItem>
+              <SelectItem value="missao3">Missão 3</SelectItem>
+              <SelectItem value="missao4">Missão 4</SelectItem>
+              <SelectItem value="missao5">Missão 5 (Extra)</SelectItem>
+              <SelectItem value="todas">Todas completas (1-4)</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
 
         <Badge variant="secondary" className="ml-auto">
           {filteredUsers.length} usuários encontrados

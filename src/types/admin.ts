@@ -68,6 +68,7 @@ export interface AdminFilters {
   cargoFilter: string;
   areaFilter: string;
   profileFilter: string;
+  missionFilter: string;
 }
 
 export interface AdminStats {
