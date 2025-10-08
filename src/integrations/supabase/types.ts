@@ -143,6 +143,7 @@ export type Database = {
           email: string
           id: string
           updated_at: string
+          user_id: string | null
           xp_value: number
         }
         Insert: {
@@ -150,6 +151,7 @@ export type Database = {
           email: string
           id?: string
           updated_at?: string
+          user_id?: string | null
           xp_value?: number
         }
         Update: {
@@ -157,6 +159,7 @@ export type Database = {
           email?: string
           id?: string
           updated_at?: string
+          user_id?: string | null
           xp_value?: number
         }
         Relationships: []
