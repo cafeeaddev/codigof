@@ -10,7 +10,7 @@ const QUESTION_SOFTWARE_MAP: Record<number, string> = {
   5: 'Power Automate',
   6: 'Power Apps',
   7: 'SharePoint',
-  8: 'Teams',
+  8: 'SQL / Banco de Dados',
   9: 'OneNote'
 };
 
@@ -66,7 +66,7 @@ function getSoftwareCategory(software: string): string {
     'Power Automate': 'Power Platform',
     'Power Apps': 'Power Platform',
     'SharePoint': 'Colaboração',
-    'Teams': 'Colaboração',
+    'SQL / Banco de Dados': 'Dados e Análise',
     'OneNote': 'Produtividade'
   };
   
