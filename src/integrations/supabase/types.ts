@@ -221,6 +221,36 @@ export type Database = {
         }
         Relationships: []
       }
+      profile_link_attempts: {
+        Row: {
+          attempted_at: string | null
+          attempted_user_id: string | null
+          email: string
+          id: string
+          ip_address: unknown | null
+          success: boolean | null
+          user_agent: string | null
+        }
+        Insert: {
+          attempted_at?: string | null
+          attempted_user_id?: string | null
+          email: string
+          id?: string
+          ip_address?: unknown | null
+          success?: boolean | null
+          user_agent?: string | null
+        }
+        Update: {
+          attempted_at?: string | null
+          attempted_user_id?: string | null
+          email?: string
+          id?: string
+          ip_address?: unknown | null
+          success?: boolean | null
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       profile_texts: {
         Row: {
           created_at: string
@@ -254,9 +284,11 @@ export type Database = {
           area_id: string | null
           cargo: string | null
           cpf: string
+          cpf_verified: boolean | null
           created_at: string
           email: string | null
           id: string
+          linked_at: string | null
           nome: string | null
           updated_at: string
           user_id: string | null
@@ -266,9 +298,11 @@ export type Database = {
           area_id?: string | null
           cargo?: string | null
           cpf: string
+          cpf_verified?: boolean | null
           created_at?: string
           email?: string | null
           id?: string
+          linked_at?: string | null
           nome?: string | null
           updated_at?: string
           user_id?: string | null
@@ -278,9 +312,11 @@ export type Database = {
           area_id?: string | null
           cargo?: string | null
           cpf?: string
+          cpf_verified?: boolean | null
           created_at?: string
           email?: string | null
           id?: string
+          linked_at?: string | null
           nome?: string | null
           updated_at?: string
           user_id?: string | null
@@ -683,6 +719,10 @@ export type Database = {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
+        Returns: boolean
+      }
+      link_profile_with_cpf_verification: {
+        Args: { _cpf: string; _email: string }
         Returns: boolean
       }
       mask_cpf: {

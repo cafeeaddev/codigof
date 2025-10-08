@@ -124,8 +124,12 @@ serve(async (req) => {
       );
     }
 
-    // Usar os 4 dígitos do CPF como senha (repetir para formar uma senha de 8 dígitos)
-    const password = storedCpf + storedCpf;
+    // Generate secure password using SHA-256 hash with CPF and salt
+    const encoder = new TextEncoder();
+    const data = encoder.encode(storedCpf + 'SECURE_SALT_2025_FMZ');
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const password = hashArray.slice(0, 12).map(b => b.toString(16).padStart(2, '0')).join('');
 
     console.log('CPF validated successfully');
 
@@ -172,12 +176,31 @@ serve(async (req) => {
         }
       }
 
-      console.log('Senha atualizada e usuário validado');
+      console.log('Senha atualizada, autenticando usuário');
+      
+      // Sign in user directly and return session
+      const { data: signInData, error: signInError } = await supabaseAdmin.auth.signInWithPassword({
+        email: profile.email,
+        password: password,
+      });
+
+      if (signInError) {
+        console.error('Erro ao autenticar:', signInError);
+        return new Response(
+          JSON.stringify({ error: 'Erro ao autenticar' }),
+          { 
+            status: 500, 
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+          }
+        );
+      }
+
       return new Response(
         JSON.stringify({ 
           success: true, 
-          message: 'Usuário validado',
-          email
+          message: 'Autenticado com sucesso',
+          session: signInData.session,
+          user: signInData.user
         }),
         { 
           headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
@@ -219,13 +242,31 @@ serve(async (req) => {
         console.error('Erro ao vincular perfil:', updateError);
       }
 
-      console.log('Usuário criado com sucesso:', newUser.user.email);
+      console.log('Usuário criado com sucesso, autenticando:', newUser.user.email);
+
+      // Sign in newly created user
+      const { data: signInData, error: signInError } = await supabaseAdmin.auth.signInWithPassword({
+        email: profile.email,
+        password: password,
+      });
+
+      if (signInError) {
+        console.error('Erro ao autenticar novo usuário:', signInError);
+        return new Response(
+          JSON.stringify({ error: 'Usuário criado mas erro ao autenticar' }),
+          { 
+            status: 500, 
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+          }
+        );
+      }
 
       return new Response(
         JSON.stringify({ 
           success: true, 
-          message: 'Usuário criado e validado',
-          email
+          message: 'Conta criada e autenticada',
+          session: signInData.session,
+          user: signInData.user
         }),
         { 
           headers: { ...corsHeaders, 'Content-Type': 'application/json' } 

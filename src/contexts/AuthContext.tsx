@@ -263,15 +263,15 @@ setTimeout(() => {
 
   const signInWithCredentials = async (email: string, cpf: string): Promise<{ error?: string }> => {
     try {
-      console.log('🔐 Validando credenciais...', { email, cpf: cpf.slice(0, 3) + '***' });
+      console.log('🔐 Autenticando com CPF...', { email, cpf: cpf.slice(0, 3) + '***' });
       
-      // Chamar edge function para validar e criar/vincular usuário
+      // Call edge function which validates credentials and returns session directly
       const { data, error } = await supabase.functions.invoke('auth-with-cpf', {
         body: { email, cpf }
       });
 
       if (error) {
-        console.error('❌ Erro na validação:', error);
+        console.error('❌ Erro na autenticação:', error);
         return { error: 'Erro interno. Tente novamente.' };
       }
 
@@ -280,23 +280,25 @@ setTimeout(() => {
         return { error: data.error || 'Credenciais inválidas' };
       }
 
-      console.log('✅ Credenciais validadas, fazendo login...');
+      console.log('✅ Autenticado com sucesso, definindo sessão...');
 
-      // Fazer login com as credenciais validadas
-      const { error: signInError } = await supabase.auth.signInWithPassword({
-        email: data.email,
-        password: data.password
-      });
+      // Set session directly from edge function response (no password exposed)
+      if (data.session) {
+        const { error: sessionError } = await supabase.auth.setSession({
+          access_token: data.session.access_token,
+          refresh_token: data.session.refresh_token,
+        });
 
-      if (signInError) {
-        console.error('❌ Erro no login:', signInError);
-        return { error: 'Erro ao fazer login. Tente novamente.' };
+        if (sessionError) {
+          console.error('❌ Erro ao definir sessão:', sessionError);
+          return { error: 'Erro ao definir sessão. Tente novamente.' };
+        }
       }
 
-      console.log('✅ Login realizado com sucesso!');
+      console.log('✅ Sessão estabelecida com sucesso!');
       return {};
     } catch (error) {
-      console.error('❌ Erro no processo de login:', error);
+      console.error('❌ Erro no processo de autenticação:', error);
       return { error: 'Erro de conexão. Tente novamente.' };
     }
   };
