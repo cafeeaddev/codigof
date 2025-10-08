@@ -51,7 +51,7 @@ serve(async (req) => {
       }
     });
 
-    console.log('Validando perfil para email:', email, 'e CPF:', cpf);
+    console.log('Validating profile for email:', email);
 
     // Primeiro buscar perfil por email
     const { data: profile, error: profileError } = await supabaseAdmin
@@ -82,14 +82,14 @@ serve(async (req) => {
       );
     }
 
-    console.log('Perfil encontrado:', profile.nome, 'CPF cadastrado:', profile.cpf);
+    console.log('Profile found for user:', profile.nome);
 
     // Validar os 4 últimos dígitos do CPF
     const storedCpf = String(profile.cpf || '').replace(/\D/g, '');
     const inputCpf = String(cpf || '').replace(/\D/g, '');
     
     if (!storedCpf || !inputCpf || storedCpf !== inputCpf) {
-      console.log('CPF incorreto. Esperado:', storedCpf, 'Recebido:', inputCpf);
+      console.log('CPF validation failed');
       return new Response(
         JSON.stringify({ error: 'CPF incorreto' }),
         { 
@@ -102,7 +102,7 @@ serve(async (req) => {
     // Usar os 4 dígitos do CPF como senha (repetir para formar uma senha de 8 dígitos)
     const password = storedCpf + storedCpf;
 
-    console.log('CPF validado. Senha será:', password.slice(0, 2) + '***' + password.slice(-2));
+    console.log('CPF validated successfully');
 
     // Verificar se já existe usuário no Auth com este email
     const { data: existingUsers, error: listError } = await supabaseAdmin.auth.admin.listUsers({
@@ -152,8 +152,7 @@ serve(async (req) => {
         JSON.stringify({ 
           success: true, 
           message: 'Usuário validado',
-          email,
-          password 
+          email
         }),
         { 
           headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
@@ -201,8 +200,7 @@ serve(async (req) => {
         JSON.stringify({ 
           success: true, 
           message: 'Usuário criado e validado',
-          email,
-          password 
+          email
         }),
         { 
           headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
