@@ -17,11 +17,11 @@ export const useManualXP = () => {
       }
 
       try {
-        // Buscar XP manual da tabela
+        // Buscar XP manual da tabela usando user_id (seguro)
         const { data: manualXPData, error: xpError } = await supabase
           .from('manual_xp_adjustments')
           .select('xp_value')
-          .eq('email', profile.email)
+          .eq('user_id', user.id)
           .maybeSingle();
 
         if (xpError) {
@@ -31,7 +31,7 @@ export const useManualXP = () => {
         }
 
         if (!manualXPData) {
-          console.log('[useManualXP] No manual XP found for email:', profile.email);
+          console.log('[useManualXP] No manual XP found for user:', user.id);
           setIsLoading(false);
           return;
         }
@@ -57,7 +57,7 @@ export const useManualXP = () => {
           const newTotalXP = (progressData.total_xp || 0) + xpToAdd;
           
           console.log('[useManualXP] Applying manual XP:', {
-            email: profile.email,
+            user_id: user.id,
             currentXP: progressData.total_xp,
             manualXP: xpToAdd,
             newTotalXP
@@ -81,11 +81,11 @@ export const useManualXP = () => {
               duration: 5000,
             });
             
-            // Remover o registro de XP manual para não aplicar novamente
+            // Remover o registro de XP manual para não aplicar novamente (usando user_id)
             await supabase
               .from('manual_xp_adjustments')
               .delete()
-              .eq('email', profile.email);
+              .eq('user_id', user.id);
           }
         }
 

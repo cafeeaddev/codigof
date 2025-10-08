@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { emailSchema, passwordSchema } from '../_shared/validation.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -67,8 +68,28 @@ serve(async (req) => {
       }
     )
 
-    const { email, newPassword } = await req.json()
-
+    const body = await req.json()
+    
+    // Validate inputs
+    const emailValidation = emailSchema.safeParse(body.email);
+    const passwordValidation = passwordSchema.safeParse(body.newPassword);
+    
+    if (!emailValidation.success || !passwordValidation.success) {
+      return new Response(
+        JSON.stringify({ 
+          error: 'Invalid input data',
+          details: {
+            email: emailValidation.error?.issues,
+            password: passwordValidation.error?.issues
+          }
+        }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+    
+    const email = emailValidation.data;
+    const newPassword = passwordValidation.data;
+    
     if (!email || !newPassword) {
       throw new Error('Email and new password are required')
     }
@@ -83,13 +104,13 @@ serve(async (req) => {
       throw new Error('User not found')
     }
 
-    // Expand password to 6 characters if needed to meet Supabase requirements
-    const expandedPassword = newPassword.length < 6 ? newPassword.padEnd(6, '0') : newPassword;
-
+    // Password already validated by passwordSchema (min 8 chars, max 128)
+    // No need to pad - Zod ensures it meets requirements
+    
     // Update user password
     const { data, error } = await supabaseAdmin.auth.admin.updateUserById(
       user.id,
-      { password: expandedPassword }
+      { password: newPassword }
     )
 
     if (error) {

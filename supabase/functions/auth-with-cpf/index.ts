@@ -1,6 +1,7 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.53.0';
+import { emailSchema, cpfSchema, checkRateLimit } from '../_shared/validation.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -14,15 +15,39 @@ serve(async (req) => {
   }
 
   try {
-    const { email, cpf } = await req.json();
-
-    if (!email || !cpf) {
+    const body = await req.json();
+    
+    // Validate input with Zod schemas
+    const emailValidation = emailSchema.safeParse(body.email);
+    const cpfValidation = cpfSchema.safeParse(body.cpf);
+    
+    if (!emailValidation.success) {
       return new Response(
-        JSON.stringify({ error: 'Email e CPF são obrigatórios' }),
-        { 
-          status: 400, 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-        }
+        JSON.stringify({ error: 'Email inválido' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+    
+    if (!cpfValidation.success) {
+      return new Response(
+        JSON.stringify({ error: 'CPF inválido' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+    
+    const email = emailValidation.data;
+    const cpf = cpfValidation.data;
+    
+    // Rate limiting by IP address (max 5 attempts per minute)
+    const clientIp = req.headers.get('x-forwarded-for')?.split(',')[0] || 
+                     req.headers.get('x-real-ip') || 
+                     'unknown';
+    
+    if (!checkRateLimit(`auth:${clientIp}`, 5, 60000)) {
+      console.log('Rate limit exceeded for IP:', clientIp);
+      return new Response(
+        JSON.stringify({ error: 'Muitas tentativas. Aguarde um momento.' }),
+        { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 

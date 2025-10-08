@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { emailSchema, passwordSchema, nameSchema, cpfSchema } from '../_shared/validation.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -67,7 +68,33 @@ serve(async (req) => {
       }
     )
 
-    const { email, password, nome, cpf } = await req.json()
+    const body = await req.json()
+    
+    // Validate all inputs
+    const emailValidation = emailSchema.safeParse(body.email);
+    const passwordValidation = passwordSchema.safeParse(body.password);
+    const nameValidation = nameSchema.safeParse(body.nome);
+    const cpfValidation = cpfSchema.safeParse(body.cpf);
+    
+    if (!emailValidation.success || !passwordValidation.success || !nameValidation.success || !cpfValidation.success) {
+      return new Response(
+        JSON.stringify({ 
+          error: 'Invalid input data',
+          details: {
+            email: emailValidation.error?.issues,
+            password: passwordValidation.error?.issues,
+            nome: nameValidation.error?.issues,
+            cpf: cpfValidation.error?.issues
+          }
+        }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+    
+    const email = emailValidation.data;
+    const password = passwordValidation.data;
+    const nome = nameValidation.data;
+    const cpf = cpfValidation.data;
 
     console.log('Creating admin user:', { email, nome })
 
