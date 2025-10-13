@@ -78,7 +78,7 @@ serve(async (req) => {
     // Get all user progress
     const { data: userProgress, error: progressError } = await supabase
       .from('user_progress')
-      .select('user_id, total_xp, missao_1_completed, missao_2_completed, missao_3_completed, missao_4_completed, final_profile')
+      .select('user_id, total_xp, missao_1_completed, missao_2_completed, missao_3_completed, missao_4_completed, missao_5_completed, final_profile')
 
     if (progressError) {
       console.error('Error fetching user progress:', progressError)
@@ -106,6 +106,24 @@ serve(async (req) => {
       console.error('Error fetching manual XP adjustments:', xpError)
     }
 
+    // Get fast track terms responses
+    const { data: fastTrackTerms, error: termsError } = await supabase
+      .from('fast_track_terms_responses')
+      .select('user_id, accepted_terms, want_to_participate, decline_reason, created_at')
+
+    if (termsError) {
+      console.error('Error fetching fast track terms:', termsError)
+    }
+
+    // Get fast track form responses
+    const { data: fastTrackForms, error: formsError } = await supabase
+      .from('fast_track_responses')
+      .select('user_id, main_objective, other_objective, time_commitment, interest_level, created_at')
+
+    if (formsError) {
+      console.error('Error fetching fast track forms:', formsError)
+    }
+
     // Process users data
     const processedUsers = profiles?.map(profile => {
       // Find progress for this user
@@ -119,6 +137,10 @@ serve(async (req) => {
 
       // Find manual XP adjustment for this user
       const manualXP = manualXPData?.find(xp => xp.email === profile.email)
+
+      // Find fast track data for this user
+      const userTerms = fastTrackTerms?.find(t => t.user_id === profile.user_id)
+      const userForm = fastTrackForms?.find(f => f.user_id === profile.user_id)
 
       return {
         email: profile.email,
@@ -135,16 +157,33 @@ serve(async (req) => {
           missao_1: progress.missao_1_completed || false,
           missao_2: progress.missao_2_completed || false,
           missao_3: progress.missao_3_completed || false,
-          missao_4: progress.missao_4_completed || false
+          missao_4: progress.missao_4_completed || false,
+          missao_5: progress.missao_5_completed || false
         },
         total_missions_completed: [
           progress.missao_1_completed,
           progress.missao_2_completed,
           progress.missao_3_completed,
-          progress.missao_4_completed
+          progress.missao_4_completed,
+          progress.missao_5_completed
         ].filter(Boolean).length,
         final_profile: progress.final_profile || null,
-        competencies: competencies
+        competencies: competencies,
+        extra_mission: {
+          terms_response: userTerms ? {
+            accepted_terms: userTerms.accepted_terms,
+            want_to_participate: userTerms.want_to_participate,
+            decline_reason: userTerms.decline_reason || null,
+            responded_at: userTerms.created_at
+          } : null,
+          form_response: userForm ? {
+            main_objective: userForm.main_objective,
+            other_objective: userForm.other_objective,
+            time_commitment: userForm.time_commitment,
+            interest_level: userForm.interest_level,
+            submitted_at: userForm.created_at
+          } : null
+        }
       }
     }) || []
 
