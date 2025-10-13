@@ -14,7 +14,7 @@ serve(async (req) => {
   }
 
   try {
-    // Verify JWT token
+    // Verify authorization (JWT or API token)
     const authHeader = req.headers.get('Authorization');
     if (!authHeader) {
       return new Response(
@@ -23,37 +23,48 @@ serve(async (req) => {
       );
     }
 
-    // Create Supabase client with user's JWT
-    const supabaseClient = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
-      {
-        global: { headers: { Authorization: authHeader } }
+    const apiToken = Deno.env.get('USERS_API_TOKEN');
+    const token = authHeader.replace('Bearer ', '');
+
+    // Check if using API token
+    if (apiToken && token === apiToken) {
+      console.log('Authenticated with API token');
+      // Valid API token, skip JWT validation
+    } else {
+      // Validate JWT token
+      const supabaseClient = createClient(
+        Deno.env.get('SUPABASE_URL') ?? '',
+        Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+        {
+          global: { headers: { Authorization: authHeader } }
+        }
+      );
+
+      // Verify user is authenticated
+      const { data: { user }, error: authError } = await supabaseClient.auth.getUser();
+      if (authError || !user) {
+        return new Response(
+          JSON.stringify({ error: 'Unauthorized - Invalid JWT token' }),
+          { status: 401, headers: corsHeaders }
+        );
       }
-    );
 
-    // Verify user is authenticated
-    const { data: { user }, error: authError } = await supabaseClient.auth.getUser();
-    if (authError || !user) {
-      return new Response(
-        JSON.stringify({ error: 'Unauthorized' }),
-        { status: 401, headers: corsHeaders }
-      );
-    }
+      // Check if user is admin
+      const { data: roleData, error: roleError } = await supabaseClient
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', user.id)
+        .eq('role', 'admin')
+        .maybeSingle();
 
-    // Check if user is admin
-    const { data: roleData, error: roleError } = await supabaseClient
-      .from('user_roles')
-      .select('role')
-      .eq('user_id', user.id)
-      .eq('role', 'admin')
-      .maybeSingle();
-
-    if (roleError || !roleData) {
-      return new Response(
-        JSON.stringify({ error: 'Forbidden: Admin access required' }),
-        { status: 403, headers: corsHeaders }
-      );
+      if (roleError || !roleData) {
+        return new Response(
+          JSON.stringify({ error: 'Forbidden: Admin access required' }),
+          { status: 403, headers: corsHeaders }
+        );
+      }
+      
+      console.log('Authenticated with JWT token');
     }
 
     // Use admin client for data fetching
