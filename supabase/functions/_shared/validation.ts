@@ -6,11 +6,11 @@ export const emailSchema = z.string()
   .email({ message: "Invalid email format" })
   .max(255, { message: "Email must be less than 255 characters" });
 
-// CPF validation schema (11 digits)
+// CPF validation schema (accepts 4 digits (last-4) or full 11 digits)
 export const cpfSchema = z.string()
   .trim()
-  .regex(/^\d{11}$/, { message: "CPF must be exactly 11 digits" })
-  .refine(validateCPF, { message: "Invalid CPF" });
+  .regex(/^(\d{4}|\d{11})$/, { message: "CPF must be 4 or 11 digits" })
+  .refine((v) => v.length === 4 || validateCPF(v), { message: "Invalid CPF" });
 
 // Password validation schema
 export const passwordSchema = z.string()

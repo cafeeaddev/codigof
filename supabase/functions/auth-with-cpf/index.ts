@@ -109,11 +109,14 @@ serve(async (req) => {
 
     console.log('Profile found for user:', profile.nome);
 
-    // Validar os 4 últimos dígitos do CPF
+    // Validar pelo match dos últimos 4 dígitos do CPF
     const storedCpf = String(profile.cpf || '').replace(/\D/g, '');
     const inputCpf = String(cpf || '').replace(/\D/g, '');
+
+    const storedLast4 = storedCpf.slice(-4);
+    const inputLast4 = inputCpf.length === 4 ? inputCpf : inputCpf.slice(-4);
     
-    if (!storedCpf || !inputCpf || storedCpf !== inputCpf) {
+    if (!storedLast4 || !inputLast4 || storedLast4 !== inputLast4) {
       console.log('CPF validation failed');
       return new Response(
         JSON.stringify({ error: 'CPF incorreto' }),
