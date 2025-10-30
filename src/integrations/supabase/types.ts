@@ -197,7 +197,7 @@ export type Database = {
           accessed_profile_id: string | null
           action_type: string
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           user_agent: string | null
           user_id: string | null
         }
@@ -206,7 +206,7 @@ export type Database = {
           accessed_profile_id?: string | null
           action_type: string
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           user_agent?: string | null
           user_id?: string | null
         }
@@ -215,7 +215,7 @@ export type Database = {
           accessed_profile_id?: string | null
           action_type?: string
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           user_agent?: string | null
           user_id?: string | null
         }
@@ -227,7 +227,7 @@ export type Database = {
           attempted_user_id: string | null
           email: string
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           success: boolean | null
           user_agent: string | null
         }
@@ -236,7 +236,7 @@ export type Database = {
           attempted_user_id?: string | null
           email: string
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           success?: boolean | null
           user_agent?: string | null
         }
@@ -245,7 +245,7 @@ export type Database = {
           attempted_user_id?: string | null
           email?: string
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           success?: boolean | null
           user_agent?: string | null
         }
@@ -695,12 +695,9 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      fix_corrupted_time_data: {
-        Args: Record<PropertyKey, never>
-        Returns: number
-      }
+      fix_corrupted_time_data: { Args: never; Returns: number }
       get_masked_profiles: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           area: string
           area_id: string
@@ -725,10 +722,7 @@ export type Database = {
         Args: { _cpf: string; _email: string }
         Returns: boolean
       }
-      mask_cpf: {
-        Args: { cpf_value: string }
-        Returns: string
-      }
+      mask_cpf: { Args: { cpf_value: string }; Returns: string }
       reset_user_progress: {
         Args: { _target_user_id: string }
         Returns: boolean
