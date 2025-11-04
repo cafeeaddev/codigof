@@ -11,7 +11,7 @@ export const Quiz2Host = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#0a0a0f]">
-        <Loader2 className="w-16 h-16 animate-spin text-fuchsia-500" />
+        <Loader2 className="w-16 h-16 animate-spin text-cyan-400" />
       </div>
     );
   }
