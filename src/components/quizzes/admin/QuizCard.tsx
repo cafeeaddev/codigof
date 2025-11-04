@@ -1,8 +1,19 @@
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Users, FileQuestion, Cloud, ExternalLink } from 'lucide-react';
+import { Users, FileQuestion, Cloud, ExternalLink, RotateCcw } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 
 interface QuizCardProps {
   title: string;
@@ -14,6 +25,7 @@ interface QuizCardProps {
   submissionCount?: number;
   participantLink?: string;
   onManage: () => void;
+  onReset?: () => Promise<void>;
   isActive?: boolean;
 }
 
@@ -27,6 +39,7 @@ export const QuizCard = ({
   submissionCount,
   participantLink,
   onManage,
+  onReset,
   isActive
 }: QuizCardProps) => {
   const getStatusColor = () => {
@@ -102,6 +115,38 @@ export const QuizCard = ({
           {isActive ? 'Gerenciando...' : 'Gerenciar'}
         </Button>
       </div>
+
+      {onReset && (
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button 
+              variant="destructive"
+              size="sm"
+              className="w-full mt-2 gap-2"
+            >
+              <RotateCcw className="w-4 h-4" />
+              Resetar Quiz
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Tem certeza?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Esta ação irá remover todos os participantes, respostas e reiniciar a sessão do quiz "{title}". Esta ação não pode ser desfeita.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancelar</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={onReset}
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              >
+                Sim, resetar quiz
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      )}
     </Card>
   );
 };

@@ -164,6 +164,116 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleResetQuiz1 = async () => {
+    try {
+      // Delete all participants
+      await supabase.from('codigo_f_participants').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+      
+      // Delete all answers
+      await supabase.from('codigo_f_answers').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+      
+      // Reset session state
+      const { data: existingSession } = await supabase
+        .from('codigo_f_session_state')
+        .select('id')
+        .limit(1)
+        .maybeSingle();
+
+      if (existingSession) {
+        await supabase
+          .from('codigo_f_session_state')
+          .update({
+            current_phase: 'waiting',
+            current_question_id: null,
+            question_started_at: null,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', existingSession.id);
+      }
+
+      toast({
+        title: "Quiz resetado",
+        description: "O Quiz 1 (Mito ou Verdade) foi resetado com sucesso!",
+      });
+
+      // Refresh quiz data
+      window.location.reload();
+    } catch (error) {
+      console.error('Error resetting quiz 1:', error);
+      toast({
+        title: "Erro",
+        description: "Erro ao resetar o quiz",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleResetQuiz2 = async () => {
+    try {
+      // Delete all submissions
+      await supabase.from('quiz2_submissions').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+      
+      toast({
+        title: "Quiz resetado",
+        description: "O Quiz 2 (Nuvem de Tags) foi resetado com sucesso!",
+      });
+
+      // Refresh quiz data
+      window.location.reload();
+    } catch (error) {
+      console.error('Error resetting quiz 2:', error);
+      toast({
+        title: "Erro",
+        description: "Erro ao resetar o quiz",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleResetQuiz3 = async () => {
+    try {
+      // Delete all participants
+      await supabase.from('quiz3_participants').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+      
+      // Delete all answers
+      await supabase.from('quiz3_answers').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+      
+      // Reset session state
+      const { data: existingSession } = await supabase
+        .from('quiz3_session_state')
+        .select('id')
+        .limit(1)
+        .maybeSingle();
+
+      if (existingSession) {
+        await supabase
+          .from('quiz3_session_state')
+          .update({
+            current_phase: 'waiting',
+            current_question_id: null,
+            question_started_at: null,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', existingSession.id);
+      }
+
+      toast({
+        title: "Quiz resetado",
+        description: "O Quiz 3 (Soluções Digitais) foi resetado com sucesso!",
+      });
+
+      // Refresh quiz data
+      window.location.reload();
+    } catch (error) {
+      console.error('Error resetting quiz 3:', error);
+      toast({
+        title: "Erro",
+        description: "Erro ao resetar o quiz",
+        variant: "destructive",
+      });
+    }
+  };
+
 
   if (isAdmin) {
     if (dashboardLoading) {
@@ -334,6 +444,7 @@ const AdminDashboard = () => {
                   questionCount={quiz1.questions.length}
                   participantLink="/quiz/mito-verdade"
                   onManage={() => setActiveQuiz('quiz1')}
+                  onReset={handleResetQuiz1}
                   isActive={activeQuiz === 'quiz1'}
                 />
 
@@ -346,6 +457,7 @@ const AdminDashboard = () => {
                   submissionCount={quiz2.submissions.length}
                   participantLink="/quiz/nuvem-tags"
                   onManage={() => setActiveQuiz('quiz2')}
+                  onReset={handleResetQuiz2}
                   isActive={activeQuiz === 'quiz2'}
                 />
 
@@ -359,6 +471,7 @@ const AdminDashboard = () => {
                   questionCount={quiz3.questions.length}
                   participantLink="/quiz/solucoes-digitais"
                   onManage={() => setActiveQuiz('quiz3')}
+                  onReset={handleResetQuiz3}
                   isActive={activeQuiz === 'quiz3'}
                 />
               </div>
