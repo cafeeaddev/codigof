@@ -36,12 +36,12 @@ export const Quiz2Participant = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-900 via-cyan-700 to-teal-600 p-4">
-      <Card className="w-full max-w-md p-8 bg-white/95 backdrop-blur">
-        <h1 className="text-3xl font-bold mb-2 text-center bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
+    <div className="min-h-screen flex items-center justify-center bg-[#0a0a0f] p-4">
+      <Card className="w-full max-w-md p-8 bg-[#1a1a2e] border-2 border-blue-500/30 shadow-lg shadow-blue-500/20">
+        <h1 className="text-3xl font-bold mb-2 text-center bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent drop-shadow-[0_0_10px_rgba(34,211,238,0.5)]">
           Nuvem de Desafios
         </h1>
-        <p className="text-center text-muted-foreground mb-6">
+        <p className="text-center text-cyan-300 mb-6">
           Compartilhe o maior desafio do seu grupo
         </p>
 
@@ -83,12 +83,12 @@ export const Quiz2Participant = () => {
             </Button>
           </form>
         ) : (
-          <div className="text-center p-8 bg-gradient-to-r from-cyan-100 to-blue-100 rounded-xl">
+          <div className="text-center p-8 bg-cyan-500/10 border border-cyan-500/30 rounded-xl">
             <div className="text-6xl mb-4">✓</div>
-            <p className="text-2xl font-bold text-cyan-700 mb-2">
+            <p className="text-2xl font-bold text-cyan-400 mb-2">
               Contribuição enviada!
             </p>
-            <p className="text-lg text-cyan-600">
+            <p className="text-lg text-gray-300">
               Veja sua palavra no telão 👆
             </p>
           </div>

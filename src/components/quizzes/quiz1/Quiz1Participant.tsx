@@ -68,20 +68,20 @@ export const Quiz1Participant = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900 via-purple-700 to-pink-600">
-        <Loader2 className="w-12 h-12 animate-spin text-white" />
+      <div className="min-h-screen flex items-center justify-center bg-[#0a0a0f]">
+        <Loader2 className="w-12 h-12 animate-spin text-cyan-400" />
       </div>
     );
   }
 
   if (!participantId) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900 via-purple-700 to-pink-600 p-4">
-        <Card className="w-full max-w-md p-8 bg-white/95 backdrop-blur">
-          <h1 className="text-3xl font-bold mb-2 text-center bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+      <div className="min-h-screen flex items-center justify-center bg-[#0a0a0f] p-4">
+        <Card className="w-full max-w-md p-8 bg-[#1a1a2e] border-2 border-cyan-500/30 shadow-lg shadow-cyan-500/20">
+          <h1 className="text-3xl font-bold mb-2 text-center bg-gradient-to-r from-cyan-400 to-fuchsia-400 bg-clip-text text-transparent drop-shadow-[0_0_10px_rgba(34,211,238,0.5)]">
             Mito ou Verdade
           </h1>
-          <p className="text-center text-muted-foreground mb-6">
+          <p className="text-center text-cyan-300 mb-6">
             Transformação Digital
           </p>
 
@@ -112,17 +112,17 @@ export const Quiz1Participant = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900 via-purple-700 to-pink-600 p-4">
-      <Card className="w-full max-w-2xl p-8 bg-white/95 backdrop-blur">
+    <div className="min-h-screen flex items-center justify-center bg-[#0a0a0f] p-4">
+      <Card className="w-full max-w-2xl p-8 bg-[#1a1a2e] border-2 border-cyan-500/30 shadow-lg shadow-cyan-500/20">
         {sessionState?.current_phase === 'waiting' && (
           <div className="text-center space-y-6">
-            <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+            <h2 className="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-fuchsia-400 bg-clip-text text-transparent drop-shadow-[0_0_10px_rgba(34,211,238,0.5)]">
               Bem-vindo, {nickname}! 👋
             </h2>
             <div className="flex items-center justify-center">
-              <Loader2 className="w-12 h-12 animate-spin text-purple-600" />
+              <Loader2 className="w-12 h-12 animate-spin text-cyan-400" />
             </div>
-            <p className="text-xl text-muted-foreground">
+            <p className="text-xl text-gray-400">
               Aguardando o início do quiz...
             </p>
           </div>
@@ -131,10 +131,10 @@ export const Quiz1Participant = () => {
         {sessionState?.current_phase === 'question' && currentQuestion && (
           <div className="space-y-6">
             <div className="text-center space-y-4">
-              <div className="text-lg font-semibold text-muted-foreground">
+              <div className="text-lg font-semibold text-cyan-400">
                 Pergunta {questionIndex}/6
               </div>
-              <h2 className="text-2xl font-bold leading-tight">
+              <h2 className="text-2xl font-bold leading-tight text-white">
                 {currentQuestion.question_text}
               </h2>
 
@@ -163,13 +163,13 @@ export const Quiz1Participant = () => {
                 </Button>
               </div>
             ) : (
-              <div className="text-center p-8 bg-gradient-to-r from-purple-100 to-pink-100 rounded-xl">
+              <div className="text-center p-8 bg-cyan-500/10 border border-cyan-500/30 rounded-xl">
                 <div className="text-6xl mb-4">✓</div>
-                <p className="text-2xl font-bold text-purple-700">
+                <p className="text-2xl font-bold text-cyan-400">
                   Resposta enviada!
                 </p>
-                <p className="text-lg text-purple-600 mt-2">
-                  Você respondeu: <span className="font-bold">{selectedAnswer}</span>
+                <p className="text-lg text-gray-300 mt-2">
+                  Você respondeu: <span className="font-bold text-fuchsia-400">{selectedAnswer}</span>
                 </p>
               </div>
             )}
@@ -178,7 +178,7 @@ export const Quiz1Participant = () => {
 
         {sessionState?.current_phase === 'explanation' && currentQuestion && (
           <div className="space-y-6 text-center">
-            <div className="text-lg font-semibold text-muted-foreground">
+            <div className="text-lg font-semibold text-cyan-400">
               Pergunta {questionIndex}/6
             </div>
             
@@ -188,18 +188,18 @@ export const Quiz1Participant = () => {
               <div className="text-6xl mb-4">❌</div>
             )}
 
-            <div className="bg-gradient-to-r from-purple-100 to-pink-100 rounded-xl p-6">
-              <p className="text-xl font-bold text-purple-700 mb-2">
+            <div className="bg-cyan-500/10 border border-cyan-500/30 rounded-xl p-6">
+              <p className="text-xl font-bold text-cyan-400 mb-2">
                 Resposta Correta: {currentQuestion.correct_answer}
               </p>
-              <p className="text-lg text-purple-600">
+              <p className="text-lg text-gray-300">
                 {currentQuestion.explanation}
               </p>
             </div>
 
             {hasAnswered && (
-              <p className="text-muted-foreground">
-                Sua resposta: <span className="font-bold">{selectedAnswer}</span>
+              <p className="text-gray-400">
+                Sua resposta: <span className="font-bold text-fuchsia-400">{selectedAnswer}</span>
               </p>
             )}
           </div>
@@ -208,11 +208,11 @@ export const Quiz1Participant = () => {
         {sessionState?.current_phase === 'ended' && (
           <div className="text-center space-y-6">
             <div className="text-6xl mb-4">🎉</div>
-            <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+            <h2 className="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-fuchsia-400 bg-clip-text text-transparent drop-shadow-[0_0_10px_rgba(34,211,238,0.5)]">
               Quiz Finalizado!
             </h2>
-            <p className="text-xl text-muted-foreground">
-              Obrigado por participar, {nickname}!
+            <p className="text-xl text-gray-400">
+              Obrigado por participar, <span className="text-cyan-400">{nickname}</span>!
             </p>
           </div>
         )}
