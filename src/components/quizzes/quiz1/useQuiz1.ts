@@ -1,16 +1,15 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
 
-export interface Question {
+interface Question {
   id: string;
+  order_position: number;
   question_text: string;
   correct_answer: 'MITO' | 'VERDADE';
   explanation: string;
-  order_position: number;
 }
 
-export interface SessionState {
+interface SessionState {
   id: string;
   current_phase: 'waiting' | 'question' | 'explanation' | 'ended';
   current_question_id: string | null;
@@ -19,49 +18,44 @@ export interface SessionState {
   updated_at: string;
 }
 
-export interface AnswerStats {
+interface AnswerStats {
   mito: number;
   verdade: number;
   total: number;
 }
 
-export const useCodigoFQuiz = () => {
+export const useQuiz1 = () => {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [sessionState, setSessionState] = useState<SessionState | null>(null);
   const [participantCount, setParticipantCount] = useState(0);
   const [answerStats, setAnswerStats] = useState<AnswerStats>({ mito: 0, verdade: 0, total: 0 });
   const [isLoading, setIsLoading] = useState(true);
-  const { toast } = useToast();
 
-  // Carregar perguntas
+  // Load questions
   useEffect(() => {
     const loadQuestions = async () => {
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from('codigo_f_questions')
         .select('*')
         .order('order_position');
-
-      if (error) {
-        console.error('Erro ao carregar perguntas:', error);
-        toast({ title: 'Erro ao carregar perguntas', variant: 'destructive' });
-        return;
+      
+      if (data) {
+        setQuestions(data as Question[]);
       }
-
-      setQuestions((data || []) as Question[]);
       setIsLoading(false);
     };
 
     loadQuestions();
-  }, [toast]);
+  }, []);
 
-  // Escutar estado da sessão
+  // Load and subscribe to session state
   useEffect(() => {
     const loadSessionState = async () => {
       const { data } = await supabase
         .from('codigo_f_session_state')
         .select('*')
         .single();
-
+      
       if (data) {
         setSessionState(data as SessionState);
       }
@@ -70,20 +64,16 @@ export const useCodigoFQuiz = () => {
     loadSessionState();
 
     const channel = supabase
-      .channel('session-state-changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'codigo_f_session_state'
-        },
-        (payload) => {
-          if (payload.eventType === 'INSERT' || payload.eventType === 'UPDATE') {
-            setSessionState(payload.new as SessionState);
-          }
+      .channel('quiz1-session')
+      .on('postgres_changes', {
+        event: '*',
+        schema: 'public',
+        table: 'codigo_f_session_state'
+      }, (payload: any) => {
+        if (payload.new) {
+          setSessionState(payload.new as SessionState);
         }
-      )
+      })
       .subscribe();
 
     return () => {
@@ -91,33 +81,28 @@ export const useCodigoFQuiz = () => {
     };
   }, []);
 
-  // Contar participantes (com throttle)
+  // Track participants
   useEffect(() => {
     const updateParticipantCount = async () => {
       const { count } = await supabase
         .from('codigo_f_participants')
         .select('*', { count: 'exact', head: true });
-
+      
       setParticipantCount(count || 0);
     };
 
     updateParticipantCount();
-
-    const interval = setInterval(updateParticipantCount, 2000); // Atualizar a cada 2 segundos
+    const interval = setInterval(updateParticipantCount, 5000);
 
     const channel = supabase
-      .channel('participants-changes')
-      .on(
-        'postgres_changes',
-        {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'codigo_f_participants'
-        },
-        () => {
-          updateParticipantCount();
-        }
-      )
+      .channel('quiz1-participants')
+      .on('postgres_changes', {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'codigo_f_participants'
+      }, () => {
+        updateParticipantCount();
+      })
       .subscribe();
 
     return () => {
@@ -126,12 +111,9 @@ export const useCodigoFQuiz = () => {
     };
   }, []);
 
-  // Estatísticas de respostas
+  // Track answers for current question
   useEffect(() => {
-    if (!sessionState?.current_question_id) {
-      setAnswerStats({ mito: 0, verdade: 0, total: 0 });
-      return;
-    }
+    if (!sessionState?.current_question_id) return;
 
     const updateAnswerStats = async () => {
       const { data } = await supabase
@@ -140,11 +122,13 @@ export const useCodigoFQuiz = () => {
         .eq('question_id', sessionState.current_question_id);
 
       if (data) {
-        const stats = {
-          mito: data.filter(a => a.answer === 'MITO').length,
-          verdade: data.filter(a => a.answer === 'VERDADE').length,
-          total: data.length
-        };
+        const stats = data.reduce((acc, curr) => {
+          if (curr.answer === 'MITO') acc.mito++;
+          else if (curr.answer === 'VERDADE') acc.verdade++;
+          acc.total++;
+          return acc;
+        }, { mito: 0, verdade: 0, total: 0 });
+
         setAnswerStats(stats);
       }
     };
@@ -152,19 +136,15 @@ export const useCodigoFQuiz = () => {
     updateAnswerStats();
 
     const channel = supabase
-      .channel('answers-changes')
-      .on(
-        'postgres_changes',
-        {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'codigo_f_answers',
-          filter: `question_id=eq.${sessionState.current_question_id}`
-        },
-        () => {
-          updateAnswerStats();
-        }
-      )
+      .channel('quiz1-answers')
+      .on('postgres_changes', {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'codigo_f_answers',
+        filter: `question_id=eq.${sessionState.current_question_id}`
+      }, () => {
+        updateAnswerStats();
+      })
       .subscribe();
 
     return () => {
@@ -172,90 +152,67 @@ export const useCodigoFQuiz = () => {
     };
   }, [sessionState?.current_question_id]);
 
-  // Funções do host
   const startSession = useCallback(async () => {
     const firstQuestion = questions[0];
     if (!firstQuestion) return;
 
-    const { error } = await supabase
+    await supabase
       .from('codigo_f_session_state')
-      .upsert({
+      .update({
         current_phase: 'question',
         current_question_id: firstQuestion.id,
         question_started_at: new Date().toISOString(),
-        session_started_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
-      });
-
-    if (error) {
-      console.error('Erro ao iniciar sessão:', error);
-      toast({ title: 'Erro ao iniciar quiz', variant: 'destructive' });
-    }
-  }, [questions, toast]);
+      })
+      .eq('id', sessionState?.id);
+  }, [questions, sessionState]);
 
   const nextQuestion = useCallback(async () => {
     if (!sessionState) return;
 
     const currentIndex = questions.findIndex(q => q.id === sessionState.current_question_id);
-    const nextQuestion = questions[currentIndex + 1];
+    const nextQ = questions[currentIndex + 1];
 
-    if (!nextQuestion) {
-      // Fim do quiz
-      const { error } = await supabase
+    if (nextQ) {
+      await supabase
+        .from('codigo_f_session_state')
+        .update({
+          current_phase: 'question',
+          current_question_id: nextQ.id,
+          question_started_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', sessionState.id);
+    } else {
+      await supabase
         .from('codigo_f_session_state')
         .update({
           current_phase: 'ended',
           updated_at: new Date().toISOString()
         })
         .eq('id', sessionState.id);
-
-      if (error) {
-        console.error('Erro ao finalizar quiz:', error);
-      }
-      return;
     }
-
-    const { error } = await supabase
-      .from('codigo_f_session_state')
-      .update({
-        current_phase: 'question',
-        current_question_id: nextQuestion.id,
-        question_started_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      })
-      .eq('id', sessionState.id);
-
-    if (error) {
-      console.error('Erro ao avançar pergunta:', error);
-      toast({ title: 'Erro ao avançar pergunta', variant: 'destructive' });
-    }
-  }, [sessionState, questions, toast]);
+  }, [questions, sessionState]);
 
   const showExplanation = useCallback(async () => {
     if (!sessionState) return;
 
-    const { error } = await supabase
+    await supabase
       .from('codigo_f_session_state')
       .update({
         current_phase: 'explanation',
         updated_at: new Date().toISOString()
       })
       .eq('id', sessionState.id);
-
-    if (error) {
-      console.error('Erro ao mostrar explicação:', error);
-    }
   }, [sessionState]);
 
   const getCurrentQuestion = useCallback(() => {
-    if (!sessionState?.current_question_id) return null;
-    return questions.find(q => q.id === sessionState.current_question_id) || null;
-  }, [sessionState, questions]);
+    return questions.find(q => q.id === sessionState?.current_question_id);
+  }, [questions, sessionState]);
 
   const getCurrentQuestionIndex = useCallback(() => {
-    if (!sessionState?.current_question_id) return 0;
-    return questions.findIndex(q => q.id === sessionState.current_question_id) + 1;
-  }, [sessionState, questions]);
+    return questions.findIndex(q => q.id === sessionState?.current_question_id) + 1;
+  }, [questions, sessionState]);
 
   return {
     questions,
@@ -267,7 +224,6 @@ export const useCodigoFQuiz = () => {
     nextQuestion,
     showExplanation,
     getCurrentQuestion,
-    getCurrentQuestionIndex,
-    totalQuestions: questions.length
+    getCurrentQuestionIndex
   };
 };

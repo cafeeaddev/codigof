@@ -1,12 +1,12 @@
 import { QRCodeSVG } from 'qrcode.react';
 import { Users } from 'lucide-react';
 
-interface CodigoFQRCodeProps {
+interface Quiz1QRCodeProps {
   url: string;
   participantCount: number;
 }
 
-export const CodigoFQRCode = ({ url, participantCount }: CodigoFQRCodeProps) => {
+export const Quiz1QRCode = ({ url, participantCount }: Quiz1QRCodeProps) => {
   return (
     <div className="flex flex-col items-center gap-6">
       <div className="bg-white p-8 rounded-2xl shadow-2xl">

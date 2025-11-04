@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 
-interface CodigoFTimerProps {
+interface Quiz1TimerProps {
   startTime: string | null;
   duration: number; // em segundos
   onComplete?: () => void;
   className?: string;
 }
 
-export const CodigoFTimer = ({ startTime, duration, onComplete, className }: CodigoFTimerProps) => {
+export const Quiz1Timer = ({ startTime, duration, onComplete, className }: Quiz1TimerProps) => {
   const [timeLeft, setTimeLeft] = useState(duration);
 
   useEffect(() => {

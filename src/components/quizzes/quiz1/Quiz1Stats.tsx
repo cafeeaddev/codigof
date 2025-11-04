@@ -1,13 +1,18 @@
 import { cn } from '@/lib/utils';
-import type { AnswerStats } from './useCodigoFQuiz';
 
-interface CodigoFStatsProps {
+interface AnswerStats {
+  mito: number;
+  verdade: number;
+  total: number;
+}
+
+interface Quiz1StatsProps {
   stats: AnswerStats;
   correctAnswer: 'MITO' | 'VERDADE';
   className?: string;
 }
 
-export const CodigoFStats = ({ stats, correctAnswer, className }: CodigoFStatsProps) => {
+export const Quiz1Stats = ({ stats, correctAnswer, className }: Quiz1StatsProps) => {
   const mitoPercentage = stats.total > 0 ? Math.round((stats.mito / stats.total) * 100) : 0;
   const verdadePercentage = stats.total > 0 ? Math.round((stats.verdade / stats.total) * 100) : 0;
 
@@ -68,7 +73,7 @@ export const CodigoFStats = ({ stats, correctAnswer, className }: CodigoFStatsPr
       </div>
 
       <div className="text-center text-muted-foreground text-lg">
-        {stats.total} de {stats.total} responderam
+        {stats.total} respostas
       </div>
     </div>
   );
