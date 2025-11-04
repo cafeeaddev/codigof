@@ -1,8 +1,9 @@
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useQuiz1 } from '../quiz1/useQuiz1';
-import { ExternalLink, Play, SkipForward, Square } from 'lucide-react';
+import { ExternalLink, Play, SkipForward, Square, AlertCircle } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 
 export const Quiz1Control = () => {
@@ -10,6 +11,7 @@ export const Quiz1Control = () => {
     sessionState,
     participantCount,
     answerStats,
+    isLoading,
     startSession,
     nextQuestion,
     showExplanation,
@@ -35,6 +37,21 @@ export const Quiz1Control = () => {
   const responsePercentage = participantCount > 0 
     ? Math.round((answerStats.total / participantCount) * 100) 
     : 0;
+
+  // Show error state if session could not be initialized
+  if (!sessionState && !isLoading) {
+    return (
+      <Card className="p-6">
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Erro ao carregar sessão</AlertTitle>
+          <AlertDescription>
+            Não foi possível inicializar a sessão do quiz. Recarregue a página.
+          </AlertDescription>
+        </Alert>
+      </Card>
+    );
+  }
 
   return (
     <Card className="p-6 space-y-6">

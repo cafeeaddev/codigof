@@ -51,10 +51,25 @@ export const useQuiz1 = () => {
   // Load and subscribe to session state
   useEffect(() => {
     const loadSessionState = async () => {
-      const { data } = await supabase
+      let { data } = await supabase
         .from('codigo_f_session_state')
         .select('*')
-        .single();
+        .maybeSingle();
+      
+      // If no session exists, create one
+      if (!data) {
+        const { data: newSession } = await supabase
+          .from('codigo_f_session_state')
+          .insert({
+            current_phase: 'waiting',
+            session_started_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          })
+          .select()
+          .single();
+        
+        data = newSession;
+      }
       
       if (data) {
         setSessionState(data as SessionState);
