@@ -71,12 +71,14 @@ export const useQuiz3 = () => {
     loadQuestions();
   }, []);
 
-  // Load and subscribe to session state
+  // Load and subscribe to session state with polling and broadcast
   useEffect(() => {
-    const loadSessionState = async () => {
+    const fetchLatestSessionState = async () => {
       const { data, error } = await supabase
         .from('quiz3_session_state')
         .select('*')
+        .order('updated_at', { ascending: false })
+        .limit(1)
         .maybeSingle();
       
       if (error) {
@@ -86,7 +88,7 @@ export const useQuiz3 = () => {
       if (data) {
         setSessionState(data as SessionState);
       } else {
-        // Criar registro inicial se não existir
+        // Criar registro inicial se não existir (apenas admin consegue)
         console.log('[Quiz3] Creating initial session state...');
         const { data: newState, error: createError } = await supabase
           .from('quiz3_session_state')
@@ -100,7 +102,7 @@ export const useQuiz3 = () => {
           .single();
 
         if (createError) {
-          console.error('[Quiz3] Error creating session state:', createError);
+          console.error('[Quiz3] Error creating session state (participante?):', createError);
         } else if (newState) {
           console.log('[Quiz3] Session state created:', newState);
           setSessionState(newState as SessionState);
@@ -108,10 +110,18 @@ export const useQuiz3 = () => {
       }
     };
 
-    loadSessionState();
+    fetchLatestSessionState();
 
-    const channel = supabase
-      .channel('quiz3-session')
+    // Polling fallback - atualiza a cada 1.5 segundos se não estiver 'ended'
+    const pollInterval = setInterval(() => {
+      if (sessionState?.current_phase !== 'ended') {
+        fetchLatestSessionState();
+      }
+    }, 1500);
+
+    // Realtime subscription via postgres_changes
+    const dbChannel = supabase
+      .channel('quiz3-session-db')
       .on('postgres_changes', {
         event: '*',
         schema: 'public',
@@ -123,10 +133,30 @@ export const useQuiz3 = () => {
       })
       .subscribe();
 
+    // Broadcast channel for explicit state changes from admin
+    const broadcastChannel = supabase
+      .channel('quiz3-broadcast')
+      .on('broadcast', { event: 'state_changed' }, ({ payload }) => {
+        console.log('[Quiz3] Broadcast received:', payload);
+        setSessionState((prev) => {
+          if (!prev && !payload) return null;
+          return {
+            ...(prev ?? payload),
+            current_phase: payload.current_phase,
+            current_question_id: payload.current_question_id ?? null,
+            question_started_at: payload.question_started_at ?? prev?.question_started_at ?? null,
+            updated_at: payload.updated_at
+          } as SessionState;
+        });
+      })
+      .subscribe();
+
     return () => {
-      supabase.removeChannel(channel);
+      clearInterval(pollInterval);
+      supabase.removeChannel(dbChannel);
+      supabase.removeChannel(broadcastChannel);
     };
-  }, []);
+  }, [sessionState?.current_phase]);
 
   // Track participants
   useEffect(() => {
@@ -255,7 +285,8 @@ export const useQuiz3 = () => {
       console.error('[Quiz3] Error starting session:', error);
     } else {
       console.log('[Quiz3] Session started successfully');
-      // Optimistic local update to reflect immediately even if realtime is delayed
+      
+      // Optimistic local update
       setSessionState(prev => prev ? {
         ...prev,
         current_phase: 'question',
@@ -263,6 +294,21 @@ export const useQuiz3 = () => {
         question_started_at: now,
         updated_at: now
       } : prev);
+
+      // Broadcast to all participants
+      const broadcastChannel = supabase.channel('quiz3-broadcast');
+      await broadcastChannel.send({
+        type: 'broadcast',
+        event: 'state_changed',
+        payload: {
+          id: sessionState.id,
+          current_phase: 'question',
+          current_question_id: firstQuestion.id,
+          question_started_at: now,
+          updated_at: now,
+          session_started_at: sessionState.session_started_at
+        }
+      });
     }
   }, [questions, sessionState]);
 
@@ -271,6 +317,9 @@ export const useQuiz3 = () => {
 
     const currentIndex = questions.findIndex(q => q.id === sessionState.current_question_id);
     const nextQ = questions[currentIndex + 1];
+    const now = new Date().toISOString();
+
+    const broadcastChannel = supabase.channel('quiz3-broadcast');
 
     if (nextQ) {
       await supabase
@@ -278,44 +327,104 @@ export const useQuiz3 = () => {
         .update({
           current_phase: 'question',
           current_question_id: nextQ.id,
-          question_started_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
+          question_started_at: now,
+          updated_at: now
         })
         .eq('id', sessionState.id);
+
+      // Broadcast
+      await broadcastChannel.send({
+        type: 'broadcast',
+        event: 'state_changed',
+        payload: {
+          id: sessionState.id,
+          current_phase: 'question',
+          current_question_id: nextQ.id,
+          question_started_at: now,
+          updated_at: now,
+          session_started_at: sessionState.session_started_at
+        }
+      });
     } else {
       // Go to ranking
       await supabase
         .from('quiz3_session_state')
         .update({
           current_phase: 'ranking',
-          updated_at: new Date().toISOString()
+          updated_at: now
         })
         .eq('id', sessionState.id);
+
+      // Broadcast
+      await broadcastChannel.send({
+        type: 'broadcast',
+        event: 'state_changed',
+        payload: {
+          id: sessionState.id,
+          current_phase: 'ranking',
+          current_question_id: null,
+          question_started_at: null,
+          updated_at: now,
+          session_started_at: sessionState.session_started_at
+        }
+      });
     }
   }, [questions, sessionState]);
 
   const showExplanation = useCallback(async () => {
     if (!sessionState) return;
 
+    const now = new Date().toISOString();
     await supabase
       .from('quiz3_session_state')
       .update({
         current_phase: 'explanation',
-        updated_at: new Date().toISOString()
+        updated_at: now
       })
       .eq('id', sessionState.id);
+
+    // Broadcast
+    const broadcastChannel = supabase.channel('quiz3-broadcast');
+    await broadcastChannel.send({
+      type: 'broadcast',
+      event: 'state_changed',
+      payload: {
+        id: sessionState.id,
+        current_phase: 'explanation',
+        current_question_id: sessionState.current_question_id,
+        question_started_at: sessionState.question_started_at,
+        updated_at: now,
+        session_started_at: sessionState.session_started_at
+      }
+    });
   }, [sessionState]);
 
   const endSession = useCallback(async () => {
     if (!sessionState) return;
 
+    const now = new Date().toISOString();
     await supabase
       .from('quiz3_session_state')
       .update({
         current_phase: 'ended',
-        updated_at: new Date().toISOString()
+        updated_at: now
       })
       .eq('id', sessionState.id);
+
+    // Broadcast
+    const broadcastChannel = supabase.channel('quiz3-broadcast');
+    await broadcastChannel.send({
+      type: 'broadcast',
+      event: 'state_changed',
+      payload: {
+        id: sessionState.id,
+        current_phase: 'ended',
+        current_question_id: null,
+        question_started_at: null,
+        updated_at: now,
+        session_started_at: sessionState.session_started_at
+      }
+    });
   }, [sessionState]);
 
   const getCurrentQuestion = useCallback(() => {
@@ -323,7 +432,8 @@ export const useQuiz3 = () => {
   }, [questions, sessionState]);
 
   const getCurrentQuestionIndex = useCallback(() => {
-    return questions.findIndex(q => q.id === sessionState?.current_question_id) + 1;
+    const index = questions.findIndex(q => q.id === sessionState?.current_question_id);
+    return index === -1 ? 0 : index + 1;
   }, [questions, sessionState]);
 
   return {
