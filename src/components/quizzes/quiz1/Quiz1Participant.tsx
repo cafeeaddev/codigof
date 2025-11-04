@@ -61,6 +61,13 @@ export const Quiz1Participant = () => {
         });
 
       setHasAnswered(true);
+
+      // Broadcast imediato para o host
+      await supabase.channel('quiz1-broadcast').send({
+        type: 'broadcast',
+        event: 'answer_submitted',
+        payload: { question_id: currentQuestion.id }
+      });
     } finally {
       setIsSubmitting(false);
     }

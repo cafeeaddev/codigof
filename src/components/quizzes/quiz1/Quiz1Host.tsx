@@ -72,7 +72,7 @@ export const Quiz1Host = () => {
           />
 
           <div className="text-3xl text-gray-400">
-            Aguardando respostas... <span className="text-cyan-400 font-bold">{answerStats.total}/{participantCount}</span> ({Math.round((answerStats.total / participantCount) * 100) || 0}%)
+            Aguardando respostas... <span className="text-cyan-400 font-bold">{answerStats.total}/{participantCount}</span> ({participantCount > 0 ? Math.round((answerStats.total / participantCount) * 100) : 0}%)
           </div>
         </div>
       )}

@@ -147,19 +147,33 @@ export const useQuiz1 = () => {
   useEffect(() => {
     if (!sessionState?.current_question_id) return;
 
+    // Reset stats quando muda a pergunta
+    setAnswerStats({ mito: 0, verdade: 0, total: 0 });
+
     const updateAnswerStats = async () => {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from('codigo_f_answers')
-        .select('answer')
+        .select('participant_id, answer')
         .eq('question_id', sessionState.current_question_id);
 
+      if (error) {
+        console.warn('[Quiz1] Error fetching answers:', error);
+        return;
+      }
+
       if (data) {
-        const stats = data.reduce((acc, curr) => {
-          if (curr.answer === 'MITO') acc.mito++;
-          else if (curr.answer === 'VERDADE') acc.verdade++;
-          acc.total++;
-          return acc;
-        }, { mito: 0, verdade: 0, total: 0 });
+        // Contar apenas uma resposta por participante (última resposta)
+        const byParticipant = new Map<string, string>();
+        data.forEach(row => {
+          byParticipant.set(row.participant_id, row.answer);
+        });
+
+        const values = Array.from(byParticipant.values());
+        const stats = {
+          mito: values.filter(v => v === 'MITO').length,
+          verdade: values.filter(v => v === 'VERDADE').length,
+          total: values.length
+        };
 
         setAnswerStats(stats);
       }
@@ -167,9 +181,23 @@ export const useQuiz1 = () => {
 
     updateAnswerStats();
 
-    // Polling fallback - atualiza a cada 2 segundos
-    const pollInterval = setInterval(updateAnswerStats, 2000);
+    // Polling mais rápido (1s) apenas durante a fase de pergunta
+    let pollInterval: NodeJS.Timeout | null = null;
+    if (sessionState.current_phase === 'question') {
+      pollInterval = setInterval(updateAnswerStats, 1000);
+    }
 
+    // Canal de broadcast para atualização imediata
+    const broadcast = supabase
+      .channel('quiz1-broadcast')
+      .on('broadcast', { event: 'answer_submitted' }, (payload: any) => {
+        if (payload?.question_id === sessionState.current_question_id) {
+          updateAnswerStats();
+        }
+      })
+      .subscribe();
+
+    // Canal de postgres changes (fallback)
     const channel = supabase
       .channel(`quiz1-answers-${sessionState.current_question_id}`)
       .on('postgres_changes', {
@@ -184,10 +212,11 @@ export const useQuiz1 = () => {
       .subscribe();
 
     return () => {
-      clearInterval(pollInterval);
+      if (pollInterval) clearInterval(pollInterval);
+      supabase.removeChannel(broadcast);
       supabase.removeChannel(channel);
     };
-  }, [sessionState?.current_question_id]);
+  }, [sessionState?.current_question_id, sessionState?.current_phase]);
 
   const startSession = useCallback(async () => {
     const firstQuestion = questions[0];
