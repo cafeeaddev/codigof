@@ -1,7 +1,7 @@
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Users, FileQuestion, Cloud } from 'lucide-react';
+import { Users, FileQuestion, Cloud, ExternalLink } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface QuizCardProps {
@@ -12,6 +12,7 @@ interface QuizCardProps {
   participantCount?: number;
   questionCount?: number;
   submissionCount?: number;
+  participantLink?: string;
   onManage: () => void;
   isActive?: boolean;
 }
@@ -24,6 +25,7 @@ export const QuizCard = ({
   participantCount,
   questionCount,
   submissionCount,
+  participantLink,
   onManage,
   isActive
 }: QuizCardProps) => {
@@ -81,13 +83,25 @@ export const QuizCard = ({
         )}
       </div>
 
-      <Button 
-        onClick={onManage}
-        className="w-full"
-        variant={isActive ? "default" : "outline"}
-      >
-        {isActive ? 'Gerenciando...' : 'Gerenciar'}
-      </Button>
+      <div className="flex gap-2">
+        {participantLink && (
+          <Button
+            variant="outline"
+            onClick={() => window.open(participantLink, '_blank')}
+            className="flex-1 gap-2"
+          >
+            <ExternalLink className="w-4 h-4" />
+            Abrir Quiz
+          </Button>
+        )}
+        <Button 
+          onClick={onManage}
+          className="flex-1"
+          variant={isActive ? "default" : "outline"}
+        >
+          {isActive ? 'Gerenciando...' : 'Gerenciar'}
+        </Button>
+      </div>
     </Card>
   );
 };

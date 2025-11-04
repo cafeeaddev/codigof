@@ -332,6 +332,7 @@ const AdminDashboard = () => {
                   status={quiz1.sessionState?.current_phase === 'question' ? 'active' : 'ready'}
                   participantCount={quiz1.participantCount}
                   questionCount={quiz1.questions.length}
+                  participantLink="/quiz/mito-verdade"
                   onManage={() => setActiveQuiz('quiz1')}
                   isActive={activeQuiz === 'quiz1'}
                 />
@@ -343,6 +344,7 @@ const AdminDashboard = () => {
                   icon="☁️"
                   status="collecting"
                   submissionCount={quiz2.submissions.length}
+                  participantLink="/quiz/nuvem-tags"
                   onManage={() => setActiveQuiz('quiz2')}
                   isActive={activeQuiz === 'quiz2'}
                 />
@@ -355,6 +357,7 @@ const AdminDashboard = () => {
                   status={quiz3.sessionState?.current_phase === 'question' ? 'active' : 'ready'}
                   participantCount={quiz3.participantCount}
                   questionCount={quiz3.questions.length}
+                  participantLink="/quiz/solucoes-digitais"
                   onManage={() => setActiveQuiz('quiz3')}
                   isActive={activeQuiz === 'quiz3'}
                 />
