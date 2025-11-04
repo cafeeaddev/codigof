@@ -17,6 +17,8 @@ export const Quiz1Control = () => {
     startSession,
     nextQuestion,
     showExplanation,
+    showRanking,
+    endSession,
     getCurrentQuestion,
     getCurrentQuestionIndex,
     questions,
@@ -32,6 +34,7 @@ export const Quiz1Control = () => {
       case 'waiting': return 'Aguardando início';
       case 'question': return `Pergunta ${questionIndex}/${questions.length} em andamento`;
       case 'explanation': return `Mostrando explicação ${questionIndex}/${questions.length}`;
+      case 'ranking': return 'Mostrando ranking';
       case 'ended': return 'Quiz finalizado';
       default: return 'Carregando...';
     }
@@ -92,6 +95,7 @@ export const Quiz1Control = () => {
               {sessionState?.current_phase === 'waiting' && '🟡 Aguardando'}
               {sessionState?.current_phase === 'question' && '🟢 Em andamento'}
               {sessionState?.current_phase === 'explanation' && '🔵 Explicação'}
+              {sessionState?.current_phase === 'ranking' && '🏆 Ranking'}
               {sessionState?.current_phase === 'ended' && '⚫ Finalizado'}
             </Badge>
             <Badge variant="outline" className="gap-1">
@@ -183,7 +187,14 @@ export const Quiz1Control = () => {
         {sessionState?.current_phase === 'explanation' && (
           <Button onClick={nextQuestion} className="gap-2" size="lg">
             <SkipForward className="w-4 h-4" />
-            {questionIndex < questions.length ? 'Próxima Pergunta' : 'Finalizar Quiz'}
+            {questionIndex < questions.length ? 'Próxima Pergunta' : 'Ver Ranking'}
+          </Button>
+        )}
+
+        {sessionState?.current_phase === 'ranking' && (
+          <Button onClick={endSession} className="gap-2" size="lg">
+            <Square className="w-4 h-4" />
+            Finalizar Quiz
           </Button>
         )}
 

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
 interface Question {
@@ -11,11 +11,18 @@ interface Question {
 
 interface SessionState {
   id: string;
-  current_phase: 'waiting' | 'question' | 'explanation' | 'ended';
+  current_phase: 'waiting' | 'question' | 'explanation' | 'ranking' | 'ended';
   current_question_id: string | null;
   question_started_at: string | null;
   session_started_at: string;
   updated_at: string;
+}
+
+interface RankingEntry {
+  id: string;
+  nickname: string;
+  score: number;
+  total: number;
 }
 
 interface AnswerStats {
@@ -250,10 +257,11 @@ export const useQuiz1 = () => {
         })
         .eq('id', sessionState.id);
     } else {
+      // Última pergunta finalizada, ir para ranking
       await supabase
         .from('codigo_f_session_state')
         .update({
-          current_phase: 'ended',
+          current_phase: 'ranking',
           updated_at: new Date().toISOString()
         })
         .eq('id', sessionState.id);
@@ -280,6 +288,30 @@ export const useQuiz1 = () => {
     return questions.findIndex(q => q.id === sessionState?.current_question_id) + 1;
   }, [questions, sessionState]);
 
+  const showRanking = useCallback(async () => {
+    if (!sessionState) return;
+
+    await supabase
+      .from('codigo_f_session_state')
+      .update({
+        current_phase: 'ranking',
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', sessionState.id);
+  }, [sessionState]);
+
+  const endSession = useCallback(async () => {
+    if (!sessionState) return;
+
+    await supabase
+      .from('codigo_f_session_state')
+      .update({
+        current_phase: 'ended',
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', sessionState.id);
+  }, [sessionState]);
+
   const forceRefresh = useCallback(async () => {
     const { data } = await supabase
       .from('codigo_f_session_state')
@@ -292,6 +324,52 @@ export const useQuiz1 = () => {
     }
   }, []);
 
+  // Ranking state
+  const [ranking, setRanking] = useState<RankingEntry[]>([]);
+
+  // Update ranking when in ranking phase
+  useEffect(() => {
+    if (sessionState?.current_phase !== 'ranking') return;
+
+    const calculateRanking = async () => {
+      const { data: participants } = await supabase
+        .from('codigo_f_participants')
+        .select('id, nickname');
+
+      if (!participants) return;
+
+      const { data: answers } = await supabase
+        .from('codigo_f_answers')
+        .select('participant_id, question_id, answer');
+
+      if (!answers) return;
+
+      const scores = participants.map(participant => {
+        const participantAnswers = answers.filter(a => a.participant_id === participant.id);
+        
+        let correctCount = 0;
+        participantAnswers.forEach(answer => {
+          const question = questions.find(q => q.id === answer.question_id);
+          if (question && question.correct_answer === answer.answer) {
+            correctCount++;
+          }
+        });
+
+        return {
+          id: participant.id,
+          nickname: participant.nickname,
+          score: correctCount,
+          total: questions.length
+        };
+      });
+
+      const sortedScores = scores.sort((a, b) => b.score - a.score).slice(0, 10);
+      setRanking(sortedScores);
+    };
+
+    calculateRanking();
+  }, [sessionState?.current_phase, questions]);
+
   return {
     questions,
     sessionState,
@@ -299,9 +377,12 @@ export const useQuiz1 = () => {
     answerStats,
     isLoading,
     lastSyncTime,
+    ranking,
     startSession,
     nextQuestion,
     showExplanation,
+    showRanking,
+    endSession,
     getCurrentQuestion,
     getCurrentQuestionIndex,
     forceRefresh

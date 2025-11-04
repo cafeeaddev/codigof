@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Quiz1Timer } from './Quiz1Timer';
 import { Quiz1QRCode } from './Quiz1QRCode';
 import { Quiz1Stats } from './Quiz1Stats';
+import { Quiz1Ranking } from './Quiz1Ranking';
 import { useQuiz1 } from './useQuiz1';
 import { Loader2 } from 'lucide-react';
 
@@ -11,6 +12,7 @@ export const Quiz1Host = () => {
     participantCount,
     answerStats,
     isLoading,
+    ranking,
     getCurrentQuestion,
     getCurrentQuestionIndex
   } = useQuiz1();
@@ -101,6 +103,12 @@ export const Quiz1Host = () => {
               {currentQuestion.explanation}
             </p>
           </div>
+        </div>
+      )}
+
+      {sessionState?.current_phase === 'ranking' && (
+        <div className="flex flex-col items-center justify-center min-h-screen space-y-8">
+          <Quiz1Ranking ranking={ranking} />
         </div>
       )}
 
