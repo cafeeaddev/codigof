@@ -74,13 +74,37 @@ export const useQuiz3 = () => {
   // Load and subscribe to session state
   useEffect(() => {
     const loadSessionState = async () => {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from('quiz3_session_state')
         .select('*')
-        .single();
+        .maybeSingle();
       
+      if (error) {
+        console.error('[Quiz3] Error loading session state:', error);
+      }
+
       if (data) {
         setSessionState(data as SessionState);
+      } else {
+        // Criar registro inicial se não existir
+        console.log('[Quiz3] Creating initial session state...');
+        const { data: newState, error: createError } = await supabase
+          .from('quiz3_session_state')
+          .insert({
+            current_phase: 'waiting',
+            current_question_id: null,
+            question_started_at: null,
+            session_started_at: new Date().toISOString()
+          })
+          .select()
+          .single();
+
+        if (createError) {
+          console.error('[Quiz3] Error creating session state:', createError);
+        } else if (newState) {
+          console.log('[Quiz3] Session state created:', newState);
+          setSessionState(newState as SessionState);
+        }
       }
     };
 
@@ -204,9 +228,19 @@ export const useQuiz3 = () => {
 
   const startSession = useCallback(async () => {
     const firstQuestion = questions[0];
-    if (!firstQuestion) return;
+    if (!firstQuestion) {
+      console.error('[Quiz3] No questions available');
+      return;
+    }
 
-    await supabase
+    if (!sessionState?.id) {
+      console.error('[Quiz3] Session state not loaded, cannot start');
+      return;
+    }
+
+    console.log('[Quiz3] Starting session with question:', firstQuestion.id);
+
+    const { error } = await supabase
       .from('quiz3_session_state')
       .update({
         current_phase: 'question',
@@ -214,7 +248,13 @@ export const useQuiz3 = () => {
         question_started_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
       })
-      .eq('id', sessionState?.id);
+      .eq('id', sessionState.id);
+
+    if (error) {
+      console.error('[Quiz3] Error starting session:', error);
+    } else {
+      console.log('[Quiz3] Session started successfully');
+    }
   }, [questions, sessionState]);
 
   const nextQuestion = useCallback(async () => {
