@@ -1,6 +1,3 @@
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useUserRole } from '@/hooks/useUserRole';
 import { Quiz1Timer } from '../quiz1/Quiz1Timer';
 import { Quiz1QRCode } from '../quiz1/Quiz1QRCode';
 import { Quiz3Stats } from './Quiz3Stats';
@@ -9,8 +6,6 @@ import { useQuiz3 } from './useQuiz3';
 import { Loader2 } from 'lucide-react';
 
 export const Quiz3Host = () => {
-  const { isAdmin, isLoading: isLoadingRole } = useUserRole();
-  const navigate = useNavigate();
   const {
     sessionState,
     participantCount,
@@ -21,13 +16,7 @@ export const Quiz3Host = () => {
     getCurrentQuestionIndex
   } = useQuiz3();
 
-  useEffect(() => {
-    if (!isLoadingRole && !isAdmin) {
-      navigate('/');
-    }
-  }, [isAdmin, isLoadingRole, navigate]);
-
-  if (isLoadingRole || isLoading) {
+  if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-900 via-orange-700 to-yellow-600">
         <Loader2 className="w-16 h-16 animate-spin text-white" />
