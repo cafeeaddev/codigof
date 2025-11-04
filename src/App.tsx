@@ -11,6 +11,8 @@ import CodyPresentation from "./pages/CodyPresentation";
 import NotFound from "./pages/NotFound";
 import FixedBrandLogos from "./components/FixedBrandLogos";
 import { SEOHead } from "@/components/SEOHead";
+import CodigoFQuizHost from "./components/codigo-f/CodigoFQuizHost";
+import CodigoFQuizParticipant from "./components/codigo-f/CodigoFQuizParticipant";
 
 const queryClient = new QueryClient();
 
@@ -32,6 +34,8 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/cody" element={<CodyPresentation />} />
+            <Route path="/codigo-f-quiz/screen" element={<CodigoFQuizHost />} />
+            <Route path="/codigo-f-quiz" element={<CodigoFQuizParticipant />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

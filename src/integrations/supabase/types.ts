@@ -41,6 +41,125 @@ export type Database = {
         }
         Relationships: []
       }
+      codigo_f_answers: {
+        Row: {
+          answer: string
+          answered_at: string | null
+          id: string
+          participant_id: string | null
+          question_id: string | null
+        }
+        Insert: {
+          answer: string
+          answered_at?: string | null
+          id?: string
+          participant_id?: string | null
+          question_id?: string | null
+        }
+        Update: {
+          answer?: string
+          answered_at?: string | null
+          id?: string
+          participant_id?: string | null
+          question_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "codigo_f_answers_participant_id_fkey"
+            columns: ["participant_id"]
+            isOneToOne: false
+            referencedRelation: "codigo_f_participants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "codigo_f_answers_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "codigo_f_questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      codigo_f_participants: {
+        Row: {
+          id: string
+          joined_at: string | null
+          nickname: string
+        }
+        Insert: {
+          id?: string
+          joined_at?: string | null
+          nickname: string
+        }
+        Update: {
+          id?: string
+          joined_at?: string | null
+          nickname?: string
+        }
+        Relationships: []
+      }
+      codigo_f_questions: {
+        Row: {
+          correct_answer: string
+          created_at: string | null
+          explanation: string
+          id: string
+          order_position: number
+          question_text: string
+        }
+        Insert: {
+          correct_answer: string
+          created_at?: string | null
+          explanation: string
+          id?: string
+          order_position: number
+          question_text: string
+        }
+        Update: {
+          correct_answer?: string
+          created_at?: string | null
+          explanation?: string
+          id?: string
+          order_position?: number
+          question_text?: string
+        }
+        Relationships: []
+      }
+      codigo_f_session_state: {
+        Row: {
+          current_phase: string
+          current_question_id: string | null
+          id: string
+          question_started_at: string | null
+          session_started_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          current_phase?: string
+          current_question_id?: string | null
+          id?: string
+          question_started_at?: string | null
+          session_started_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          current_phase?: string
+          current_question_id?: string | null
+          id?: string
+          question_started_at?: string | null
+          session_started_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "codigo_f_session_state_current_question_id_fkey"
+            columns: ["current_question_id"]
+            isOneToOne: false
+            referencedRelation: "codigo_f_questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       fast_track_responses: {
         Row: {
           accepted_terms: boolean
