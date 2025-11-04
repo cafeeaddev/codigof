@@ -240,13 +240,14 @@ export const useQuiz3 = () => {
 
     console.log('[Quiz3] Starting session with question:', firstQuestion.id);
 
+    const now = new Date().toISOString();
     const { error } = await supabase
       .from('quiz3_session_state')
       .update({
         current_phase: 'question',
         current_question_id: firstQuestion.id,
-        question_started_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
+        question_started_at: now,
+        updated_at: now
       })
       .eq('id', sessionState.id);
 
@@ -254,6 +255,14 @@ export const useQuiz3 = () => {
       console.error('[Quiz3] Error starting session:', error);
     } else {
       console.log('[Quiz3] Session started successfully');
+      // Optimistic local update to reflect immediately even if realtime is delayed
+      setSessionState(prev => prev ? {
+        ...prev,
+        current_phase: 'question',
+        current_question_id: firstQuestion.id,
+        question_started_at: now,
+        updated_at: now
+      } : prev);
     }
   }, [questions, sessionState]);
 
