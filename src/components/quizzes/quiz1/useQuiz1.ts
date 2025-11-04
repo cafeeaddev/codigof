@@ -30,6 +30,7 @@ export const useQuiz1 = () => {
   const [participantCount, setParticipantCount] = useState(0);
   const [answerStats, setAnswerStats] = useState<AnswerStats>({ mito: 0, verdade: 0, total: 0 });
   const [isLoading, setIsLoading] = useState(true);
+  const [lastSyncTime, setLastSyncTime] = useState<Date>(new Date());
 
   // Load questions
   useEffect(() => {
@@ -73,6 +74,7 @@ export const useQuiz1 = () => {
       
       if (data) {
         setSessionState(data as SessionState);
+        setLastSyncTime(new Date());
       }
     };
 
@@ -87,14 +89,29 @@ export const useQuiz1 = () => {
       }, (payload: any) => {
         if (payload.new) {
           setSessionState(payload.new as SessionState);
+          setLastSyncTime(new Date());
         }
       })
       .subscribe();
 
+    // Polling fallback - garante sincronização a cada 3 segundos
+    const pollInterval = setInterval(async () => {
+      const { data } = await supabase
+        .from('codigo_f_session_state')
+        .select('*')
+        .maybeSingle();
+      
+      if (data && JSON.stringify(data) !== JSON.stringify(sessionState)) {
+        setSessionState(data as SessionState);
+        setLastSyncTime(new Date());
+      }
+    }, 3000);
+
     return () => {
+      clearInterval(pollInterval);
       supabase.removeChannel(channel);
     };
-  }, []);
+  }, [sessionState]);
 
   // Track participants
   useEffect(() => {
@@ -229,16 +246,30 @@ export const useQuiz1 = () => {
     return questions.findIndex(q => q.id === sessionState?.current_question_id) + 1;
   }, [questions, sessionState]);
 
+  const forceRefresh = useCallback(async () => {
+    const { data } = await supabase
+      .from('codigo_f_session_state')
+      .select('*')
+      .maybeSingle();
+    
+    if (data) {
+      setSessionState(data as SessionState);
+      setLastSyncTime(new Date());
+    }
+  }, []);
+
   return {
     questions,
     sessionState,
     participantCount,
     answerStats,
     isLoading,
+    lastSyncTime,
     startSession,
     nextQuestion,
     showExplanation,
     getCurrentQuestion,
-    getCurrentQuestionIndex
+    getCurrentQuestionIndex,
+    forceRefresh
   };
 };

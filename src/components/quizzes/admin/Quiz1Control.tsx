@@ -3,8 +3,9 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useQuiz1 } from '../quiz1/useQuiz1';
-import { ExternalLink, Play, SkipForward, Square, AlertCircle } from 'lucide-react';
+import { ExternalLink, Play, SkipForward, Square, AlertCircle, RefreshCw, Circle } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
+import { cn } from '@/lib/utils';
 
 export const Quiz1Control = () => {
   const {
@@ -12,12 +13,14 @@ export const Quiz1Control = () => {
     participantCount,
     answerStats,
     isLoading,
+    lastSyncTime,
     startSession,
     nextQuestion,
     showExplanation,
     getCurrentQuestion,
     getCurrentQuestionIndex,
-    questions
+    questions,
+    forceRefresh
   } = useQuiz1();
 
   const currentQuestion = getCurrentQuestion();
@@ -60,27 +63,47 @@ export const Quiz1Control = () => {
           <h2 className="text-2xl font-bold">⚡ Mito ou Verdade</h2>
           <p className="text-muted-foreground">Transformação Digital em 30 segundos</p>
         </div>
-        <Button
-          variant="outline"
-          onClick={() => window.open(screenUrl, '_blank')}
-          className="gap-2"
-        >
-          <ExternalLink className="w-4 h-4" />
-          Abrir Tela de Projeção
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            onClick={forceRefresh}
+            className="gap-2"
+            size="sm"
+          >
+            <RefreshCw className="w-4 h-4" />
+            Atualizar
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => window.open(screenUrl, '_blank')}
+            className="gap-2"
+          >
+            <ExternalLink className="w-4 h-4" />
+            Abrir Tela de Projeção
+          </Button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card className="p-4">
           <div className="text-sm text-muted-foreground mb-1">Status</div>
-          <Badge className="text-sm">
-            {sessionState?.current_phase === 'waiting' && '🟡 Aguardando'}
-            {sessionState?.current_phase === 'question' && '🟢 Em andamento'}
-            {sessionState?.current_phase === 'explanation' && '🔵 Explicação'}
-            {sessionState?.current_phase === 'ended' && '⚫ Finalizado'}
-          </Badge>
-          <div className="text-xs text-muted-foreground mt-2">
+          <div className="flex items-center gap-2 mb-2">
+            <Badge className="text-sm">
+              {sessionState?.current_phase === 'waiting' && '🟡 Aguardando'}
+              {sessionState?.current_phase === 'question' && '🟢 Em andamento'}
+              {sessionState?.current_phase === 'explanation' && '🔵 Explicação'}
+              {sessionState?.current_phase === 'ended' && '⚫ Finalizado'}
+            </Badge>
+            <Badge variant="outline" className="gap-1">
+              <Circle className={cn("w-2 h-2 fill-green-500")} />
+              Sincronizado
+            </Badge>
+          </div>
+          <div className="text-xs text-muted-foreground">
             {getPhaseText()}
+          </div>
+          <div className="text-xs text-muted-foreground mt-1">
+            Última atualização: {lastSyncTime.toLocaleTimeString('pt-BR')}
           </div>
         </Card>
 
