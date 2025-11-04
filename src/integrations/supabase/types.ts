@@ -545,18 +545,21 @@ export type Database = {
       quiz2_submissions: {
         Row: {
           created_at: string | null
+          group_members: string | null
           group_name: string
           id: string
           keyword: string
         }
         Insert: {
           created_at?: string | null
+          group_members?: string | null
           group_name: string
           id?: string
           keyword: string
         }
         Update: {
           created_at?: string | null
+          group_members?: string | null
           group_name?: string
           id?: string
           keyword?: string

@@ -7,13 +7,14 @@ import { Loader2 } from 'lucide-react';
 
 export const Quiz2Participant = () => {
   const [groupName, setGroupName] = useState('');
+  const [groupMembers, setGroupMembers] = useState('');
   const [keyword, setKeyword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!groupName.trim() || !keyword.trim()) return;
+    if (!groupName.trim() || !groupMembers.trim() || !keyword.trim()) return;
 
     setIsSubmitting(true);
     try {
@@ -21,11 +22,13 @@ export const Quiz2Participant = () => {
         .from('quiz2_submissions')
         .insert({
           group_name: groupName.trim(),
+          group_members: groupMembers.trim(),
           keyword: keyword.trim()
         });
 
       setSubmitted(true);
       setGroupName('');
+      setGroupMembers('');
       setKeyword('');
 
       // Allow submitting again after 3 seconds
@@ -62,6 +65,18 @@ export const Quiz2Participant = () => {
             <div>
               <Input
                 type="text"
+                placeholder="Pessoas do Grupo"
+                value={groupMembers}
+                onChange={(e) => setGroupMembers(e.target.value)}
+                maxLength={100}
+                className="text-lg"
+                disabled={isSubmitting}
+              />
+            </div>
+
+            <div>
+              <Input
+                type="text"
                 placeholder="Uma palavra-chave (ex: retrabalho)"
                 value={keyword}
                 onChange={(e) => setKeyword(e.target.value)}
@@ -77,7 +92,7 @@ export const Quiz2Participant = () => {
             <Button 
               type="submit" 
               className="w-full text-lg py-6"
-              disabled={!groupName.trim() || !keyword.trim() || isSubmitting}
+              disabled={!groupName.trim() || !groupMembers.trim() || !keyword.trim() || isSubmitting}
             >
               {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Enviar Contribuição'}
             </Button>
