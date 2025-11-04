@@ -34,6 +34,9 @@ export const useQuiz2 = () => {
 
     loadSubmissions();
 
+    // Polling fallback - atualiza a cada 3 segundos
+    const pollInterval = setInterval(loadSubmissions, 3000);
+
     // Subscribe to new submissions
     const channel = supabase
       .channel('quiz2-submissions')
@@ -47,6 +50,7 @@ export const useQuiz2 = () => {
       .subscribe();
 
     return () => {
+      clearInterval(pollInterval);
       supabase.removeChannel(channel);
     };
   }, []);

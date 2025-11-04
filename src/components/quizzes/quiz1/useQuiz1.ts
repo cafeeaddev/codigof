@@ -167,19 +167,24 @@ export const useQuiz1 = () => {
 
     updateAnswerStats();
 
+    // Polling fallback - atualiza a cada 2 segundos
+    const pollInterval = setInterval(updateAnswerStats, 2000);
+
     const channel = supabase
-      .channel('quiz1-answers')
+      .channel(`quiz1-answers-${sessionState.current_question_id}`)
       .on('postgres_changes', {
         event: 'INSERT',
         schema: 'public',
-        table: 'codigo_f_answers',
-        filter: `question_id=eq.${sessionState.current_question_id}`
-      }, () => {
-        updateAnswerStats();
+        table: 'codigo_f_answers'
+      }, (payload: any) => {
+        if (payload.new?.question_id === sessionState.current_question_id) {
+          updateAnswerStats();
+        }
       })
       .subscribe();
 
     return () => {
+      clearInterval(pollInterval);
       supabase.removeChannel(channel);
     };
   }, [sessionState?.current_question_id]);

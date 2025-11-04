@@ -147,6 +147,9 @@ export const useQuiz3 = () => {
 
     updateAnswers();
 
+    // Polling fallback - atualiza a cada 2 segundos
+    const pollInterval = setInterval(updateAnswers, 2000);
+
     const channel = supabase
       .channel('quiz3-all-answers')
       .on('postgres_changes', {
@@ -159,6 +162,7 @@ export const useQuiz3 = () => {
       .subscribe();
 
     return () => {
+      clearInterval(pollInterval);
       supabase.removeChannel(channel);
     };
   }, []);
