@@ -1,0 +1,93 @@
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Users, FileQuestion, Cloud } from 'lucide-react';
+import { cn } from '@/lib/utils';
+
+interface QuizCardProps {
+  title: string;
+  description: string;
+  icon: '⚡' | '☁️' | '🎯';
+  status: 'ready' | 'collecting' | 'active';
+  participantCount?: number;
+  questionCount?: number;
+  submissionCount?: number;
+  onManage: () => void;
+  isActive?: boolean;
+}
+
+export const QuizCard = ({
+  title,
+  description,
+  icon,
+  status,
+  participantCount,
+  questionCount,
+  submissionCount,
+  onManage,
+  isActive
+}: QuizCardProps) => {
+  const getStatusColor = () => {
+    switch (status) {
+      case 'active': return 'bg-green-500';
+      case 'collecting': return 'bg-blue-500';
+      default: return 'bg-gray-500';
+    }
+  };
+
+  const getStatusText = () => {
+    switch (status) {
+      case 'active': return 'Ativo';
+      case 'collecting': return 'Coletando';
+      default: return 'Pronto';
+    }
+  };
+
+  return (
+    <Card className={cn(
+      'p-6 transition-all hover:shadow-lg',
+      isActive && 'ring-2 ring-primary'
+    )}>
+      <div className="flex items-start justify-between mb-4">
+        <div className="text-5xl">{icon}</div>
+        <Badge className={cn('text-white', getStatusColor())}>
+          {getStatusText()}
+        </Badge>
+      </div>
+
+      <h3 className="text-2xl font-bold mb-2">{title}</h3>
+      <p className="text-muted-foreground mb-4">{description}</p>
+
+      <div className="space-y-2 mb-4">
+        {participantCount !== undefined && (
+          <div className="flex items-center gap-2 text-sm">
+            <Users className="w-4 h-4" />
+            <span>{participantCount} participantes</span>
+          </div>
+        )}
+        
+        {questionCount !== undefined && (
+          <div className="flex items-center gap-2 text-sm">
+            <FileQuestion className="w-4 h-4" />
+            <span>{questionCount} perguntas</span>
+          </div>
+        )}
+
+        {submissionCount !== undefined && (
+          <div className="flex items-center gap-2 text-sm">
+            <Cloud className="w-4 h-4" />
+            <span>{submissionCount} contribuições</span>
+          </div>
+        )}
+      </div>
+
+      <Button 
+        onClick={onManage}
+        className="w-full"
+        variant={isActive ? "default" : "outline"}
+      >
+        {isActive ? 'Gerenciando...' : 'Gerenciar'}
+      </Button>
+    </Card>
+  );
+};

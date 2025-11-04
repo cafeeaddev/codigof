@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { ArrowLeft, User, Lock, Calendar, LogOut, Award } from 'lucide-react';
+import { ArrowLeft, User, Lock, Calendar, LogOut, Award, GraduationCap } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { ForgotPasswordDialog } from '@/components/ForgotPasswordDialog';
@@ -26,6 +26,13 @@ import { XPFixUtility } from '@/components/admin/XPFixUtility';
 import { useAdminDashboard } from '@/hooks/useAdminDashboard';
 import { useFilters } from '@/hooks/useFilters';
 import { ResponseData, UserProgress, UserProfile } from '@/types/admin';
+import { QuizCard } from '@/components/quizzes/admin/QuizCard';
+import { Quiz1Control } from '@/components/quizzes/admin/Quiz1Control';
+import { Quiz2Control } from '@/components/quizzes/admin/Quiz2Control';
+import { Quiz3Control } from '@/components/quizzes/admin/Quiz3Control';
+import { useQuiz1 } from '@/components/quizzes/quiz1/useQuiz1';
+import { useQuiz2 } from '@/components/quizzes/quiz2/useQuiz2';
+import { useQuiz3 } from '@/components/quizzes/quiz3/useQuiz3';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -38,6 +45,12 @@ const AdminDashboard = () => {
   const [selectedUser, setSelectedUser] = useState<UserProgress | null>(null);
   const [selectedUserProfile, setSelectedUserProfile] = useState<UserProfile | null>(null);
   const [isAnalysisDialogOpen, setIsAnalysisDialogOpen] = useState(false);
+  const [activeQuiz, setActiveQuiz] = useState<'quiz1' | 'quiz2' | 'quiz3' | null>(null);
+
+  // Quiz hooks
+  const quiz1 = useQuiz1();
+  const quiz2 = useQuiz2();
+  const quiz3 = useQuiz3();
 
   const {
     responses1,
@@ -207,7 +220,7 @@ const AdminDashboard = () => {
 
           {/* Main Dashboard Tabs */}
           <Tabs defaultValue="dashboard" className="w-full">
-            <TabsList className="grid w-full grid-cols-3 mb-8">
+            <TabsList className="grid w-full grid-cols-4 mb-8">
               <TabsTrigger value="dashboard" className="flex items-center gap-2">
                 <User className="w-4 h-4" />
                 Dashboard
@@ -215,6 +228,10 @@ const AdminDashboard = () => {
               <TabsTrigger value="competencias" className="flex items-center gap-2">
                 <Award className="w-4 h-4" />
                 Competências
+              </TabsTrigger>
+              <TabsTrigger value="treinamento" className="flex items-center gap-2">
+                <GraduationCap className="w-4 h-4" />
+                Treinamento
               </TabsTrigger>
               <TabsTrigger value="configuracoes" className="flex items-center gap-2">
                 <Calendar className="w-4 h-4" />
@@ -302,6 +319,63 @@ const AdminDashboard = () => {
                   <QuestionManager />
                 </CardContent>
               </Card>
+            </TabsContent>
+
+            {/* Treinamento Tab */}
+            <TabsContent value="treinamento" className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* Quiz 1 Card */}
+                <QuizCard
+                  title="Mito ou Verdade"
+                  description="Transformação Digital em 30 segundos"
+                  icon="⚡"
+                  status={quiz1.sessionState?.current_phase === 'question' ? 'active' : 'ready'}
+                  participantCount={quiz1.participantCount}
+                  questionCount={quiz1.questions.length}
+                  onManage={() => setActiveQuiz('quiz1')}
+                  isActive={activeQuiz === 'quiz1'}
+                />
+
+                {/* Quiz 2 Card */}
+                <QuizCard
+                  title="Nuvem de Tags"
+                  description="Desafios reais do cotidiano"
+                  icon="☁️"
+                  status="collecting"
+                  submissionCount={quiz2.submissions.length}
+                  onManage={() => setActiveQuiz('quiz2')}
+                  isActive={activeQuiz === 'quiz2'}
+                />
+
+                {/* Quiz 3 Card */}
+                <QuizCard
+                  title="Soluções Digitais"
+                  description="Identifique a solução certa"
+                  icon="🎯"
+                  status={quiz3.sessionState?.current_phase === 'question' ? 'active' : 'ready'}
+                  participantCount={quiz3.participantCount}
+                  questionCount={quiz3.questions.length}
+                  onManage={() => setActiveQuiz('quiz3')}
+                  isActive={activeQuiz === 'quiz3'}
+                />
+              </div>
+
+              {/* Quiz Controls */}
+              {activeQuiz === 'quiz1' && <Quiz1Control />}
+              {activeQuiz === 'quiz2' && <Quiz2Control />}
+              {activeQuiz === 'quiz3' && <Quiz3Control />}
+
+              {!activeQuiz && (
+                <Card className="p-8 text-center">
+                  <GraduationCap className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
+                  <h3 className="text-xl font-semibold mb-2">
+                    Selecione um quiz para gerenciar
+                  </h3>
+                  <p className="text-muted-foreground">
+                    Clique em "Gerenciar" em qualquer quiz acima para ver os controles e estatísticas
+                  </p>
+                </Card>
+              )}
             </TabsContent>
 
           </Tabs>
