@@ -68,7 +68,7 @@ export const Quiz2Participant = () => {
                 placeholder="Pessoas do Grupo"
                 value={groupMembers}
                 onChange={(e) => setGroupMembers(e.target.value)}
-                maxLength={100}
+                maxLength={350}
                 className="text-lg"
                 disabled={isSubmitting}
               />
