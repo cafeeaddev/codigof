@@ -35,6 +35,8 @@ import { useQuiz2 } from '@/components/quizzes/quiz2/useQuiz2';
 import { useQuiz3 } from '@/components/quizzes/quiz3/useQuiz3';
 import { Quiz4Control } from '@/components/quizzes/admin/Quiz4Control';
 import { useQuiz4 } from '@/components/quizzes/quiz4/useQuiz4';
+import { Quiz5Control } from '@/components/quizzes/admin/Quiz5Control';
+import { useQuiz5 } from '@/components/quizzes/quiz5/useQuiz5';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -47,13 +49,14 @@ const AdminDashboard = () => {
   const [selectedUser, setSelectedUser] = useState<UserProgress | null>(null);
   const [selectedUserProfile, setSelectedUserProfile] = useState<UserProfile | null>(null);
   const [isAnalysisDialogOpen, setIsAnalysisDialogOpen] = useState(false);
-  const [activeQuiz, setActiveQuiz] = useState<'quiz1' | 'quiz2' | 'quiz3' | 'quiz4' | null>(null);
+  const [activeQuiz, setActiveQuiz] = useState<'quiz1' | 'quiz2' | 'quiz3' | 'quiz4' | 'quiz5' | null>(null);
 
   // Quiz hooks
   const quiz1 = useQuiz1();
   const quiz2 = useQuiz2();
   const quiz3 = useQuiz3();
   const quiz4 = useQuiz4();
+  const quiz5 = useQuiz5();
 
   const {
     responses1,
@@ -299,6 +302,28 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleResetQuiz5 = async () => {
+    try {
+      // Delete all submissions
+      await supabase.from('quiz5_submissions').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+      
+      toast({
+        title: "Quiz resetado",
+        description: "O Quiz 5 (Mapa da Alfabetização) foi resetado com sucesso!",
+      });
+
+      // Refresh quiz data
+      window.location.reload();
+    } catch (error) {
+      console.error('Error resetting quiz 5:', error);
+      toast({
+        title: "Erro",
+        description: "Erro ao resetar o quiz",
+        variant: "destructive",
+      });
+    }
+  };
+
 
   if (isAdmin) {
     if (dashboardLoading) {
@@ -512,13 +537,27 @@ const AdminDashboard = () => {
                   onReset={handleResetQuiz4}
                   isActive={activeQuiz === 'quiz4'}
                 />
+
+                {/* Quiz 5 Card */}
+                <QuizCard
+                  title="Mapa da Alfabetização"
+                  description="Mural colaborativo com 3 colunas"
+                  icon="🧭"
+                  status="collecting"
+                  submissionCount={quiz5.totalParticipants}
+                  participantLink="/quiz/mapa"
+                  onManage={() => setActiveQuiz('quiz5')}
+                  onReset={handleResetQuiz5}
+                  isActive={activeQuiz === 'quiz5'}
+                />
               </div>
 
               {/* Quiz Controls */}
               {activeQuiz === 'quiz1' && <Quiz1Control />}
               {activeQuiz === 'quiz2' && <Quiz2Control />}
               {activeQuiz === 'quiz3' && <Quiz3Control />}
-              {activeQuiz === 'quiz4' && <Quiz4Control />}
+                  {activeQuiz === 'quiz4' && <Quiz4Control />}
+                  {activeQuiz === 'quiz5' && <Quiz5Control />}
 
               {!activeQuiz && (
                 <Card className="p-8 text-center">

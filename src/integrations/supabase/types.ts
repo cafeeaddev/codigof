@@ -733,6 +733,36 @@ export type Database = {
         }
         Relationships: []
       }
+      quiz5_submissions: {
+        Row: {
+          created_at: string | null
+          digital_habit: string
+          digital_idea: string
+          id: string
+          initials: string
+          mindset_change: string
+          participant_name: string
+        }
+        Insert: {
+          created_at?: string | null
+          digital_habit: string
+          digital_idea: string
+          id?: string
+          initials: string
+          mindset_change: string
+          participant_name: string
+        }
+        Update: {
+          created_at?: string | null
+          digital_habit?: string
+          digital_idea?: string
+          id?: string
+          initials?: string
+          mindset_change?: string
+          participant_name?: string
+        }
+        Relationships: []
+      }
       respostas: {
         Row: {
           created_at: string
