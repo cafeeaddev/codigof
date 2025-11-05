@@ -20,7 +20,7 @@ export const Quiz2Host = () => {
     <div className="min-h-screen bg-[#0a0a0f] text-white p-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-4 mb-4">
             <Cloud className="w-16 h-16 text-cyan-400" />
             <h1 className="text-6xl font-bold bg-gradient-to-r from-cyan-400 via-blue-400 to-cyan-500 bg-clip-text text-transparent">
@@ -33,28 +33,38 @@ export const Quiz2Host = () => {
           </p>
         </div>
 
+        {/* QR Code Highlight Section */}
+        <Card className="bg-gradient-to-br from-cyan-500/20 to-blue-500/20 border-4 border-cyan-400/50 rounded-3xl p-12 mb-8 shadow-2xl shadow-cyan-500/30">
+          <div className="flex flex-col md:flex-row items-center justify-center gap-8">
+            <div className="bg-white p-8 rounded-2xl shadow-2xl">
+              <QRCodeSVG
+                value={participantUrl}
+                size={280}
+                level="H"
+                includeMargin
+              />
+            </div>
+            <div className="text-center md:text-left">
+              <p className="text-4xl font-bold text-cyan-400 mb-4 drop-shadow-[0_0_20px_rgba(34,211,238,0.8)]">
+                📱 Escaneie o QR Code
+              </p>
+              <p className="text-2xl text-gray-200 mb-2">
+                Compartilhe o maior desafio
+              </p>
+              <p className="text-xl text-gray-300">
+                do seu grupo em uma palavra
+              </p>
+            </div>
+          </div>
+        </Card>
+
         {/* Word Cloud Card */}
         <Card className="bg-[#1a1a2e] border-2 border-blue-500/30 rounded-3xl p-12 mb-8 shadow-lg shadow-blue-500/10">
           <WordCloud data={wordCloudData} />
         </Card>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* QR Code Card */}
-          <Card className="bg-[#1a1a2e] border-2 border-cyan-500/30 rounded-2xl p-6 text-center hover:border-cyan-500/50 transition-colors shadow-lg shadow-cyan-500/10">
-            <div className="bg-white p-6 rounded-xl mb-4 mx-auto w-fit">
-              <QRCodeSVG
-                value={participantUrl}
-                size={150}
-                level="H"
-                includeMargin
-              />
-            </div>
-            <p className="text-xl font-semibold text-cyan-400">
-              Escaneie para contribuir
-            </p>
-          </Card>
-
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Groups Card */}
           <Card className="bg-[#1a1a2e] border-2 border-fuchsia-500/30 rounded-2xl p-8 text-center hover:border-fuchsia-500/50 transition-colors shadow-lg shadow-fuchsia-500/10">
             <Users className="w-12 h-12 text-fuchsia-400 mx-auto mb-4" />
