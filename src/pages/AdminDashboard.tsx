@@ -33,6 +33,8 @@ import { Quiz3Control } from '@/components/quizzes/admin/Quiz3Control';
 import { useQuiz1 } from '@/components/quizzes/quiz1/useQuiz1';
 import { useQuiz2 } from '@/components/quizzes/quiz2/useQuiz2';
 import { useQuiz3 } from '@/components/quizzes/quiz3/useQuiz3';
+import { Quiz4Control } from '@/components/quizzes/admin/Quiz4Control';
+import { useQuiz4 } from '@/components/quizzes/quiz4/useQuiz4';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -45,12 +47,13 @@ const AdminDashboard = () => {
   const [selectedUser, setSelectedUser] = useState<UserProgress | null>(null);
   const [selectedUserProfile, setSelectedUserProfile] = useState<UserProfile | null>(null);
   const [isAnalysisDialogOpen, setIsAnalysisDialogOpen] = useState(false);
-  const [activeQuiz, setActiveQuiz] = useState<'quiz1' | 'quiz2' | 'quiz3' | null>(null);
+  const [activeQuiz, setActiveQuiz] = useState<'quiz1' | 'quiz2' | 'quiz3' | 'quiz4' | null>(null);
 
   // Quiz hooks
   const quiz1 = useQuiz1();
   const quiz2 = useQuiz2();
   const quiz3 = useQuiz3();
+  const quiz4 = useQuiz4();
 
   const {
     responses1,
@@ -274,6 +277,28 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleResetQuiz4 = async () => {
+    try {
+      // Delete all submissions
+      await supabase.from('quiz4_submissions').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+      
+      toast({
+        title: "Quiz resetado",
+        description: "O Quiz 4 (Canvas Colaborativo) foi resetado com sucesso!",
+      });
+
+      // Refresh quiz data
+      window.location.reload();
+    } catch (error) {
+      console.error('Error resetting quiz 4:', error);
+      toast({
+        title: "Erro",
+        description: "Erro ao resetar o quiz",
+        variant: "destructive",
+      });
+    }
+  };
+
 
   if (isAdmin) {
     if (dashboardLoading) {
@@ -433,7 +458,7 @@ const AdminDashboard = () => {
 
             {/* Treinamento Tab */}
             <TabsContent value="treinamento" className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {/* Quiz 1 Card */}
                 <QuizCard
                   title="Mito ou Verdade"
@@ -474,12 +499,26 @@ const AdminDashboard = () => {
                   onReset={handleResetQuiz3}
                   isActive={activeQuiz === 'quiz3'}
                 />
+
+                {/* Quiz 4 Card */}
+                <QuizCard
+                  title="Canvas Colaborativo"
+                  description="Estruture ideias em 4 perguntas"
+                  icon="📝"
+                  status="collecting"
+                  submissionCount={quiz4.submissions.length}
+                  participantLink="/quiz/canvas"
+                  onManage={() => setActiveQuiz('quiz4')}
+                  onReset={handleResetQuiz4}
+                  isActive={activeQuiz === 'quiz4'}
+                />
               </div>
 
               {/* Quiz Controls */}
               {activeQuiz === 'quiz1' && <Quiz1Control />}
               {activeQuiz === 'quiz2' && <Quiz2Control />}
               {activeQuiz === 'quiz3' && <Quiz3Control />}
+              {activeQuiz === 'quiz4' && <Quiz4Control />}
 
               {!activeQuiz && (
                 <Card className="p-8 text-center">

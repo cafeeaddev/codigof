@@ -700,6 +700,39 @@ export type Database = {
           },
         ]
       }
+      quiz4_submissions: {
+        Row: {
+          created_at: string | null
+          group_members: string | null
+          group_name: string
+          human_impact: string
+          id: string
+          problem: string
+          solution: string
+          technology: string
+        }
+        Insert: {
+          created_at?: string | null
+          group_members?: string | null
+          group_name: string
+          human_impact: string
+          id?: string
+          problem: string
+          solution: string
+          technology: string
+        }
+        Update: {
+          created_at?: string | null
+          group_members?: string | null
+          group_name?: string
+          human_impact?: string
+          id?: string
+          problem?: string
+          solution?: string
+          technology?: string
+        }
+        Relationships: []
+      }
       respostas: {
         Row: {
           created_at: string

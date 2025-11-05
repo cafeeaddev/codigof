@@ -17,6 +17,8 @@ import { Quiz2Host } from "./components/quizzes/quiz2/Quiz2Host";
 import { Quiz2Participant } from "./components/quizzes/quiz2/Quiz2Participant";
 import { Quiz3Host } from "./components/quizzes/quiz3/Quiz3Host";
 import { Quiz3Participant } from "./components/quizzes/quiz3/Quiz3Participant";
+import { Quiz4Host } from "./components/quizzes/quiz4/Quiz4Host";
+import { Quiz4Participant } from "./components/quizzes/quiz4/Quiz4Participant";
 
 const queryClient = new QueryClient();
 
@@ -49,6 +51,10 @@ const App = () => (
             {/* Quiz 3 - Soluções Digitais */}
             <Route path="/quiz/solucoes-digitais/screen" element={<Quiz3Host />} />
             <Route path="/quiz/solucoes-digitais" element={<Quiz3Participant />} />
+            
+            {/* Quiz 4 - Canvas Colaborativo */}
+            <Route path="/quiz/canvas/screen" element={<Quiz4Host />} />
+            <Route path="/quiz/canvas" element={<Quiz4Participant />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
