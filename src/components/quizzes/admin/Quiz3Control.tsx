@@ -2,8 +2,10 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useQuiz3 } from '../quiz3/useQuiz3';
-import { ExternalLink, Play, SkipForward, Trophy, Square } from 'lucide-react';
+import { ExternalLink, Play, SkipForward, Trophy, Square, Download } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 export const Quiz3Control = () => {
   const {
@@ -43,6 +45,50 @@ export const Quiz3Control = () => {
     return answerStats.total > 0 ? Math.round((count / answerStats.total) * 100) : 0;
   };
 
+  const exportToCSV = async () => {
+    try {
+      const { data: participants, error: pError } = await supabase
+        .from('quiz3_participants')
+        .select('*')
+        .order('joined_at', { ascending: false });
+
+      const { data: answers, error: aError } = await supabase
+        .from('quiz3_answers')
+        .select('*, quiz3_questions(question_text, correct_option)')
+        .order('answered_at', { ascending: false });
+
+      if (pError || aError) throw pError || aError;
+
+      const headers = ['Participante', 'Data Entrada', 'Pergunta', 'Resposta', 'Resposta Correta', 'Data Resposta'];
+      const rows = (answers || []).map(ans => [
+        participants?.find(p => p.id === ans.participant_id)?.nickname || 'N/A',
+        participants?.find(p => p.id === ans.participant_id)?.joined_at 
+          ? new Date(participants.find(p => p.id === ans.participant_id)!.joined_at!).toLocaleString('pt-BR')
+          : 'N/A',
+        ans.quiz3_questions?.question_text || 'N/A',
+        ans.answer,
+        ans.quiz3_questions?.correct_option || 'N/A',
+        ans.answered_at ? new Date(ans.answered_at).toLocaleString('pt-BR') : 'N/A'
+      ]);
+
+      const csvContent = [
+        headers.join(','),
+        ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
+      ].join('\n');
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `quiz3_solucoes-digitais_${new Date().toISOString().split('T')[0]}.csv`;
+      link.click();
+      
+      toast.success('Respostas exportadas com sucesso!');
+    } catch (error) {
+      console.error('Erro ao exportar:', error);
+      toast.error('Erro ao exportar respostas');
+    }
+  };
+
   return (
     <Card className="p-6 space-y-6">
       <div className="flex items-center justify-between">
@@ -50,14 +96,24 @@ export const Quiz3Control = () => {
           <h2 className="text-2xl font-bold">🎯 Soluções Digitais</h2>
           <p className="text-muted-foreground">Identifique a solução certa</p>
         </div>
-        <Button
-          variant="outline"
-          onClick={() => window.open(screenUrl, '_blank')}
-          className="gap-2"
-        >
-          <ExternalLink className="w-4 h-4" />
-          Abrir Tela de Projeção
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            onClick={exportToCSV}
+            className="gap-2"
+          >
+            <Download className="w-4 h-4" />
+            Baixar
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => window.open(screenUrl, '_blank')}
+            className="gap-2"
+          >
+            <ExternalLink className="w-4 h-4" />
+            Abrir Tela de Projeção
+          </Button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

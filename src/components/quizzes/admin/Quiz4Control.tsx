@@ -1,13 +1,45 @@
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useQuiz4 } from '../quiz4/useQuiz4';
-import { ExternalLink, Users, Layers } from 'lucide-react';
+import { ExternalLink, Users, Layers, Download } from 'lucide-react';
+import { toast } from 'sonner';
 
 export const Quiz4Control = () => {
   const { submissions, uniqueGroupsCount } = useQuiz4();
 
   const openProjectionScreen = () => {
     window.open('/quiz/canvas/screen', '_blank');
+  };
+
+  const exportToCSV = () => {
+    if (submissions.length === 0) {
+      toast.error('Não há respostas para exportar');
+      return;
+    }
+
+    const headers = ['Grupo', 'Membros', 'Problema', 'Solução', 'Tecnologia', 'Impacto Humano', 'Data/Hora'];
+    const rows = submissions.map(sub => [
+      sub.group_name,
+      sub.group_members || 'N/A',
+      sub.problem,
+      sub.solution,
+      sub.technology,
+      sub.human_impact,
+      new Date(sub.created_at).toLocaleString('pt-BR')
+    ]);
+
+    const csvContent = [
+      headers.join(','),
+      ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `quiz4_canvas-colaborativo_${new Date().toISOString().split('T')[0]}.csv`;
+    link.click();
+    
+    toast.success('Respostas exportadas com sucesso!');
   };
 
   return (
@@ -21,13 +53,23 @@ export const Quiz4Control = () => {
             Gerenciar canvas de ideias
           </p>
         </div>
-        <Button
-          onClick={openProjectionScreen}
-          className="bg-violet-600 hover:bg-violet-700"
-        >
-          <ExternalLink className="w-4 h-4 mr-2" />
-          Abrir Tela de Projeção
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            onClick={exportToCSV}
+            variant="outline"
+            className="border-violet-600 text-violet-600 hover:bg-violet-50"
+          >
+            <Download className="w-4 h-4 mr-2" />
+            Baixar
+          </Button>
+          <Button
+            onClick={openProjectionScreen}
+            className="bg-violet-600 hover:bg-violet-700"
+          >
+            <ExternalLink className="w-4 h-4 mr-2" />
+            Abrir Tela de Projeção
+          </Button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
