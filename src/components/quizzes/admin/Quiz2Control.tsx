@@ -2,11 +2,40 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useQuiz2 } from '../quiz2/useQuiz2';
-import { ExternalLink, Flame } from 'lucide-react';
+import { ExternalLink, Flame, Download } from 'lucide-react';
+import { toast } from 'sonner';
 
 export const Quiz2Control = () => {
   const { topWords, uniqueGroupsCount, uniqueWordsCount, submissions } = useQuiz2();
   const screenUrl = `${window.location.origin}/quiz/nuvem-tags/screen`;
+
+  const exportToCSV = () => {
+    if (submissions.length === 0) {
+      toast.error('Não há respostas para exportar');
+      return;
+    }
+
+    const headers = ['Grupo', 'Membros', 'Palavra-Chave', 'Data/Hora'];
+    const rows = submissions.map(sub => [
+      sub.group_name,
+      sub.group_members || 'N/A',
+      sub.keyword,
+      new Date(sub.created_at).toLocaleString('pt-BR')
+    ]);
+
+    const csvContent = [
+      headers.join(','),
+      ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `quiz2_nuvem-tags_${new Date().toISOString().split('T')[0]}.csv`;
+    link.click();
+    
+    toast.success('Respostas exportadas com sucesso!');
+  };
 
   return (
     <Card className="p-6 space-y-6">
@@ -15,14 +44,24 @@ export const Quiz2Control = () => {
           <h2 className="text-2xl font-bold">☁️ Nuvem de Tags</h2>
           <p className="text-muted-foreground">Desafios reais do cotidiano</p>
         </div>
-        <Button
-          variant="outline"
-          onClick={() => window.open(screenUrl, '_blank')}
-          className="gap-2"
-        >
-          <ExternalLink className="w-4 h-4" />
-          Abrir Nuvem de Tags
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            onClick={exportToCSV}
+            className="gap-2"
+          >
+            <Download className="w-4 h-4" />
+            Baixar
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => window.open(screenUrl, '_blank')}
+            className="gap-2"
+          >
+            <ExternalLink className="w-4 h-4" />
+            Abrir Nuvem de Tags
+          </Button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

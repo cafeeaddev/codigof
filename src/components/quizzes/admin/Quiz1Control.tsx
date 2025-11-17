@@ -3,9 +3,11 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useQuiz1 } from '../quiz1/useQuiz1';
-import { ExternalLink, Play, SkipForward, Square, AlertCircle, RefreshCw, Circle } from 'lucide-react';
+import { ExternalLink, Play, SkipForward, Square, AlertCircle, RefreshCw, Circle, Download } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { cn } from '@/lib/utils';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 export const Quiz1Control = () => {
   const {
@@ -44,6 +46,50 @@ export const Quiz1Control = () => {
     ? Math.round((answerStats.total / participantCount) * 100) 
     : 0;
 
+  const exportToCSV = async () => {
+    try {
+      const { data: participants, error: pError } = await supabase
+        .from('codigo_f_participants')
+        .select('*')
+        .order('joined_at', { ascending: false });
+
+      const { data: answers, error: aError } = await supabase
+        .from('codigo_f_answers')
+        .select('*, codigo_f_questions(question_text, correct_answer)')
+        .order('answered_at', { ascending: false });
+
+      if (pError || aError) throw pError || aError;
+
+      const headers = ['Participante', 'Data Entrada', 'Pergunta', 'Resposta', 'Correta', 'Data Resposta'];
+      const rows = (answers || []).map(ans => [
+        participants?.find(p => p.id === ans.participant_id)?.nickname || 'N/A',
+        participants?.find(p => p.id === ans.participant_id)?.joined_at 
+          ? new Date(participants.find(p => p.id === ans.participant_id)!.joined_at!).toLocaleString('pt-BR')
+          : 'N/A',
+        ans.codigo_f_questions?.question_text || 'N/A',
+        ans.answer,
+        ans.codigo_f_questions?.correct_answer || 'N/A',
+        ans.answered_at ? new Date(ans.answered_at).toLocaleString('pt-BR') : 'N/A'
+      ]);
+
+      const csvContent = [
+        headers.join(','),
+        ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
+      ].join('\n');
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `quiz1_mito-verdade_${new Date().toISOString().split('T')[0]}.csv`;
+      link.click();
+      
+      toast.success('Respostas exportadas com sucesso!');
+    } catch (error) {
+      console.error('Erro ao exportar:', error);
+      toast.error('Erro ao exportar respostas');
+    }
+  };
+
   // Show error state if session could not be initialized
   if (!sessionState && !isLoading) {
     return (
@@ -75,6 +121,15 @@ export const Quiz1Control = () => {
           >
             <RefreshCw className="w-4 h-4" />
             Atualizar
+          </Button>
+          <Button
+            variant="outline"
+            onClick={exportToCSV}
+            className="gap-2"
+            size="sm"
+          >
+            <Download className="w-4 h-4" />
+            Baixar
           </Button>
           <Button
             variant="outline"

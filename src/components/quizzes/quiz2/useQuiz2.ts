@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 interface Submission {
   id: string;
   group_name: string;
+  group_members?: string | null;
   keyword: string;
   created_at: string;
 }
