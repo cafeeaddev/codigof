@@ -1,13 +1,48 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ExternalLink, Users, FileText } from 'lucide-react';
+import { ExternalLink, Users, FileText, Download } from 'lucide-react';
 import { useQuiz5 } from '../quiz5/useQuiz5';
+import { toast } from 'sonner';
 
 export const Quiz5Control = () => {
   const { submissions, totalParticipants, totalPostits } = useQuiz5();
 
   const openProjectionScreen = () => {
     window.open('/quiz/mapa/screen', '_blank');
+  };
+
+  const exportToCSV = () => {
+    if (submissions.length === 0) {
+      toast.error('Não há respostas para exportar');
+      return;
+    }
+
+    const headers = ['Nome do Participante', 'Iniciais', 'Mentalidade que Mudei', 'Ideia Digital', 'Hábito Digital', 'Data/Hora'];
+    const rows = submissions.map(sub => [
+      sub.participant_name,
+      sub.initials,
+      sub.mindset_change,
+      sub.digital_idea,
+      sub.digital_habit,
+      new Date(sub.created_at).toLocaleString('pt-BR')
+    ]);
+
+    const csvContent = [
+      headers.join(','),
+      ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `quiz5_respostas_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    toast.success('Respostas exportadas com sucesso!');
   };
 
   return (
@@ -23,14 +58,25 @@ export const Quiz5Control = () => {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Button 
-            onClick={openProjectionScreen}
-            className="w-full"
-            size="lg"
-          >
-            <ExternalLink className="mr-2 h-5 w-5" />
-            Abrir Tela de Projeção
-          </Button>
+          <div className="flex gap-2">
+            <Button 
+              onClick={openProjectionScreen}
+              className="flex-1"
+              size="lg"
+            >
+              <ExternalLink className="mr-2 h-5 w-5" />
+              Abrir Tela de Projeção
+            </Button>
+            <Button 
+              onClick={exportToCSV}
+              variant="outline"
+              size="lg"
+              className="flex-1"
+            >
+              <Download className="mr-2 h-5 w-5" />
+              Baixar Respostas
+            </Button>
+          </div>
 
           <div className="grid grid-cols-2 gap-4 pt-4">
             <Card>
