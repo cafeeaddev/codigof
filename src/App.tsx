@@ -21,6 +21,8 @@ import { Quiz4Host } from "./components/quizzes/quiz4/Quiz4Host";
 import { Quiz4Participant } from "./components/quizzes/quiz4/Quiz4Participant";
 import { Quiz5Host } from "./components/quizzes/quiz5/Quiz5Host";
 import { Quiz5Participant } from "./components/quizzes/quiz5/Quiz5Participant";
+import { FritarOvoHost } from "./components/quizzes/fritar-ovo/FritarOvoHost";
+import { FritarOvoParticipant } from "./components/quizzes/fritar-ovo/FritarOvoParticipant";
 
 const queryClient = new QueryClient();
 
@@ -61,6 +63,10 @@ const App = () => (
             {/* Quiz 5 - Mapa da Alfabetização Tecnológica */}
             <Route path="/quiz/mapa/screen" element={<Quiz5Host />} />
             <Route path="/quiz/mapa" element={<Quiz5Participant />} />
+            
+            {/* Treinamento 2 - Missão Fritar um OVO */}
+            <Route path="/quiz/fritar-ovo/screen" element={<FritarOvoHost />} />
+            <Route path="/quiz/fritar-ovo" element={<FritarOvoParticipant />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
