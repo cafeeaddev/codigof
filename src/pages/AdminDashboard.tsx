@@ -37,6 +37,8 @@ import { Quiz4Control } from '@/components/quizzes/admin/Quiz4Control';
 import { useQuiz4 } from '@/components/quizzes/quiz4/useQuiz4';
 import { Quiz5Control } from '@/components/quizzes/admin/Quiz5Control';
 import { useQuiz5 } from '@/components/quizzes/quiz5/useQuiz5';
+import { FritarOvoControl } from '@/components/quizzes/admin/FritarOvoControl';
+import { useFritarOvo } from '@/components/quizzes/fritar-ovo/useFritarOvo';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -49,7 +51,8 @@ const AdminDashboard = () => {
   const [selectedUser, setSelectedUser] = useState<UserProgress | null>(null);
   const [selectedUserProfile, setSelectedUserProfile] = useState<UserProfile | null>(null);
   const [isAnalysisDialogOpen, setIsAnalysisDialogOpen] = useState(false);
-  const [activeQuiz, setActiveQuiz] = useState<'quiz1' | 'quiz2' | 'quiz3' | 'quiz4' | 'quiz5' | null>(null);
+  const [activeQuiz, setActiveQuiz] = useState<'quiz1' | 'quiz2' | 'quiz3' | 'quiz4' | 'quiz5' | 'fritarOvo' | null>(null);
+  const [activeQuiz2, setActiveQuiz2] = useState<'fritarOvo' | null>(null);
 
   // Quiz hooks
   const quiz1 = useQuiz1();
@@ -57,6 +60,7 @@ const AdminDashboard = () => {
   const quiz3 = useQuiz3();
   const quiz4 = useQuiz4();
   const quiz5 = useQuiz5();
+  const fritarOvo = useFritarOvo();
 
   const {
     responses1,
@@ -324,6 +328,26 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleResetFritarOvo = async () => {
+    try {
+      await supabase.from('fritar_ovo_submissions').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+      
+      toast({
+        title: "Atividade resetada",
+        description: "A Missão Fritar um OVO foi resetada com sucesso!",
+      });
+
+      window.location.reload();
+    } catch (error) {
+      console.error('Error resetting fritar ovo:', error);
+      toast({
+        title: "Erro",
+        description: "Erro ao resetar a atividade",
+        variant: "destructive",
+      });
+    }
+  };
+
 
   if (isAdmin) {
     if (dashboardLoading) {
@@ -380,7 +404,7 @@ const AdminDashboard = () => {
 
           {/* Main Dashboard Tabs */}
           <Tabs defaultValue="dashboard" className="w-full">
-            <TabsList className="grid w-full grid-cols-4 mb-8">
+            <TabsList className="grid w-full grid-cols-5 mb-8">
               <TabsTrigger value="dashboard" className="flex items-center gap-2">
                 <User className="w-4 h-4" />
                 Dashboard
@@ -392,6 +416,10 @@ const AdminDashboard = () => {
               <TabsTrigger value="treinamento" className="flex items-center gap-2">
                 <GraduationCap className="w-4 h-4" />
                 Treinamento
+              </TabsTrigger>
+              <TabsTrigger value="treinamento2" className="flex items-center gap-2">
+                <GraduationCap className="w-4 h-4" />
+                Treinamento 2
               </TabsTrigger>
               <TabsTrigger value="configuracoes" className="flex items-center gap-2">
                 <Calendar className="w-4 h-4" />
@@ -567,6 +595,39 @@ const AdminDashboard = () => {
                   </h3>
                   <p className="text-muted-foreground">
                     Clique em "Gerenciar" em qualquer quiz acima para ver os controles e estatísticas
+                  </p>
+                </Card>
+              )}
+            </TabsContent>
+
+            {/* Treinamento 2 Tab */}
+            <TabsContent value="treinamento2" className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {/* Missão Fritar um OVO Card */}
+                <QuizCard
+                  title="Missão Fritar um OVO"
+                  description="15 passos para um robô sem conhecimento"
+                  icon="🍳"
+                  status="collecting"
+                  submissionCount={fritarOvo.totalGroups}
+                  participantLink="/quiz/fritar-ovo"
+                  onManage={() => setActiveQuiz2('fritarOvo')}
+                  onReset={handleResetFritarOvo}
+                  isActive={activeQuiz2 === 'fritarOvo'}
+                />
+              </div>
+
+              {/* Activity Controls */}
+              {activeQuiz2 === 'fritarOvo' && <FritarOvoControl />}
+
+              {!activeQuiz2 && (
+                <Card className="p-8 text-center">
+                  <GraduationCap className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
+                  <h3 className="text-xl font-semibold mb-2">
+                    Selecione uma atividade para gerenciar
+                  </h3>
+                  <p className="text-muted-foreground">
+                    Clique em "Gerenciar" na atividade acima para ver os controles e estatísticas
                   </p>
                 </Card>
               )}
