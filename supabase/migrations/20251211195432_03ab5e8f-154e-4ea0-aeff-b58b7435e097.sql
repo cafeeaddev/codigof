@@ -1,0 +1,17 @@
+-- Update step columns to allow empty strings as default
+ALTER TABLE public.fritar_ovo_submissions 
+  ALTER COLUMN step_1 SET DEFAULT '',
+  ALTER COLUMN step_2 SET DEFAULT '',
+  ALTER COLUMN step_3 SET DEFAULT '',
+  ALTER COLUMN step_4 SET DEFAULT '',
+  ALTER COLUMN step_5 SET DEFAULT '',
+  ALTER COLUMN step_6 SET DEFAULT '',
+  ALTER COLUMN step_7 SET DEFAULT '',
+  ALTER COLUMN step_8 SET DEFAULT '',
+  ALTER COLUMN step_9 SET DEFAULT '',
+  ALTER COLUMN step_10 SET DEFAULT '',
+  ALTER COLUMN step_11 SET DEFAULT '',
+  ALTER COLUMN step_12 SET DEFAULT '',
+  ALTER COLUMN step_13 SET DEFAULT '',
+  ALTER COLUMN step_14 SET DEFAULT '',
+  ALTER COLUMN step_15 SET DEFAULT '';
