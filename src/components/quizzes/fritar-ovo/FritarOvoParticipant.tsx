@@ -31,11 +31,11 @@ export const FritarOvoParticipant = () => {
       return;
     }
 
-    const emptySteps = steps.filter(s => !s.trim()).length;
-    if (emptySteps > 0) {
+    const filledSteps = steps.filter(s => s.trim()).length;
+    if (filledSteps === 0) {
       toast({
-        title: "Passos incompletos",
-        description: `Ainda faltam ${emptySteps} passos para preencher.`,
+        title: "Mínimo de 1 passo",
+        description: "Preencha pelo menos um passo da receita.",
         variant: "destructive"
       });
       return;
@@ -139,7 +139,12 @@ export const FritarOvoParticipant = () => {
               </div>
 
               <div className="space-y-4">
-                <Label className="text-orange-100 text-lg block">📝 15 Passos para Fritar um Ovo</Label>
+                <div className="flex justify-between items-center">
+                  <Label className="text-orange-100 text-lg">📝 Passos para Fritar um Ovo</Label>
+                  <span className="text-orange-300 text-sm">
+                    ✅ {steps.filter(s => s.trim()).length} de 15 preenchidos
+                  </span>
+                </div>
                 
                 <div className="grid gap-3">
                   {steps.map((step, index) => (

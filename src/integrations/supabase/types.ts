@@ -254,21 +254,21 @@ export type Database = {
           created_at?: string | null
           group_name: string
           id?: string
-          step_1: string
-          step_10: string
-          step_11: string
-          step_12: string
-          step_13: string
-          step_14: string
-          step_15: string
-          step_2: string
-          step_3: string
-          step_4: string
-          step_5: string
-          step_6: string
-          step_7: string
-          step_8: string
-          step_9: string
+          step_1?: string
+          step_10?: string
+          step_11?: string
+          step_12?: string
+          step_13?: string
+          step_14?: string
+          step_15?: string
+          step_2?: string
+          step_3?: string
+          step_4?: string
+          step_5?: string
+          step_6?: string
+          step_7?: string
+          step_8?: string
+          step_9?: string
         }
         Update: {
           created_at?: string | null
