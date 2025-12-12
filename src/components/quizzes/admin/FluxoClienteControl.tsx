@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { ExternalLink, Users, Download, Eye, Play, Square, Diamond, RotateCcw, ArrowDown } from 'lucide-react';
-import { useFluxoCliente, FluxoClienteSubmission, FlowElement } from '../fluxo-cliente/useFluxoCliente';
+import { useFluxoCliente, FluxoClienteSubmission, FlowElement, FlowchartData } from '../fluxo-cliente/useFluxoCliente';
 import { toast } from 'sonner';
 
 export const FluxoClienteControl = () => {
@@ -14,11 +14,14 @@ export const FluxoClienteControl = () => {
     window.open('/quiz/fluxo-cliente/screen', '_blank');
   };
 
-  const getElementCounts = (data: FlowElement[]) => ({
-    steps: data.filter(e => e.type === 'step').length,
-    decisions: data.filter(e => e.type === 'decision').length,
-    loops: data.filter(e => e.type === 'loop').length
-  });
+  const getElementCounts = (data: FlowchartData) => {
+    const elements = data.elements || [];
+    return {
+      steps: elements.filter(e => e.type === 'step').length,
+      decisions: elements.filter(e => e.type === 'decision').length,
+      loops: elements.filter(e => e.type === 'loop').length
+    };
+  };
 
   const exportToCSV = () => {
     if (submissions.length === 0) {
@@ -27,6 +30,7 @@ export const FluxoClienteControl = () => {
     }
 
     const headers = [
+      'Nome do Fluxo',
       'Nome do Grupo',
       'Integrantes',
       'Qtd Passos',
@@ -39,6 +43,7 @@ export const FluxoClienteControl = () => {
     const rows = submissions.map(sub => {
       const counts = getElementCounts(sub.flowchart_data);
       return [
+        sub.flowchart_data.flowName || '',
         sub.group_name,
         sub.group_members || '',
         counts.steps.toString(),
@@ -67,10 +72,11 @@ export const FluxoClienteControl = () => {
     toast.success('Fluxogramas exportados com sucesso!');
   };
 
-  const renderMiniFlowchart = (data: FlowElement[]) => {
+  const renderMiniFlowchart = (data: FlowchartData) => {
+    const elements = data.elements || [];
     return (
       <div className="flex flex-col items-center gap-1 py-4">
-        {data.map((element, idx) => {
+        {elements.map((element, idx) => {
           if (element.type === 'start') {
             return (
               <div key={element.id} className="flex flex-col items-center">
@@ -192,10 +198,17 @@ export const FluxoClienteControl = () => {
                       <CardContent className="p-4">
                         <div className="flex justify-between items-start">
                           <div className="flex-1">
-                            <p className="font-semibold">{sub.group_name}</p>
+                            {sub.flowchart_data.flowName && (
+                              <p className="font-semibold text-cyan-600 dark:text-cyan-400">
+                                📋 {sub.flowchart_data.flowName}
+                              </p>
+                            )}
+                            <p className={sub.flowchart_data.flowName ? "text-sm text-muted-foreground" : "font-semibold"}>
+                              👥 {sub.group_name}
+                            </p>
                             {sub.group_members && (
                               <p className="text-xs text-muted-foreground truncate max-w-md">
-                                👥 {sub.group_members}
+                                {sub.group_members}
                               </p>
                             )}
                           </div>
@@ -229,8 +242,15 @@ export const FluxoClienteControl = () => {
       <Dialog open={!!selectedFlowchart} onOpenChange={(open) => !open && setSelectedFlowchart(null)}>
         <DialogContent className="max-w-lg max-h-[80vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              📊 Fluxograma: {selectedFlowchart?.group_name}
+            <DialogTitle className="flex flex-col gap-1">
+              {selectedFlowchart?.flowchart_data.flowName && (
+                <span className="text-cyan-600 dark:text-cyan-400">
+                  📋 {selectedFlowchart.flowchart_data.flowName}
+                </span>
+              )}
+              <span className="text-base font-normal text-muted-foreground">
+                👥 {selectedFlowchart?.group_name}
+              </span>
             </DialogTitle>
           </DialogHeader>
           

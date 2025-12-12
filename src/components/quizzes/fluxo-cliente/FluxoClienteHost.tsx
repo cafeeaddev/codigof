@@ -1,5 +1,5 @@
 import { QRCodeSVG } from 'qrcode.react';
-import { useFluxoCliente, FlowElement } from './useFluxoCliente';
+import { useFluxoCliente, FlowElement, FlowchartData } from './useFluxoCliente';
 import { Card } from '@/components/ui/card';
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
@@ -162,9 +162,10 @@ export const FluxoClienteHost = () => {
               <h3 className="text-blue-200 font-semibold mb-3">Grupos:</h3>
               <div className="space-y-2 max-h-[400px] overflow-y-auto">
                 {submissions.map((sub) => {
-                  const stepCount = sub.flowchart_data.filter(e => e.type === 'step').length;
-                  const decisionCount = sub.flowchart_data.filter(e => e.type === 'decision').length;
-                  const loopCount = sub.flowchart_data.filter(e => e.type === 'loop').length;
+                  const elements = sub.flowchart_data.elements || [];
+                  const stepCount = elements.filter(e => e.type === 'step').length;
+                  const decisionCount = elements.filter(e => e.type === 'decision').length;
+                  const loopCount = elements.filter(e => e.type === 'loop').length;
                   
                   return (
                     <button
@@ -177,6 +178,9 @@ export const FluxoClienteHost = () => {
                       }`}
                     >
                       <p className="text-blue-100 font-medium truncate">{sub.group_name}</p>
+                      {sub.flowchart_data.flowName && (
+                        <p className="text-cyan-300 text-sm truncate">📋 {sub.flowchart_data.flowName}</p>
+                      )}
                       <div className="flex gap-2 mt-1">
                         <span className="text-xs text-cyan-400">{stepCount}P</span>
                         <span className="text-xs text-yellow-400">{decisionCount}D</span>
@@ -199,36 +203,42 @@ export const FluxoClienteHost = () => {
             <Card className="bg-blue-950/50 border-blue-500/30 p-8">
               <div className="flex items-center justify-between mb-6">
                 <div>
-                  <h2 className="text-3xl font-bold text-blue-100 flex items-center gap-3">
-                    <span>📊</span>
+                  {selectedSubmission.flowchart_data.flowName && (
+                    <h2 className="text-3xl font-bold text-cyan-300 flex items-center gap-3 mb-1">
+                      <span>📋</span>
+                      {selectedSubmission.flowchart_data.flowName}
+                    </h2>
+                  )}
+                  <p className="text-blue-100 text-xl flex items-center gap-2">
+                    <span>👥</span>
                     {selectedSubmission.group_name}
-                  </h2>
+                  </p>
                   {selectedSubmission.group_members && (
                     <p className="text-blue-300 text-sm mt-1">
-                      👥 {selectedSubmission.group_members}
+                      {selectedSubmission.group_members}
                     </p>
                   )}
                 </div>
                 <div className="flex gap-2 text-sm">
                   <span className="bg-cyan-900/50 px-3 py-1 rounded text-cyan-200">
-                    {selectedSubmission.flowchart_data.filter(e => e.type === 'step').length} passos
+                    {selectedSubmission.flowchart_data.elements.filter(e => e.type === 'step').length} passos
                   </span>
                   <span className="bg-yellow-900/50 px-3 py-1 rounded text-yellow-200">
-                    {selectedSubmission.flowchart_data.filter(e => e.type === 'decision').length} decisões
+                    {selectedSubmission.flowchart_data.elements.filter(e => e.type === 'decision').length} decisões
                   </span>
                   <span className="bg-purple-900/50 px-3 py-1 rounded text-purple-200">
-                    {selectedSubmission.flowchart_data.filter(e => e.type === 'loop').length} loops
+                    {selectedSubmission.flowchart_data.elements.filter(e => e.type === 'loop').length} loops
                   </span>
                 </div>
               </div>
 
               {/* Flowchart Visualization */}
               <div className="flex flex-col items-center py-8 overflow-y-auto max-h-[600px]">
-                {selectedSubmission.flowchart_data.map((element, index) => {
+                {selectedSubmission.flowchart_data.elements.map((element, index) => {
                   // Calculate step number for display
                   let stepIndex = 0;
                   for (let i = 0; i <= index; i++) {
-                    if (selectedSubmission.flowchart_data[i].type === 'step') {
+                    if (selectedSubmission.flowchart_data.elements[i].type === 'step') {
                       stepIndex++;
                     }
                   }
