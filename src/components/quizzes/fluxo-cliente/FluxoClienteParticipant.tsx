@@ -14,6 +14,7 @@ export const FluxoClienteParticipant = () => {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [flowName, setFlowName] = useState('');
   const [groupName, setGroupName] = useState('');
   const [groupMembers, setGroupMembers] = useState('');
   const [elements, setElements] = useState<FlowElement[]>([
@@ -65,6 +66,15 @@ export const FluxoClienteParticipant = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    if (!flowName.trim()) {
+      toast({
+        title: "Nome do fluxo obrigatório",
+        description: "Por favor, digite o nome do fluxo que está mapeando.",
+        variant: "destructive"
+      });
+      return;
+    }
+
     if (!groupName.trim()) {
       toast({
         title: "Nome do grupo obrigatório",
@@ -102,7 +112,10 @@ export const FluxoClienteParticipant = () => {
         .insert({
           group_name: groupName.trim(),
           group_members: groupMembers.trim() || null,
-          flowchart_data: elements
+          flowchart_data: {
+            flowName: flowName.trim(),
+            elements: elements
+          }
         } as any);
 
       if (error) throw error;
@@ -110,7 +123,7 @@ export const FluxoClienteParticipant = () => {
       setIsSubmitted(true);
       toast({
         title: "Fluxograma enviado! 📊",
-        description: "Seu fluxo do cliente foi registrado com sucesso!",
+        description: `Seu mapeamento "${flowName.trim()}" foi registrado com sucesso!`,
       });
     } catch (error) {
       console.error('Error submitting:', error);
@@ -124,6 +137,8 @@ export const FluxoClienteParticipant = () => {
     }
   };
 
+  const submittedFlowName = flowName.trim();
+
   if (isSubmitted) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900/50 to-slate-900 flex items-center justify-center p-4">
@@ -133,8 +148,11 @@ export const FluxoClienteParticipant = () => {
             <h2 className="text-3xl font-bold text-blue-100 mb-4">
               Fluxograma Enviado!
             </h2>
-            <p className="text-blue-200 text-lg">
-              Seu mapeamento do fluxo do cliente foi registrado com sucesso!
+            <p className="text-blue-200 text-lg mb-2">
+              Seu mapeamento foi registrado com sucesso!
+            </p>
+            <p className="text-cyan-300 text-xl font-semibold">
+              "{submittedFlowName}"
             </p>
             <div className="mt-6 text-6xl animate-bounce">✅</div>
           </CardContent>
@@ -163,6 +181,20 @@ export const FluxoClienteParticipant = () => {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Flow Name */}
+              <div className="space-y-2">
+                <Label htmlFor="flowName" className="text-blue-100 text-lg">📋 Nome do Fluxo</Label>
+                <Input
+                  id="flowName"
+                  value={flowName}
+                  onChange={(e) => setFlowName(e.target.value)}
+                  placeholder="Ex: Fluxo de Atendimento ao Cliente, Processo de Vendas..."
+                  maxLength={100}
+                  className="bg-slate-900/50 border-cyan-500/50 text-blue-50 placeholder:text-blue-300/50 text-lg py-3"
+                />
+                <p className="text-blue-300/70 text-xs">Escolha um nome que represente o processo que você está mapeando</p>
+              </div>
+
               {/* Group Info */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">

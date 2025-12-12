@@ -12,11 +12,16 @@ export interface FlowElement {
   loopTarget?: string;
 }
 
+export interface FlowchartData {
+  flowName?: string;
+  elements: FlowElement[];
+}
+
 export interface FluxoClienteSubmission {
   id: string;
   group_name: string;
   group_members: string | null;
-  flowchart_data: FlowElement[];
+  flowchart_data: FlowchartData;
   created_at: string;
 }
 
@@ -57,10 +62,18 @@ export const useFluxoCliente = () => {
 
       if (error) throw error;
 
-      const parsed = ((data as any[]) || []).map(item => ({
-        ...item,
-        flowchart_data: (item.flowchart_data as FlowElement[]) || []
-      }));
+      const parsed = ((data as any[]) || []).map(item => {
+        // Handle both old format (array) and new format (object with flowName)
+        const rawData = item.flowchart_data;
+        const flowchartData: FlowchartData = Array.isArray(rawData) 
+          ? { flowName: '', elements: rawData }
+          : { flowName: rawData?.flowName || '', elements: rawData?.elements || [] };
+        
+        return {
+          ...item,
+          flowchart_data: flowchartData
+        };
+      });
 
       setSubmissions(parsed);
       setTotalGroups(parsed.length);
