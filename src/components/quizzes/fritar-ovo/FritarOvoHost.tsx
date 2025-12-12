@@ -7,18 +7,18 @@ import { BarChart3, FileText } from 'lucide-react';
 
 const REFERENCE_STEPS = [
   { concept: "Pegar frigideira", keywords: ["frigideira", "panela"], emoji: "🍳" },
-  { concept: "Colocar no fogão", keywords: ["fogão", "fogao", "queimador", "boca"], emoji: "🔥" },
-  { concept: "Verificar gás", keywords: ["gás", "gaz", "verificar"], emoji: "⛽" },
-  { concept: "Ligar o fogo", keywords: ["ligar", "acender", "chama", "fogo"], emoji: "🔥" },
+  { concept: "Colocar no fogão", keywords: ["fogão", "fogao", "queimador"], emoji: "🔥" },
+  { concept: "Verificar gás", keywords: ["gás", "gaz", "verificar gás"], emoji: "⛽" },
+  { concept: "Ligar o fogo", keywords: ["ligar", "acender", "chama", "ligue", "boca"], emoji: "🔥" },
   { concept: "Colocar óleo/manteiga", keywords: ["óleo", "oleo", "manteiga", "azeite", "gordura"], emoji: "🧈" },
-  { concept: "Aquecer/esperar", keywords: ["aquecer", "esquentar", "esperar"], emoji: "⏳" },
-  { concept: "Pegar o ovo", keywords: ["pegar ovo", "pegue o ovo", "ovo da"], emoji: "🥚" },
-  { concept: "Quebrar o ovo", keywords: ["quebrar", "abrir", "casca", "borda"], emoji: "💥" },
-  { concept: "Esperar clara cozinhar", keywords: ["clara", "branca", "firme", "cozinhar"], emoji: "⏱️" },
-  { concept: "Preferência da gema", keywords: ["gema", "mole", "dura", "ponto"], emoji: "🍳" },
-  { concept: "Desligar o fogo", keywords: ["desligar", "apagar"], emoji: "🔌" },
-  { concept: "Pegar prato/espátula", keywords: ["prato", "espátula", "espatula", "utensilios"], emoji: "🍽️" },
-  { concept: "Servir no prato", keywords: ["tirar", "colocar no prato", "servir", "retirar"], emoji: "✅" }
+  { concept: "Aquecer/esperar", keywords: ["aquecer", "esquentar", "esperar o"], emoji: "⏳" },
+  { concept: "Pegar o ovo", keywords: ["pegue um ovo", "pegar um ovo", "pegue o ovo", "pegar o ovo", "pegue ovo", "ovo da geladeira"], emoji: "🥚" },
+  { concept: "Quebrar o ovo", keywords: ["quebrar", "abrir o ovo", "casca", "borda", "quebre"], emoji: "💥" },
+  { concept: "Esperar clara cozinhar", keywords: ["clara", "branca", "firme", "cozinhar", "fritura"], emoji: "⏱️" },
+  { concept: "Preferência da gema", keywords: ["gema", "mole", "dura", "ponto", "virando", "virar"], emoji: "🍳" },
+  { concept: "Desligar o fogo", keywords: ["desligar", "apagar", "desligue", "apague"], emoji: "🔌" },
+  { concept: "Pegar prato/espátula", keywords: ["prato", "espátula", "espatula", "escumadeira"], emoji: "🍽️" },
+  { concept: "Servir no prato", keywords: ["tirar", "colocar no prato", "servir", "retirar", "reserve"], emoji: "✅" }
 ];
 
 export const FritarOvoHost = () => {
