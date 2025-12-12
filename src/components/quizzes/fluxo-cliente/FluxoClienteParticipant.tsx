@@ -141,22 +141,113 @@ export const FluxoClienteParticipant = () => {
 
   if (isSubmitted) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900/50 to-slate-900 flex items-center justify-center p-4">
-        <Card className="w-full max-w-lg bg-blue-950/50 border-blue-500/30 backdrop-blur text-center">
-          <CardContent className="p-12">
-            <div className="text-8xl mb-6">📊</div>
-            <h2 className="text-3xl font-bold text-blue-100 mb-4">
-              Fluxograma Enviado!
-            </h2>
-            <p className="text-blue-200 text-lg mb-2">
-              Seu mapeamento foi registrado com sucesso!
-            </p>
-            <p className="text-cyan-300 text-xl font-semibold">
-              "{submittedFlowName}"
-            </p>
-            <div className="mt-6 text-6xl animate-bounce">✅</div>
-          </CardContent>
-        </Card>
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900/50 to-slate-900 p-4 overflow-auto">
+        <div className="max-w-2xl mx-auto space-y-6">
+          {/* Success Header */}
+          <Card className="bg-blue-950/50 border-blue-500/30 backdrop-blur text-center">
+            <CardContent className="p-8">
+              <div className="text-6xl mb-4">📊</div>
+              <h2 className="text-2xl font-bold text-blue-100 mb-2">
+                Fluxograma Enviado!
+              </h2>
+              <p className="text-blue-200 mb-1">
+                Seu mapeamento foi registrado com sucesso!
+              </p>
+              <p className="text-cyan-300 text-lg font-semibold">
+                "{submittedFlowName}"
+              </p>
+              <div className="mt-4 text-4xl">✅</div>
+            </CardContent>
+          </Card>
+
+          {/* Flowchart Visualization */}
+          <Card className="bg-blue-950/50 border-blue-500/30 backdrop-blur">
+            <CardHeader className="text-center pb-2">
+              <CardTitle className="text-xl text-blue-100 flex items-center justify-center gap-2">
+                📋 Seu Fluxograma
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-4">
+              <div className="space-y-3">
+                {elements.map((element, index) => (
+                  <div key={element.id} className="flex flex-col items-center">
+                    {/* Start */}
+                    {element.type === 'start' && (
+                      <div className="bg-green-600/80 text-white px-6 py-2 rounded-full font-bold flex items-center gap-2 text-sm">
+                        <Play className="w-4 h-4" />
+                        INÍCIO
+                      </div>
+                    )}
+
+                    {/* Step */}
+                    {element.type === 'step' && (
+                      <div className="w-full max-w-md bg-cyan-900/50 border-2 border-cyan-500/50 rounded-lg p-3">
+                        <div className="flex items-center gap-2">
+                          <Square className="w-4 h-4 text-cyan-300 flex-shrink-0" />
+                          <span className="text-cyan-100 text-sm">{element.text}</span>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Decision */}
+                    {element.type === 'decision' && (
+                      <div className="w-full max-w-md">
+                        <div className="bg-yellow-900/50 border-2 border-yellow-500/50 rounded-lg p-3">
+                          <div className="flex items-center gap-2 mb-2">
+                            <Diamond className="w-4 h-4 text-yellow-300 flex-shrink-0" />
+                            <span className="text-yellow-100 text-sm font-medium">{element.text}</span>
+                          </div>
+                          <div className="grid grid-cols-2 gap-2 text-xs">
+                            <div className="bg-green-900/30 p-2 rounded border border-green-500/30">
+                              <span className="text-green-300 font-bold">SIM →</span>
+                              <span className="text-green-200 ml-1">continua</span>
+                            </div>
+                            <div className="bg-red-900/30 p-2 rounded border border-red-500/30">
+                              <span className="text-red-300 font-bold">NÃO →</span>
+                              <span className="text-red-200 ml-1">{element.noTarget || 'alternativo'}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Loop */}
+                    {element.type === 'loop' && (
+                      <div className="w-full max-w-md bg-purple-900/50 border-2 border-purple-500/50 rounded-lg p-3">
+                        <div className="flex items-center gap-2">
+                          <RotateCcw className="w-4 h-4 text-purple-300 flex-shrink-0" />
+                          <span className="text-purple-100 text-sm">{element.text}</span>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* End */}
+                    {element.type === 'end' && (
+                      <div className="bg-red-600/80 text-white px-6 py-2 rounded-full font-bold flex items-center gap-2 text-sm">
+                        <Square className="w-4 h-4" />
+                        FIM
+                      </div>
+                    )}
+
+                    {/* Arrow between elements */}
+                    {index < elements.length - 1 && (
+                      <div className="py-2 text-blue-400">
+                        <ArrowDown className="w-5 h-5" />
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              {/* Summary */}
+              <div className="mt-6 pt-4 border-t border-blue-500/30 text-center">
+                <p className="text-blue-300 text-sm">
+                  📱 Acompanhe na tela de projeção
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     );
   }
