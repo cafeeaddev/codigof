@@ -168,10 +168,10 @@ export const FluxoClienteParticipant = () => {
           <CardHeader className="text-center space-y-2">
             <div className="text-6xl mb-2">📊</div>
             <CardTitle className="text-3xl bg-gradient-to-r from-blue-300 via-cyan-200 to-blue-300 bg-clip-text text-transparent">
-              Fluxo do Cliente
+              Mapeamento de Processos
             </CardTitle>
             <CardDescription className="text-blue-200 text-lg">
-              Mapeie o processo do cliente passo a passo
+              Mapeie qualquer processo passo a passo
             </CardDescription>
             <div className="bg-blue-900/50 rounded-lg p-4 mt-4 border border-blue-500/30">
               <p className="text-blue-100 font-medium">
@@ -188,7 +188,7 @@ export const FluxoClienteParticipant = () => {
                   id="flowName"
                   value={flowName}
                   onChange={(e) => setFlowName(e.target.value)}
-                  placeholder="Ex: Fluxo de Atendimento ao Cliente, Processo de Vendas..."
+                  placeholder="Ex: Abertura de Empresa, Integração de Funcionário, Processo de Vendas..."
                   maxLength={100}
                   className="bg-slate-900/50 border-cyan-500/50 text-blue-50 placeholder:text-blue-300/50 text-lg py-3"
                 />
