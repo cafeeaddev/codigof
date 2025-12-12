@@ -1,12 +1,13 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Plus, Trash2, GripVertical, ArrowDown, Diamond, RotateCcw, Play, Square, MoveUp, MoveDown } from 'lucide-react';
+import { Plus, Trash2, GripVertical, ArrowDown, Diamond, RotateCcw, Play, Square, MoveUp, MoveDown, Download } from 'lucide-react';
 import { FlowElement } from './useFluxoCliente';
+import html2canvas from 'html2canvas';
 
 type ElementType = 'step' | 'decision' | 'loop';
 
@@ -21,6 +22,39 @@ export const FluxoClienteParticipant = () => {
     { id: 'start', type: 'start', text: 'INÍCIO' },
     { id: 'end', type: 'end', text: 'FIM' }
   ]);
+  const flowchartRef = useRef<HTMLDivElement>(null);
+  const [isDownloading, setIsDownloading] = useState(false);
+
+  const handleDownloadImage = async () => {
+    if (!flowchartRef.current) return;
+    
+    setIsDownloading(true);
+    try {
+      const canvas = await html2canvas(flowchartRef.current, {
+        backgroundColor: '#0f172a',
+        scale: 2,
+      });
+      
+      const link = document.createElement('a');
+      link.download = `fluxograma-${flowName.trim().replace(/\s+/g, '-').toLowerCase()}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+      
+      toast({
+        title: "Download concluído! 📥",
+        description: "Imagem salva com sucesso.",
+      });
+    } catch (error) {
+      console.error('Error downloading:', error);
+      toast({
+        title: "Erro ao baixar",
+        description: "Tente novamente.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsDownloading(false);
+    }
+  };
 
   const generateId = () => `el_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
@@ -168,7 +202,7 @@ export const FluxoClienteParticipant = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="p-4">
-              <div className="space-y-3">
+              <div ref={flowchartRef} className="space-y-3 p-4 bg-slate-900 rounded-lg">
                 {elements.map((element, index) => (
                   <div key={element.id} className="flex flex-col items-center">
                     {/* Start */}
@@ -239,8 +273,16 @@ export const FluxoClienteParticipant = () => {
                 ))}
               </div>
 
-              {/* Summary */}
-              <div className="mt-6 pt-4 border-t border-blue-500/30 text-center">
+              {/* Download Button */}
+              <div className="mt-6 pt-4 border-t border-blue-500/30 flex flex-col items-center gap-4">
+                <Button
+                  onClick={handleDownloadImage}
+                  disabled={isDownloading}
+                  className="bg-green-600 hover:bg-green-700 text-white"
+                >
+                  <Download className="w-4 h-4 mr-2" />
+                  {isDownloading ? 'Baixando...' : 'Baixar Imagem'}
+                </Button>
                 <p className="text-blue-300 text-sm">
                   📱 Acompanhe na tela de projeção
                 </p>
