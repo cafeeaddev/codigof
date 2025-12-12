@@ -125,10 +125,10 @@ export const FluxoClienteHost = () => {
       <div className="text-center mb-8">
         <div className="text-6xl mb-4">📊</div>
         <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-300 via-cyan-200 to-blue-300 bg-clip-text text-transparent mb-2">
-          Fluxo do Cliente
+          Mapeamento de Processos
         </h1>
         <p className="text-blue-200 text-xl mb-4">
-          Mapeamento de processos pelos grupos
+          Visualização dos fluxogramas enviados
         </p>
         
         {submissions.length > 0 && (
@@ -253,7 +253,7 @@ export const FluxoClienteHost = () => {
                 Aguardando Fluxogramas...
               </h2>
               <p className="text-blue-200 text-lg">
-                Os grupos estão mapeando o fluxo do cliente!
+                Os grupos estão criando seus fluxogramas!
               </p>
               <div className="mt-8 flex justify-center gap-4 text-4xl">
                 <span className="animate-bounce" style={{ animationDelay: '0ms' }}>📈</span>
