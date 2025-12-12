@@ -23,6 +23,8 @@ import { Quiz5Host } from "./components/quizzes/quiz5/Quiz5Host";
 import { Quiz5Participant } from "./components/quizzes/quiz5/Quiz5Participant";
 import { FritarOvoHost } from "./components/quizzes/fritar-ovo/FritarOvoHost";
 import { FritarOvoParticipant } from "./components/quizzes/fritar-ovo/FritarOvoParticipant";
+import { FluxoClienteHost } from "./components/quizzes/fluxo-cliente/FluxoClienteHost";
+import { FluxoClienteParticipant } from "./components/quizzes/fluxo-cliente/FluxoClienteParticipant";
 import FluxogramaOvo from "./pages/FluxogramaOvo";
 
 const queryClient = new QueryClient();
@@ -68,6 +70,10 @@ const App = () => (
             {/* Treinamento 2 - Missão Fritar um OVO */}
             <Route path="/quiz/fritar-ovo/screen" element={<FritarOvoHost />} />
             <Route path="/quiz/fritar-ovo" element={<FritarOvoParticipant />} />
+            
+            {/* Treinamento 2 - Fluxo do Cliente */}
+            <Route path="/quiz/fluxo-cliente/screen" element={<FluxoClienteHost />} />
+            <Route path="/quiz/fluxo-cliente" element={<FluxoClienteParticipant />} />
             
             {/* Fluxograma do Ovo - Slide visual */}
             <Route path="/fluxograma-ovo" element={<FluxogramaOvo />} />

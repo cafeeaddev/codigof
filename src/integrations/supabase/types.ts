@@ -229,6 +229,30 @@ export type Database = {
         }
         Relationships: []
       }
+      fluxo_cliente_submissions: {
+        Row: {
+          created_at: string | null
+          flowchart_data: Json
+          group_members: string | null
+          group_name: string
+          id: string
+        }
+        Insert: {
+          created_at?: string | null
+          flowchart_data?: Json
+          group_members?: string | null
+          group_name: string
+          id?: string
+        }
+        Update: {
+          created_at?: string | null
+          flowchart_data?: Json
+          group_members?: string | null
+          group_name?: string
+          id?: string
+        }
+        Relationships: []
+      }
       fritar_ovo_submissions: {
         Row: {
           created_at: string | null

@@ -39,6 +39,8 @@ import { Quiz5Control } from '@/components/quizzes/admin/Quiz5Control';
 import { useQuiz5 } from '@/components/quizzes/quiz5/useQuiz5';
 import { FritarOvoControl } from '@/components/quizzes/admin/FritarOvoControl';
 import { useFritarOvo } from '@/components/quizzes/fritar-ovo/useFritarOvo';
+import { FluxoClienteControl } from '@/components/quizzes/admin/FluxoClienteControl';
+import { useFluxoCliente } from '@/components/quizzes/fluxo-cliente/useFluxoCliente';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -52,7 +54,7 @@ const AdminDashboard = () => {
   const [selectedUserProfile, setSelectedUserProfile] = useState<UserProfile | null>(null);
   const [isAnalysisDialogOpen, setIsAnalysisDialogOpen] = useState(false);
   const [activeQuiz, setActiveQuiz] = useState<'quiz1' | 'quiz2' | 'quiz3' | 'quiz4' | 'quiz5' | 'fritarOvo' | null>(null);
-  const [activeQuiz2, setActiveQuiz2] = useState<'fritarOvo' | null>(null);
+  const [activeQuiz2, setActiveQuiz2] = useState<'fritarOvo' | 'fluxoCliente' | null>(null);
 
   // Quiz hooks
   const quiz1 = useQuiz1();
@@ -61,6 +63,7 @@ const AdminDashboard = () => {
   const quiz4 = useQuiz4();
   const quiz5 = useQuiz5();
   const fritarOvo = useFritarOvo();
+  const fluxoCliente = useFluxoCliente();
 
   const {
     responses1,
@@ -348,6 +351,16 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleResetFluxoCliente = async () => {
+    try {
+      await supabase.from('fluxo_cliente_submissions' as any).delete().neq('id', '00000000-0000-0000-0000-000000000000');
+      toast({ title: "Atividade resetada", description: "Fluxo do Cliente resetado!" });
+      window.location.reload();
+    } catch (error) {
+      toast({ title: "Erro", description: "Erro ao resetar", variant: "destructive" });
+    }
+  };
+
 
   if (isAdmin) {
     if (dashboardLoading) {
@@ -615,10 +628,22 @@ const AdminDashboard = () => {
                   onReset={handleResetFritarOvo}
                   isActive={activeQuiz2 === 'fritarOvo'}
                 />
+                <QuizCard
+                  title="Fluxo do Cliente"
+                  description="Mapeamento de processos com fluxograma expansível"
+                  icon="🧭"
+                  status="collecting"
+                  submissionCount={fluxoCliente.totalGroups}
+                  participantLink="/quiz/fluxo-cliente"
+                  onManage={() => setActiveQuiz2('fluxoCliente')}
+                  onReset={handleResetFluxoCliente}
+                  isActive={activeQuiz2 === 'fluxoCliente'}
+                />
               </div>
 
               {/* Activity Controls */}
               {activeQuiz2 === 'fritarOvo' && <FritarOvoControl />}
+              {activeQuiz2 === 'fluxoCliente' && <FluxoClienteControl />}
 
               {!activeQuiz2 && (
                 <Card className="p-8 text-center">
