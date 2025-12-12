@@ -352,7 +352,7 @@ export const FluxoClienteParticipant = () => {
                             <Input
                               value={element.text}
                               onChange={(e) => updateElement(element.id, { text: e.target.value })}
-                              placeholder="Pergunta da decisão? (Ex: Cliente aprovou?)"
+                              placeholder="Pergunta da decisão? (Ex: Aprovado?)"
                               maxLength={150}
                               className="bg-slate-900/50 border-yellow-500/30 text-yellow-50 placeholder:text-yellow-300/30"
                             />
