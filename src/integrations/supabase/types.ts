@@ -537,6 +537,27 @@ export type Database = {
           },
         ]
       }
+      pseudo_codigo_submissions: {
+        Row: {
+          created_at: string | null
+          group_name: string
+          id: string
+          pseudo_code: string
+        }
+        Insert: {
+          created_at?: string | null
+          group_name: string
+          id?: string
+          pseudo_code: string
+        }
+        Update: {
+          created_at?: string | null
+          group_name?: string
+          id?: string
+          pseudo_code?: string
+        }
+        Relationships: []
+      }
       question_options: {
         Row: {
           created_at: string

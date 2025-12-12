@@ -41,6 +41,8 @@ import { FritarOvoControl } from '@/components/quizzes/admin/FritarOvoControl';
 import { useFritarOvo } from '@/components/quizzes/fritar-ovo/useFritarOvo';
 import { FluxoClienteControl } from '@/components/quizzes/admin/FluxoClienteControl';
 import { useFluxoCliente } from '@/components/quizzes/fluxo-cliente/useFluxoCliente';
+import { PseudoCodigoControl } from '@/components/quizzes/admin/PseudoCodigoControl';
+import { usePseudoCodigo } from '@/components/quizzes/pseudo-codigo/usePseudoCodigo';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -54,7 +56,7 @@ const AdminDashboard = () => {
   const [selectedUserProfile, setSelectedUserProfile] = useState<UserProfile | null>(null);
   const [isAnalysisDialogOpen, setIsAnalysisDialogOpen] = useState(false);
   const [activeQuiz, setActiveQuiz] = useState<'quiz1' | 'quiz2' | 'quiz3' | 'quiz4' | 'quiz5' | 'fritarOvo' | null>(null);
-  const [activeQuiz2, setActiveQuiz2] = useState<'fritarOvo' | 'fluxoCliente' | null>(null);
+  const [activeQuiz2, setActiveQuiz2] = useState<'fritarOvo' | 'fluxoCliente' | 'pseudoCodigo' | null>(null);
 
   // Quiz hooks
   const quiz1 = useQuiz1();
@@ -64,6 +66,7 @@ const AdminDashboard = () => {
   const quiz5 = useQuiz5();
   const fritarOvo = useFritarOvo();
   const fluxoCliente = useFluxoCliente();
+  const pseudoCodigo = usePseudoCodigo();
 
   const {
     responses1,
@@ -629,8 +632,8 @@ const AdminDashboard = () => {
                   isActive={activeQuiz2 === 'fritarOvo'}
                 />
                 <QuizCard
-                  title="Fluxo do Cliente"
-                  description="Mapeamento de processos com fluxograma expansível"
+                  title="Mapeamento de Processos"
+                  description="Fluxograma expansível para processos reais"
                   icon="🧭"
                   status="collecting"
                   submissionCount={fluxoCliente.totalGroups}
@@ -639,11 +642,23 @@ const AdminDashboard = () => {
                   onReset={handleResetFluxoCliente}
                   isActive={activeQuiz2 === 'fluxoCliente'}
                 />
+                <QuizCard
+                  title="Pseudo-código"
+                  description="Do fluxo ao código estruturado"
+                  icon="🧠"
+                  status="collecting"
+                  submissionCount={pseudoCodigo.submissions.length}
+                  participantLink="/quiz/pseudo-codigo/play"
+                  onManage={() => setActiveQuiz2('pseudoCodigo')}
+                  onReset={async () => { await pseudoCodigo.resetSubmissions(); window.location.reload(); }}
+                  isActive={activeQuiz2 === 'pseudoCodigo'}
+                />
               </div>
 
               {/* Activity Controls */}
               {activeQuiz2 === 'fritarOvo' && <FritarOvoControl />}
               {activeQuiz2 === 'fluxoCliente' && <FluxoClienteControl />}
+              {activeQuiz2 === 'pseudoCodigo' && <PseudoCodigoControl />}
 
               {!activeQuiz2 && (
                 <Card className="p-8 text-center">
