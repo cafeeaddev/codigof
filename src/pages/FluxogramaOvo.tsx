@@ -61,6 +61,12 @@ const FluxogramaOvo = () => {
           <span className="text-gray-300">Decisão</span>
         </div>
         <div className="flex items-center gap-2">
+          <div className="w-8 h-5 rounded-xl bg-fuchsia-900/50 border border-fuchsia-400 flex items-center justify-center">
+            <span className="text-[8px]">🔄</span>
+          </div>
+          <span className="text-gray-300">Loop/Repetição</span>
+        </div>
+        <div className="flex items-center gap-2">
           <ArrowDown className="w-5 h-5 text-cyan-400" />
           <span className="text-gray-300">Fluxo</span>
         </div>
@@ -209,22 +215,39 @@ const FlowArrow = ({ label, short = false }: { label?: string; short?: boolean }
   </div>
 );
 
+const FlowLoop = ({ action, returnTo }: { action: string; returnTo: string }) => (
+  <div className="
+    px-4 py-2 
+    bg-gradient-to-r from-fuchsia-950/70 to-purple-950/70
+    border-2 border-fuchsia-400/80 rounded-xl
+    shadow-lg shadow-fuchsia-500/30
+    flex items-center gap-3
+    animate-pulse
+  ">
+    <span className="text-2xl">🔄</span>
+    <div className="flex flex-col">
+      <span className="text-fuchsia-200 font-medium">{action}</span>
+      <span className="text-fuchsia-400/70 text-xs">
+        ↺ Volta para: {returnTo}
+      </span>
+    </div>
+  </div>
+);
+
 const FlowDecision = ({ question, loopAction }: { question: string; loopAction: string }) => (
   <div className="flex items-center gap-4">
-    {/* Loop à esquerda */}
+    {/* Loop à esquerda - AGORA COM COMPONENTE VISUAL DESTACADO */}
     <div className="flex items-center gap-2">
-      <div className="px-3 py-1 bg-red-950/50 border border-red-400/50 rounded text-red-300 text-xs">
-        {loopAction}
-      </div>
+      <FlowLoop action={loopAction} returnTo="verificar novamente" />
       <div className="flex items-center">
-        <div className="w-8 h-0.5 bg-red-400/50" />
-        <span className="text-red-400 text-xs px-1">NÃO</span>
-        <div className="w-4 h-0.5 bg-red-400/50" />
+        <div className="w-6 h-0.5 bg-fuchsia-400/60" />
+        <span className="text-fuchsia-400 text-xs font-semibold px-1 bg-fuchsia-950/50 rounded">NÃO</span>
+        <div className="w-4 h-0.5 bg-fuchsia-400/60" />
       </div>
       {/* Seta curva subindo */}
       <div className="flex flex-col items-center">
-        <div className="w-0.5 h-6 bg-red-400/50" />
-        <div className="w-0 h-0 border-l-[4px] border-r-[4px] border-b-[6px] border-l-transparent border-r-transparent border-b-red-400/50" />
+        <div className="w-0.5 h-6 bg-fuchsia-400/60" />
+        <div className="w-0 h-0 border-l-[4px] border-r-[4px] border-b-[6px] border-l-transparent border-r-transparent border-b-fuchsia-400/60" />
       </div>
     </div>
     
