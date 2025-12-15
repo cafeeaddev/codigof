@@ -343,6 +343,140 @@ export type Database = {
         }
         Relationships: []
       }
+      logica_aplicada_answers: {
+        Row: {
+          answer: string
+          answered_at: string | null
+          id: string
+          participant_id: string | null
+          points_earned: number
+          question_id: string | null
+          time_taken_ms: number
+        }
+        Insert: {
+          answer: string
+          answered_at?: string | null
+          id?: string
+          participant_id?: string | null
+          points_earned?: number
+          question_id?: string | null
+          time_taken_ms?: number
+        }
+        Update: {
+          answer?: string
+          answered_at?: string | null
+          id?: string
+          participant_id?: string | null
+          points_earned?: number
+          question_id?: string | null
+          time_taken_ms?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "logica_aplicada_answers_participant_id_fkey"
+            columns: ["participant_id"]
+            isOneToOne: false
+            referencedRelation: "logica_aplicada_participants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "logica_aplicada_answers_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "logica_aplicada_questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      logica_aplicada_participants: {
+        Row: {
+          id: string
+          joined_at: string | null
+          nickname: string
+        }
+        Insert: {
+          id?: string
+          joined_at?: string | null
+          nickname: string
+        }
+        Update: {
+          id?: string
+          joined_at?: string | null
+          nickname?: string
+        }
+        Relationships: []
+      }
+      logica_aplicada_questions: {
+        Row: {
+          correct_option: string
+          created_at: string | null
+          id: string
+          option_a: string
+          option_b: string
+          option_c: string
+          option_d: string
+          order_position: number
+          question_text: string
+        }
+        Insert: {
+          correct_option: string
+          created_at?: string | null
+          id?: string
+          option_a: string
+          option_b: string
+          option_c: string
+          option_d: string
+          order_position: number
+          question_text: string
+        }
+        Update: {
+          correct_option?: string
+          created_at?: string | null
+          id?: string
+          option_a?: string
+          option_b?: string
+          option_c?: string
+          option_d?: string
+          order_position?: number
+          question_text?: string
+        }
+        Relationships: []
+      }
+      logica_aplicada_session_state: {
+        Row: {
+          current_phase: string
+          current_question_id: string | null
+          id: string
+          question_started_at: string | null
+          session_started_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          current_phase?: string
+          current_question_id?: string | null
+          id?: string
+          question_started_at?: string | null
+          session_started_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          current_phase?: string
+          current_question_id?: string | null
+          id?: string
+          question_started_at?: string | null
+          session_started_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "logica_aplicada_session_state_current_question_id_fkey"
+            columns: ["current_question_id"]
+            isOneToOne: false
+            referencedRelation: "logica_aplicada_questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       manual_xp_adjustments: {
         Row: {
           created_at: string

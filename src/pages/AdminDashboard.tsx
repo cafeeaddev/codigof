@@ -43,6 +43,8 @@ import { FluxoClienteControl } from '@/components/quizzes/admin/FluxoClienteCont
 import { useFluxoCliente } from '@/components/quizzes/fluxo-cliente/useFluxoCliente';
 import { PseudoCodigoControl } from '@/components/quizzes/admin/PseudoCodigoControl';
 import { usePseudoCodigo } from '@/components/quizzes/pseudo-codigo/usePseudoCodigo';
+import { LogicaAplicadaControl } from '@/components/quizzes/admin/LogicaAplicadaControl';
+import { useLogicaAplicada } from '@/components/quizzes/logica-aplicada/useLogicaAplicada';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -56,7 +58,7 @@ const AdminDashboard = () => {
   const [selectedUserProfile, setSelectedUserProfile] = useState<UserProfile | null>(null);
   const [isAnalysisDialogOpen, setIsAnalysisDialogOpen] = useState(false);
   const [activeQuiz, setActiveQuiz] = useState<'quiz1' | 'quiz2' | 'quiz3' | 'quiz4' | 'quiz5' | 'fritarOvo' | null>(null);
-  const [activeQuiz2, setActiveQuiz2] = useState<'fritarOvo' | 'fluxoCliente' | 'pseudoCodigo' | null>(null);
+  const [activeQuiz2, setActiveQuiz2] = useState<'fritarOvo' | 'fluxoCliente' | 'pseudoCodigo' | 'logicaAplicada' | null>(null);
 
   // Quiz hooks
   const quiz1 = useQuiz1();
@@ -67,6 +69,7 @@ const AdminDashboard = () => {
   const fritarOvo = useFritarOvo();
   const fluxoCliente = useFluxoCliente();
   const pseudoCodigo = usePseudoCodigo();
+  const logicaAplicada = useLogicaAplicada();
 
   const {
     responses1,
@@ -645,7 +648,7 @@ const AdminDashboard = () => {
                 <QuizCard
                   title="Pseudo-código"
                   description="Do fluxo ao código estruturado"
-                  icon="🧠"
+                  icon="💻"
                   status="collecting"
                   submissionCount={pseudoCodigo.submissions.length}
                   participantLink="/quiz/pseudo-codigo/play"
@@ -653,12 +656,24 @@ const AdminDashboard = () => {
                   onReset={async () => { await pseudoCodigo.resetSubmissions(); window.location.reload(); }}
                   isActive={activeQuiz2 === 'pseudoCodigo'}
                 />
+                <QuizCard
+                  title="Quiz – Lógica Aplicada"
+                  description="10 perguntas com ranking e bônus de velocidade"
+                  icon="🧠"
+                  status={logicaAplicada.sessionState?.current_phase === 'question' ? 'active' : 'ready'}
+                  participantCount={logicaAplicada.participantCount}
+                  questionCount={logicaAplicada.questions.length}
+                  participantLink="/quiz/logica-aplicada"
+                  onManage={() => setActiveQuiz2('logicaAplicada')}
+                  onReset={async () => { await logicaAplicada.resetQuiz(); }}
+                  isActive={activeQuiz2 === 'logicaAplicada'}
+                />
               </div>
-
               {/* Activity Controls */}
               {activeQuiz2 === 'fritarOvo' && <FritarOvoControl />}
               {activeQuiz2 === 'fluxoCliente' && <FluxoClienteControl />}
               {activeQuiz2 === 'pseudoCodigo' && <PseudoCodigoControl />}
+              {activeQuiz2 === 'logicaAplicada' && <LogicaAplicadaControl />}
 
               {!activeQuiz2 && (
                 <Card className="p-8 text-center">

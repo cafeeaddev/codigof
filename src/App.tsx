@@ -27,8 +27,9 @@ import { FluxoClienteHost } from "./components/quizzes/fluxo-cliente/FluxoClient
 import { FluxoClienteParticipant } from "./components/quizzes/fluxo-cliente/FluxoClienteParticipant";
 import { PseudoCodigoHost } from "./components/quizzes/pseudo-codigo/PseudoCodigoHost";
 import { PseudoCodigoParticipant } from "./components/quizzes/pseudo-codigo/PseudoCodigoParticipant";
+import { LogicaAplicadaHost } from "./components/quizzes/logica-aplicada/LogicaAplicadaHost";
+import { LogicaAplicadaParticipant } from "./components/quizzes/logica-aplicada/LogicaAplicadaParticipant";
 import FluxogramaOvo from "./pages/FluxogramaOvo";
-
 const queryClient = new QueryClient();
 
 const RouteAwareLogos = () => {
@@ -80,6 +81,10 @@ const App = () => (
             {/* Treinamento 2 - Pseudo-código */}
             <Route path="/quiz/pseudo-codigo/screen" element={<PseudoCodigoHost />} />
             <Route path="/quiz/pseudo-codigo/play" element={<PseudoCodigoParticipant />} />
+            
+            {/* Treinamento 2 - Quiz Lógica Aplicada */}
+            <Route path="/quiz/logica-aplicada/screen" element={<LogicaAplicadaHost />} />
+            <Route path="/quiz/logica-aplicada" element={<LogicaAplicadaParticipant />} />
             
             {/* Fluxograma do Ovo - Slide visual */}
             <Route path="/fluxograma-ovo" element={<FluxogramaOvo />} />
