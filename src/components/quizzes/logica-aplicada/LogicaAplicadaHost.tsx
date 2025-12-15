@@ -88,10 +88,10 @@ export function LogicaAplicadaHost() {
   }, [initializeSession]);
 
   // Auto-show ranking when time is up
+  // Timer só é renderizado na fase 'question', então se onTimeUp foi chamado,
+  // é porque o tempo acabou durante uma pergunta ativa
   const handleTimeUp = () => {
-    if (sessionState?.current_phase === 'question') {
-      showRanking();
-    }
+    showRanking();
   };
 
   // Waiting phase
