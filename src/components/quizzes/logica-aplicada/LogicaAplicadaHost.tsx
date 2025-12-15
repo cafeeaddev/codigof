@@ -160,12 +160,12 @@ export function LogicaAplicadaHost() {
   // Question phase
   if (sessionState.current_phase === 'question' && currentQuestion) {
     return (
-      <div className="min-h-screen bg-[#0a0a0f] flex flex-col p-8 relative overflow-hidden">
+      <div className="min-h-screen bg-[#0a0a0f] flex flex-col pt-20 px-8 pb-8 relative overflow-hidden">
         <CyberpunkGrid />
         <FloatingDots />
         
         {/* Header */}
-        <div className="flex items-center justify-between mb-8 relative z-10 pt-16">
+        <div className="flex items-center justify-between mb-8 relative z-10">
           <div className="px-6 py-3 rounded-full border-2 border-[hsl(var(--neon-pink))] bg-[hsl(var(--neon-pink)/0.1)] shadow-[0_0_15px_hsl(var(--neon-pink)/0.3)]">
             <span className="text-[hsl(var(--neon-pink))] font-bold text-2xl">
               Pergunta {questionIndex + 1}/{questions.length}
@@ -215,7 +215,7 @@ export function LogicaAplicadaHost() {
     const showCorrectAnswer = !isFinal && currentQuestion;
 
     return (
-      <div className="min-h-screen bg-[#0a0a0f] flex flex-col items-center justify-center p-8 relative overflow-hidden">
+      <div className="min-h-screen bg-[#0a0a0f] flex flex-col items-center justify-center pt-20 px-8 pb-8 relative overflow-hidden">
         <CyberpunkGrid />
         <FloatingDots />
         
