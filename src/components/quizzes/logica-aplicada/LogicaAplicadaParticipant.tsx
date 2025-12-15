@@ -174,21 +174,23 @@ export function LogicaAplicadaParticipant() {
             <p className="text-white/40 mt-4 text-sm">Aguardando ranking...</p>
           </Card>
         ) : (
-          <div className="flex-1 grid grid-cols-1 gap-3">
+          <div className="flex-1 flex flex-col gap-3">
             {[
-              { letter: 'A', text: currentQuestion.option_a, color: 'from-red-600 to-red-700' },
-              { letter: 'B', text: currentQuestion.option_b, color: 'from-blue-600 to-blue-700' },
-              { letter: 'C', text: currentQuestion.option_c, color: 'from-yellow-600 to-yellow-700' },
-              { letter: 'D', text: currentQuestion.option_d, color: 'from-emerald-600 to-emerald-700' },
+              { letter: 'A', text: currentQuestion.option_a, color: 'bg-red-600 hover:bg-red-500' },
+              { letter: 'B', text: currentQuestion.option_b, color: 'bg-blue-600 hover:bg-blue-500' },
+              { letter: 'C', text: currentQuestion.option_c, color: 'bg-yellow-600 hover:bg-yellow-500' },
+              { letter: 'D', text: currentQuestion.option_d, color: 'bg-emerald-600 hover:bg-emerald-500' },
             ].map(({ letter, text, color }) => (
-              <Button
+              <button
                 key={letter}
                 onClick={() => handleAnswer(letter as 'A' | 'B' | 'C' | 'D')}
-                className={`h-auto py-4 px-6 text-left bg-gradient-to-r ${color} hover:opacity-90 transition-opacity`}
+                className={`w-full flex items-start gap-3 p-4 rounded-lg ${color} text-white font-medium transition-colors`}
               >
-                <span className="font-bold text-xl mr-3">{letter}</span>
-                <span className="text-sm leading-tight">{text}</span>
-              </Button>
+                <span className="font-bold text-xl flex-shrink-0 w-8">{letter}</span>
+                <span className="text-sm text-left flex-1 whitespace-normal break-words">
+                  {text}
+                </span>
+              </button>
             ))}
           </div>
         )}
