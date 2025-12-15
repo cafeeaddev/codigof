@@ -198,15 +198,10 @@ export function useLogicaAplicada() {
     if (questions.length === 0) return;
     
     const firstQuestion = questions[0];
-    await supabase
-      .from('logica_aplicada_session_state')
-      .update({
-        current_phase: 'question',
-        current_question_id: firstQuestion.id,
-        question_started_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      })
-      .neq('id', '00000000-0000-0000-0000-000000000000');
+    // Use server timestamp via RPC for synchronized timers
+    await supabase.rpc('start_logica_aplicada_question', {
+      p_question_id: firstQuestion.id
+    });
   }, [questions]);
 
   const showRanking = useCallback(async () => {
@@ -226,24 +221,17 @@ export function useLogicaAplicada() {
     
     if (currentIdx < questions.length - 1) {
       const nextQ = questions[currentIdx + 1];
-      await supabase
-        .from('logica_aplicada_session_state')
-        .update({
-          current_phase: 'question',
-          current_question_id: nextQ.id,
-          question_started_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        })
-        .neq('id', '00000000-0000-0000-0000-000000000000');
+      // Use server timestamp via RPC for synchronized timers
+      await supabase.rpc('next_logica_aplicada_question', {
+        p_question_id: nextQ.id,
+        p_is_final: false
+      });
     } else {
       // Last question - go to final ranking
-      await supabase
-        .from('logica_aplicada_session_state')
-        .update({
-          current_phase: 'ended',
-          updated_at: new Date().toISOString()
-        })
-        .neq('id', '00000000-0000-0000-0000-000000000000');
+      await supabase.rpc('next_logica_aplicada_question', {
+        p_question_id: null,
+        p_is_final: true
+      });
     }
   }, [sessionState, questions]);
 

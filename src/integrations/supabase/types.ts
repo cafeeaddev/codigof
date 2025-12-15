@@ -1305,9 +1305,17 @@ export type Database = {
         Returns: boolean
       }
       mask_cpf: { Args: { cpf_value: string }; Returns: string }
+      next_logica_aplicada_question: {
+        Args: { p_is_final?: boolean; p_question_id: string }
+        Returns: undefined
+      }
       reset_user_progress: {
         Args: { _target_user_id: string }
         Returns: boolean
+      }
+      start_logica_aplicada_question: {
+        Args: { p_question_id: string }
+        Returns: undefined
       }
     }
     Enums: {
