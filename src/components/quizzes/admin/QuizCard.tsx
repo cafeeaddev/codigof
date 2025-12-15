@@ -18,7 +18,7 @@ import {
 interface QuizCardProps {
   title: string;
   description: string;
-  icon: '⚡' | '☁️' | '🎯' | '📝' | '🧭' | '🍳' | '🧠';
+  icon: '⚡' | '☁️' | '🎯' | '📝' | '🧭' | '🍳' | '🧠' | '💻' | '🎮';
   status: 'ready' | 'collecting' | 'active';
   participantCount?: number;
   questionCount?: number;
