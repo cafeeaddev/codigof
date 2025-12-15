@@ -31,10 +31,12 @@ export function LogicaAplicadaTimer({
       const remaining = Math.max(0, totalSeconds - elapsed);
       setTimeLeft(remaining);
       
-      // Only call onTimeUp once
+      // Only call onTimeUp once, with 1 second delay for suspense
       if (remaining <= 0 && onTimeUp && !hasCalledTimeUp.current) {
         hasCalledTimeUp.current = true;
-        onTimeUp();
+        setTimeout(() => {
+          onTimeUp();
+        }, 1000);
       }
     };
 
