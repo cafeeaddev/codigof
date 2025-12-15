@@ -35,7 +35,7 @@ export interface Participant {
   joined_at: string | null;
 }
 
-const TOTAL_TIME_MS = 30000; // 30 seconds
+const TOTAL_TIME_MS = 45000; // 45 seconds
 const BASE_POINTS = 1000;
 const MIN_POINTS = 500;
 

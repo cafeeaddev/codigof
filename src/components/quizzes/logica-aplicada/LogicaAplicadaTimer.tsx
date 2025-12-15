@@ -9,12 +9,18 @@ interface LogicaAplicadaTimerProps {
 
 export function LogicaAplicadaTimer({ 
   startedAt, 
-  totalSeconds = 30, 
+  totalSeconds = 45, 
   onTimeUp,
   size = 'md'
 }: LogicaAplicadaTimerProps) {
   const [timeLeft, setTimeLeft] = useState(totalSeconds);
   const hasCalledTimeUp = useRef(false);
+  const onTimeUpRef = useRef(onTimeUp);
+
+  // Keep onTimeUp ref updated
+  useEffect(() => {
+    onTimeUpRef.current = onTimeUp;
+  }, [onTimeUp]);
 
   useEffect(() => {
     if (!startedAt) {
@@ -32,10 +38,10 @@ export function LogicaAplicadaTimer({
       setTimeLeft(remaining);
       
       // Only call onTimeUp once, with 1 second delay for suspense
-      if (remaining <= 0 && onTimeUp && !hasCalledTimeUp.current) {
+      if (remaining <= 0 && onTimeUpRef.current && !hasCalledTimeUp.current) {
         hasCalledTimeUp.current = true;
         setTimeout(() => {
-          onTimeUp();
+          onTimeUpRef.current?.();
         }, 1000);
       }
     };
@@ -44,7 +50,7 @@ export function LogicaAplicadaTimer({
     const interval = setInterval(updateTimer, 100);
 
     return () => clearInterval(interval);
-  }, [startedAt, totalSeconds, onTimeUp]);
+  }, [startedAt, totalSeconds]); // Removed onTimeUp from dependencies
 
   const percentage = (timeLeft / totalSeconds) * 100;
   const circumference = 2 * Math.PI * 45;
@@ -62,16 +68,16 @@ export function LogicaAplicadaTimer({
     lg: 'text-4xl'
   };
 
-  // Neon colors based on time remaining
+  // Neon colors based on time remaining (adjusted for 45s)
   const getColors = () => {
-    if (timeLeft > 20) {
+    if (timeLeft > 30) {
       return {
         stroke: 'hsl(var(--neon-cyan))',
         glow: 'hsl(var(--neon-cyan))',
         text: 'text-[hsl(var(--neon-cyan))]'
       };
     }
-    if (timeLeft > 10) {
+    if (timeLeft > 15) {
       return {
         stroke: 'hsl(60 100% 70%)',
         glow: 'hsl(60 100% 70%)',
