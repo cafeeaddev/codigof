@@ -1,6 +1,6 @@
 import { RankingEntry } from './useLogicaAplicada';
 import { Trophy, Medal, Award, Zap } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 
 interface LogicaAplicadaRankingProps {
   ranking: RankingEntry[];
@@ -13,13 +13,17 @@ export function LogicaAplicadaRanking({
   isFinal = false,
   maxShow = 10 
 }: LogicaAplicadaRankingProps) {
-  const displayRanking = ranking.slice(0, maxShow);
   const [animatedScores, setAnimatedScores] = useState<Record<string, number>>({});
+  
+  // Memoize displayRanking to prevent infinite re-renders
+  const displayRanking = useMemo(() => ranking.slice(0, maxShow), [ranking, maxShow]);
 
   // Animate scores counting up on final ranking
   useEffect(() => {
     if (isFinal) {
-      displayRanking.forEach((entry, idx) => {
+      const timers: NodeJS.Timeout[] = [];
+      
+      displayRanking.forEach((entry) => {
         const duration = 1500;
         const steps = 30;
         const stepValue = entry.total_points / steps;
@@ -34,8 +38,13 @@ export function LogicaAplicadaRanking({
           setAnimatedScores(prev => ({ ...prev, [entry.participant_id]: Math.round(current) }));
         }, duration / steps);
         
-        return () => clearInterval(timer);
+        timers.push(timer);
       });
+      
+      // Proper cleanup at useEffect level
+      return () => {
+        timers.forEach(timer => clearInterval(timer));
+      };
     } else {
       // For partial ranking, show scores immediately
       const scores: Record<string, number> = {};
