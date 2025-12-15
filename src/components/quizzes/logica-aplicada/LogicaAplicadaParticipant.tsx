@@ -72,7 +72,7 @@ const answerButtonStyles = {
 };
 
 export function LogicaAplicadaParticipant() {
-  const { sessionState, getCurrentQuestion, getCurrentQuestionIndex, questions, joinQuiz, submitAnswer } = useLogicaAplicada();
+  const { sessionState, getCurrentQuestion, getCurrentQuestionIndex, questions, joinQuiz, submitAnswer, getParticipantPosition } = useLogicaAplicada();
   
   const [nickname, setNickname] = useState('');
   const [participantId, setParticipantId] = useState<string | null>(null);
@@ -82,6 +82,11 @@ export function LogicaAplicadaParticipant() {
   const [wasCorrect, setWasCorrect] = useState(false);
   const [answerStartTime, setAnswerStartTime] = useState<number>(0);
   const [answeredQuestions, setAnsweredQuestions] = useState<Set<string>>(new Set());
+  
+  // New states for position tracking
+  const [currentPosition, setCurrentPosition] = useState<number | null>(null);
+  const [totalPoints, setTotalPoints] = useState<number>(0);
+  const [totalParticipants, setTotalParticipants] = useState<number>(0);
 
   const currentQuestion = getCurrentQuestion();
   const questionIndex = getCurrentQuestionIndex();
@@ -115,6 +120,16 @@ export function LogicaAplicadaParticipant() {
     }
   };
 
+  // Helper to get contextual message based on position
+  const getPositionMessage = (pos: number, total: number) => {
+    if (pos === 1) return { text: "Você está liderando! 🔥", emoji: "🥇" };
+    if (pos === 2) return { text: "Quase lá! Continue assim!", emoji: "🥈" };
+    if (pos === 3) return { text: "Você está no pódio!", emoji: "🥉" };
+    if (pos <= 5) return { text: "Top 5! Acelere!", emoji: "⚡" };
+    if (pos <= 10) return { text: `${pos}º lugar - Continue!`, emoji: "💪" };
+    return { text: "Não desista!", emoji: "🎯" };
+  };
+
   const handleAnswer = useCallback(async (answer: 'A' | 'B' | 'C' | 'D') => {
     if (!participantId || !currentQuestion || hasAnswered) return;
 
@@ -125,7 +140,15 @@ export function LogicaAplicadaParticipant() {
     const points = await submitAnswer(participantId, currentQuestion.id, answer, timeTaken);
     setLastPoints(points);
     setWasCorrect(answer === currentQuestion.correct_option);
-  }, [participantId, currentQuestion, hasAnswered, answerStartTime, submitAnswer]);
+
+    // Fetch position after submitting answer
+    const positionData = await getParticipantPosition(participantId);
+    if (positionData) {
+      setCurrentPosition(positionData.position);
+      setTotalPoints(positionData.totalPoints);
+      setTotalParticipants(positionData.totalParticipants);
+    }
+  }, [participantId, currentQuestion, hasAnswered, answerStartTime, submitAnswer, getParticipantPosition]);
 
   // Entry screen
   if (!participantId) {
@@ -293,24 +316,64 @@ export function LogicaAplicadaParticipant() {
         {hasAnswered ? (
           <div className="flex-1 flex items-center justify-center relative z-10">
             <div className={`relative p-0.5 rounded-xl w-full ${wasCorrect ? 'bg-gradient-to-br from-[hsl(var(--neon-green))] to-[hsl(var(--neon-cyan))] shadow-[0_0_30px_hsl(var(--neon-green)/0.5)]' : 'bg-gradient-to-br from-red-500 to-orange-500 shadow-[0_0_30px_rgba(239,68,68,0.5)]'}`}>
-              <Card className="p-8 bg-black/80 border-0 backdrop-blur-sm flex flex-col items-center justify-center rounded-lg">
+              <Card className="p-6 bg-black/80 border-0 backdrop-blur-sm flex flex-col items-center justify-center rounded-lg">
                 {wasCorrect ? (
                   <>
                     <div className="relative">
-                      <CheckCircle className="w-20 h-20 text-[hsl(var(--neon-green))] mb-4 drop-shadow-[0_0_20px_hsl(var(--neon-green))]" />
-                      <Sparkles className="absolute -top-2 -right-2 w-8 h-8 text-[hsl(60_100%_50%)] animate-pulse" />
+                      <CheckCircle className="w-16 h-16 text-[hsl(var(--neon-green))] mb-2 drop-shadow-[0_0_20px_hsl(var(--neon-green))]" />
+                      <Sparkles className="absolute -top-2 -right-2 w-6 h-6 text-[hsl(60_100%_50%)] animate-pulse" />
                     </div>
-                    <p className="text-4xl font-bold text-[hsl(var(--neon-green))] drop-shadow-[0_0_10px_hsl(var(--neon-green))]">+{lastPoints} pts!</p>
-                    <p className="text-white/60 mt-2">Resposta correta!</p>
+                    <p className="text-3xl font-bold text-[hsl(var(--neon-green))] drop-shadow-[0_0_10px_hsl(var(--neon-green))]">+{lastPoints} pts!</p>
                   </>
                 ) : (
                   <>
-                    <XCircle className="w-20 h-20 text-red-400 mb-4 drop-shadow-[0_0_20px_rgba(239,68,68,0.8)] animate-[shake_0.5s_ease-in-out]" />
-                    <p className="text-4xl font-bold text-red-400">0 pts</p>
-                    <p className="text-white/60 mt-2">Resposta incorreta</p>
+                    <XCircle className="w-16 h-16 text-red-400 mb-2 drop-shadow-[0_0_20px_rgba(239,68,68,0.8)] animate-[shake_0.5s_ease-in-out]" />
+                    <p className="text-3xl font-bold text-red-400">0 pts</p>
                   </>
                 )}
-                <p className="text-white/40 mt-4 text-sm">Aguardando ranking...</p>
+                
+                {/* Position display */}
+                {currentPosition !== null && (
+                  <div className="mt-4 w-full">
+                    {/* Position badge */}
+                    <div className={`flex items-center justify-center gap-2 mb-3 ${currentPosition <= 3 ? 'animate-pulse' : ''}`}>
+                      <span className="text-3xl">
+                        {getPositionMessage(currentPosition, totalParticipants).emoji}
+                      </span>
+                      <span className={`text-2xl font-bold ${
+                        currentPosition === 1 ? 'text-[hsl(60_100%_50%)] drop-shadow-[0_0_10px_hsl(60_100%_50%)]' :
+                        currentPosition === 2 ? 'text-gray-300 drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]' :
+                        currentPosition === 3 ? 'text-[hsl(30_100%_50%)] drop-shadow-[0_0_8px_hsl(30_100%_50%)]' :
+                        'text-white'
+                      }`}>
+                        {currentPosition}º lugar
+                      </span>
+                    </div>
+                    
+                    {/* Contextual message */}
+                    <p className="text-white/80 text-center text-sm mb-3">
+                      {getPositionMessage(currentPosition, totalParticipants).text}
+                    </p>
+                    
+                    {/* Player card */}
+                    <div className="mt-3 p-3 rounded-lg bg-black/50 border border-[hsl(var(--neon-cyan)/0.3)]">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[hsl(var(--neon-pink))] to-[hsl(var(--neon-cyan))] flex items-center justify-center">
+                            <span className="text-white font-bold text-sm">{nickname.charAt(0).toUpperCase()}</span>
+                          </div>
+                          <span className="text-white font-medium text-sm truncate max-w-[100px]">{nickname}</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Trophy className="w-4 h-4 text-[hsl(60_100%_50%)]" />
+                          <span className="text-[hsl(60_100%_50%)] font-bold">{totalPoints} pts</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                
+                <p className="text-white/40 mt-3 text-xs">Aguardando ranking...</p>
               </Card>
             </div>
           </div>

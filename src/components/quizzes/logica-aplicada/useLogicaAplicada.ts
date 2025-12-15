@@ -301,6 +301,41 @@ export function useLogicaAplicada() {
     return points;
   }, [questions]);
 
+  // Get participant position and total points
+  const getParticipantPosition = useCallback(async (participantId: string): Promise<{
+    position: number;
+    totalPoints: number;
+    totalParticipants: number;
+  } | null> => {
+    const { data: participants } = await supabase
+      .from('logica_aplicada_participants')
+      .select('id');
+
+    const { data: answers } = await supabase
+      .from('logica_aplicada_answers')
+      .select('participant_id, points_earned');
+
+    if (!participants || !answers) return null;
+
+    const pointsMap = new Map<string, number>();
+    answers.forEach(a => {
+      const current = pointsMap.get(a.participant_id!) || 0;
+      pointsMap.set(a.participant_id!, current + a.points_earned);
+    });
+
+    const sorted = Array.from(pointsMap.entries())
+      .sort((a, b) => b[1] - a[1]);
+
+    const position = sorted.findIndex(([id]) => id === participantId) + 1;
+    const totalPoints = pointsMap.get(participantId) || 0;
+
+    return {
+      position: position || participants.length,
+      totalPoints,
+      totalParticipants: participants.length
+    };
+  }, [questions]);
+
   const getCurrentQuestion = useCallback(() => {
     if (!sessionState?.current_question_id) return null;
     return questions.find(q => q.id === sessionState.current_question_id) || null;
@@ -327,6 +362,7 @@ export function useLogicaAplicada() {
     submitAnswer,
     getCurrentQuestion,
     getCurrentQuestionIndex,
-    calculateRanking
+    calculateRanking,
+    getParticipantPosition
   };
 }
