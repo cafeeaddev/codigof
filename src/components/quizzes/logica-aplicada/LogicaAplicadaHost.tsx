@@ -165,7 +165,7 @@ export function LogicaAplicadaHost() {
         <FloatingDots />
         
         {/* Header */}
-        <div className="flex items-center justify-between mb-8 relative z-10">
+        <div className="flex items-center justify-between mb-8 relative z-10 pt-16">
           <div className="px-6 py-3 rounded-full border-2 border-[hsl(var(--neon-pink))] bg-[hsl(var(--neon-pink)/0.1)] shadow-[0_0_15px_hsl(var(--neon-pink)/0.3)]">
             <span className="text-[hsl(var(--neon-pink))] font-bold text-2xl">
               Pergunta {questionIndex + 1}/{questions.length}
