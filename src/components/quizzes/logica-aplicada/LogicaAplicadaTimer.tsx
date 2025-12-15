@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 interface LogicaAplicadaTimerProps {
   startedAt: string | null;
@@ -14,10 +14,12 @@ export function LogicaAplicadaTimer({
   size = 'md'
 }: LogicaAplicadaTimerProps) {
   const [timeLeft, setTimeLeft] = useState(totalSeconds);
+  const hasCalledTimeUp = useRef(false);
 
   useEffect(() => {
     if (!startedAt) {
       setTimeLeft(totalSeconds);
+      hasCalledTimeUp.current = false; // Reset when new question starts
       return;
     }
 
@@ -29,7 +31,9 @@ export function LogicaAplicadaTimer({
       const remaining = Math.max(0, totalSeconds - elapsed);
       setTimeLeft(remaining);
       
-      if (remaining <= 0 && onTimeUp) {
+      // Only call onTimeUp once
+      if (remaining <= 0 && onTimeUp && !hasCalledTimeUp.current) {
+        hasCalledTimeUp.current = true;
         onTimeUp();
       }
     };
