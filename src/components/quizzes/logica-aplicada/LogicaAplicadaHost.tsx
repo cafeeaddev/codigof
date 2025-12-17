@@ -126,12 +126,12 @@ export function LogicaAplicadaHost() {
 
               {/* QR Code with neon frame */}
               <div className="relative p-1 rounded-xl bg-gradient-to-br from-[hsl(var(--neon-pink))] to-[hsl(var(--neon-cyan))] mx-auto w-fit mb-8 shadow-[0_0_30px_hsl(var(--neon-cyan)/0.3)]">
-                <div className="p-6 bg-black rounded-lg">
+                <div className="p-6 bg-white rounded-lg">
                   <QRCodeSVG
                     value={participantUrl}
                     size={280}
-                    bgColor="transparent"
-                    fgColor="hsl(var(--neon-cyan))"
+                    bgColor="#ffffff"
+                    fgColor="#0a0a0f"
                     level="H"
                   />
                 </div>
