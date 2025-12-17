@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { useLogicaAplicada } from './useLogicaAplicada';
 import { LogicaAplicadaTimer } from './LogicaAplicadaTimer';
-import { CheckCircle, XCircle, Clock, Loader2, Zap, Trophy, Sparkles } from 'lucide-react';
+import { CheckCircle, XCircle, Clock, Loader2, Zap, Trophy, Sparkles, AlertTriangle, RefreshCw, WifiOff } from 'lucide-react';
 import { toast } from 'sonner';
 
 // Decorative corner for mobile
@@ -71,17 +71,31 @@ const answerButtonStyles = {
   }
 };
 
+type JoinStatus = 'idle' | 'validating' | 'connecting' | 'joining' | 'retrying' | 'success' | 'error';
+
 export function LogicaAplicadaParticipant() {
-  const { sessionState, getCurrentQuestion, getCurrentQuestionIndex, questions, joinQuiz, submitAnswer, getParticipantPosition } = useLogicaAplicada();
+  const { 
+    sessionState, 
+    getCurrentQuestion, 
+    getCurrentQuestionIndex, 
+    questions, 
+    joinQuiz, 
+    submitAnswer, 
+    getParticipantPosition,
+    quizWasReset,
+    clearResetFlag
+  } = useLogicaAplicada();
   
   const [nickname, setNickname] = useState('');
   const [participantId, setParticipantId] = useState<string | null>(null);
-  const [isJoining, setIsJoining] = useState(false);
+  const [joinStatus, setJoinStatus] = useState<JoinStatus>('idle');
+  const [joinError, setJoinError] = useState<string | null>(null);
   const [hasAnswered, setHasAnswered] = useState(false);
   const [lastPoints, setLastPoints] = useState<number | null>(null);
   const [wasCorrect, setWasCorrect] = useState(false);
   const [answerStartTime, setAnswerStartTime] = useState<number>(0);
   const [answeredQuestions, setAnsweredQuestions] = useState<Set<string>>(new Set());
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   // New states for position tracking
   const [currentPosition, setCurrentPosition] = useState<number | null>(null);
@@ -90,6 +104,24 @@ export function LogicaAplicadaParticipant() {
 
   const currentQuestion = getCurrentQuestion();
   const questionIndex = getCurrentQuestionIndex();
+
+  // Handle quiz reset - notify participant and allow re-entry
+  useEffect(() => {
+    if (quizWasReset && participantId) {
+      console.log('[LogicaAplicada] Quiz reset detected, clearing participant state');
+      setParticipantId(null);
+      setAnsweredQuestions(new Set());
+      setHasAnswered(false);
+      setLastPoints(null);
+      setCurrentPosition(null);
+      setTotalPoints(0);
+      toast.warning('O quiz foi reiniciado. Entre novamente.', {
+        duration: 5000,
+        icon: <RefreshCw className="w-5 h-5" />
+      });
+      clearResetFlag();
+    }
+  }, [quizWasReset, participantId, clearResetFlag]);
 
   // Reset answer state when question changes
   useEffect(() => {
@@ -103,20 +135,41 @@ export function LogicaAplicadaParticipant() {
   }, [currentQuestion?.id, answeredQuestions]);
 
   const handleJoin = async () => {
-    if (!nickname.trim()) {
+    const trimmedNickname = nickname.trim();
+    
+    if (!trimmedNickname) {
       toast.error('Digite seu nome ou apelido');
       return;
     }
     
-    setIsJoining(true);
-    const id = await joinQuiz(nickname.trim());
-    setIsJoining(false);
+    console.log('[LogicaAplicada] handleJoin started for:', trimmedNickname);
+    setJoinError(null);
+    setJoinStatus('validating');
     
-    if (id) {
-      setParticipantId(id);
+    // Small delay to show validation status
+    await new Promise(resolve => setTimeout(resolve, 300));
+    
+    setJoinStatus('connecting');
+    console.log('[LogicaAplicada] Testing connection...');
+    
+    // Another small delay before actual join
+    await new Promise(resolve => setTimeout(resolve, 300));
+    
+    setJoinStatus('joining');
+    console.log('[LogicaAplicada] Calling joinQuiz...');
+    
+    const result = await joinQuiz(trimmedNickname);
+    
+    if (result.success && result.participantId) {
+      console.log('[LogicaAplicada] Join successful:', result.participantId);
+      setJoinStatus('success');
+      setParticipantId(result.participantId);
       toast.success('Você entrou no quiz!');
     } else {
-      toast.error('Erro ao entrar no quiz');
+      console.error('[LogicaAplicada] Join failed:', result.error);
+      setJoinStatus('error');
+      setJoinError(result.error || 'Erro desconhecido');
+      toast.error(result.error || 'Erro ao entrar no quiz');
     }
   };
 
@@ -131,24 +184,61 @@ export function LogicaAplicadaParticipant() {
   };
 
   const handleAnswer = useCallback(async (answer: 'A' | 'B' | 'C' | 'D') => {
-    if (!participantId || !currentQuestion || hasAnswered) return;
+    if (!participantId || !currentQuestion || hasAnswered || isSubmitting) return;
 
+    console.log('[LogicaAplicada] handleAnswer called:', answer);
+    setIsSubmitting(true);
+    
     const timeTaken = Date.now() - answerStartTime;
     setHasAnswered(true);
     setAnsweredQuestions(prev => new Set(prev).add(currentQuestion.id));
 
-    const points = await submitAnswer(participantId, currentQuestion.id, answer, timeTaken);
-    setLastPoints(points);
-    setWasCorrect(answer === currentQuestion.correct_option);
+    const result = await submitAnswer(participantId, currentQuestion.id, answer, timeTaken);
+    
+    if (result.success) {
+      setLastPoints(result.points);
+      setWasCorrect(answer === currentQuestion.correct_option);
 
-    // Fetch position after submitting answer
-    const positionData = await getParticipantPosition(participantId);
-    if (positionData) {
-      setCurrentPosition(positionData.position);
-      setTotalPoints(positionData.totalPoints);
-      setTotalParticipants(positionData.totalParticipants);
+      // Fetch position after submitting answer
+      const positionData = await getParticipantPosition(participantId);
+      if (positionData) {
+        setCurrentPosition(positionData.position);
+        setTotalPoints(positionData.totalPoints);
+        setTotalParticipants(positionData.totalParticipants);
+      }
+    } else {
+      // Handle error - session expired
+      if (result.error?.includes('sessão expirou') || result.error?.includes('reiniciado')) {
+        console.log('[LogicaAplicada] Session expired, clearing state');
+        setParticipantId(null);
+        setAnsweredQuestions(new Set());
+        setHasAnswered(false);
+        toast.error(result.error, {
+          duration: 5000,
+          icon: <AlertTriangle className="w-5 h-5" />
+        });
+      } else {
+        // Other error - still show feedback but note the error
+        setLastPoints(0);
+        setWasCorrect(false);
+        toast.error(result.error || 'Erro ao enviar resposta');
+      }
     }
-  }, [participantId, currentQuestion, hasAnswered, answerStartTime, submitAnswer, getParticipantPosition]);
+    
+    setIsSubmitting(false);
+  }, [participantId, currentQuestion, hasAnswered, answerStartTime, submitAnswer, getParticipantPosition, isSubmitting]);
+
+  const getStatusText = () => {
+    switch (joinStatus) {
+      case 'validating': return 'Validando...';
+      case 'connecting': return 'Verificando conexão...';
+      case 'joining': return 'Entrando no quiz...';
+      case 'retrying': return 'Tentando novamente...';
+      default: return 'Entrar no Quiz';
+    }
+  };
+
+  const isJoining = ['validating', 'connecting', 'joining', 'retrying'].includes(joinStatus);
 
   // Entry screen
   if (!participantId) {
@@ -192,18 +282,40 @@ export function LogicaAplicadaParticipant() {
                   placeholder="Seu nome ou apelido"
                   value={nickname}
                   onChange={(e) => setNickname(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && handleJoin()}
-                  className="bg-black/40 border-2 border-[hsl(var(--neon-cyan)/0.5)] text-white text-center text-lg py-6 focus:border-[hsl(var(--neon-cyan))] focus:shadow-[0_0_15px_hsl(var(--neon-cyan)/0.3)] transition-all"
+                  onKeyDown={(e) => e.key === 'Enter' && !isJoining && handleJoin()}
+                  disabled={isJoining}
+                  className="bg-black/40 border-2 border-[hsl(var(--neon-cyan)/0.5)] text-white text-center text-lg py-6 focus:border-[hsl(var(--neon-cyan))] focus:shadow-[0_0_15px_hsl(var(--neon-cyan)/0.3)] transition-all disabled:opacity-50"
                   maxLength={30}
                 />
+                
+                {/* Error message */}
+                {joinError && joinStatus === 'error' && (
+                  <div className="flex items-center gap-2 p-3 rounded-lg bg-red-500/10 border border-red-500/30">
+                    {joinError.includes('conexão') || joinError.includes('internet') ? (
+                      <WifiOff className="w-5 h-5 text-red-400 flex-shrink-0" />
+                    ) : (
+                      <AlertTriangle className="w-5 h-5 text-red-400 flex-shrink-0" />
+                    )}
+                    <p className="text-red-400 text-sm">{joinError}</p>
+                  </div>
+                )}
                 
                 <Button
                   onClick={handleJoin}
                   disabled={isJoining || !nickname.trim()}
-                  className="w-full py-6 text-lg bg-gradient-to-r from-[hsl(var(--neon-pink))] to-[hsl(var(--neon-purple))] hover:from-[hsl(var(--neon-pink)/0.8)] hover:to-[hsl(var(--neon-purple)/0.8)] text-white font-bold shadow-[0_0_20px_hsl(var(--neon-pink)/0.4)] hover:shadow-[0_0_30px_hsl(var(--neon-pink)/0.6)] transition-all border-0"
+                  className="w-full py-6 text-lg bg-gradient-to-r from-[hsl(var(--neon-pink))] to-[hsl(var(--neon-purple))] hover:from-[hsl(var(--neon-pink)/0.8)] hover:to-[hsl(var(--neon-purple)/0.8)] text-white font-bold shadow-[0_0_20px_hsl(var(--neon-pink)/0.4)] hover:shadow-[0_0_30px_hsl(var(--neon-pink)/0.6)] transition-all border-0 disabled:opacity-50"
                 >
-                  {isJoining ? <Loader2 className="animate-spin mr-2" /> : <Zap className="mr-2 w-5 h-5" />}
-                  Entrar no Quiz
+                  {isJoining ? (
+                    <>
+                      <Loader2 className="animate-spin mr-2" />
+                      {getStatusText()}
+                    </>
+                  ) : (
+                    <>
+                      <Zap className="mr-2 w-5 h-5" />
+                      Entrar no Quiz
+                    </>
+                  )}
                 </Button>
               </div>
             </Card>
@@ -390,7 +502,8 @@ export function LogicaAplicadaParticipant() {
                 <button
                   key={letter}
                   onClick={() => handleAnswer(letter)}
-                  className={`w-full flex items-start gap-3 p-4 rounded-xl border-2 ${styles.bg} ${styles.border} ${styles.hover} ${styles.shadow} ${styles.activeShadow} text-white font-medium transition-all active:scale-[0.98]`}
+                  disabled={isSubmitting}
+                  className={`w-full flex items-start gap-3 p-4 rounded-xl border-2 ${styles.bg} ${styles.border} ${styles.hover} ${styles.shadow} ${styles.activeShadow} text-white font-medium transition-all active:scale-[0.98] disabled:opacity-50`}
                 >
                   <span className={`font-bold text-xl flex-shrink-0 w-8 ${styles.text}`}>{letter}</span>
                   <span className="text-sm text-left flex-1 whitespace-normal break-words text-white/90">
