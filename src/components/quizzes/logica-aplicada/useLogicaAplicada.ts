@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
 export interface Question {
@@ -35,9 +35,22 @@ export interface Participant {
   joined_at: string | null;
 }
 
+export interface JoinResult {
+  success: boolean;
+  participantId?: string;
+  error?: string;
+}
+
+export interface SubmitResult {
+  success: boolean;
+  points: number;
+  error?: string;
+}
+
 const TOTAL_TIME_MS = 45000; // 45 seconds
 const BASE_POINTS = 1000;
 const MIN_POINTS = 500;
+const POLLING_INTERVAL = 5000; // Reduced from 2s/3s to 5s
 
 export function calculatePoints(isCorrect: boolean, timeRemainingMs: number): number {
   if (!isCorrect) return 0;
@@ -48,41 +61,100 @@ export function calculatePoints(isCorrect: boolean, timeRemainingMs: number): nu
   return Math.max(MIN_POINTS, Math.min(BASE_POINTS, points));
 }
 
+// Helper function for retry logic
+async function withRetry<T>(
+  fn: () => Promise<T>,
+  maxAttempts: number = 3,
+  delayMs: number = 1000
+): Promise<T> {
+  let lastError: Error | null = null;
+  
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      return await fn();
+    } catch (error) {
+      lastError = error as Error;
+      console.log(`[LogicaAplicada] Attempt ${attempt}/${maxAttempts} failed:`, error);
+      if (attempt < maxAttempts) {
+        await new Promise(resolve => setTimeout(resolve, delayMs));
+      }
+    }
+  }
+  
+  throw lastError;
+}
+
 export function useLogicaAplicada() {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [sessionState, setSessionState] = useState<SessionState | null>(null);
   const [participantCount, setParticipantCount] = useState(0);
   const [ranking, setRanking] = useState<RankingEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [quizWasReset, setQuizWasReset] = useState(false);
+  
+  // Track previous phase to detect resets
+  const prevPhaseRef = useRef<string | null>(null);
 
-  // Load questions
+  // Load questions with error handling
   useEffect(() => {
     const loadQuestions = async () => {
-      const { data } = await supabase
-        .from('logica_aplicada_questions')
-        .select('*')
-        .order('order_position');
-      
-      if (data) {
-        setQuestions(data as Question[]);
+      try {
+        console.log('[LogicaAplicada] Loading questions...');
+        const { data, error } = await supabase
+          .from('logica_aplicada_questions')
+          .select('*')
+          .order('order_position');
+        
+        if (error) {
+          console.error('[LogicaAplicada] Error loading questions:', error);
+          return;
+        }
+        
+        if (data) {
+          console.log('[LogicaAplicada] Questions loaded:', data.length);
+          setQuestions(data as Question[]);
+        }
+      } catch (err) {
+        console.error('[LogicaAplicada] Exception loading questions:', err);
       }
     };
     loadQuestions();
   }, []);
 
-  // Load and subscribe to session state
+  // Load and subscribe to session state with reset detection
   useEffect(() => {
     const loadSession = async () => {
-      const { data } = await supabase
-        .from('logica_aplicada_session_state')
-        .select('*')
-        .limit(1)
-        .maybeSingle();
-      
-      if (data) {
-        setSessionState(data as SessionState);
+      try {
+        const { data, error } = await supabase
+          .from('logica_aplicada_session_state')
+          .select('*')
+          .limit(1)
+          .maybeSingle();
+        
+        if (error) {
+          console.error('[LogicaAplicada] Error loading session:', error);
+          return;
+        }
+        
+        if (data) {
+          const newState = data as SessionState;
+          
+          // Detect reset: if we were in question/ranking and now in waiting
+          if (prevPhaseRef.current && 
+              prevPhaseRef.current !== 'waiting' && 
+              newState.current_phase === 'waiting') {
+            console.log('[LogicaAplicada] Quiz was reset detected!');
+            setQuizWasReset(true);
+          }
+          
+          prevPhaseRef.current = newState.current_phase;
+          setSessionState(newState);
+        }
+        setIsLoading(false);
+      } catch (err) {
+        console.error('[LogicaAplicada] Exception loading session:', err);
+        setIsLoading(false);
       }
-      setIsLoading(false);
     };
     loadSession();
 
@@ -94,13 +166,24 @@ export function useLogicaAplicada() {
         table: 'logica_aplicada_session_state'
       }, (payload) => {
         if (payload.new) {
-          setSessionState(payload.new as SessionState);
+          const newState = payload.new as SessionState;
+          
+          // Detect reset via real-time
+          if (prevPhaseRef.current && 
+              prevPhaseRef.current !== 'waiting' && 
+              newState.current_phase === 'waiting') {
+            console.log('[LogicaAplicada] Quiz reset detected via real-time!');
+            setQuizWasReset(true);
+          }
+          
+          prevPhaseRef.current = newState.current_phase;
+          setSessionState(newState);
         }
       })
       .subscribe();
 
-    // Polling fallback
-    const interval = setInterval(loadSession, 2000);
+    // Reduced polling interval (5s instead of 2s)
+    const interval = setInterval(loadSession, POLLING_INTERVAL);
 
     return () => {
       supabase.removeChannel(channel);
@@ -111,11 +194,20 @@ export function useLogicaAplicada() {
   // Load and subscribe to participant count
   useEffect(() => {
     const loadParticipants = async () => {
-      const { count } = await supabase
-        .from('logica_aplicada_participants')
-        .select('*', { count: 'exact', head: true });
-      
-      setParticipantCount(count || 0);
+      try {
+        const { count, error } = await supabase
+          .from('logica_aplicada_participants')
+          .select('*', { count: 'exact', head: true });
+        
+        if (error) {
+          console.error('[LogicaAplicada] Error loading participants:', error);
+          return;
+        }
+        
+        setParticipantCount(count || 0);
+      } catch (err) {
+        console.error('[LogicaAplicada] Exception loading participants:', err);
+      }
     };
     loadParticipants();
 
@@ -128,9 +220,17 @@ export function useLogicaAplicada() {
       }, () => {
         loadParticipants();
       })
+      .on('postgres_changes', {
+        event: 'DELETE',
+        schema: 'public',
+        table: 'logica_aplicada_participants'
+      }, () => {
+        loadParticipants();
+      })
       .subscribe();
 
-    const interval = setInterval(loadParticipants, 3000);
+    // Reduced polling interval (5s instead of 3s)
+    const interval = setInterval(loadParticipants, POLLING_INTERVAL);
 
     return () => {
       supabase.removeChannel(channel);
@@ -140,35 +240,49 @@ export function useLogicaAplicada() {
 
   // Calculate ranking
   const calculateRanking = useCallback(async () => {
-    const { data: participants } = await supabase
-      .from('logica_aplicada_participants')
-      .select('id, nickname');
+    try {
+      const { data: participants, error: pError } = await supabase
+        .from('logica_aplicada_participants')
+        .select('id, nickname');
 
-    const { data: answers } = await supabase
-      .from('logica_aplicada_answers')
-      .select('participant_id, points_earned');
+      if (pError) {
+        console.error('[LogicaAplicada] Error loading participants for ranking:', pError);
+        return;
+      }
 
-    if (!participants || !answers) return;
+      const { data: answers, error: aError } = await supabase
+        .from('logica_aplicada_answers')
+        .select('participant_id, points_earned');
 
-    const pointsMap = new Map<string, number>();
-    answers.forEach(a => {
-      const current = pointsMap.get(a.participant_id) || 0;
-      pointsMap.set(a.participant_id, current + a.points_earned);
-    });
+      if (aError) {
+        console.error('[LogicaAplicada] Error loading answers for ranking:', aError);
+        return;
+      }
 
-    const rankingData: RankingEntry[] = participants.map(p => ({
-      participant_id: p.id,
-      nickname: p.nickname,
-      total_points: pointsMap.get(p.id) || 0,
-      position: 0
-    }));
+      if (!participants || !answers) return;
 
-    rankingData.sort((a, b) => b.total_points - a.total_points);
-    rankingData.forEach((entry, idx) => {
-      entry.position = idx + 1;
-    });
+      const pointsMap = new Map<string, number>();
+      answers.forEach(a => {
+        const current = pointsMap.get(a.participant_id) || 0;
+        pointsMap.set(a.participant_id, current + a.points_earned);
+      });
 
-    setRanking(rankingData);
+      const rankingData: RankingEntry[] = participants.map(p => ({
+        participant_id: p.id,
+        nickname: p.nickname,
+        total_points: pointsMap.get(p.id) || 0,
+        position: 0
+      }));
+
+      rankingData.sort((a, b) => b.total_points - a.total_points);
+      rankingData.forEach((entry, idx) => {
+        entry.position = idx + 1;
+      });
+
+      setRanking(rankingData);
+    } catch (err) {
+      console.error('[LogicaAplicada] Exception calculating ranking:', err);
+    }
   }, []);
 
   // Update ranking when phase changes to ranking_parcial or ended
@@ -180,17 +294,26 @@ export function useLogicaAplicada() {
 
   // Session control functions (admin only)
   const initializeSession = useCallback(async () => {
-    const { data: existing } = await supabase
-      .from('logica_aplicada_session_state')
-      .select('id')
-      .limit(1)
-      .maybeSingle();
+    try {
+      const { data: existing } = await supabase
+        .from('logica_aplicada_session_state')
+        .select('id')
+        .limit(1)
+        .maybeSingle();
 
-    if (!existing) {
-      await supabase.from('logica_aplicada_session_state').insert({
-        current_phase: 'waiting',
-        current_question_id: null
-      });
+      if (!existing) {
+        // Use upsert to prevent duplicate key errors
+        const { error } = await supabase.from('logica_aplicada_session_state').upsert({
+          current_phase: 'waiting',
+          current_question_id: null
+        }, { onConflict: 'id' });
+        
+        if (error) {
+          console.error('[LogicaAplicada] Error initializing session:', error);
+        }
+      }
+    } catch (err) {
+      console.error('[LogicaAplicada] Exception initializing session:', err);
     }
   }, []);
 
@@ -265,16 +388,77 @@ export function useLogicaAplicada() {
     setParticipantCount(0);
   }, []);
 
-  // Participant functions
-  const joinQuiz = useCallback(async (nickname: string): Promise<string | null> => {
-    const { data, error } = await supabase
-      .from('logica_aplicada_participants')
-      .insert({ nickname })
-      .select('id')
-      .single();
+  // Participant functions with improved error handling
+  const joinQuiz = useCallback(async (nickname: string): Promise<JoinResult> => {
+    console.log('[LogicaAplicada] joinQuiz called with nickname:', nickname);
     
-    if (error) return null;
-    return data.id;
+    try {
+      // Test connection first
+      const { error: pingError } = await supabase
+        .from('logica_aplicada_session_state')
+        .select('id')
+        .limit(1);
+      
+      if (pingError) {
+        console.error('[LogicaAplicada] Connection test failed:', pingError);
+        return { 
+          success: false, 
+          error: 'Sem conexão com o servidor. Verifique sua internet.' 
+        };
+      }
+
+      // Use retry logic for join
+      const result = await withRetry(async () => {
+        const { data, error } = await supabase
+          .from('logica_aplicada_participants')
+          .insert({ nickname })
+          .select('id')
+          .single();
+        
+        if (error) {
+          console.error('[LogicaAplicada] Insert error:', error);
+          throw error;
+        }
+        
+        return data;
+      });
+      
+      console.log('[LogicaAplicada] Join successful, participantId:', result.id);
+      return { success: true, participantId: result.id };
+      
+    } catch (error: any) {
+      console.error('[LogicaAplicada] joinQuiz failed after retries:', error);
+      
+      let errorMessage = 'Erro ao entrar no quiz. Tente novamente.';
+      if (error?.message?.includes('timeout')) {
+        errorMessage = 'Conexão lenta. Tente novamente.';
+      } else if (error?.code === '23505') {
+        errorMessage = 'Este nome já está em uso. Escolha outro.';
+      }
+      
+      return { success: false, error: errorMessage };
+    }
+  }, []);
+
+  // Verify if participant still exists
+  const verifyParticipant = useCallback(async (participantId: string): Promise<boolean> => {
+    try {
+      const { data, error } = await supabase
+        .from('logica_aplicada_participants')
+        .select('id')
+        .eq('id', participantId)
+        .maybeSingle();
+      
+      if (error) {
+        console.error('[LogicaAplicada] Error verifying participant:', error);
+        return false;
+      }
+      
+      return !!data;
+    } catch (err) {
+      console.error('[LogicaAplicada] Exception verifying participant:', err);
+      return false;
+    }
   }, []);
 
   const submitAnswer = useCallback(async (
@@ -282,24 +466,70 @@ export function useLogicaAplicada() {
     questionId: string,
     answer: 'A' | 'B' | 'C' | 'D',
     timeTakenMs: number
-  ): Promise<number> => {
+  ): Promise<SubmitResult> => {
+    console.log('[LogicaAplicada] submitAnswer called:', { participantId, questionId, answer, timeTakenMs });
+    
     const question = questions.find(q => q.id === questionId);
-    if (!question) return 0;
+    if (!question) {
+      console.error('[LogicaAplicada] Question not found:', questionId);
+      return { success: false, points: 0, error: 'Pergunta não encontrada' };
+    }
+
+    // Verify participant still exists before submitting
+    const participantExists = await verifyParticipant(participantId);
+    if (!participantExists) {
+      console.error('[LogicaAplicada] Participant no longer exists:', participantId);
+      return { 
+        success: false, 
+        points: 0, 
+        error: 'Sua sessão expirou. O quiz foi reiniciado.' 
+      };
+    }
 
     const isCorrect = answer === question.correct_option;
     const timeRemaining = Math.max(0, TOTAL_TIME_MS - timeTakenMs);
     const points = calculatePoints(isCorrect, timeRemaining);
 
-    await supabase.from('logica_aplicada_answers').insert({
-      participant_id: participantId,
-      question_id: questionId,
-      answer,
-      time_taken_ms: timeTakenMs,
-      points_earned: points
-    });
-
-    return points;
-  }, [questions]);
+    try {
+      const result = await withRetry(async () => {
+        const { error } = await supabase.from('logica_aplicada_answers').insert({
+          participant_id: participantId,
+          question_id: questionId,
+          answer,
+          time_taken_ms: timeTakenMs,
+          points_earned: points
+        });
+        
+        if (error) {
+          console.error('[LogicaAplicada] Submit error:', error);
+          throw error;
+        }
+        
+        return { success: true };
+      });
+      
+      console.log('[LogicaAplicada] Answer submitted successfully, points:', points);
+      return { success: true, points };
+      
+    } catch (error: any) {
+      console.error('[LogicaAplicada] submitAnswer failed after retries:', error);
+      
+      // Check for foreign key violation (participant was deleted)
+      if (error?.code === '23503') {
+        return { 
+          success: false, 
+          points: 0, 
+          error: 'Sua sessão expirou. O quiz foi reiniciado.' 
+        };
+      }
+      
+      return { 
+        success: false, 
+        points: 0, 
+        error: 'Erro ao enviar resposta. Tente novamente.' 
+      };
+    }
+  }, [questions, verifyParticipant]);
 
   // Get participant position and total points
   const getParticipantPosition = useCallback(async (participantId: string): Promise<{
@@ -307,34 +537,49 @@ export function useLogicaAplicada() {
     totalPoints: number;
     totalParticipants: number;
   } | null> => {
-    const { data: participants } = await supabase
-      .from('logica_aplicada_participants')
-      .select('id');
+    try {
+      const { data: participants, error: pError } = await supabase
+        .from('logica_aplicada_participants')
+        .select('id');
 
-    const { data: answers } = await supabase
-      .from('logica_aplicada_answers')
-      .select('participant_id, points_earned');
+      if (pError) {
+        console.error('[LogicaAplicada] Error getting participants for position:', pError);
+        return null;
+      }
 
-    if (!participants || !answers) return null;
+      const { data: answers, error: aError } = await supabase
+        .from('logica_aplicada_answers')
+        .select('participant_id, points_earned');
 
-    const pointsMap = new Map<string, number>();
-    answers.forEach(a => {
-      const current = pointsMap.get(a.participant_id!) || 0;
-      pointsMap.set(a.participant_id!, current + a.points_earned);
-    });
+      if (aError) {
+        console.error('[LogicaAplicada] Error getting answers for position:', aError);
+        return null;
+      }
 
-    const sorted = Array.from(pointsMap.entries())
-      .sort((a, b) => b[1] - a[1]);
+      if (!participants || !answers) return null;
 
-    const position = sorted.findIndex(([id]) => id === participantId) + 1;
-    const totalPoints = pointsMap.get(participantId) || 0;
+      const pointsMap = new Map<string, number>();
+      answers.forEach(a => {
+        const current = pointsMap.get(a.participant_id!) || 0;
+        pointsMap.set(a.participant_id!, current + a.points_earned);
+      });
 
-    return {
-      position: position || participants.length,
-      totalPoints,
-      totalParticipants: participants.length
-    };
-  }, [questions]);
+      const sorted = Array.from(pointsMap.entries())
+        .sort((a, b) => b[1] - a[1]);
+
+      const position = sorted.findIndex(([id]) => id === participantId) + 1;
+      const totalPoints = pointsMap.get(participantId) || 0;
+
+      return {
+        position: position || participants.length,
+        totalPoints,
+        totalParticipants: participants.length
+      };
+    } catch (err) {
+      console.error('[LogicaAplicada] Exception getting position:', err);
+      return null;
+    }
+  }, []);
 
   const getCurrentQuestion = useCallback(() => {
     if (!sessionState?.current_question_id) return null;
@@ -346,12 +591,18 @@ export function useLogicaAplicada() {
     return questions.findIndex(q => q.id === sessionState.current_question_id);
   }, [sessionState, questions]);
 
+  // Clear reset flag
+  const clearResetFlag = useCallback(() => {
+    setQuizWasReset(false);
+  }, []);
+
   return {
     questions,
     sessionState,
     participantCount,
     ranking,
     isLoading,
+    quizWasReset,
     initializeSession,
     startQuiz,
     showRanking,
@@ -363,6 +614,8 @@ export function useLogicaAplicada() {
     getCurrentQuestion,
     getCurrentQuestionIndex,
     calculateRanking,
-    getParticipantPosition
+    getParticipantPosition,
+    verifyParticipant,
+    clearResetFlag
   };
 }
