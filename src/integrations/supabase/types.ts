@@ -253,6 +253,24 @@ export type Database = {
         }
         Relationships: []
       }
+      form_submissions: {
+        Row: {
+          data: Json
+          id: string
+          submitted_at: string | null
+        }
+        Insert: {
+          data: Json
+          id?: string
+          submitted_at?: string | null
+        }
+        Update: {
+          data?: Json
+          id?: string
+          submitted_at?: string | null
+        }
+        Relationships: []
+      }
       fritar_ovo_submissions: {
         Row: {
           created_at: string | null
