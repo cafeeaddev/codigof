@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState, useCallback, useRef } from 'react';
-import { User, Session } from '@supabase/supabase-js';
+import type { User, Session } from '@/integrations/supabase/client';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 
@@ -272,6 +272,10 @@ setTimeout(() => {
 
       if (error) {
         console.error('❌ Erro na autenticação:', error);
+        // Respostas 4xx trazem o motivo (CPF incorreto, email não encontrado, limite de tentativas)
+        const status = (error as any).context?.status;
+        const reason = (error as any).body?.error;
+        if (status && status < 500 && reason) return { error: reason };
         return { error: 'Erro interno. Tente novamente.' };
       }
 

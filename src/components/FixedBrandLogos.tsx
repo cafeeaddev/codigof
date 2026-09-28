@@ -17,7 +17,7 @@ const FixedBrandLogos: React.FC = () => {
     >
       <div className="pointer-events-auto flex items-center gap-2 rounded-md border border-border/60 bg-background/60 backdrop-blur-sm px-3 py-2 shadow-sm">
         <img
-          src="/lovable-uploads/94d6cc17-4c86-4276-8ad9-8406ccab7fd8.png"
+          src="/images/94d6cc17-4c86-4276-8ad9-8406ccab7fd8.png"
           alt="Forvis Mazars"
           className="h-7 sm:h-9 w-auto opacity-90"
           loading="lazy"
@@ -25,7 +25,7 @@ const FixedBrandLogos: React.FC = () => {
         />
         <span className="h-5 sm:h-6 w-px bg-foreground/20" aria-hidden />
         <img
-          src="/lovable-uploads/43c76620-9ebd-4a6b-b624-57ee3c348759.png"
+          src="/images/43c76620-9ebd-4a6b-b624-57ee3c348759.png"
           alt="Universidade Forvis Mazars"
           className="h-7 sm:h-9 w-auto opacity-90"
           loading="lazy"

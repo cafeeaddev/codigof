@@ -180,7 +180,7 @@ export const CodigoFElements = () => {
           
           {/* Logo real do Código F */}
           <img 
-            src="/lovable-uploads/d64d427e-c1fe-4135-8b65-708c8fa4fed0.png" 
+            src="/images/d64d427e-c1fe-4135-8b65-708c8fa4fed0.png" 
             alt="Código F Logo" 
             className="w-48 h-48 object-contain relative z-10"
           />

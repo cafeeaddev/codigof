@@ -191,7 +191,7 @@ export const useAdminDashboard = () => {
       if (res5.error) console.error('Error loading mission 5:', res5.error);
       if (progressData.error) console.error('Error loading progress:', progressData.error);
 
-      const userProfilesByEmail = new Map((allProfiles.data || []).map(profile => [
+      const userProfilesByEmail = new Map<string, UserProfile>((allProfiles.data || []).map(profile => [
         profile.email, 
         { 
           nome: profile.nome || 'Usuário', 
@@ -203,7 +203,7 @@ export const useAdminDashboard = () => {
         }
       ]));
 
-      const userProfiles = new Map((allProfiles.data || []).map(profile => [
+      const userProfiles = new Map<string, UserProfile>((allProfiles.data || []).map(profile => [
         profile.user_id, 
         { 
           nome: profile.nome || 'Usuário', 
