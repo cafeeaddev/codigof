@@ -13,6 +13,8 @@
     "db:migrate": "tsx server/scripts/migrate.ts",
     "db:pull-schema": "tsx server/scripts/pull-schema.ts",
     "db:import": "tsx server/scripts/import-data.ts",
+    "db:backup": "tsx server/scripts/backup-data.ts",
+    "db:restore": "tsx server/scripts/restore-data.ts",
     "lint": "eslint .",
     "preview": "vite preview"
   },

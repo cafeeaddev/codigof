@@ -56,6 +56,16 @@ via Docker.
 - `AuthContext`: respostas 4xx agora mostram o motivo (CPF incorreto etc.) em vez de "Erro interno".
 - Pendente: decidir se os perfis duplicados devem ser mesclados/apagados.
 
+## 2026-09-28 — repositório novo e guia de deploy
+- Código enviado para `github.com/cafeeaddev/codigof` (histórico completo, sem restos do Lovable).
+- Novos comandos `db:backup` / `db:restore` e rota `GET /api/health`.
+- README reescrito com o passo a passo para o SRE (Ubuntu 24.04, Node 22, PostgreSQL 18,
+  systemd, nginx com WebSocket, DNS, certbot, backups). Ciclo testado aqui: backup → banco novo
+  (`db:migrate`) → `db:restore` → conteúdo idêntico nas 40 tabelas → `npm start` servindo site,
+  login, imagens e WebSocket. Não testado num Linux de verdade.
+- Backup enviado ao SRE: `server/.data/codigof-backup-2026-09-28.sql.gz` (dados de 28/09 às 13h52).
+  No dia da virada é preciso gerar outro (`db:import` + `db:backup`).
+
 ## Próximos passos
 1. ~~Senha do `postgres` local~~ (feito em 2026-09-28). (desconhecida). Para redefinir (PowerShell **como administrador**):
    ```

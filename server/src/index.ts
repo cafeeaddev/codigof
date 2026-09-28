@@ -61,6 +61,16 @@ app.post('/api/admin/reload-schema', async (req, res) => {
   res.status(204).end();
 });
 
+// Verificação de saúde (monitoramento): responde 200 se a API e o banco estão ok
+app.get('/api/health', async (_req, res) => {
+  try {
+    await pool.query('SELECT 1');
+    res.json({ status: 'ok' });
+  } catch {
+    res.status(503).json({ status: 'erro', message: 'Banco de dados indisponível' });
+  }
+});
+
 app.use('/api/functions', functionsRouter);
 
 app.use('/api', (_req, _res, next) => next(new ApiError(404, 'Not found')));
